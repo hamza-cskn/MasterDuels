@@ -1,10 +1,8 @@
 package mc.obliviate.blokduels.invite;
 
-import mc.obliviate.blokduels.game.TeamBuilder;
+import mc.obliviate.blokduels.game.GameBuilder;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class Invites {
 
@@ -15,9 +13,9 @@ public class Invites {
 		this.playerUniqueId = uuid;
 	}
 
-	public Invite getInvite(final TeamBuilder teamBuilder) {
+	public Invite getInvite(final GameBuilder gameBuilder) {
 		for (Invite invite : invites) {
-			if (invite.getTeamBuilder().equals(teamBuilder)) {
+			if (invite.getTeamBuilder().equals(gameBuilder)) {
 				return invite;
 			}
 		}

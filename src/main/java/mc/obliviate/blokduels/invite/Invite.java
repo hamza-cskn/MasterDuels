@@ -1,64 +1,61 @@
 package mc.obliviate.blokduels.invite;
 
 import mc.obliviate.blokduels.BlokDuels;
-import mc.obliviate.blokduels.game.TeamBuilder;
+import mc.obliviate.blokduels.game.GameBuilder;
+import mc.obliviate.blokduels.utils.MessageUtils;
+import mc.obliviate.blokduels.utils.placeholder.PlaceholderUtil;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 public class Invite {
 
 
-	private static final HashMap<UUID, Invites> playerInvites = new HashMap<>();
+	private static final Map<UUID, Invites> playerInvites = new HashMap<>();
 
 	private boolean expired;
-	private final TeamBuilder teamBuilder;
+	private final GameBuilder gameBuilder;
 	private final Player target;
 	private final Player inviter;
 	private Boolean answer = null;
 	private final int expireTime;
 	private final long invitedTime;
+	private InviteResponse response;
 	private final BlokDuels plugin;
 
-	public Invite(BlokDuels plugin, Player inviter, Player invited, TeamBuilder teamBuilder) {
-		this(plugin, inviter, invited, teamBuilder, 120);
+	public Invite(BlokDuels plugin, Player inviter, Player invited, GameBuilder gameBuilder) {
+		this(plugin, inviter, invited, gameBuilder, 120);
 	}
 
-	public Invite(BlokDuels plugin, Player inviter, Player invited, TeamBuilder teamBuilder, int expireTime) {
-
-
+	public Invite(BlokDuels plugin, Player inviter, Player invited, GameBuilder gameBuilder, int expireTime) {
 		this.plugin = plugin;
-		this.teamBuilder = teamBuilder;
+		this.gameBuilder = gameBuilder;
 		this.expireTime = expireTime;
 		this.target = invited;
 		this.inviter = inviter;
 		this.invitedTime = System.currentTimeMillis();
 
-		if (teamBuilder.getInvites().containsKey(invited.getUniqueId())) {
-			inviter.sendMessage(MessageUtils.getMessage("invite.already-invited")
-					.replace("{inviter}", invited.getName()));
+		if (gameBuilder.getInvites().containsKey(invited.getUniqueId())) {
+			MessageUtils.sendMessage(inviter,"invite.already-invited", new PlaceholderUtil().add("{inviter}", invited.getName()));
 			expired = true;
 			return;
 		}
 
 		if (!invited.isOnline()) {
-			inviter.sendMessage(MessageUtils.getMessage("target-is-not-online"));
+			MessageUtils.sendMessage(inviter,"target-is-not-online");
 			expired = true;
 			onExpire();
 			return;
 		}
 		addInvite(invited.getUniqueId(), this);
-		inviter.sendMessage(MessageUtils.getMessage("invite.target-has-invited")
-				.replace("{target}", target.getName())
-				.replace("{expire_time}", expireTime + ""));
-		target.sendMessage(MessageUtils.getMessage("invite.you-invited")
-				.replace("{inviter}", inviter.getName())
-				.replace("{expire_time}", expireTime + ""));
+		MessageUtils.sendMessage(inviter,"invite.target-has-invited", new PlaceholderUtil().add("{target}", target.getName()).add("{expire_time}", expireTime + ""));
+		MessageUtils.sendMessage(target,"invite.you-invited", new PlaceholderUtil().add("{inviter}", target.getName()).add("{expire_time}", expireTime + ""));
 
 		TextComponent button = new TextComponent(MessageUtils.getMessage("invite.accept-button"));
 		button.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/kabile kabulet"));
@@ -73,10 +70,9 @@ public class Invite {
 				if (!expired && answer == null) {
 					expired = true;
 					onExpire();
-					target.sendMessage(MessageUtils.getMessage("invite.invite-expired-target")
-							.replace("{inviter}", inviter.getName()));
-					inviter.sendMessage(MessageUtils.getMessage("invite.invite-expired-inviter")
-							.replace("{target}", target.getName()));
+					MessageUtils.sendMessage(target,"invite.invite-expired-target", new PlaceholderUtil().add("{inviter}",inviter.getName()));
+					MessageUtils.sendMessage(inviter,"invite.invite-expired-inviter", new PlaceholderUtil().add("{target}",target.getName()));
+					response.onResponse(InviteResult.EXPIRE);
 				}
 			}
 		}.runTaskLater(plugin, expireTime * 20L);
@@ -89,7 +85,7 @@ public class Invite {
 	}
 
 	private void onExpire() {
-		teamBuilder.removeInvite(target.getUniqueId());
+		gameBuilder.removeInvite(target.getUniqueId());
 	}
 
 	@Deprecated
@@ -107,8 +103,8 @@ public class Invite {
 		return expired;
 	}
 
-	public TeamBuilder getTeamBuilder() {
-		return teamBuilder;
+	public GameBuilder getTeamBuilder() {
+		return gameBuilder;
 	}
 
 	public Player getInviter() {
@@ -131,19 +127,22 @@ public class Invite {
 
 		//ACCEPT
 		if (answer) {
-			getInviter().sendMessage(MessageUtils.getMessage("invite.target-accepted-the-invite").replace("{target}",target.getName()));
-			Player player = getTarget();
-			player.sendMessage(MessageUtils.getMessage("invite.successfully-accepted").replace("{inviter}",target.getName()));
-			if (teamBuilder.getTeamSize() < ConfigHandler.getMemberLimitPerClan()) {
+			MessageUtils.sendMessage(getInviter(),"invite.target-accepted-the-invite", new PlaceholderUtil().add("{target}",target.getName()));
+			final Player player = getTarget();
+			MessageUtils.sendMessage(player,"invite.successfully-accepted", new PlaceholderUtil().add("{inviter}",target.getName()));
+			/*if (teamBuilder.getTeamSize() < ConfigHandler.getMemberLimitPerClan()) {
 				teamBuilder.addMember(getTarget());
 			} else {
-				getTarget().sendMessage(MessageUtils.getMessage("invite.clan-is-full"));
+				MessageUtils.sendMessage(getTarget(),"invite.clan-is-full");
 			}
+			 */
+			response.onResponse(InviteResult.ACCEPT);
 		}
 		//DECLINE
 		else {
-			getInviter().sendMessage(MessageUtils.getMessage("invite.target-declined-the-invite").replace("{target}", target.getName()));
-			getTarget().sendMessage(MessageUtils.getMessage("invite.successfully-declined").replace("{inviter}", inviter.getName()));
+			response.onResponse(InviteResult.DECLINE);
+			MessageUtils.sendMessage(getInviter(),"invite.target-declined-the-invite", new PlaceholderUtil().add("{target}", target.getName()));
+			MessageUtils.sendMessage(getTarget(),"invite.successfully-declined", new PlaceholderUtil().add("{inviter}", inviter.getName()));
 
 		}
 
@@ -163,5 +162,11 @@ public class Invite {
 		playerInvites.put(uuid, invites);
 	}
 
+	public InviteResponse getResponse() {
+		return response;
+	}
 
+	public void onResponse(InviteResponse response) {
+		this.response = response;
+	}
 }

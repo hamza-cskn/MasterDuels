@@ -4,20 +4,12 @@ import mc.obliviate.blokduels.BlokDuels;
 import mc.obliviate.blokduels.arena.Arena;
 import mc.obliviate.blokduels.data.DataHandler;
 import mc.obliviate.blokduels.game.Game;
-import mc.obliviate.blokduels.game.TeamBuilder;
-import mc.obliviate.blokduels.game.types.GameMode;
-import mc.obliviate.blokduels.kit.Kit;
-import mc.obliviate.blokduels.team.Team;
+import mc.obliviate.blokduels.game.GameBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 public class DuelCMD implements CommandExecutor {
 
@@ -59,17 +51,21 @@ public class DuelCMD implements CommandExecutor {
 		//1v1
 		final Arena arena = Arena.findArena(1, 2);
 
-		final Game game = Game.create(plugin, 1, arena, new Kit(null), 60, new ArrayList<>());
+		final GameBuilder gameBuilder = Game.create(plugin, arena).teamAmount(2).teamSize(1).finishTime(60).totalRounds(1);
 
-		if (game == null) {
-			player.sendMessage("§cGame couldn't started.");
-			return false;
-		}
+		gameBuilder.createTeam(player);
 
-		final TeamBuilder teamBuilder = game.getTeamBuilder();
+		gameBuilder.sendInvite(player, target, result -> {
+			switch (result) {
+				case EXPIRE:
+				case DECLINE:
 
-		teamBuilder.create(player);
-		teamBuilder.create(target);
+					break;
+				case ACCEPT:
+			}
+		});
+
+		final Game game = gameBuilder.build();
 
 		game.startGame();
 
