@@ -32,26 +32,22 @@ public class Game {
 	private final Map<String, BukkitTask> tasks = new HashMap<>();
 	private final RoundData roundData = new RoundData();
 	private final SpectatorData spectatorData = new SpectatorData();
-	private final TeamBuilder teamBuilder;
+	private final GameBuilder gameBuilder;
 	private GameState gameState = GAME_STARING;
 
-	private Game(final BlokDuels plugin, final int totalRounds, final Arena arena, final Kit kit, final long finishTime, final List<GameRules> gameRules) {
+	protected Game(final BlokDuels plugin, final GameBuilder gameBuilder, final int totalRounds, final Arena arena, final Kit kit, final long finishTime, final List<GameRules> gameRules) {
 		this.plugin = plugin;
 		this.arena = arena;
 		this.kit = kit;
 		this.finishTime = finishTime;
 		this.gameRules = gameRules;
-		this.teamBuilder = new TeamBuilder(arena.getTeamAmount(), arena.getTeamSize(), this);
+		this.gameBuilder = gameBuilder;
 
 		roundData.setTotalRounds(totalRounds);
 	}
 
-	public static Game create(final BlokDuels plugin, final int totalRounds, final Arena arena, final Kit kit, final long finishTime, final List<GameRules> gameRules) {
-		if (DataHandler.getArenas().get(arena) != null) {
-			return null;
-		}
-
-		return new Game(plugin, totalRounds, arena, kit, finishTime, gameRules);
+	public static GameBuilder create(BlokDuels plugin, Arena arena) {
+		return new GameBuilder(plugin, arena);
 	}
 
 	protected void registerTeam(Team team) {
@@ -208,7 +204,7 @@ public class Game {
 		}
 
 		spectatorData.add(player);
-
+		player.sendMessage("you are spectator");
 	}
 
 
@@ -216,8 +212,8 @@ public class Game {
 
 	}
 
-	public TeamBuilder getTeamBuilder() {
-		return teamBuilder;
+	public GameBuilder getTeamBuilder() {
+		return gameBuilder;
 	}
 
 	public GameState getGameState() {
