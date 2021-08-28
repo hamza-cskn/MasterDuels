@@ -110,7 +110,7 @@ public class Game {
 			}
 		}
 
-		DataHandler.getArenas().put(arena, null);
+		DataHandler.registerArena(arena);
 
 	}
 

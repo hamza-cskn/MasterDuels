@@ -2,6 +2,7 @@ package mc.obliviate.blokduels.listeners;
 
 import mc.obliviate.blokduels.data.DataHandler;
 import mc.obliviate.blokduels.team.Member;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -19,6 +20,8 @@ public class PreDeathListener implements Listener {
 
 				final Member member = DataHandler.getMember(victim.getUniqueId());
 				if (member == null) return;
+				if (member.getTeam() == null) Bukkit.broadcastMessage("team is null");
+				if (member.getTeam().getGame() == null) Bukkit.broadcastMessage("game is null");
 				e.setCancelled(true);
 
 				member.getTeam().getGame().onDeath(member);

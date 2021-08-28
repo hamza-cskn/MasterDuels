@@ -47,8 +47,8 @@ public class ArenaSetup implements Listener {
 
 	public static boolean isNameUnique(String checkName) {
 		for (final Arena arena : DataHandler.getArenas().keySet()) {
-			if (arena == null) Bukkit.broadcastMessage("arena == null");
-			if (arena.getName() == null) Bukkit.broadcastMessage("arena name == null");
+			if (arena == null) continue;
+			if (arena.getName() == null) continue;
 			if (arena.getName().equalsIgnoreCase(checkName)) {
 				return false;
 			}

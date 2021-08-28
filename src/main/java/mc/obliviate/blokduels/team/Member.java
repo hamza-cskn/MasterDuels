@@ -1,6 +1,7 @@
 package mc.obliviate.blokduels.team;
 
 import mc.obliviate.blokduels.data.DataHandler;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class Member {
@@ -11,7 +12,9 @@ public class Member {
 	public Member(Team team, Player player) {
 		this.team = team;
 		this.player = player;
-		DataHandler.getMembers().put(player.getUniqueId(),this);
+		Bukkit.broadcastMessage("members created");
+		player.sendMessage("you're a member now.");
+		DataHandler.getMembers().put(player.getUniqueId(), this);
 	}
 
 	public Player getPlayer() {

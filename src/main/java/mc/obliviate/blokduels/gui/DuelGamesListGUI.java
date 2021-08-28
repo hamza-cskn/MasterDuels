@@ -1,12 +1,17 @@
 package mc.obliviate.blokduels.gui;
 
 import mc.obliviate.blokduels.arena.Arena;
+import mc.obliviate.blokduels.arena.elements.Positions;
 import mc.obliviate.blokduels.data.DataHandler;
+import mc.obliviate.blokduels.setup.PositionSelection;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import xyz.efekurbann.inventory.GUI;
 import xyz.efekurbann.inventory.Hytem;
+
+import java.util.Map;
 
 public class DuelGamesListGUI extends GUI {
 
@@ -18,10 +23,22 @@ public class DuelGamesListGUI extends GUI {
 	public void onOpen(InventoryOpenEvent event) {
 		int slot = 0;
 		for (final Arena arena : DataHandler.getArenas().keySet()) {
-			addItem(slot++, new Hytem(Material.CAULDRON_ITEM)
+			final Hytem hytem = new Hytem(Material.CAULDRON_ITEM)
 					.setName("§9" + arena.getName())
 					.setLore("§7Map: §d" + arena.getMapName(),
-							"§7Mode: §d" + convertMode(arena.getTeamSize(), arena.getTeamAmount())));
+							"§7Mode: §d" + convertMode(arena.getTeamSize(), arena.getTeamAmount()),
+							"§5§lDEBUG",
+							"§7Pos1: "+  PositionSelection.formatLocation(arena.getArenaCuboid().getPoint1()),
+							"§7Pos2: "+  PositionSelection.formatLocation(arena.getArenaCuboid().getPoint2()),
+							"");
+
+			for (Map.Entry<String, Positions> positionsEntry : arena.getPositions().entrySet()) {
+				hytem.appendLore("§6" + positionsEntry.getKey());
+				for (Map.Entry<Integer, Location> locationsEntry : positionsEntry.getValue().getLocations().entrySet()) {
+					hytem.appendLore(" §e" + locationsEntry.getKey() + " §a= " + PositionSelection.formatLocation(locationsEntry.getValue()));
+				}
+			}
+			addItem(slot++, hytem);
 		}
 	}
 

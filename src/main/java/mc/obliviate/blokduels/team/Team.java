@@ -1,6 +1,7 @@
 package mc.obliviate.blokduels.team;
 
 import mc.obliviate.blokduels.game.Game;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ public class Team {
 		this.size = size;
 		this.game = game;
 
+		Bukkit.broadcastMessage("members creating");
 		members.forEach(p -> this.members.add(new Member(this, p)));
 	}
 

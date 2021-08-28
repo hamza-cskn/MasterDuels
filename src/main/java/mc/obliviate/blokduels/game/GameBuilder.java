@@ -3,10 +3,12 @@ package mc.obliviate.blokduels.game;
 import com.sun.istack.internal.Nullable;
 import mc.obliviate.blokduels.BlokDuels;
 import mc.obliviate.blokduels.arena.Arena;
+import mc.obliviate.blokduels.data.DataHandler;
 import mc.obliviate.blokduels.invite.Invite;
 import mc.obliviate.blokduels.invite.InviteResponse;
 import mc.obliviate.blokduels.kit.Kit;
 import mc.obliviate.blokduels.team.Team;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -35,10 +37,10 @@ public class GameBuilder {
 		if (players.length != teamSize)
 			throw new IllegalArgumentException("Team size is " + teamSize + " but given " + players.length + " players.");
 
-		if (createdTeamsAmount < teamSize)
+		if (createdTeamsAmount > teamSize)
 			throw new IllegalStateException("Team amount is " + teamAmount + ". All teams has created already.");
 
-		new Team(++createdTeamsAmount, teamSize, Arrays.asList(players), game);
+		teamBuilders.add(new TeamBuilder(++createdTeamsAmount, teamSize, Arrays.asList(players)));
 	}
 
 	public void removeInvite(final UUID uuid) {
@@ -46,9 +48,13 @@ public class GameBuilder {
 	}
 
 	public Game build() {
+		if (DataHandler.getArenas().get(arena) != null) {
+			return null;
+		}
 		if (game != null) {
 			throw new IllegalStateException("Game Builder already built before.");
 		}
+		Bukkit.broadcastMessage(plugin + " " + this + " " + totalRounds + " " + arena + " " + kit + " " + finishTime + " ");
 		final Game game = new Game(plugin, this, totalRounds, arena, kit, finishTime, null);
 
 		Bukkit.broadcastMessage("builders size: " + teamBuilders.size());
