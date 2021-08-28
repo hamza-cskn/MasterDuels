@@ -5,6 +5,10 @@ import mc.obliviate.blokduels.arena.Arena;
 import mc.obliviate.blokduels.data.DataHandler;
 import mc.obliviate.blokduels.game.Game;
 import mc.obliviate.blokduels.game.GameBuilder;
+import mc.obliviate.blokduels.invite.Invite;
+import mc.obliviate.blokduels.invite.InviteResult;
+import mc.obliviate.blokduels.invite.Invites;
+import mc.obliviate.blokduels.utils.MessageUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -35,6 +39,14 @@ public class DuelCMD implements CommandExecutor {
 			return false;
 		}
 
+		if (args[0].equalsIgnoreCase("accept")) {
+			answerInvite(player, true, args);
+			return true;
+		} else if (args[0].equalsIgnoreCase("decline")) {
+			answerInvite(player, false, args);
+			return true;
+		}
+
 		final String targetName = args[0];
 		final Player target = Bukkit.getPlayer(targetName);
 
@@ -56,23 +68,46 @@ public class DuelCMD implements CommandExecutor {
 		gameBuilder.createTeam(player);
 
 		gameBuilder.sendInvite(player, target, result -> {
-			switch (result) {
-				case EXPIRE:
-				case DECLINE:
-
-					break;
-				case ACCEPT:
+			if (result.equals(InviteResult.ACCEPT)) {
+				gameBuilder.createTeam(target);
+				final Game game = gameBuilder.build();
+				if (game == null) {
+					player.sendMessage("arena already started");
+					target.sendMessage("arena already started");
+					return;
+				}
+				game.startGame();
 			}
 		});
-
-		final Game game = gameBuilder.build();
-
-		game.startGame();
-
-
 		return true;
 
 	}
 
+	private void answerInvite(final Player player, final boolean answer, final String[] args) {
+		final Invites invites = Invite.findInvites(player);
+		if (invites == null || invites.size() == 0) {
+			player.sendMessage(MessageUtils.getMessage("invite.you-dont-have-invite"));
+			return;
+		}
+		if (invites.size() == 1) {
+			invites.get(0).setResult(answer);
+			return;
+		}
+		if (args.length == 1) {
+			int index = 0;
+			for (final Invite invite : invites.getInvites()) {
+				player.sendMessage(MessageUtils.parseColor("&8- &f/duel " + args[0] + " &7" + ++index + " -> " + invite.getInviter().getName()));
+			}
+		} else {
+			try {
+				final int index = Integer.parseInt(args[1]);
+				final Invite invite = invites.get(index - 1);
+				invite.setResult(answer);
+
+			} catch (NumberFormatException ex) {
+				player.sendMessage(MessageUtils.getMessage("this-is-not-valid-number"));
+			}
+		}
+	}
 
 }

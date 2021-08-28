@@ -85,8 +85,8 @@ public class GameBuilder {
 		return invites;
 	}
 
-	public void sendInvite(final Player inviter, final Player invited,final InviteResponse response) {
-		final Invite invite = new Invite(plugin,inviter,invited,this);
+	public void sendInvite(final Player inviter, final Player invited, final InviteResponse response) {
+		final Invite invite = new Invite(plugin, inviter, invited, this);
 		invite.onResponse(response);
 	}
 
