@@ -12,7 +12,7 @@ import java.util.List;
 
 public class MessageUtils {
 
-	private static YamlConfiguration messageConfig;
+	private static YamlConfiguration messageConfig = new YamlConfiguration();
 	private static String prefix;
 
 	public static void setMessageConfig(final YamlConfiguration messageConfig) {
