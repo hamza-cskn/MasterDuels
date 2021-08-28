@@ -40,6 +40,7 @@ public class DataHandler {
 	}
 
 	public static void registerArena(final Arena arena) {
+		if (arena == null) return;
 		arenas.put(arena, null);
 	}
 
