@@ -24,6 +24,7 @@ public class GameBuilder {
 	private Game game = null;
 	private List<GameRules> gameRules = null;
 	private int createdTeamsAmount = 0;
+	private final List<TeamBuilder> teamBuilders = new ArrayList<>();
 
 	public GameBuilder(final BlokDuels plugin, final Arena arena) {
 		this.plugin = plugin;
@@ -49,6 +50,12 @@ public class GameBuilder {
 			throw new IllegalStateException("Game Builder already built before.");
 		}
 		final Game game = new Game(plugin, this, totalRounds, arena, kit, finishTime, null);
+
+		Bukkit.broadcastMessage("builders size: " + teamBuilders.size());
+		for (final TeamBuilder builder : teamBuilders) {
+			game.registerTeam(builder.build(game));
+		}
+
 		this.game = game;
 		return game;
 	}
