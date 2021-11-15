@@ -36,7 +36,7 @@ public class PlayerReset {
 		if (exhaustion)
 			player.setExhaustion(0f);
 		if (flySpeed)
-			player.setFlySpeed(1f);
+			player.setFlySpeed(0.1f);
 		if (walkSpeed)
 			player.setWalkSpeed(0.2f);
 		if (exp)
