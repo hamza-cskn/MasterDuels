@@ -27,13 +27,17 @@ public class Kit {
 		return kits;
 	}
 
-	public static boolean storeKits(final Kit kit, final Player player) {
+	public static boolean storeKits(final Player player) {
 		return InventoryStorer.store(player);
 	}
 
 	public static void reload(final Kit kit, final Player player) {
 		player.getInventory().clear();
-		if (kit.getContents() == null) return;
+		player.getInventory().setHelmet(null);
+		player.getInventory().setChestplate(null);
+		player.getInventory().setLeggings(null);
+		player.getInventory().setBoots(null);
+		if (kit == null || kit.getContents() == null) return;
 		final PlayerInventory inv = player.getInventory();
 		inv.setContents(kit.getContents());
 		inv.setArmorContents(kit.getArmorContents());

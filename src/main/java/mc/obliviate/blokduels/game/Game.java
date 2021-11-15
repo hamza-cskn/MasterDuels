@@ -98,7 +98,7 @@ public class Game {
 
 	public void storeKits() {
 		for (final Member member : getAllMembers()) {
-			if (!Kit.storeKits(kit, member.getPlayer())) {
+			if (!Kit.storeKits(member.getPlayer())) {
 				Bukkit.getLogger().severe("[BlokDuels] " + member.getPlayer().getName() + "'s inventory could not stored! Game cancelling.");
 				cancelGame();
 			}
