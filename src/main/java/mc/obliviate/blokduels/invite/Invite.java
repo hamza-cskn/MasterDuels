@@ -56,7 +56,7 @@ public class Invite {
 		}
 		addInvite(invited.getUniqueId(), this);
 		MessageUtils.sendMessage(inviter, "invite.target-has-invited", new PlaceholderUtil().add("{target}", target.getName()).add("{expire_time}", expireTime + ""));
-		MessageUtils.sendMessage(target, "invite.you-invited", new PlaceholderUtil().add("{inviter}", target.getName()).add("{expire_time}", expireTime + ""));
+		MessageUtils.sendMessage(target, "invite.you-invited", new PlaceholderUtil().add("{inviter}", inviter.getName()).add("{expire_time}", expireTime + ""));
 
 		final TextComponent acceptButton = new TextComponent(MessageUtils.parseColor(MessageUtils.getMessage("invite.accept-button")));
 		acceptButton.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(MessageUtils.parseColor(MessageUtils.getMessage("invite.accept-button-name"))).create()));
