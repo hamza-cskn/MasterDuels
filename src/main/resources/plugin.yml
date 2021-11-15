@@ -3,6 +3,8 @@ main: mc.obliviate.blokduels.BlokDuels
 author: Mr_Obliviate
 description: Duel plugin codded for Blok Dunyasi!
 version: 1.0.0
+softdepend:
+  - Multiverse-Core
 commands:
   duelsetup:
   duelarenas:

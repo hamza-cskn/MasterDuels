@@ -7,7 +7,6 @@ import mc.obliviate.blokduels.data.DataHandler;
 import mc.obliviate.blokduels.invite.Invite;
 import mc.obliviate.blokduels.invite.InviteResponse;
 import mc.obliviate.blokduels.kit.Kit;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -53,10 +52,8 @@ public class GameBuilder {
 		if (game != null) {
 			throw new IllegalStateException("Game Builder already built before.");
 		}
-		Bukkit.broadcastMessage(plugin + " " + this + " " + totalRounds + " " + arena + " " + kit + " " + finishTime + " ");
 		final Game game = new Game(plugin, this, totalRounds, arena, kit, finishTime, null);
 
-		Bukkit.broadcastMessage("builders size: " + teamBuilders.size());
 		for (final TeamBuilder builder : teamBuilders) {
 			game.registerTeam(builder.build(game));
 		}

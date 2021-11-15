@@ -3,6 +3,7 @@ package mc.obliviate.blokduels.listeners;
 import mc.obliviate.blokduels.BlokDuels;
 import mc.obliviate.blokduels.data.DataHandler;
 import mc.obliviate.blokduels.team.Member;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -61,6 +62,7 @@ public class DuelProtectListener implements Listener {
 	@EventHandler
 	public void onInteract(final PlayerInteractEvent e) {
 		if (isMember(e.getPlayer())) {
+			//fixme crafting, anvil, trapdoor and fence gates are openable
 			if (e.getAction() == Action.PHYSICAL || (e.getClickedBlock() != null && (e.getClickedBlock().getState() instanceof InventoryHolder || e.getClickedBlock().getType().equals(Material.WOOD_BUTTON) || e.getClickedBlock().getType().equals(Material.STONE_BUTTON)))) {
 				e.setCancelled(true);
 			}
@@ -69,13 +71,17 @@ public class DuelProtectListener implements Listener {
 
 	@EventHandler
 	public void onBucketFill(final PlayerBucketFillEvent e) {
+		Bukkit.broadcastMessage("fill bucket event");
 		if (!isMember(e.getPlayer())) return;
+		Bukkit.broadcastMessage("is member");
 		e.setCancelled(true);
 	}
 
 	@EventHandler
 	public void onBucketEmpty(final PlayerBucketFillEvent e) {
+		Bukkit.broadcastMessage("empty bucket event");
 		if (!isMember(e.getPlayer())) return;
+		Bukkit.broadcastMessage("is member");
 		e.setCancelled(true);
 	}
 

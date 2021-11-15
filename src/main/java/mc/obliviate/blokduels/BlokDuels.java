@@ -13,7 +13,6 @@ import mc.obliviate.blokduels.listeners.PreDeathListener;
 import mc.obliviate.inventory.InventoryAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
-import mc.obliviate.inventory.InventoryAPI;
 
 public class BlokDuels extends JavaPlugin {
 
@@ -31,6 +30,7 @@ public class BlokDuels extends JavaPlugin {
 		inventoryAPI.init();
 		configHandler.init();
 	}
+
 	private void registerCommands() {
 		getCommand("duel").setExecutor(new DuelCMD(this));
 		getCommand("duelarenas").setExecutor(new DuelArenasCMD(this));
@@ -39,10 +39,10 @@ public class BlokDuels extends JavaPlugin {
 	}
 
 	private void registerListeners() {
-		Bukkit.getPluginManager().registerEvents(new ChatListener(),this);
-		Bukkit.getPluginManager().registerEvents(new DuelProtectListener(this),this);
-		Bukkit.getPluginManager().registerEvents(new PreDeathListener(),this);
-		Bukkit.getPluginManager().registerEvents(new PlayerConnectionListener(),this);
+		Bukkit.getPluginManager().registerEvents(new ChatListener(), this);
+		Bukkit.getPluginManager().registerEvents(new DuelProtectListener(this), this);
+		Bukkit.getPluginManager().registerEvents(new PreDeathListener(), this);
+		Bukkit.getPluginManager().registerEvents(new PlayerConnectionListener(), this);
 	}
 
 	@Override
