@@ -7,7 +7,6 @@ import mc.obliviate.blokduels.data.DataHandler;
 import mc.obliviate.blokduels.invite.Invite;
 import mc.obliviate.blokduels.invite.InviteResponse;
 import mc.obliviate.blokduels.kit.Kit;
-import mc.obliviate.blokduels.team.Team;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -22,7 +21,7 @@ public class GameBuilder {
 	private int teamSize = 1;
 	private int totalRounds = 1;
 	private int finishTime = 60;
-	private Kit kit = new Kit(null);
+	private Kit kit = Kit.getKits().get("test");
 	private Game game = null;
 	private List<GameRules> gameRules = null;
 	private int createdTeamsAmount = 0;

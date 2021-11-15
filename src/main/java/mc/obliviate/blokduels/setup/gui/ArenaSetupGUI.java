@@ -4,12 +4,13 @@ import mc.obliviate.blokduels.arena.elements.ArenaCuboid;
 import mc.obliviate.blokduels.setup.ArenaSetup;
 import mc.obliviate.blokduels.setup.PositionSelection;
 import mc.obliviate.blokduels.setup.chatentry.ChatEntry;
+import mc.obliviate.inventory.Icon;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryOpenEvent;
-import xyz.efekurbann.inventory.GUI;
-import xyz.efekurbann.inventory.Hytem;
+import mc.obliviate.inventory.GUI;
+import mc.obliviate.inventory.Icon;
 
 public class ArenaSetupGUI extends GUI {
 
@@ -41,7 +42,7 @@ public class ArenaSetupGUI extends GUI {
 	public void arenaNameHytem() {
 		final String name = arenaSetup.getArenaName();
 
-		addItem(4, new Hytem(Material.NAME_TAG)
+		addItem(4, new Icon(Material.NAME_TAG)
 				.setName(ChatColor.GOLD + "Arena Name")
 				.setLore(ChatColor.GRAY + "Currently: " + ChatColor.RED + name, "", ChatColor.YELLOW + "Click to rename arena!")
 
@@ -63,7 +64,7 @@ public class ArenaSetupGUI extends GUI {
 	public void mapNameHytem() {
 		final String name = arenaSetup.getMapName();
 
-		addItem(10, new Hytem(Material.EMPTY_MAP)
+		addItem(10, new Icon(Material.EMPTY_MAP)
 				.setName(ChatColor.GOLD + "Map Name")
 				.setLore(ChatColor.GRAY + "Currently: " + ChatColor.RED + name, "", ChatColor.YELLOW + "Click to rename arena map!")
 
@@ -86,7 +87,7 @@ public class ArenaSetupGUI extends GUI {
 			pos1State = PositionSelection.formatLocation(arenaSetup.getArenaCuboid().getPoint1());
 			pos2State = PositionSelection.formatLocation(arenaSetup.getArenaCuboid().getPoint2());
 		}
-		addItem(16, new Hytem(Material.GLASS)
+		addItem(16, new Icon(Material.GLASS)
 				.setName(ChatColor.GOLD + "Arena Cuboid")
 				.setLore(ChatColor.GRAY + "Select corners of arena limits",
 						ChatColor.GRAY + "to create the arena's cuboid.",
@@ -114,7 +115,7 @@ public class ArenaSetupGUI extends GUI {
 	}
 
 	public void teamSizeHytem() {
-		addItem(34, new Hytem(Material.RED_MUSHROOM)
+		addItem(34, new Icon(Material.RED_MUSHROOM)
 				.setName(ChatColor.GOLD + "Team Size")
 				.setLore(ChatColor.GRAY + "Set players amount of a team. For",
 						ChatColor.GRAY + "example enter '1' for 'SOLO'.",
@@ -142,7 +143,7 @@ public class ArenaSetupGUI extends GUI {
 	}
 
 	public void teamAmountHytem() {
-		addItem(28, new Hytem(Material.RED_ROSE)
+		addItem(28, new Icon(Material.RED_ROSE)
 				.setName(ChatColor.GOLD + "Team Amount")
 				.setLore(ChatColor.GRAY + "Set amount of teams. For example",
 						ChatColor.GRAY + "enter '2' to 1v1, enter '3' to 1v1v1",
@@ -171,7 +172,7 @@ public class ArenaSetupGUI extends GUI {
 
 		final int size = arenaSetup.getPositionsAmount();
 
-		addItem(40, new Hytem(Material.GOLD_SPADE)
+		addItem(40, new Icon(Material.GOLD_SPADE)
 				.setName(ChatColor.GOLD + "Set Spawn Positions")
 				.setLore(ChatColor.GRAY + "Set spawn positions of players.",
 						"",
@@ -187,7 +188,7 @@ public class ArenaSetupGUI extends GUI {
 
 	public void compileHytem() {
 		if (arenaSetup.canCompile()) {
-			addItem(22, new Hytem(Material.EMERALD_BLOCK).setName("§aInstall Arena!").onClick(e -> {
+			addItem(22, new Icon(Material.EMERALD_BLOCK).setName("§aInstall Arena!").onClick(e -> {
 				if (arenaSetup.compile() != null) {
 					player.closeInventory();
 					player.sendMessage("§aArena successfully installed!");
@@ -196,12 +197,12 @@ public class ArenaSetupGUI extends GUI {
 				}
 			}));
 		} else {
-			addItem(22, new Hytem(Material.EMERALD_ORE).setName("§cArena is not ready to install."));
+			addItem(22, new Icon(Material.EMERALD_ORE).setName("§cArena is not ready to install."));
 		}
 	}
 
 	public void destroyHytem() {
-		addItem(8, new Hytem(Material.BARRIER).setName("§aCancel Arena Installing").onClick(e -> {
+		addItem(8, new Icon(Material.BARRIER).setName("§aCancel Arena Installing").onClick(e -> {
 			arenaSetup.destroy();
 			player.closeInventory();
 			player.sendMessage("§cArena installing has cancelled!");

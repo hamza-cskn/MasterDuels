@@ -12,12 +12,13 @@ import java.util.List;
 
 public class MessageUtils {
 
-	private static YamlConfiguration messageConfig = new YamlConfiguration();
+	private static YamlConfiguration messageConfig;
 	private static String prefix;
 
 	public static void setMessageConfig(final YamlConfiguration messageConfig) {
 		MessageUtils.messageConfig = messageConfig;
 		MessageUtils.prefix = parseColor(messageConfig.getString("prefix"));
+
 	}
 
 	public static String getMessage(final String node) {
@@ -40,13 +41,12 @@ public class MessageUtils {
 	}
 
 	public static void sendMessage(final Player player, final String configNode, final PlaceholderUtil placeholderUtil) {
-		String message = parseColor(getMessage(configNode));
-		for (InternalPlaceholder placeholder : placeholderUtil.getPlaceholders()) {
+		String message = getMessage(configNode);
+		for (final InternalPlaceholder placeholder : placeholderUtil.getPlaceholders()) {
 			message = message.replace(placeholder.getPlaceholder(),placeholder.getValue());
 		}
-		player.sendMessage(prefix + message);
+		player.sendMessage(prefix + parseColor(message));
 	}
-
 
 	public static String parseColor(final String string) {
 		if (string == null) return null;
@@ -89,5 +89,16 @@ public class MessageUtils {
 			}
 		}
 		return points.toString();
+	}
+
+	public static String convertMode(int size, int amount) {
+		final StringBuilder sb = new StringBuilder();
+		for (;amount > 0; amount--) {
+			sb.append(size);
+			if (amount != 1) {
+				sb.append("v");
+			}
+		}
+		return sb.toString();
 	}
 }

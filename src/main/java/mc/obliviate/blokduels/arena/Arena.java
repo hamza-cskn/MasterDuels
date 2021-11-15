@@ -4,6 +4,7 @@ import mc.obliviate.blokduels.arena.elements.ArenaCuboid;
 import mc.obliviate.blokduels.arena.elements.Positions;
 import mc.obliviate.blokduels.data.DataHandler;
 import mc.obliviate.blokduels.game.Game;
+import mc.obliviate.blokduels.utils.serializer.SerializerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -40,41 +41,24 @@ public class Arena {
 		return null;
 	}
 
-	public static void serializeLocation(final ConfigurationSection section, final Location location) {
-		section.set("world", location.getWorld().getName());
-		section.set("x", location.getX());
-		section.set("y", location.getY());
-		section.set("z", location.getZ());
-		section.set("yaw", (double) location.getYaw());
-		section.set("pitch", (double) location.getPitch());
-	}
 
-	public static Location deserializeLocation(final ConfigurationSection section) {
-		final World world = Bukkit.getWorld(section.getString("world"));
-		if (world == null) {
-			Bukkit.getLogger().severe("World couldn't found: " + section.getString("world"));
-			return null;
-		}
-
-		final double x = section.getDouble("x");
-		final double y = section.getDouble("y");
-		final double z = section.getDouble("z");
-		final double yaw = section.getDouble("yaw", 0);
-		final double pitch = section.getDouble("yaw", 0);
-
-		return new Location(world, x, y, z, (float) yaw, (float) pitch);
-
-	}
 
 	public static Arena deserialize(ConfigurationSection section) {
 		final String name = section.getString("name");
 		final String mapName = section.getString("map-name");
-		final Location cuboidPos1 = deserializeLocation(section.getConfigurationSection("arena-cuboid.position-1"));
-		final Location cuboidPos2 = deserializeLocation(section.getConfigurationSection("arena-cuboid.position-2"));
+
+		final Location cuboidPos1 = SerializerUtils.deserializeLocation(section.getConfigurationSection("arena-cuboid.position-1"));
+		final Location cuboidPos2 = SerializerUtils.deserializeLocation(section.getConfigurationSection("arena-cuboid.position-2"));
+
 		if (cuboidPos1 == null || cuboidPos2 == null) {
 			Bukkit.getLogger().severe("Cuboid pos1 or pos2 couldn't deserialized. Arena: " + name);
 			return null;
 		}
+		if (cuboidPos1.getWorld() != cuboidPos2.getWorld()) {
+			Bukkit.getLogger().severe("Cuboid pos1 and pos2 are in different world. Arena: " + name);
+			return null;
+		}
+
 		final ArenaCuboid arenaCuboid = new ArenaCuboid(cuboidPos1, cuboidPos2);
 
 		final ConfigurationSection positionsSection = section.getConfigurationSection("positions");
@@ -85,7 +69,7 @@ public class Arena {
 			positions.put(key, poses);
 			final ConfigurationSection positionSection = positionsSection.getConfigurationSection(key);
 			for (final String idString : positionSection.getKeys(false)) {
-				final Location location = deserializeLocation(positionSection.getConfigurationSection(idString));
+				final Location location = SerializerUtils.deserializeLocation(positionSection.getConfigurationSection(idString));
 				poses.registerLocation(Integer.parseInt(idString), location);
 			}
 		}
@@ -100,14 +84,14 @@ public class Arena {
 
 		section.set("name", name);
 		section.set("map-name", mapName);
-		serializeLocation(section.createSection("arena-cuboid.position-1"), arenaCuboid.getPoint1());
-		serializeLocation(section.createSection("arena-cuboid.position-2"), arenaCuboid.getPoint2());
+		SerializerUtils.serializeLocation(section.createSection("arena-cuboid.position-1"), arenaCuboid.getPoint1());
+		SerializerUtils.serializeLocation(section.createSection("arena-cuboid.position-2"), arenaCuboid.getPoint2());
 		for (final String key : positions.keySet()) {
 			final Positions poses = positions.get(key);
 			for (final int id : poses.getLocations().keySet()) {
 				final ConfigurationSection locSection = section.createSection("positions." + key + "." + id);
 				final Location loc = poses.getLocation(id);
-				serializeLocation(locSection, loc);
+				SerializerUtils.serializeLocation(locSection, loc);
 			}
 		}
 

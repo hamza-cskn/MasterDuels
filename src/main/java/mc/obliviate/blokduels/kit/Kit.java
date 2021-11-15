@@ -1,29 +1,51 @@
 package mc.obliviate.blokduels.kit;
 
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class Kit {
 
-	private final PlayerInventory inventory;
+	private static final Map<String, Kit> kits = new HashMap<>();
+	private final PlayerInventoryFrame playerInventoryFrame;
+	private final String kitName;
 
-	public Kit(PlayerInventory inventory) {
-		this.inventory = inventory;
+	public Kit() {
+		this(null, null, null);
 	}
 
-	public static void load(final Kit kit, final Player player) {
-		if (kit.getInventory() == null) return;
+	public Kit(String name, ItemStack[] contents, ItemStack[] armorContents) {
+		playerInventoryFrame = new PlayerInventoryFrame(contents, armorContents);
+		kitName = name;
+		kits.put(name, this);
+	}
+
+	public static Map<String, Kit> getKits() {
+		return kits;
+	}
+
+	public static boolean storeKits(final Kit kit, final Player player) {
+		return InventoryStorer.store(player);
+	}
+
+	public static void reload(final Kit kit, final Player player) {
 		player.getInventory().clear();
-		PlayerInventory inv = player.getInventory();
-		inv.setContents(kit.getInventory().getContents());
-		inv.setArmorContents(kit.getInventory().getArmorContents());
+		if (kit.getContents() == null) return;
+		final PlayerInventory inv = player.getInventory();
+		inv.setContents(kit.getContents());
+		inv.setArmorContents(kit.getArmorContents());
+		player.updateInventory();
 	}
 
-	public static void save(final Player player) {
-		//save inventory
+
+	public ItemStack[] getArmorContents() {
+		return playerInventoryFrame.getArmorContents();
 	}
 
-	public PlayerInventory getInventory() {
-		return inventory;
+	public ItemStack[] getContents() {
+		return playerInventoryFrame.getContents();
 	}
 }

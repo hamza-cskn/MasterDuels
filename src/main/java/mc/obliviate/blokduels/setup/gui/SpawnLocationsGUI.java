@@ -3,14 +3,15 @@ package mc.obliviate.blokduels.setup.gui;
 import mc.obliviate.blokduels.arena.elements.Positions;
 import mc.obliviate.blokduels.setup.ArenaSetup;
 import mc.obliviate.blokduels.setup.PositionSelection;
+import mc.obliviate.inventory.Icon;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryOpenEvent;
-import xyz.efekurbann.inventory.GUI;
-import xyz.efekurbann.inventory.Hytem;
+import mc.obliviate.inventory.GUI;
+import mc.obliviate.inventory.Icon;
 
 public class SpawnLocationsGUI extends GUI {
 
@@ -42,7 +43,7 @@ public class SpawnLocationsGUI extends GUI {
 				}
 
 				final int playerNo = pos;
-				addItem(slot++, new Hytem(Material.STAINED_GLASS_PANE)
+				addItem(slot++, new Icon(Material.STAINED_GLASS_PANE)
 						.setDamage(i)
 						.setAmount(pos)
 						.setName(ChatColor.LIGHT_PURPLE + "Team " + i + ChatColor.GRAY + " - " + ChatColor.LIGHT_PURPLE + "Player " + pos)
@@ -67,8 +68,8 @@ public class SpawnLocationsGUI extends GUI {
 			}
 		}
 
-		fillRow(new Hytem(Material.STAINED_GLASS_PANE).setDamage(15), 5);
-		addItem(49, new Hytem(Material.ARROW).setName(ChatColor.RED + "Back").onClick(e -> {
+		fillRow(new Icon(Material.STAINED_GLASS_PANE).setDamage(15), 5);
+		addItem(49, new Icon(Material.ARROW).setName(ChatColor.RED + "Back").onClick(e -> {
 			new ArenaSetupGUI(player, arenaSetup).open();
 		}));
 

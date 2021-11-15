@@ -6,14 +6,20 @@ import mc.obliviate.blokduels.arena.elements.Positions;
 import mc.obliviate.blokduels.data.DataHandler;
 import mc.obliviate.blokduels.game.round.RoundData;
 import mc.obliviate.blokduels.game.spectator.SpectatorData;
+import mc.obliviate.blokduels.kit.InventoryStorer;
 import mc.obliviate.blokduels.kit.Kit;
 import mc.obliviate.blokduels.team.Member;
 import mc.obliviate.blokduels.team.Team;
+import mc.obliviate.blokduels.utils.MessageUtils;
+import mc.obliviate.blokduels.utils.placeholder.PlaceholderUtil;
+import mc.obliviate.blokduels.utils.playerreset.PlayerReset;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +35,7 @@ public class Game {
 	private final Kit kit;
 	private final long finishTime;
 	private final List<GameRules> gameRules;
+	private final List<Location> placedBlocks = new ArrayList<>();
 	private final Map<String, BukkitTask> tasks = new HashMap<>();
 	private final RoundData roundData = new RoundData();
 	private final SpectatorData spectatorData = new SpectatorData();
@@ -50,14 +57,22 @@ public class Game {
 		return new GameBuilder(plugin, arena);
 	}
 
+	public void addPlacedBlock(Location location) {
+		placedBlocks.add(location);
+	}
+
+	public List<Location> getPlacedBlocks() {
+		return placedBlocks;
+	}
+
 	protected void registerTeam(Team team) {
 		teams.put(team.getTeamId(), team);
 	}
 
 	public void startGame() {
-		Bukkit.broadcastMessage("game started");
+		broadcastInGame("game-has-started");
+		storeKits();
 		nextRound();
-		saveInventories();
 	}
 
 	public void nextRound() {
@@ -67,75 +82,134 @@ public class Game {
 		}
 
 		gameState = ROUND_STARTING;
+		resetPlayers();
+		reloadKits();
 		lockTeams();
 
 		task("ROUNDTASK_on-round-start-timer", Bukkit.getScheduler().runTaskLater(plugin, () -> {
 			onRoundStart(roundData.getCurrentRound());
-		}, LOCK_TIME_IN_SECONDS * 20));
+		}, LOCK_TIME_IN_SECONDS * 20L));
 
 	}
 
 	public void onRoundStart(final int round) {
-		Bukkit.broadcastMessage("round started: " + round);
+		broadcastInGame("round-has-started", new PlaceholderUtil().add("{round}", round + ""));
 	}
 
-	public void saveInventories() {
-		for (final Team team : teams.values()) {
-			for (final Member p : team.getMembers()) {
-				Kit.save(p.getPlayer());
+	public void storeKits() {
+		for (final Member member : getAllMembers()) {
+			if (!Kit.storeKits(kit, member.getPlayer())) {
+				Bukkit.getLogger().severe("[BlokDuels] " + member.getPlayer().getName() + "'s inventory could not stored! Game cancelling.");
+				cancelGame();
 			}
+
 		}
 	}
 
-	public void loadKits() {
-		for (final Team team : teams.values()) {
-			for (final Member p : team.getMembers()) {
-				Kit.load(kit, p.getPlayer());
-			}
+	public void reloadKits() {
+		for (final Member member : getAllMembers()) {
+			Kit.reload(kit, member.getPlayer());
 		}
+
 	}
 
 	public void finishRound() {
 		cancelRoundTasks();
+		broadcastInGame("round-has-finished", new PlaceholderUtil().add("{round}", roundData.getCurrentRound() + ""));
+	}
+
+	private void broadcastInGame(final String node) {
+		broadcastInGame(node, new PlaceholderUtil());
+	}
+
+	private List<Member> getAllMembers() {
+		final List<Member> members = new ArrayList<>();
+		for (final Team team : teams.values()) {
+			members.addAll(team.getMembers());
+		}
+		return members;
+	}
+
+	private void broadcastInGame(final String node, final PlaceholderUtil placeholderUtil) {
+		for (final Member member : getAllMembers()) {
+			MessageUtils.sendMessage(member.getPlayer(), node, placeholderUtil);
+		}
+
 	}
 
 	public void finishGame() {
-		Bukkit.broadcastMessage("game finished");
+		broadcastInGame("game-has-finished");
 
 		gameState = GAME_ENDING;
 		cancelAllTasks();
 		for (Team team : teams.values()) {
 			for (Member member : team.getMembers()) {
-				leaveGame(member);
+				leaveMember(member);
 			}
 		}
 
+		clearArea();
 		DataHandler.registerArena(arena);
+	}
+
+	public void clearArea() {
+		for (final Location loc : getPlacedBlocks()) {
+			loc.getBlock().getState().setType(Material.AIR);
+		}
+	}
+
+	public void leaveMember(final Member member) {
+		DataHandler.getMembers().remove(member.getPlayer().getUniqueId());
+		member.getTeam().removeMember(member);
+
+		showAll(member.getPlayer());
+		if (!InventoryStorer.restore(member.getPlayer())) {
+			Bukkit.getLogger().severe("[BlokDuels] inventory couldn't restored: " + member.getPlayer());
+		}
+
+		if (DataHandler.getLobbyLocation() != null && !member.getPlayer().teleport(DataHandler.getLobbyLocation())) {
+			member.getPlayer().kickPlayer("You could not teleported to lobby.");
+		}
+
+		MessageUtils.sendMessage(member.getPlayer(), "you-left-from-duel");
+		new PlayerReset().excludeExp().excludeLevel().excludeInventory().excludeGamemode().excludeTitle().reset(member.getPlayer());
 
 	}
 
-	public void leaveGame(Member member) {
-		DataHandler.getMembers().remove(member.getPlayer().getUniqueId());
-		member.getTeam().removeMember(member);
-		member.getPlayer().sendMessage("you left from duel");
+	private void showAll(Player player) {
+		for (final Team team : teams.values()) {
+			for (final Member m : team.getMembers()) {
+				player.showPlayer(m.getPlayer());
+			}
+		}
+
+		for (final Player p : spectatorData.getSpectators()) {
+			player.showPlayer(p);
+		}
 	}
 
 	public void cancelGame() {
+		finishGame();
+	}
 
+	public void resetPlayers() {
+		final PlayerReset playerReset = new PlayerReset().excludeExp().excludeLevel().excludeInventory().excludeTitle();
+		for (final Member member : getAllMembers()) {
+			playerReset.reset(member.getPlayer());
+		}
 	}
 
 	public void lockTeams() {
-		loadKits();
 		for (final Team team : teams.values()) {
 			lockTeam(team);
 		}
 	}
 
 	public void onDeath(final Member member) {
-		Bukkit.broadcastMessage(member.getPlayer().getName() + " has been death.");
+		broadcastInGame("duel-player-death", new PlaceholderUtil().add("{victim}", member.getPlayer().getName()));
 		makeSpectator(member);
 		if (checkTeamEliminated(member.getTeam())) {
-			Bukkit.broadcastMessage(member.getPlayer().getName() + "'s team has been eliminated");
+			broadcastInGame("duel-team-eliminated", new PlaceholderUtil().add("{victim}", member.getPlayer().getName()));
 			nextRound();
 		}
 	}
@@ -153,6 +227,7 @@ public class Game {
 		for (int i = 1; i <= (LOCK_TIME_IN_SECONDS * 10); i++) {
 			task("ROUNDTASK_team-lock-" + team.getTeamId(), Bukkit.getScheduler().runTaskLater(plugin, () -> {
 				teleportLockPosition(team);
+
 			}, i * 2));
 		}
 	}
@@ -170,7 +245,7 @@ public class Game {
 				Bukkit.broadcastMessage("location is null");
 			}
 			if (!member.getPlayer().teleport(loc)) {
-				Bukkit.getLogger().severe("[BlokDuels] [WARNING] Player " + member.getPlayer().getName() + " could not teleported to duel arena.");
+				Bukkit.getLogger().severe("[BlokDuels] [ERROR] Player " + member.getPlayer().getName() + " could not teleported to duel arena.");
 				cancelGame();
 			}
 		}
@@ -204,12 +279,7 @@ public class Game {
 		}
 
 		spectatorData.add(player);
-		player.sendMessage("you are spectator");
-	}
-
-
-	public void eliminate(final Player player) {
-
+		MessageUtils.sendMessage(member.getPlayer(), "you-are-a-spectator");
 	}
 
 	public GameBuilder getTeamBuilder() {

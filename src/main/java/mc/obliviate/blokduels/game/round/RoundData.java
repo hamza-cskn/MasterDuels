@@ -25,9 +25,8 @@ public class RoundData {
 	 * returns false when last round is finished.
 	 */
 	public boolean addRound() {
-		++round;
 		//remove 1 to compare as unadded.
-		return round-1 < totalRounds;
+		return ++round-1 < totalRounds;
 	}
 
 	public int getTotalRounds() {

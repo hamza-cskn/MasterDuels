@@ -8,6 +8,7 @@ import mc.obliviate.blokduels.game.GameBuilder;
 import mc.obliviate.blokduels.invite.Invite;
 import mc.obliviate.blokduels.invite.InviteResult;
 import mc.obliviate.blokduels.invite.Invites;
+import mc.obliviate.blokduels.playerduelsetup.selectduelarena.SelectDuelArenaGUI;
 import mc.obliviate.blokduels.utils.MessageUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -45,10 +46,12 @@ public class DuelCMD implements CommandExecutor {
 		} else if (args[0].equalsIgnoreCase("decline")) {
 			answerInvite(player, false, args);
 			return true;
+		} else if (args[0].equalsIgnoreCase("setup")) {
+			new SelectDuelArenaGUI(player).open();
+			return true;
 		}
 
-		final String targetName = args[0];
-		final Player target = Bukkit.getPlayer(targetName);
+		final Player target = Bukkit.getPlayerExact(args[0]);
 
 		if (target == null) {
 			player.sendMessage("§cThis player is not online.");
@@ -63,6 +66,11 @@ public class DuelCMD implements CommandExecutor {
 		//1v1
 		final Arena arena = Arena.findArena(1, 2);
 
+		if (arena == null) {
+			player.sendMessage("§cCould not found any available arena.");
+			return false;
+		}
+
 		final GameBuilder gameBuilder = Game.create(plugin, arena).teamAmount(2).teamSize(1).finishTime(60).totalRounds(1);
 
 		gameBuilder.createTeam(player);
@@ -72,7 +80,6 @@ public class DuelCMD implements CommandExecutor {
 				gameBuilder.createTeam(target);
 				final Game game = gameBuilder.build();
 				if (game == null) {
-					player.sendMessage("arena already started");
 					target.sendMessage("arena already started");
 					return;
 				}
@@ -86,7 +93,7 @@ public class DuelCMD implements CommandExecutor {
 	private void answerInvite(final Player player, final boolean answer, final String[] args) {
 		final Invites invites = Invite.findInvites(player);
 		if (invites == null || invites.size() == 0) {
-			player.sendMessage(MessageUtils.getMessage("invite.you-dont-have-invite"));
+			MessageUtils.sendMessage(player, "invite.you-dont-have-invite");
 			return;
 		}
 		if (invites.size() == 1) {
@@ -96,7 +103,7 @@ public class DuelCMD implements CommandExecutor {
 		if (args.length == 1) {
 			int index = 0;
 			for (final Invite invite : invites.getInvites()) {
-				player.sendMessage(MessageUtils.parseColor("&8- &f/duel " + args[0] + " &7" + ++index + " -> " + invite.getInviter().getName()));
+				player.sendMessage(MessageUtils.parseColor("&8- &f/duel " + args[0] + " &7" + ++index + " -> " + invite.getInviter().getName()) + " (" + invite.getFormattedExpireTimeLeft() + ")");
 			}
 		} else {
 			try {
@@ -105,7 +112,7 @@ public class DuelCMD implements CommandExecutor {
 				invite.setResult(answer);
 
 			} catch (NumberFormatException ex) {
-				player.sendMessage(MessageUtils.getMessage("this-is-not-valid-number"));
+				MessageUtils.sendMessage(player, "this-is-not-valid-number");
 			}
 		}
 	}

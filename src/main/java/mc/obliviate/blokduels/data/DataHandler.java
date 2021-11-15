@@ -4,6 +4,7 @@ import mc.obliviate.blokduels.arena.Arena;
 import mc.obliviate.blokduels.game.Game;
 import mc.obliviate.blokduels.team.Member;
 import mc.obliviate.blokduels.team.Team;
+import org.bukkit.Location;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,6 +14,7 @@ public class DataHandler {
 
 	private static final Map<UUID, Member> members = new HashMap<>();
 	private static final Map<Arena, Game> arenas = new HashMap<>();
+	private static Location lobbyLocation;
 	public static int LOCK_TIME_IN_SECONDS = 3;
 
 	public static Team getTeam(final UUID uuid) {
@@ -49,5 +51,13 @@ public class DataHandler {
 			//put if value is null,
 			arenas.putIfAbsent(arena, game);
 		}
+	}
+
+	public static Location getLobbyLocation() {
+		return lobbyLocation;
+	}
+
+	public static void setLobbyLocation(Location lobbyLocation) {
+		DataHandler.lobbyLocation = lobbyLocation;
 	}
 }

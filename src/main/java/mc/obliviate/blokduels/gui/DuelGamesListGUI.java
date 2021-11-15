@@ -8,8 +8,8 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryOpenEvent;
-import xyz.efekurbann.inventory.GUI;
-import xyz.efekurbann.inventory.Hytem;
+import mc.obliviate.inventory.GUI;
+import mc.obliviate.inventory.Icon;
 
 import java.util.Map;
 
@@ -23,7 +23,7 @@ public class DuelGamesListGUI extends GUI {
 	public void onOpen(InventoryOpenEvent event) {
 		int slot = 0;
 		for (final Arena arena : DataHandler.getArenas().keySet()) {
-			final Hytem hytem = new Hytem(Material.CAULDRON_ITEM)
+			final Icon hytem = new Icon(Material.CAULDRON_ITEM)
 					.setName("§9" + arena.getName())
 					.setLore("§7Map: §d" + arena.getMapName(),
 							"§7Mode: §d" + convertMode(arena.getTeamSize(), arena.getTeamAmount()),

@@ -2,6 +2,7 @@ package mc.obliviate.blokduels.data;
 
 import mc.obliviate.blokduels.BlokDuels;
 import mc.obliviate.blokduels.arena.Arena;
+import mc.obliviate.blokduels.utils.serializer.SerializerUtils;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -11,10 +12,11 @@ import java.io.IOException;
 public class DatabaseHandler {
 
 	private final BlokDuels plugin;
-	private static YamlConfiguration data;
-	private static YamlConfiguration config;
+	private static final String DATA_FILE_NAME = "data.yml";
+	private static final String CONFIG_FILE_NAME = "config.yml";
+	private YamlConfiguration data;
+	private YamlConfiguration config;
 	private static File dataFile;
-	private static File configFile;
 
 	public DatabaseHandler(final BlokDuels plugin) {
 		this.plugin = plugin;
@@ -22,39 +24,47 @@ public class DatabaseHandler {
 
 	public void init() {
 
-		dataFile = new File(plugin.getDataFolder() + File.separator + "data.yml");
-		configFile = new File(plugin.getDataFolder() + File.separator + "config.yml");
+		dataFile = new File(plugin.getDataFolder() + File.separator + DATA_FILE_NAME);
+		final File configFile = new File(plugin.getDataFolder() + File.separator + CONFIG_FILE_NAME);
 
 		data = YamlConfiguration.loadConfiguration(dataFile);
 		config = YamlConfiguration.loadConfiguration(configFile);
 		if (config.getKeys(false).isEmpty()) {
-			plugin.saveResource("config.yml", true);
+			plugin.saveResource(CONFIG_FILE_NAME, true);
 		}
 
 		for (String arenaName : data.getKeys(false)) {
 			final Arena arena = Arena.deserialize(data.getConfigurationSection(arenaName));
 			DataHandler.registerArena(arena);
 		}
+
+		if (data.isSet("lobby-location")) {
+			DataHandler.setLobbyLocation(SerializerUtils.deserializeLocation(data.getConfigurationSection("lobby-location")));
+		}
 	}
 
-	public static YamlConfiguration getData() {
+	public YamlConfiguration getData() {
 		return data;
 	}
 
-	public static YamlConfiguration getConfig() {
-		return config;
-	}
-
-	public static void saveArena(final Arena arena) {
-		final ConfigurationSection section = data.createSection(arena.getName());
-
-		arena.serialize(section);
-
+	public void saveDataFile() {
 		try {
 			data.save(dataFile);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public YamlConfiguration getConfig() {
+		return config;
+	}
+
+	public void saveArena(final Arena arena) {
+		final ConfigurationSection section = data.createSection(arena.getName());
+
+		arena.serialize(section);
+		saveDataFile();
+
 	}
 
 }
