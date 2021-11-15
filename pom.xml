@@ -17,6 +17,10 @@
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
     </repositories>
     <dependencies>
         <dependency>
@@ -25,6 +29,12 @@
             <version>1.8.8-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com.github.Obliviated</groupId>
+            <artifactId>ObliviateInvs</artifactId>
+            <version>3.0.1</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -53,8 +63,8 @@
                             <finalName>BlokDuels-${project.version}</finalName>
                             <relocations>
                                 <relocation>
-                                    <pattern>xyz.efekurbann.inventory</pattern>
-                                    <shadedPattern>mc.obliviate.libraries.inventory</shadedPattern>
+                                    <pattern>mc.obliviate.inventory</pattern>
+                                    <shadedPattern>mc.obliviate.blokduels.libraries.inventory</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>
