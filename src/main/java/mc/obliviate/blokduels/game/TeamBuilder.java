@@ -31,7 +31,6 @@ public class TeamBuilder {
 	}
 
 	public Team build(Game game) {
-		Bukkit.broadcastMessage("building");
 		return new Team(teamId, size, members, game);
 	}
 

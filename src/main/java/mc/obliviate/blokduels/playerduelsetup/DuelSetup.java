@@ -6,7 +6,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import mc.obliviate.inventory.GUI;
-import mc.obliviate.inventory.Icon;
 
 public class DuelSetup extends GUI {
 

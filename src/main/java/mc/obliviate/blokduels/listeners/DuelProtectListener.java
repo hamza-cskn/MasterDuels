@@ -69,19 +69,16 @@ public class DuelProtectListener implements Listener {
 		}
 	}
 
+	//fixme liquids does not cleans after game end
 	@EventHandler
 	public void onBucketFill(final PlayerBucketFillEvent e) {
-		Bukkit.broadcastMessage("fill bucket event");
 		if (!isMember(e.getPlayer())) return;
-		Bukkit.broadcastMessage("is member");
 		e.setCancelled(true);
 	}
 
 	@EventHandler
 	public void onBucketEmpty(final PlayerBucketFillEvent e) {
-		Bukkit.broadcastMessage("empty bucket event");
 		if (!isMember(e.getPlayer())) return;
-		Bukkit.broadcastMessage("is member");
 		e.setCancelled(true);
 	}
 
