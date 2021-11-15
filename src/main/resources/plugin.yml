@@ -1,7 +1,7 @@
 name: BlokDuels
 main: mc.obliviate.blokduels.BlokDuels
 author: Mr_Obliviate
-description: Duel plugin codded for Blok Dünyası!
+description: Duel plugin codded for Blok Dunyasi!
 version: 1.0.0
 commands:
   duelsetup:
