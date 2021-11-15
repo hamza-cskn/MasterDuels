@@ -18,7 +18,6 @@ import java.util.concurrent.TimeUnit;
 
 public class Invite {
 
-
 	private static final Map<UUID, Invites> playerInvites = new HashMap<>();
 	private final GameBuilder gameBuilder;
 	private final Player target;
