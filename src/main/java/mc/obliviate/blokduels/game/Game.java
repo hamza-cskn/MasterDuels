@@ -154,7 +154,7 @@ public class Game {
 
 	public void clearArea() {
 		for (final Location loc : getPlacedBlocks()) {
-			loc.getBlock().getState().setType(Material.AIR);
+			loc.getBlock().setType(Material.AIR);
 		}
 	}
 
