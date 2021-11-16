@@ -102,7 +102,7 @@ public class DuelProtectListener implements Listener {
 
 	@EventHandler
 	public void onCommand(final PlayerCommandPreprocessEvent e) {
-		if (!isMember(e.getPlayer())) return;
+		if (!isMember(e.getPlayer()) || e.getPlayer().isOp()) return;
 		if (e.getMessage().startsWith("/")) {
 			if (!plugin.getDatabaseHandler().getConfig().getStringList("executable-commands").contains(e.getMessage())) {
 				e.setCancelled(true);

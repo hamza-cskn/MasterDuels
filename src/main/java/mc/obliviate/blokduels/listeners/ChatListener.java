@@ -7,7 +7,6 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 public class ChatListener implements Listener {
 
-
 	@EventHandler
 	public void onChat(AsyncPlayerChatEvent e) {
 		ChatEntry.trigger(e);
