@@ -13,6 +13,7 @@ import mc.obliviate.blokduels.team.Team;
 import mc.obliviate.blokduels.utils.MessageUtils;
 import mc.obliviate.blokduels.utils.placeholder.PlaceholderUtil;
 import mc.obliviate.blokduels.utils.playerreset.PlayerReset;
+import mc.obliviate.blokduels.utils.scoreboard.ScoreboardManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -40,6 +41,7 @@ public class Game {
 	private final RoundData roundData = new RoundData();
 	private final SpectatorData spectatorData = new SpectatorData();
 	private final GameBuilder gameBuilder;
+	private long timer;
 	private GameState gameState = GAME_STARING;
 
 	protected Game(final BlokDuels plugin, final GameBuilder gameBuilder, final int totalRounds, final Arena arena, final Kit kit, final long finishTime, final List<GameRules> gameRules) {
@@ -71,8 +73,22 @@ public class Game {
 
 	public void startGame() {
 		broadcastInGame("game-has-started");
+		updateScoreboardTasks();
 		storeKits();
 		nextRound();
+	}
+
+	public void updateScoreboardTasks() {
+		for (Member member : getAllMembers()) {
+			updateScoreboardTask(member);
+		}
+	}
+
+	private void updateScoreboardTask(final Member member) {
+		ScoreboardManager.uninstall(member.getPlayer());
+		task("SCOREBOARDTASK_update_" + member.getPlayer().getName(), Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+			ScoreboardManager.update(member, false);
+		}, 0, 20));
 	}
 
 	public void nextRound() {
@@ -80,20 +96,22 @@ public class Game {
 			finishGame();
 			return;
 		}
-
+		timer = System.currentTimeMillis() + (LOCK_TIME_IN_SECONDS * 1000L);
 		gameState = ROUND_STARTING;
 		resetPlayers();
 		reloadKits();
 		lockTeams();
 
 		task("ROUNDTASK_on-round-start-timer", Bukkit.getScheduler().runTaskLater(plugin, () -> {
+			gameState = BATTLE;
 			onRoundStart(roundData.getCurrentRound());
-		}, LOCK_TIME_IN_SECONDS * 20L));
+		}, LOCK_TIME_IN_SECONDS * 20L + 1));
 
 	}
 
 	public void onRoundStart(final int round) {
 		broadcastInGame("round-has-started", new PlaceholderUtil().add("{round}", round + ""));
+		updateScoreboardTasks();
 	}
 
 	public void storeKits() {
@@ -122,7 +140,7 @@ public class Game {
 		broadcastInGame(node, new PlaceholderUtil());
 	}
 
-	private List<Member> getAllMembers() {
+	public List<Member> getAllMembers() {
 		final List<Member> members = new ArrayList<>();
 		for (final Team team : teams.values()) {
 			members.addAll(team.getMembers());
@@ -173,6 +191,7 @@ public class Game {
 
 		MessageUtils.sendMessage(member.getPlayer(), "you-left-from-duel");
 		new PlayerReset().excludeExp().excludeLevel().excludeInventory().excludeGamemode().excludeTitle().reset(member.getPlayer());
+		ScoreboardManager.defaultScoreboard(member.getPlayer());
 
 	}
 
@@ -225,9 +244,8 @@ public class Game {
 
 	public void lockTeam(final Team team) {
 		for (int i = 1; i <= (LOCK_TIME_IN_SECONDS * 10); i++) {
-			task("ROUNDTASK_team-lock-" + team.getTeamId(), Bukkit.getScheduler().runTaskLater(plugin, () -> {
+			task("ROUNDTASK_team-lock-" + team.getTeamId() + "_" + i, Bukkit.getScheduler().runTaskLater(plugin, () -> {
 				teleportLockPosition(team);
-
 			}, i * 2));
 		}
 	}
@@ -248,6 +266,7 @@ public class Game {
 				Bukkit.getLogger().severe("[BlokDuels] [ERROR] Player " + member.getPlayer().getName() + " could not teleported to duel arena.");
 				cancelGame();
 			}
+
 		}
 	}
 
@@ -260,6 +279,14 @@ public class Game {
 	public void cancelRoundTasks() {
 		for (final Map.Entry<String, BukkitTask> task : tasks.entrySet()) {
 			if (task.getKey().startsWith("ROUNDTASK_")) {
+				task.getValue().cancel();
+			}
+		}
+	}
+
+	public void cancelScoreboardTasks() {
+		for (final Map.Entry<String, BukkitTask> task : tasks.entrySet()) {
+			if (task.getKey().startsWith("SCOREBOARDTASK_")) {
 				task.getValue().cancel();
 			}
 		}
@@ -323,6 +350,12 @@ public class Game {
 	}
 
 	public void task(final String taskName, final BukkitTask task) {
+		final BukkitTask t = tasks.get(taskName);
+		if (t != null) t.cancel();
 		tasks.put(taskName, task);
+	}
+
+	public long getTimer() {
+		return timer;
 	}
 }

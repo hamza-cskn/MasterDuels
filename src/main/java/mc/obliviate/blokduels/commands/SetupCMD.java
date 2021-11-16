@@ -1,8 +1,10 @@
 package mc.obliviate.blokduels.commands;
 
 import mc.obliviate.blokduels.BlokDuels;
+import mc.obliviate.blokduels.data.DataHandler;
 import mc.obliviate.blokduels.data.DatabaseHandler;
 import mc.obliviate.blokduels.setup.ArenaSetup;
+import mc.obliviate.blokduels.team.Member;
 import mc.obliviate.blokduels.utils.serializer.SerializerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -57,6 +59,14 @@ public class SetupCMD implements CommandExecutor {
 			SerializerUtils.serializeLocation(plugin.getDatabaseHandler().getData().createSection("lobby-location"), player.getLocation());
 			plugin.getDatabaseHandler().saveDataFile();
 			player.sendMessage("§aLobby has set!");
+		} else if (args[0].equalsIgnoreCase("gamestate")) {
+			final Member member = DataHandler.getMember(player.getUniqueId());
+			if (member == null) {
+				player.sendMessage("You are not in a game.");
+				return false;
+			}
+
+			player.sendMessage(member.getTeam().getGame().getGameState().toString());
 		}
 			return true;
 	}

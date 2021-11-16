@@ -10,6 +10,7 @@ import mc.obliviate.blokduels.listeners.ChatListener;
 import mc.obliviate.blokduels.listeners.DuelProtectListener;
 import mc.obliviate.blokduels.listeners.PlayerConnectionListener;
 import mc.obliviate.blokduels.listeners.PreDeathListener;
+import mc.obliviate.blokduels.utils.scoreboard.ScoreboardManager;
 import mc.obliviate.inventory.InventoryAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -19,6 +20,7 @@ public class BlokDuels extends JavaPlugin {
 	private final InventoryAPI inventoryAPI = new InventoryAPI(this);
 	private final DatabaseHandler databaseHandler = new DatabaseHandler(this);
 	private final ConfigHandler configHandler = new ConfigHandler(this);
+	private ScoreboardManager scoreboardManager;
 
 	@Override
 	public void onEnable() {
@@ -29,6 +31,7 @@ public class BlokDuels extends JavaPlugin {
 		databaseHandler.init();
 		inventoryAPI.init();
 		configHandler.init();
+		scoreboardManager = new ScoreboardManager(this);
 	}
 
 	private void registerCommands() {
@@ -60,5 +63,9 @@ public class BlokDuels extends JavaPlugin {
 
 	public InventoryAPI getInventoryAPI() {
 		return inventoryAPI;
+	}
+
+	public ScoreboardManager getScoreboardManager() {
+		return scoreboardManager;
 	}
 }

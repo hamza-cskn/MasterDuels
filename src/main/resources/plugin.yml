@@ -5,6 +5,7 @@ description: Duel plugin codded for Blok Dunyasi!
 version: 1.0.0
 softdepend:
   - Multiverse-Core
+  - TitleManager
 commands:
   duelsetup:
   duelarenas:
