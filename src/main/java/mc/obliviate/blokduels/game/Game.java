@@ -115,6 +115,18 @@ public class Game {
 	public void onRoundStart(final int round) {
 		broadcastInGame("round-has-started", new PlaceholderUtil().add("{round}", round + ""));
 		updateScoreboardTasks();
+		setFinishTimer();
+	}
+
+	//todo not tested
+	private void setFinishTimer() {
+		timer = System.currentTimeMillis() + (finishTime * 1000);
+		task("REMAINING_TIME", Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+			if (timer < System.currentTimeMillis()) {
+				broadcastInGame("game-has-timed-out");
+				finishGame();
+			}
+		}, 0, 20));
 	}
 
 	public void storeKits() {

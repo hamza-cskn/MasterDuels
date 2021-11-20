@@ -14,7 +14,7 @@ you-are-a-spectator: '&cIzleyici modundasınız.'
 kick-usage: '&cDoğru kullanım /kabile at <oyuncu adı>'
 kit-save-usage: '&cDoğru kullanım /duelkitsave <kit adı>'
 kit-has-saved: '&f{kit}&7 adlı kit başarıyla kaydedildi!'
-
+game-has-timed-out: '&cDüello zaman aşımına uğradığı için sonlandırıldı.'
 invite:
   usage: '&cDoğru kullanım /düello <oyuncu adı>'
   you-dont-have-invite: '&cHiç düello davetiniz yok :('
