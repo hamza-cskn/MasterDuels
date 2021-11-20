@@ -46,6 +46,7 @@ public class Game {
 	private final GameBuilder gameBuilder;
 	private long timer;
 	private GameState gameState = GAME_STARING;
+	//todo is this variables cloned with gamebuilder?
 
 	protected Game(final BlokDuels plugin, final GameBuilder gameBuilder, final int totalRounds, final Arena arena, final Kit kit, final long finishTime, final List<GameRules> gameRules) {
 		this.plugin = plugin;
@@ -110,6 +111,7 @@ public class Game {
 			onRoundStart(roundData.getCurrentRound());
 		}, LOCK_TIME_IN_SECONDS * 20L + 1));
 
+
 	}
 
 	public void onRoundStart(final int round) {
@@ -143,7 +145,6 @@ public class Game {
 		for (final Member member : getAllMembers()) {
 			Kit.reload(kit, member.getPlayer());
 		}
-
 	}
 
 	public void finishRound() {

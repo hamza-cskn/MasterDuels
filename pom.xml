@@ -44,6 +44,11 @@
             <artifactId>TitleManager</artifactId>
             <version>2.2.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.hakan-krgn.hMessageAPI</groupId>
+            <artifactId>bukkit</artifactId>
+            <version>1.0.6</version>
+        </dependency>
 
     </dependencies>
 
@@ -75,6 +80,10 @@
                                 <relocation>
                                     <pattern>mc.obliviate.inventory</pattern>
                                     <shadedPattern>mc.obliviate.blokduels.libraries.inventory</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>com.hakan.messageapi</pattern>
+                                    <shadedPattern>mc.obliviate.blokduels.libraries.messageapi</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>

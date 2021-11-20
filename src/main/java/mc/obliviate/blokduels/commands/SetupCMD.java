@@ -34,6 +34,7 @@ public class SetupCMD implements CommandExecutor {
 			player.sendMessage("§6Available commands:");
 			player.sendMessage("/" + s + " §ecreate");
 			player.sendMessage("/" + s + " §esetlobby");
+			player.sendMessage("/" + s + " §egamestate");
 			return false;
 		}
 

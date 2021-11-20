@@ -1,9 +1,7 @@
 package mc.obliviate.blokduels.commands;
 
 import mc.obliviate.blokduels.BlokDuels;
-import mc.obliviate.blokduels.gui.DuelGamesListGUI;
-import mc.obliviate.blokduels.setup.ArenaSetup;
-import org.bukkit.Bukkit;
+import mc.obliviate.blokduels.gui.DuelArenaListGUI;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -23,7 +21,7 @@ public class DuelArenasCMD implements CommandExecutor {
 
 		final Player player = ((Player) sender).getPlayer();
 
-		new DuelGamesListGUI(player).open();
+		new DuelArenaListGUI(player).open();
 
 		return true;
 

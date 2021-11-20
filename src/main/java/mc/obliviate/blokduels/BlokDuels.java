@@ -2,6 +2,7 @@ package mc.obliviate.blokduels;
 
 import com.hakan.messageapi.bukkit.MessageAPI;
 import mc.obliviate.blokduels.commands.DuelArenasCMD;
+import mc.obliviate.blokduels.commands.DuelCMD;
 import mc.obliviate.blokduels.commands.KitEditorCMD;
 import mc.obliviate.blokduels.commands.SetupCMD;
 import mc.obliviate.blokduels.config.ConfigHandler;
@@ -11,11 +12,13 @@ import mc.obliviate.blokduels.listeners.ChatListener;
 import mc.obliviate.blokduels.listeners.DamageListener;
 import mc.obliviate.blokduels.listeners.DuelProtectListener;
 import mc.obliviate.blokduels.listeners.PlayerConnectionListener;
-import mc.obliviate.blokduels.listeners.PreDeathListener;
 import mc.obliviate.blokduels.utils.scoreboard.ScoreboardManager;
 import mc.obliviate.inventory.InventoryAPI;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.io.File;
 
 public class BlokDuels extends JavaPlugin {
 

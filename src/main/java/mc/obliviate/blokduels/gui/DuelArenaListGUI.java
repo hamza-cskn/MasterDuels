@@ -13,9 +13,9 @@ import mc.obliviate.inventory.Icon;
 
 import java.util.Map;
 
-public class DuelGamesListGUI extends GUI {
+public class DuelArenaListGUI extends GUI {
 
-	public DuelGamesListGUI(Player player) {
+	public DuelArenaListGUI(Player player) {
 		super(player, "duel-games-list-gui", "Current Duel Games", 6);
 	}
 
