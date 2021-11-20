@@ -1,5 +1,6 @@
 package mc.obliviate.blokduels.game;
 
+import com.hakan.messageapi.bukkit.title.Title;
 import mc.obliviate.blokduels.BlokDuels;
 import mc.obliviate.blokduels.arena.Arena;
 import mc.obliviate.blokduels.arena.elements.Positions;
@@ -14,6 +15,8 @@ import mc.obliviate.blokduels.utils.MessageUtils;
 import mc.obliviate.blokduels.utils.placeholder.PlaceholderUtil;
 import mc.obliviate.blokduels.utils.playerreset.PlayerReset;
 import mc.obliviate.blokduels.utils.scoreboard.ScoreboardManager;
+import mc.obliviate.blokduels.utils.timer.TimerUtils;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -245,12 +248,20 @@ public class Game {
 	public void lockTeam(final Team team) {
 		for (int i = 1; i <= (LOCK_TIME_IN_SECONDS * 10); i++) {
 			task("ROUNDTASK_team-lock-" + team.getTeamId() + "_" + i, Bukkit.getScheduler().runTaskLater(plugin, () -> {
-				teleportLockPosition(team);
-			}, i * 2));
+				teleportToLockPosition(team);
+			}, i * 2L));
+
+			if (i == 1 || i % 10 == 0) {
+				task("ROUNDTASK_team-sendTitle-" + team.getTeamId() + "_" + i, Bukkit.getScheduler().runTaskLater(plugin, () -> {
+					for (Member member : getAllMembers()) {
+						plugin.getMessageAPI().sendTitle(member.getPlayer(), new Title(ChatColor.YELLOW + "Raund başlıyor", ChatColor.RED + TimerUtils.convertTimer(timer + 100), 15, 0, 5));
+					}
+				}, i * 2L));
+			}
 		}
 	}
 
-	public void teleportLockPosition(final Team team) {
+	public void teleportToLockPosition(final Team team) {
 		int i = 1;
 		final Positions positions = arena.getPositions().get("spawn-team-" + team.getTeamId());
 		if (positions == null) {

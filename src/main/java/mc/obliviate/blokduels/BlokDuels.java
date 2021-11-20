@@ -1,6 +1,6 @@
 package mc.obliviate.blokduels;
 
-import mc.obliviate.blokduels.commands.DuelCMD;
+import com.hakan.messageapi.bukkit.MessageAPI;
 import mc.obliviate.blokduels.commands.DuelArenasCMD;
 import mc.obliviate.blokduels.commands.KitEditorCMD;
 import mc.obliviate.blokduels.commands.SetupCMD;
@@ -22,6 +22,7 @@ public class BlokDuels extends JavaPlugin {
 	private final InventoryAPI inventoryAPI = new InventoryAPI(this);
 	private final DatabaseHandler databaseHandler = new DatabaseHandler(this);
 	private final ConfigHandler configHandler = new ConfigHandler(this);
+	private MessageAPI messageAPI;
 	private ScoreboardManager scoreboardManager;
 
 	@Override
@@ -32,10 +33,14 @@ public class BlokDuels extends JavaPlugin {
 		setupHandlers();
 		loadKits();
 
+	}
+
+	private void setupHandlers() {
 		databaseHandler.init();
 		inventoryAPI.init();
 		configHandler.init();
 		scoreboardManager = new ScoreboardManager(this);
+		messageAPI = MessageAPI.getInstance(this);
 	}
 
 	private void registerCommands() {
@@ -81,5 +86,9 @@ public class BlokDuels extends JavaPlugin {
 
 	public ScoreboardManager getScoreboardManager() {
 		return scoreboardManager;
+	}
+
+	public MessageAPI getMessageAPI() {
+		return messageAPI;
 	}
 }
