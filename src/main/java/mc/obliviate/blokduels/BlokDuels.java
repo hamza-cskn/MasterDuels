@@ -6,6 +6,7 @@ import mc.obliviate.blokduels.commands.KitEditorCMD;
 import mc.obliviate.blokduels.commands.SetupCMD;
 import mc.obliviate.blokduels.config.ConfigHandler;
 import mc.obliviate.blokduels.data.DatabaseHandler;
+import mc.obliviate.blokduels.kit.serializer.KitSerializer;
 import mc.obliviate.blokduels.listeners.ChatListener;
 import mc.obliviate.blokduels.listeners.DuelProtectListener;
 import mc.obliviate.blokduels.listeners.PlayerConnectionListener;
@@ -27,6 +28,8 @@ public class BlokDuels extends JavaPlugin {
 
 		registerListeners();
 		registerCommands();
+		setupHandlers();
+		loadKits();
 
 		databaseHandler.init();
 		inventoryAPI.init();
@@ -46,6 +49,16 @@ public class BlokDuels extends JavaPlugin {
 		Bukkit.getPluginManager().registerEvents(new DuelProtectListener(this), this);
 		Bukkit.getPluginManager().registerEvents(new PreDeathListener(), this);
 		Bukkit.getPluginManager().registerEvents(new PlayerConnectionListener(), this);
+	}
+
+	private void loadKits() {
+		final File file = new File(getDataFolder().getPath() + File.separator + "kits.yml");
+		final YamlConfiguration data = YamlConfiguration.loadConfiguration(file);
+		for (String key : data.getKeys(false)) {
+			KitSerializer.deserialize(data.getConfigurationSection(key));
+		}
+
+
 	}
 
 	@Override

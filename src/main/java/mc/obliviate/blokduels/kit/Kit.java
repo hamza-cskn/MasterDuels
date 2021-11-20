@@ -1,5 +1,6 @@
 package mc.obliviate.blokduels.kit;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -51,5 +52,9 @@ public class Kit {
 
 	public ItemStack[] getContents() {
 		return playerInventoryFrame.getContents();
+	}
+
+	public String getKitName() {
+		return kitName;
 	}
 }
