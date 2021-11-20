@@ -8,6 +8,7 @@ import mc.obliviate.blokduels.config.ConfigHandler;
 import mc.obliviate.blokduels.data.DatabaseHandler;
 import mc.obliviate.blokduels.kit.serializer.KitSerializer;
 import mc.obliviate.blokduels.listeners.ChatListener;
+import mc.obliviate.blokduels.listeners.DamageListener;
 import mc.obliviate.blokduels.listeners.DuelProtectListener;
 import mc.obliviate.blokduels.listeners.PlayerConnectionListener;
 import mc.obliviate.blokduels.listeners.PreDeathListener;
@@ -47,7 +48,7 @@ public class BlokDuels extends JavaPlugin {
 	private void registerListeners() {
 		Bukkit.getPluginManager().registerEvents(new ChatListener(), this);
 		Bukkit.getPluginManager().registerEvents(new DuelProtectListener(this), this);
-		Bukkit.getPluginManager().registerEvents(new PreDeathListener(), this);
+		Bukkit.getPluginManager().registerEvents(new DamageListener(this), this);
 		Bukkit.getPluginManager().registerEvents(new PlayerConnectionListener(), this);
 	}
 
