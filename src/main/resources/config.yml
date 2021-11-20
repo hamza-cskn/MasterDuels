@@ -1,1 +1,2 @@
-lock-time: 3
+lock-time: 3 #in seconds
+delay-end-duel-after-player-kill: 20 #in seconds

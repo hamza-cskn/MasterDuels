@@ -5,6 +5,7 @@ import mc.obliviate.blokduels.BlokDuels;
 import mc.obliviate.blokduels.arena.Arena;
 import mc.obliviate.blokduels.arena.elements.Positions;
 import mc.obliviate.blokduels.data.DataHandler;
+import mc.obliviate.blokduels.game.bossbar.BossBarData;
 import mc.obliviate.blokduels.game.round.RoundData;
 import mc.obliviate.blokduels.game.spectator.SpectatorData;
 import mc.obliviate.blokduels.kit.InventoryStorer;
@@ -15,12 +16,14 @@ import mc.obliviate.blokduels.utils.MessageUtils;
 import mc.obliviate.blokduels.utils.placeholder.PlaceholderUtil;
 import mc.obliviate.blokduels.utils.playerreset.PlayerReset;
 import mc.obliviate.blokduels.utils.scoreboard.ScoreboardManager;
+import mc.obliviate.blokduels.utils.tab.TABManager;
 import mc.obliviate.blokduels.utils.timer.TimerUtils;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
@@ -44,6 +47,7 @@ public class Game {
 	private final RoundData roundData = new RoundData();
 	private final SpectatorData spectatorData = new SpectatorData();
 	private final GameBuilder gameBuilder;
+	private final BossBarData bossBarData = new BossBarData(this);
 	private long timer;
 	private GameState gameState = GAME_STARING;
 	//todo is this variables cloned with gamebuilder?
@@ -80,11 +84,13 @@ public class Game {
 		updateScoreboardTasks();
 		storeKits();
 		nextRound();
+		bossBarData.init();
 	}
 
 	public void updateScoreboardTasks() {
 		for (Member member : getAllMembers()) {
 			updateScoreboardTask(member);
+			bossBarData.show(member);
 		}
 	}
 
@@ -97,7 +103,7 @@ public class Game {
 
 	public void nextRound() {
 		if (!roundData.addRound()) {
-			finishGame();
+			Bukkit.getScheduler().runTaskLater(plugin, this::finishGame, plugin.getDatabaseHandler().getConfig().getInt("delay-end-duel-after-player-kill", 20) * 20L);
 			return;
 		}
 		timer = System.currentTimeMillis() + (LOCK_TIME_IN_SECONDS * 1000L);
@@ -200,9 +206,13 @@ public class Game {
 			Bukkit.getLogger().severe("[BlokDuels] inventory couldn't restored: " + member.getPlayer());
 		}
 
-		if (DataHandler.getLobbyLocation() != null && !member.getPlayer().teleport(DataHandler.getLobbyLocation())) {
+		member.getPlayer().setMetadata("forceTeleport", new FixedMetadataValue(plugin, true));
+
+		if (DataHandler.getLobbyLocation() != null || !member.getPlayer().teleport(DataHandler.getLobbyLocation())) {
 			member.getPlayer().kickPlayer("You could not teleported to lobby.");
 		}
+
+		member.getPlayer().removeMetadata("forceTeleport", plugin);
 
 		MessageUtils.sendMessage(member.getPlayer(), "you-left-from-duel");
 		new PlayerReset().excludeExp().excludeLevel().excludeInventory().excludeGamemode().excludeTitle().reset(member.getPlayer());
@@ -396,5 +406,9 @@ public class Game {
 
 	public long getTimer() {
 		return timer;
+	}
+
+	public BlokDuels getPlugin() {
+		return plugin;
 	}
 }

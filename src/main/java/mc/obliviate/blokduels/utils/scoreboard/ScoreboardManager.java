@@ -23,7 +23,7 @@ public class ScoreboardManager {
 		this.plugin = plugin;
 		TitleManagerAPI api = null;
 		//plugin.getDatabaseHandler().getConfig().getBoolean("scoreboard.is-enabled")
-		if (true && Bukkit.getServer().getPluginManager().isPluginEnabled("TitleManager")) {
+		if (Bukkit.getServer().getPluginManager().isPluginEnabled("TitleManager")) {
 			api = (TitleManagerAPI) Bukkit.getServer().getPluginManager().getPlugin("TitleManager");
 			plugin.getLogger().info("TitleManager plugin found. The API successfully hooked.");
 		}
