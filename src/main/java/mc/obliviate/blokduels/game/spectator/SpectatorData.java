@@ -19,4 +19,8 @@ public class SpectatorData {
 	public void remove(final Player player) {
 		spectators.remove(player);
 	}
+
+	public boolean isSpectator(Player p) {
+		return spectators.contains(p);
+	}
 }

@@ -105,6 +105,7 @@ public class Game {
 		resetPlayers();
 		reloadKits();
 		lockTeams();
+		unSpectateMembers();
 
 		task("ROUNDTASK_on-round-start-timer", Bukkit.getScheduler().runTaskLater(plugin, () -> {
 			gameState = BATTLE;
@@ -123,12 +124,10 @@ public class Game {
 	//todo not tested
 	private void setFinishTimer() {
 		timer = System.currentTimeMillis() + (finishTime * 1000);
-		task("REMAINING_TIME", Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-			if (timer < System.currentTimeMillis()) {
-				broadcastInGame("game-has-timed-out");
-				finishGame();
-			}
-		}, 0, 20));
+		task("REMAINING_TIME", Bukkit.getScheduler().runTaskLater(plugin, () -> {
+			broadcastInGame("game-has-timed-out");
+			finishGame();
+		}, finishTime * 20));
 	}
 
 	public void storeKits() {
@@ -234,6 +233,16 @@ public class Game {
 		}
 	}
 
+	private void unSpectateMembers() {
+		final PlayerReset playerReset = new PlayerReset().excludeExp().excludeLevel().excludeInventory().excludeTitle();
+		for (final Member member : getAllMembers()) {
+			if (spectatorData.isSpectator(member.getPlayer())) {
+				spectatorData.remove(member.getPlayer());
+			}
+		}
+
+	}
+
 	public void lockTeams() {
 		for (final Team team : teams.values()) {
 			lockTeam(team);
@@ -318,9 +327,12 @@ public class Game {
 
 	public void makeSpectator(final Member member) {
 		final Player player = member.getPlayer();
+
+		new PlayerReset().excludeGamemode().excludeLevel().excludeExp().reset(player);
+
 		for (final Team team : teams.values()) {
-			for (final Member p : team.getMembers()) {
-				player.hidePlayer(p.getPlayer());
+			for (final Member m : team.getMembers()) {
+				m.getPlayer().hidePlayer(player);
 			}
 		}
 
@@ -328,6 +340,9 @@ public class Game {
 			spectator.showPlayer(player);
 			player.showPlayer(spectator);
 		}
+
+		player.setAllowFlight(true);
+		player.setFlying(true);
 
 		spectatorData.add(player);
 		MessageUtils.sendMessage(member.getPlayer(), "you-are-a-spectator");

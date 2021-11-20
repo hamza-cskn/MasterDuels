@@ -66,14 +66,14 @@ public class ScoreboardManager {
 
 		final String opponentFormat = "&6{name} &c{health}❤";
 		if (game.getGameState() == GameState.BATTLE) {
-			for (final String line : Arrays.asList("", "&aHarita: &f{map}", "&aRaund: &c#{round}", "&aTakım: &f{team-size} kişi", "", "{opponents}", "", "&ewww.blokdunyasi.net")) {
+			for (final String line : Arrays.asList("", "&aHarita: &f{map}", "&aRaund: &c#{round}", "&aTakım: &f{team-size} kişi", "&fSonlanmasına: &e{timer}","", "{opponents}", "", "&ewww.blokdunyasi.net")) {
 				if (line.equalsIgnoreCase("{opponents}")) {
 
 					for (Member m : game.getAllMembers()) {
 						if (!member.getTeam().equals(m.getTeam())) {
 							api.setProcessedScoreboardValue(player, ++index,
 									MessageUtils.parseColor(
-											opponentFormat.replace("{health}", "" + m.getPlayer().getHealth())
+											opponentFormat.replace("{health}", "" + m.getPlayer().getHealthScale())
 													.replace("{name}", m.getPlayer().getName() + "")
 									));
 						}
@@ -86,6 +86,7 @@ public class ScoreboardManager {
 
 									line.replace("{round}", "" + game.getRoundData().getCurrentRound())
 											.replace("{map}", game.getArena().getMapName() + "")
+											.replace("{timer}", TimerUtils.convertTimer(game.getTimer()))
 											.replace("{team-size}", member.getTeam().getMembers().size() + ""
 											)));
 				}

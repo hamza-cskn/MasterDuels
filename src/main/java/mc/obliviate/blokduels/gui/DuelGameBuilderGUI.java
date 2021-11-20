@@ -13,6 +13,6 @@ public class DuelGameBuilderGUI extends GUI {
 
 	@Override
 	public void onOpen(InventoryOpenEvent event) {
-		addItem();
+
 	}
 }
