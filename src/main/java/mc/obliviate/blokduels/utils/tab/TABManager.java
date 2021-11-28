@@ -14,7 +14,7 @@ public class TABManager {
 		//plugin.getDatabaseHandler().getConfig().getBoolean("scoreboard.is-enabled")
 		if (Bukkit.getServer().getPluginManager().isPluginEnabled("TAB")) {
 			enabled = true;
-			plugin.getLogger().info("TitleManager plugin found. The API successfully hooked.");
+			plugin.getLogger().info("TAB plugin found. The API successfully hooked.");
 		}
 
 

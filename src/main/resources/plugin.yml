@@ -6,6 +6,7 @@ version: 1.0.0
 softdepend:
   - Multiverse-Core
   - TitleManager
+  - TAB
 commands:
   duelsetup:
   duelarenas:
