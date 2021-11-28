@@ -249,7 +249,9 @@ public class Game {
 
 
 		if (DataHandler.getLobbyLocation() != null || !member.getPlayer().teleport(DataHandler.getLobbyLocation())) {
-			member.getPlayer().kickPlayer("You could not teleported to lobby.\n" + DataHandler.getLobbyLocation());
+			if (!BlokDuels.isInShutdownMode()) {
+				member.getPlayer().kickPlayer("You could not teleported to lobby.\n" + DataHandler.getLobbyLocation());
+			}
 		}
 
 		MessageUtils.sendMessage(member.getPlayer(), "you-left-from-duel");

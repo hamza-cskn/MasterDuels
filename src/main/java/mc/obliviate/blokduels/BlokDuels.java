@@ -27,6 +27,11 @@ public class BlokDuels extends JavaPlugin {
 	private final ConfigHandler configHandler = new ConfigHandler(this);
 	private MessageAPI messageAPI;
 	private ScoreboardManager scoreboardManager;
+	private static boolean shutdownMode = false;
+
+	public static boolean isInShutdownMode() {
+		return shutdownMode;
+	}
 
 	@Override
 	public void onEnable() {
@@ -35,7 +40,7 @@ public class BlokDuels extends JavaPlugin {
 		registerCommands();
 		setupHandlers();
 		loadKits();
-
+		shutdownMode = false;
 	}
 
 	private void setupHandlers() {
@@ -74,6 +79,7 @@ public class BlokDuels extends JavaPlugin {
 
 	@Override
 	public void onDisable() {
+		shutdownMode = true;
 		for (final Game game : DataHandler.getArenas().values()) {
 			if (game != null) {
 				game.uninstallGame();
