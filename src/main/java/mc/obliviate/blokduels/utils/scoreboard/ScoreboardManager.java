@@ -8,16 +8,21 @@ import mc.obliviate.blokduels.game.GameState;
 import mc.obliviate.blokduels.team.Member;
 import mc.obliviate.blokduels.utils.MessageUtils;
 import mc.obliviate.blokduels.utils.timer.TimerUtils;
-import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ScoreboardManager {
 
+	private static final Map<GameState, ScoreboardFormatConfig> scoreboardLines = new HashMap<>();
 	private static TitleManagerAPI api;
 	private final BlokDuels plugin;
+
+	public static Map<GameState, ScoreboardFormatConfig> getScoreboardLines() {
+		return scoreboardLines;
+	}
 
 	public ScoreboardManager(final BlokDuels plugin) {
 		this.plugin = plugin;
@@ -62,62 +67,31 @@ public class ScoreboardManager {
 		api.giveScoreboard(player);
 
 		int index = 0;
-		api.setScoreboardTitle(player, ChatColor.YELLOW.toString() + ChatColor.BOLD + "Duel");
+		final ScoreboardFormatConfig scoreboardFormatConfig = scoreboardLines.get(game.getGameState());
 
-		final String opponentFormat = "&6{name} &c{health}❤";
-		if (game.getGameState() == GameState.BATTLE) {
-			for (final String line : Arrays.asList("", "&aHarita: &f{map}", "&aRaund: &c#{round}", "&aTakım: &f{team-size} kişi", "&fSonlanmasına: &e{timer}", "", "{opponents}", "", "&ewww.blokdunyasi.net")) {
-				if (line.equalsIgnoreCase("{opponents}")) {
+		api.setScoreboardTitle(player, scoreboardFormatConfig.getTitle());
 
-					for (Member m : game.getAllMembers()) {
-						if (!member.getTeam().equals(m.getTeam())) {
-							api.setProcessedScoreboardValue(player, ++index,
-									MessageUtils.parseColor(
-											opponentFormat.replace("{health}", "" + m.getPlayer().getHealthScale())
-													.replace("{name}", m.getPlayer().getName() + "")
-									));
+		for (final String line : scoreboardFormatConfig.getLines()) {
+			if (line.equalsIgnoreCase("{+opponents}")) {
+				for (final Member m : game.getAllMembers()) {
+					if (!member.getTeam().equals(m.getTeam())) {
+						if (game.getSpectatorData().isSpectator(m.getPlayer())) {
+							api.setProcessedScoreboardValue(player, ++index, MessageUtils.parseColor(scoreboardFormatConfig.getDeadOpponentFormat().replace("{health}", "0").replace("{name}", m.getPlayer().getName() + "")));
+						} else {
+							api.setProcessedScoreboardValue(player, ++index, MessageUtils.parseColor(scoreboardFormatConfig.getLiveOpponentFormat().replace("{health}", "" + m.getPlayer().getHealthScale()).replace("{name}", m.getPlayer().getName() + "")));
 						}
 					}
-
-				} else {
-
-					api.setProcessedScoreboardValue(player, ++index,
-							MessageUtils.parseColor(
-
-									line.replace("{round}", "" + game.getRoundData().getCurrentRound())
-											.replace("{map}", game.getArena().getMapName() + "")
-											.replace("{timer}", TimerUtils.convertTimer(game.getTimer()))
-											.replace("{team-size}", member.getTeam().getMembers().size() + ""
-											)));
 				}
 
-
-			}
-		} else if (game.getGameState() == GameState.ROUND_STARTING) {
-			for (final String line : Arrays.asList("", "&aHarita: &f{map}", "&aRaund: &c#{round}", "&aTakım: &f{team-size} kişi", "", "&aBaşlıyor: &f{timer}", "", "&ewww.blokdunyasi.net")) {
-				api.setProcessedScoreboardValue(player, ++index,
-						MessageUtils.parseColor(
-								line.replace("{round}", "" + game.getRoundData().getCurrentRound())
-										.replace("{map}", game.getArena().getMapName() + "")
-										.replace("{timer}", TimerUtils.convertTimer(game.getTimer()))
-										.replace("{team-size}", member.getTeam().getMembers().size() + ""
-										)));
-
-			}
-		} else if (game.getGameState() == GameState.GAME_ENDING) {
-			for (final String line : Arrays.asList("", "&aHarita: &f{map}", "&aRaund: &c#{round}", "&fArenanın Kapatılıyor:", "&6{timer}", "", "&ewww.blokdunyasi.net")) {
-				api.setProcessedScoreboardValue(player, ++index,
-						MessageUtils.parseColor(
-								line.replace("{round}", "" + game.getRoundData().getCurrentRound())
-										.replace("{map}", game.getArena().getMapName() + "")
-										.replace("{timer}", TimerUtils.convertTimer(game.getTimer()))
-										.replace("{team-size}", member.getTeam().getMembers().size() + ""
-										)));
-
+			} else {
+				api.setProcessedScoreboardValue(player, ++index, MessageUtils.parseColor(line
+						.replace("{round}", "" + game.getRoundData().getCurrentRound())
+						.replace("{map}", game.getArena().getMapName() + "")
+						.replace("{timer}", TimerUtils.convertTimer(game.getTimer()))
+						.replace("{placed-blocks}", "" + game.getPlacedBlocks().size())
+						.replace("{team-size}", member.getTeam().getMembers().size() + "")));
 			}
 		}
-
-
 	}
 
 	public static void defaultScoreboard(final Player player) {

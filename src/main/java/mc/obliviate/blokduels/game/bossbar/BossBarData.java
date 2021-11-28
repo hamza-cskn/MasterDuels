@@ -31,7 +31,6 @@ public class BossBarData {
 		if (this.bar == null) return;
 		final TabPlayer player = TABAPI.getPlayer(member.getPlayer().getUniqueId());
 		player.showBossBar(bar);
-
 	}
 
 	public void init() {

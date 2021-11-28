@@ -16,6 +16,7 @@ public class SpectatorData {
 	public void add(final Player player) {
 		spectators.add(player);
 	}
+
 	public void remove(final Player player) {
 		spectators.remove(player);
 	}

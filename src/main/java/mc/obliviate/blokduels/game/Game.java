@@ -1,5 +1,6 @@
 package mc.obliviate.blokduels.game;
 
+import com.hakan.messageapi.bukkit.MessageAPI;
 import com.hakan.messageapi.bukkit.title.Title;
 import mc.obliviate.blokduels.BlokDuels;
 import mc.obliviate.blokduels.arena.Arena;
@@ -198,6 +199,7 @@ public class Game {
 			return;
 		}
 		gameState = GAME_ENDING;
+		cancelTasks("REMAINING_TIME");
 		timer = endDelay * 1000L + System.currentTimeMillis();
 		Bukkit.getScheduler().runTaskLater(plugin, this::uninstallGame, endDelay * 20L);
 
@@ -216,13 +218,13 @@ public class Game {
 		gameState = UNINSTALLING;
 		broadcastInGame("game-has-finished");
 
-		cancelTasks(null);
-		for (Team team : teams.values()) {
-			for (Member member : team.getMembers()) {
+		for (final Team team : teams.values()) {
+			for (final Member member : team.getMembers()) {
 				leaveMember(member);
 			}
 		}
 
+		cancelTasks(null);
 		clearArea();
 		DataHandler.registerArena(arena);
 	}
@@ -268,6 +270,7 @@ public class Game {
 		}
 	}
 
+
 	private void showAll(Player player) {
 		for (final Team team : teams.values()) {
 			for (final Member m : team.getMembers()) {
@@ -295,8 +298,6 @@ public class Game {
 				playerReset.reset(member.getPlayer());
 			}
 		}
-
-
 	}
 
 	public void lockTeams() {
@@ -312,6 +313,14 @@ public class Game {
 			broadcastInGame("duel-team-eliminated", new PlaceholderUtil().add("{victim}", member.getPlayer().getName()));
 			nextRound();
 		}
+	}
+
+	public void joinAsSpectator(final Player player) {
+		if (player.teleport(arena.getPositions().get("spawn-team-1").getLocation(1))) { //todo make spectator location
+			getSpectatorData().add(player);
+			MessageAPI.getInstance(plugin).sendTitle(player, new Title("",MessageUtils.parseColor("&7Izleyici moduna geçtiniz!"),20,5,5));
+		}
+
 	}
 
 	public boolean checkTeamEliminated(final Team team) {

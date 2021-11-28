@@ -3,48 +3,31 @@ package mc.obliviate.blokduels.gui;
 import mc.obliviate.blokduels.arena.Arena;
 import mc.obliviate.blokduels.arena.elements.Positions;
 import mc.obliviate.blokduels.data.DataHandler;
+import mc.obliviate.blokduels.game.Game;
+import mc.obliviate.blokduels.game.GameState;
 import mc.obliviate.blokduels.setup.PositionSelection;
+import mc.obliviate.blokduels.utils.MessageUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import mc.obliviate.inventory.GUI;
 import mc.obliviate.inventory.Icon;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.MaterialData;
 
+import java.util.Arrays;
 import java.util.Map;
 
 public class DuelArenaListGUI extends GUI {
 
 	public DuelArenaListGUI(Player player) {
-		super(player, "duel-games-list-gui", "Current Duel Games", 6);
-	}
-
-	@Override
-	public void onOpen(InventoryOpenEvent event) {
-		int slot = 0;
-		for (final Arena arena : DataHandler.getArenas().keySet()) {
-			final Icon hytem = new Icon(Material.CAULDRON_ITEM)
-					.setName("§9" + arena.getName())
-					.setLore("§7Map: §d" + arena.getMapName(),
-							"§7Mode: §d" + convertMode(arena.getTeamSize(), arena.getTeamAmount()),
-							"§5§lDEBUG",
-							"§7Pos1: "+  PositionSelection.formatLocation(arena.getArenaCuboid().getPoint1()),
-							"§7Pos2: "+  PositionSelection.formatLocation(arena.getArenaCuboid().getPoint2()),
-							"");
-
-			for (Map.Entry<String, Positions> positionsEntry : arena.getPositions().entrySet()) {
-				hytem.appendLore("§6" + positionsEntry.getKey());
-				for (Map.Entry<Integer, Location> locationsEntry : positionsEntry.getValue().getLocations().entrySet()) {
-					hytem.appendLore(" §e" + locationsEntry.getKey() + " §a= " + PositionSelection.formatLocation(locationsEntry.getValue()));
-				}
-			}
-			addItem(slot++, hytem);
-		}
+		super(player, "duel-games-list-gui", "Oynanan Düellolar (/duel)", 6);
 	}
 
 	private static String convertMode(int size, int amount) {
 		final StringBuilder sb = new StringBuilder();
-		for (;amount > 0; amount--) {
+		for (; amount > 0; amount--) {
 			sb.append(size);
 			if (amount != 1) {
 				sb.append("v");
@@ -52,5 +35,38 @@ public class DuelArenaListGUI extends GUI {
 		}
 
 		return sb.toString();
+	}
+
+	@Override
+	public void onOpen(InventoryOpenEvent event) {
+		int slot = 0;
+		for (Map.Entry<Arena, Game> entry : DataHandler.getArenas().entrySet()) {
+			if (entry.getValue() != null) {
+
+				addItem(slot++, getArenaIcon(entry.getValue()));
+			}
+		}
+	}
+
+	private Icon getArenaIcon(final Game game) {
+		return new Icon(getStateMaterial(game.getGameState())).onClick(e -> {
+			if (game.getGameState().equals(GameState.BATTLE) || game.getGameState().equals(GameState.ROUND_STARTING)) {
+				player.closeInventory();
+				game.joinAsSpectator(player);
+			}
+		}).setName(MessageUtils.parseColor("&6" + game.getArena().getName())).setLore(MessageUtils.parseColor(Arrays.asList("","&aHarita: " + game.getArena().getMapName(),"","&e&oTıkla ve izle!")));
+	}
+
+	private ItemStack getStateMaterial(GameState state) {
+		switch (state) {
+			case BATTLE:
+				return new MaterialData(Material.WOOL, (byte) 14).toItemStack();
+			case GAME_STARING:
+				return new MaterialData(Material.WOOL, (byte) 5).toItemStack();
+			case GAME_ENDING:
+				return new MaterialData(Material.WOOL, (byte) 1).toItemStack();
+			default:
+				return new MaterialData(Material.WOOL, (byte) 0).toItemStack();
+		}
 	}
 }
