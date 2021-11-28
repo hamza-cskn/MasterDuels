@@ -1,2 +1,43 @@
 lock-time: 3 #in seconds
 delay-end-duel-after-player-kill: 20 #in seconds
+
+scoreboards:
+  BATTLE:
+    title: '&e&lDUELS'
+    live-opponent-format: '&a{name} &c{health}❤'
+    dead-opponent-format: '&a{name} &cDEAD'
+    lines:
+      - '&fRound: &e#{round}'
+      - '&fMap: &e{map}'
+      - ''
+      - '&fRemaining Time:'
+      - ' &a{timer}'
+      - ''
+      - '{+opponents}'
+      - ''
+      - '&ewww.yourserver.net'
+  ROUND_STARTING:
+    title: '&e&lDUELS'
+    live-opponent-format: '&a{name} &c{health}❤'
+    dead-opponent-format: '&a{name} &cDEAD'
+    lines:
+      - '&fRound: &e#{round}'
+      - '&fMap: &e{map}'
+      - ''
+      - '&fStarting: &a{timer}'
+      - ''
+      - '&ewww.yourserver.net'
+  GAME_ENDING:
+    title: '&e&lDUEL HAS ENDED'
+    live-opponent-format: '&a{name} &c{health}❤'
+    dead-opponent-format: '&a{name} &cDEAD'
+    lines:
+      - '&fRound: &e#{round}'
+      - '&fMap: &e{map}'
+      - ''
+      - '&fArena Closing: '
+      - '&c{timer}'
+      - ''
+      - '{+opponents}'
+      - ''
+      - '&ewww.yourserver.net'
