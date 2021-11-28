@@ -66,7 +66,7 @@ public class ScoreboardManager {
 
 		final String opponentFormat = "&6{name} &c{health}❤";
 		if (game.getGameState() == GameState.BATTLE) {
-			for (final String line : Arrays.asList("", "&aHarita: &f{map}", "&aRaund: &c#{round}", "&aTakım: &f{team-size} kişi", "&fSonlanmasına: &e{timer}","", "{opponents}", "", "&ewww.blokdunyasi.net")) {
+			for (final String line : Arrays.asList("", "&aHarita: &f{map}", "&aRaund: &c#{round}", "&aTakım: &f{team-size} kişi", "&fSonlanmasına: &e{timer}", "", "{opponents}", "", "&ewww.blokdunyasi.net")) {
 				if (line.equalsIgnoreCase("{opponents}")) {
 
 					for (Member m : game.getAllMembers()) {
@@ -95,6 +95,17 @@ public class ScoreboardManager {
 			}
 		} else if (game.getGameState() == GameState.ROUND_STARTING) {
 			for (final String line : Arrays.asList("", "&aHarita: &f{map}", "&aRaund: &c#{round}", "&aTakım: &f{team-size} kişi", "", "&aBaşlıyor: &f{timer}", "", "&ewww.blokdunyasi.net")) {
+				api.setProcessedScoreboardValue(player, ++index,
+						MessageUtils.parseColor(
+								line.replace("{round}", "" + game.getRoundData().getCurrentRound())
+										.replace("{map}", game.getArena().getMapName() + "")
+										.replace("{timer}", TimerUtils.convertTimer(game.getTimer()))
+										.replace("{team-size}", member.getTeam().getMembers().size() + ""
+										)));
+
+			}
+		} else if (game.getGameState() == GameState.GAME_ENDING) {
+			for (final String line : Arrays.asList("", "&aHarita: &f{map}", "&aRaund: &c#{round}", "&fArenanın Kapatılıyor:", "&6{timer}", "", "&ewww.blokdunyasi.net")) {
 				api.setProcessedScoreboardValue(player, ++index,
 						MessageUtils.parseColor(
 								line.replace("{round}", "" + game.getRoundData().getCurrentRound())

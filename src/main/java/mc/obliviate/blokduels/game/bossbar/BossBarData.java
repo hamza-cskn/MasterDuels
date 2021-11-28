@@ -1,7 +1,9 @@
 package mc.obliviate.blokduels.game.bossbar;
 
 import mc.obliviate.blokduels.game.Game;
+import mc.obliviate.blokduels.game.GameState;
 import mc.obliviate.blokduels.team.Member;
+import mc.obliviate.blokduels.utils.Utils;
 import mc.obliviate.blokduels.utils.tab.TABManager;
 import mc.obliviate.blokduels.utils.timer.TimerUtils;
 import me.neznamy.tab.api.TABAPI;
@@ -29,13 +31,19 @@ public class BossBarData {
 		if (this.bar == null) return;
 		final TabPlayer player = TABAPI.getPlayer(member.getPlayer().getUniqueId());
 		player.showBossBar(bar);
+
 	}
 
 	public void init() {
 		if (this.bar == null) return;
 		game.task("BOSSBAR", Bukkit.getScheduler().runTaskTimer(game.getPlugin(), () -> {
-			bar.setTitle("Kalan Süre: " + TimerUtils.convertTimer(game.getTimer()));
-			bar.setProgress(((float) (game.getTimer() - System.currentTimeMillis())));
+			if (game.getGameState().equals(GameState.GAME_ENDING)) {
+				bar.setProgress((Utils.getPercentage(Game.getEndDelay() * 1000, (game.getTimer() - System.currentTimeMillis()))));
+				bar.setTitle("Arenanın Kapatılmasına: " + TimerUtils.convertTimer(game.getTimer()));
+			} else {
+				bar.setProgress((Utils.getPercentage(game.getFinishTime() * 1000, (game.getTimer() - System.currentTimeMillis()))));
+				bar.setTitle("Kalan Süre: " + TimerUtils.convertTimer(game.getTimer()));
+			}
 		}, 0, 20));
 	}
 
