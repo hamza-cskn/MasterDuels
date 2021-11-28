@@ -6,13 +6,13 @@ import mc.obliviate.blokduels.commands.DuelCMD;
 import mc.obliviate.blokduels.commands.KitEditorCMD;
 import mc.obliviate.blokduels.commands.SetupCMD;
 import mc.obliviate.blokduels.config.ConfigHandler;
+import mc.obliviate.blokduels.data.DataHandler;
 import mc.obliviate.blokduels.data.DatabaseHandler;
+import mc.obliviate.blokduels.game.Game;
 import mc.obliviate.blokduels.kit.serializer.KitSerializer;
-import mc.obliviate.blokduels.listeners.ChatListener;
-import mc.obliviate.blokduels.listeners.DamageListener;
-import mc.obliviate.blokduels.listeners.DuelProtectListener;
-import mc.obliviate.blokduels.listeners.PlayerConnectionListener;
+import mc.obliviate.blokduels.listeners.*;
 import mc.obliviate.blokduels.utils.scoreboard.ScoreboardManager;
+import mc.obliviate.blokduels.utils.tab.TABManager;
 import mc.obliviate.inventory.InventoryAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -44,6 +44,7 @@ public class BlokDuels extends JavaPlugin {
 		configHandler.init();
 		scoreboardManager = new ScoreboardManager(this);
 		messageAPI = MessageAPI.getInstance(this);
+		new TABManager(this);
 	}
 
 	private void registerCommands() {
@@ -58,6 +59,7 @@ public class BlokDuels extends JavaPlugin {
 		Bukkit.getPluginManager().registerEvents(new DuelProtectListener(this), this);
 		Bukkit.getPluginManager().registerEvents(new DamageListener(this), this);
 		Bukkit.getPluginManager().registerEvents(new PlayerConnectionListener(), this);
+		Bukkit.getPluginManager().registerEvents(new TeleportListener(), this);
 	}
 
 	private void loadKits() {

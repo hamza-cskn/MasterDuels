@@ -16,14 +16,12 @@ import mc.obliviate.blokduels.utils.MessageUtils;
 import mc.obliviate.blokduels.utils.placeholder.PlaceholderUtil;
 import mc.obliviate.blokduels.utils.playerreset.PlayerReset;
 import mc.obliviate.blokduels.utils.scoreboard.ScoreboardManager;
-import mc.obliviate.blokduels.utils.tab.TABManager;
 import mc.obliviate.blokduels.utils.timer.TimerUtils;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
@@ -36,6 +34,7 @@ import static mc.obliviate.blokduels.game.GameState.*;
 
 public class Game {
 
+	private static int endDelay = 20;
 	private final BlokDuels plugin;
 	private final Arena arena;
 	private final Map<Integer, Team> teams = new HashMap<>();
@@ -61,6 +60,15 @@ public class Game {
 		this.gameBuilder = gameBuilder;
 
 		roundData.setTotalRounds(totalRounds);
+		DataHandler.registerGame(arena, this);
+	}
+
+	public static int getEndDelay() {
+		return endDelay;
+	}
+
+	public static void setEndDelay(final int endDelay) {
+		Game.endDelay = endDelay;
 	}
 
 	public static GameBuilder create(BlokDuels plugin, Arena arena) {
@@ -84,13 +92,18 @@ public class Game {
 		updateScoreboardTasks();
 		storeKits();
 		nextRound();
+	}
+
+	public void initBossBar() {
+		for (final Member member : getAllMembers()) {
+			bossBarData.show(member);
+		}
 		bossBarData.init();
 	}
 
 	public void updateScoreboardTasks() {
 		for (Member member : getAllMembers()) {
 			updateScoreboardTask(member);
-			bossBarData.show(member);
 		}
 	}
 
@@ -103,7 +116,7 @@ public class Game {
 
 	public void nextRound() {
 		if (!roundData.addRound()) {
-			Bukkit.getScheduler().runTaskLater(plugin, this::finishGame, plugin.getDatabaseHandler().getConfig().getInt("delay-end-duel-after-player-kill", 20) * 20L);
+			finishGame();
 			return;
 		}
 		timer = System.currentTimeMillis() + (LOCK_TIME_IN_SECONDS * 1000L);
@@ -125,14 +138,16 @@ public class Game {
 		broadcastInGame("round-has-started", new PlaceholderUtil().add("{round}", round + ""));
 		updateScoreboardTasks();
 		setFinishTimer();
+		if (round == 1) {
+			initBossBar();
+		}
 	}
 
-	//todo not tested
 	private void setFinishTimer() {
 		timer = System.currentTimeMillis() + (finishTime * 1000);
 		task("REMAINING_TIME", Bukkit.getScheduler().runTaskLater(plugin, () -> {
 			broadcastInGame("game-has-timed-out");
-			finishGame();
+			uninstallGame();
 		}, finishTime * 20));
 	}
 
@@ -140,9 +155,8 @@ public class Game {
 		for (final Member member : getAllMembers()) {
 			if (!Kit.storeKits(member.getPlayer())) {
 				Bukkit.getLogger().severe("[BlokDuels] " + member.getPlayer().getName() + "'s inventory could not stored! Game cancelling.");
-				cancelGame();
+				uninstallGame();
 			}
-
 		}
 	}
 
@@ -153,7 +167,7 @@ public class Game {
 	}
 
 	public void finishRound() {
-		cancelRoundTasks();
+		cancelTasks("ROUNDTASK");
 		broadcastInGame("round-has-finished", new PlaceholderUtil().add("{round}", roundData.getCurrentRound() + ""));
 	}
 
@@ -173,14 +187,36 @@ public class Game {
 		for (final Member member : getAllMembers()) {
 			MessageUtils.sendMessage(member.getPlayer(), node, placeholderUtil);
 		}
+	}
+
+	/**
+	 * natural finish game method
+	 */
+	public void finishGame() {
+		if (gameState.equals(GAME_ENDING)) {
+			plugin.getLogger().info("Finish Game method called twice.");
+			return;
+		}
+		gameState = GAME_ENDING;
+		timer = endDelay * 1000L + System.currentTimeMillis();
+		Bukkit.getScheduler().runTaskLater(plugin, this::uninstallGame, endDelay * 20L);
+
 
 	}
 
-	public void finishGame() {
+	/**
+	 * force to finish game method
+	 */
+	public void uninstallGame() {
+		if (gameState.equals(UNINSTALLING)) {
+			plugin.getLogger().info("Uninstall Game method called twice.");
+			return;
+		}
+
+		gameState = UNINSTALLING;
 		broadcastInGame("game-has-finished");
 
-		gameState = GAME_ENDING;
-		cancelAllTasks();
+		cancelTasks(null);
 		for (Team team : teams.values()) {
 			for (Member member : team.getMembers()) {
 				leaveMember(member);
@@ -198,26 +234,36 @@ public class Game {
 	}
 
 	public void leaveMember(final Member member) {
+		if (!member.getTeam().getMembers().contains(member)) return;
+
 		DataHandler.getMembers().remove(member.getPlayer().getUniqueId());
 		member.getTeam().removeMember(member);
 
-		showAll(member.getPlayer());
 		if (!InventoryStorer.restore(member.getPlayer())) {
 			Bukkit.getLogger().severe("[BlokDuels] inventory couldn't restored: " + member.getPlayer());
 		}
 
-		member.getPlayer().setMetadata("forceTeleport", new FixedMetadataValue(plugin, true));
-
-		if (DataHandler.getLobbyLocation() != null || !member.getPlayer().teleport(DataHandler.getLobbyLocation())) {
-			member.getPlayer().kickPlayer("You could not teleported to lobby.");
-		}
-
-		member.getPlayer().removeMetadata("forceTeleport", plugin);
-
-		MessageUtils.sendMessage(member.getPlayer(), "you-left-from-duel");
+		showAll(member.getPlayer());
 		new PlayerReset().excludeExp().excludeLevel().excludeInventory().excludeGamemode().excludeTitle().reset(member.getPlayer());
 		ScoreboardManager.defaultScoreboard(member.getPlayer());
 
+
+		if (DataHandler.getLobbyLocation() != null || !member.getPlayer().teleport(DataHandler.getLobbyLocation())) {
+			member.getPlayer().kickPlayer("You could not teleported to lobby.\n" + DataHandler.getLobbyLocation());
+		}
+
+		MessageUtils.sendMessage(member.getPlayer(), "you-left-from-duel");
+
+		if (member.getTeam().getMembers().size() == 0) {
+			if (gameState.equals(GAME_ENDING) || gameState.equals(UNINSTALLING)) return;
+			if (gameState.equals(BATTLE)) {
+				Bukkit.broadcastMessage("game finishing in 20s");
+				finishGame();
+			} else {
+				Bukkit.broadcastMessage("game finishing...");
+				uninstallGame();
+			}
+		}
 	}
 
 	private void showAll(Player player) {
@@ -232,10 +278,6 @@ public class Game {
 		}
 	}
 
-	public void cancelGame() {
-		finishGame();
-	}
-
 	public void resetPlayers() {
 		final PlayerReset playerReset = new PlayerReset().excludeExp().excludeLevel().excludeInventory().excludeTitle();
 		for (final Member member : getAllMembers()) {
@@ -248,8 +290,10 @@ public class Game {
 		for (final Member member : getAllMembers()) {
 			if (spectatorData.isSpectator(member.getPlayer())) {
 				spectatorData.remove(member.getPlayer());
+				playerReset.reset(member.getPlayer());
 			}
 		}
+
 
 	}
 
@@ -307,33 +351,20 @@ public class Game {
 			}
 			if (!member.getPlayer().teleport(loc)) {
 				Bukkit.getLogger().severe("[BlokDuels] [ERROR] Player " + member.getPlayer().getName() + " could not teleported to duel arena.");
-				cancelGame();
+				uninstallGame();
 			}
 
 		}
 	}
 
-	public void cancelAllTasks() {
-		for (final BukkitTask task : tasks.values()) {
-			task.cancel();
-		}
-	}
-
-	public void cancelRoundTasks() {
+	public void cancelTasks(String prefix) {
 		for (final Map.Entry<String, BukkitTask> task : tasks.entrySet()) {
-			if (task.getKey().startsWith("ROUNDTASK_")) {
+			if (prefix == null || task.getKey().startsWith(prefix)) {
 				task.getValue().cancel();
 			}
 		}
 	}
 
-	public void cancelScoreboardTasks() {
-		for (final Map.Entry<String, BukkitTask> task : tasks.entrySet()) {
-			if (task.getKey().startsWith("SCOREBOARDTASK_")) {
-				task.getValue().cancel();
-			}
-		}
-	}
 
 	public void makeSpectator(final Member member) {
 		final Player player = member.getPlayer();

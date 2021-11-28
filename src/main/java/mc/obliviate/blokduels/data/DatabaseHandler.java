@@ -2,6 +2,7 @@ package mc.obliviate.blokduels.data;
 
 import mc.obliviate.blokduels.BlokDuels;
 import mc.obliviate.blokduels.arena.Arena;
+import mc.obliviate.blokduels.game.Game;
 import mc.obliviate.blokduels.utils.serializer.SerializerUtils;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -41,6 +42,8 @@ public class DatabaseHandler {
 		if (data.isSet("lobby-location")) {
 			DataHandler.setLobbyLocation(SerializerUtils.deserializeLocation(data.getConfigurationSection("lobby-location")));
 		}
+
+		Game.setEndDelay(plugin.getDatabaseHandler().getConfig().getInt("delay-end-duel-after-player-kill", 20));
 	}
 
 	public YamlConfiguration getData() {
