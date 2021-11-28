@@ -3,6 +3,7 @@ package mc.obliviate.blokduels.utils.playerreset;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
 
 public class PlayerReset {
 
@@ -19,6 +20,7 @@ public class PlayerReset {
 	private boolean level = true;
 	private boolean inventory = true;
 	private boolean title = true;
+	private boolean potion = true;
 
 	public void reset(Player player) {
 		if (health)
@@ -47,6 +49,10 @@ public class PlayerReset {
 			player.getInventory().clear();
 			player.getInventory().setArmorContents(new ItemStack[]{null, null, null, null});
 		}
+		if (potion)
+			for (PotionEffect effect : player.getActivePotionEffects()) {
+				player.removePotionEffect(effect.getType());
+			}
 		if (title)
 			player.resetTitle();
 	}
@@ -113,6 +119,11 @@ public class PlayerReset {
 
 	public PlayerReset excludeTitle() {
 		this.title = false;
+		return this;
+	}
+
+	public PlayerReset excludePotion() {
+		this.potion = false;
 		return this;
 	}
 }
