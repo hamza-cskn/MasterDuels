@@ -72,7 +72,11 @@ public class BlokDuels extends JavaPlugin {
 
 	@Override
 	public void onDisable() {
-
+		for (final Game game : DataHandler.getArenas().values()) {
+			if (game != null) {
+				game.uninstallGame();
+			}
+		}
 	}
 
 	public ConfigHandler getConfigHandler() {
