@@ -1,0 +1,4 @@
+name: BlokDuels
+main: mc.obliviate.blokduels.bungee.BlokDuelsProxy
+version: 1.0.0
+author: Mr_Obliviate
