@@ -49,7 +49,7 @@ public class DuelArenaListGUI extends GUI {
 		return new Icon(getStateMaterial(game.getGameState())).onClick(e -> {
 			if (game.getGameState().equals(GameState.BATTLE) || game.getGameState().equals(GameState.ROUND_STARTING)) {
 				player.closeInventory();
-				game.joinAsSpectator(player);
+				game.getSpectatorData().spectate(player);
 			}
 		}).setName(MessageUtils.parseColor("&6" + game.getArena().getName())).setLore(MessageUtils.parseColor(Arrays.asList("","&aHarita: " + game.getArena().getMapName(),"","&e&oTıkla ve izle!")));
 	}

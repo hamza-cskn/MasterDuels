@@ -2,7 +2,7 @@ package mc.obliviate.blokduels.bukkit.listeners;
 
 import mc.obliviate.blokduels.bukkit.BlokDuels;
 import mc.obliviate.blokduels.bukkit.data.DataHandler;
-import mc.obliviate.blokduels.bukkit.game.spectator.SpectatorData;
+import mc.obliviate.blokduels.bukkit.game.spectator.SpectatorStorage;
 import mc.obliviate.blokduels.bukkit.team.Member;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
@@ -52,7 +52,7 @@ public class DamageListener implements Listener {
 				//friendly protect
 				return;
 			}
-			final SpectatorData spectatorData = member.getTeam().getGame().getSpectatorData();
+			final SpectatorStorage spectatorData = member.getTeam().getGame().getSpectatorData();
 			if (spectatorData.isSpectator(victim) || spectatorData.isSpectator(attackerMember.getPlayer())) {
 				e.setCancelled(true);
 				//spectator protect
