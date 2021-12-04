@@ -1,6 +1,5 @@
 package mc.obliviate.blokduels.bukkit.game;
 
-import com.hakan.messageapi.bukkit.MessageAPI;
 import com.hakan.messageapi.bukkit.title.Title;
 import mc.obliviate.blokduels.bukkit.BlokDuels;
 import mc.obliviate.blokduels.bukkit.arena.Arena;
@@ -8,11 +7,12 @@ import mc.obliviate.blokduels.bukkit.arena.elements.Positions;
 import mc.obliviate.blokduels.bukkit.data.DataHandler;
 import mc.obliviate.blokduels.bukkit.game.bossbar.BossBarData;
 import mc.obliviate.blokduels.bukkit.game.round.RoundData;
-import mc.obliviate.blokduels.bukkit.game.spectator.SpectatorData;
+import mc.obliviate.blokduels.bukkit.game.spectator.SpectatorStorage;
 import mc.obliviate.blokduels.bukkit.kit.InventoryStorer;
 import mc.obliviate.blokduels.bukkit.kit.Kit;
 import mc.obliviate.blokduels.bukkit.team.Member;
 import mc.obliviate.blokduels.bukkit.team.Team;
+import mc.obliviate.blokduels.bukkit.utils.Logger;
 import mc.obliviate.blokduels.bukkit.utils.MessageUtils;
 import mc.obliviate.blokduels.bukkit.utils.placeholder.PlaceholderUtil;
 import mc.obliviate.blokduels.bukkit.utils.playerreset.PlayerReset;
@@ -45,7 +45,7 @@ public class Game {
 	private final List<Location> placedBlocks = new ArrayList<>();
 	private final Map<String, BukkitTask> tasks = new HashMap<>();
 	private final RoundData roundData = new RoundData();
-	private final SpectatorData spectatorData = new SpectatorData();
+	private final SpectatorStorage spectatorData = new SpectatorStorage(this);
 	private final GameBuilder gameBuilder;
 	private final BossBarData bossBarData = new BossBarData(this);
 	private long timer;
@@ -125,7 +125,7 @@ public class Game {
 		resetPlayers();
 		reloadKits();
 		lockTeams();
-		unSpectateMembers();
+		spectatorData.unSpectateMembers();
 
 		task("ROUNDTASK_on-round-start-timer", Bukkit.getScheduler().runTaskLater(plugin, () -> {
 			gameState = BATTLE;
@@ -155,7 +155,7 @@ public class Game {
 	public void storeKits() {
 		for (final Member member : getAllMembers()) {
 			if (!Kit.storeKits(member.getPlayer())) {
-				Bukkit.getLogger().severe("[BlokDuels] " + member.getPlayer().getName() + "'s inventory could not stored! Game cancelling.");
+				Logger.severe(member.getPlayer().getName() + "'s inventory could not stored! Game cancelling.");
 				uninstallGame();
 			}
 		}
@@ -163,7 +163,7 @@ public class Game {
 
 	public void reloadKits() {
 		for (final Member member : getAllMembers()) {
-			Kit.reload(kit, member.getPlayer());
+			Kit.load(kit, member.getPlayer());
 		}
 	}
 
@@ -195,7 +195,7 @@ public class Game {
 	 */
 	public void finishGame() {
 		if (gameState.equals(GAME_ENDING)) {
-			plugin.getLogger().info("Finish Game method called twice.");
+			Logger.severe("Finish Game method called twice.");
 			return;
 		}
 		gameState = GAME_ENDING;
@@ -211,7 +211,7 @@ public class Game {
 	 */
 	public void uninstallGame() {
 		if (gameState.equals(UNINSTALLING)) {
-			plugin.getLogger().info("Uninstall Game method called twice.");
+			Logger.severe("Uninstall Game method called twice.");
 			return;
 		}
 
@@ -242,7 +242,7 @@ public class Game {
 		member.getTeam().removeMember(member);
 
 		if (!InventoryStorer.restore(member.getPlayer())) {
-			Bukkit.getLogger().severe("[BlokDuels] inventory couldn't restored: " + member.getPlayer());
+			Logger.severe("Inventory could not restored: " + member.getPlayer());
 		}
 
 		showAll(member.getPlayer());
@@ -253,6 +253,7 @@ public class Game {
 		if (DataHandler.getLobbyLocation() != null || !member.getPlayer().teleport(DataHandler.getLobbyLocation())) {
 			if (!BlokDuels.isInShutdownMode()) {
 				member.getPlayer().kickPlayer("You could not teleported to lobby.\n" + DataHandler.getLobbyLocation());
+				Logger.error("Player " + member.getPlayer().getName() + " could not teleported to lobby. BlokDuels kicked him.");
 			}
 		}
 
@@ -261,10 +262,10 @@ public class Game {
 		if (member.getTeam().getMembers().size() == 0) {
 			if (gameState.equals(GAME_ENDING) || gameState.equals(UNINSTALLING)) return;
 			if (gameState.equals(BATTLE)) {
-				Bukkit.broadcastMessage("game finishing in 20s");
+				Logger.debug("Game finishing in 20s");
 				finishGame();
 			} else {
-				Bukkit.broadcastMessage("game finishing...");
+				Logger.debug("Game finishing...");
 				uninstallGame();
 			}
 		}
@@ -290,15 +291,7 @@ public class Game {
 		}
 	}
 
-	private void unSpectateMembers() {
-		final PlayerReset playerReset = new PlayerReset().excludeExp().excludeLevel().excludeInventory().excludeTitle();
-		for (final Member member : getAllMembers()) {
-			if (spectatorData.isSpectator(member.getPlayer())) {
-				spectatorData.remove(member.getPlayer());
-				playerReset.reset(member.getPlayer());
-			}
-		}
-	}
+
 
 	public void lockTeams() {
 		for (final Team team : teams.values()) {
@@ -315,13 +308,7 @@ public class Game {
 		}
 	}
 
-	public void joinAsSpectator(final Player player) {
-		if (player.teleport(arena.getPositions().get("spawn-team-1").getLocation(1))) { //todo make spectator location
-			getSpectatorData().add(player);
-			MessageAPI.getInstance(plugin).sendTitle(player, new Title("",MessageUtils.parseColor("&7Izleyici moduna geçtiniz!"),20,5,5));
-		}
 
-	}
 
 	public boolean checkTeamEliminated(final Team team) {
 		for (Member p : team.getMembers()) {
@@ -352,16 +339,16 @@ public class Game {
 		int i = 1;
 		final Positions positions = arena.getPositions().get("spawn-team-" + team.getTeamId());
 		if (positions == null) {
-			Bukkit.broadcastMessage("positions == null");
+			Logger.severe("Player could not teleported to lock position because location set is null.");
 			return;
 		}
 		for (final Member member : team.getMembers()) {
 			final Location loc = positions.getLocation(i++);
 			if (loc == null) {
-				Bukkit.broadcastMessage("location is null");
+				Logger.severe("Player could not teleported to lock position because location is null.");
 			}
 			if (!member.getPlayer().teleport(loc)) {
-				Bukkit.getLogger().severe("[BlokDuels] [ERROR] Player " + member.getPlayer().getName() + " could not teleported to duel arena.");
+				Logger.error("Player " + member.getPlayer().getName() + " could not teleported to duel arena. Game has been cancelled.");
 				uninstallGame();
 			}
 
@@ -412,7 +399,7 @@ public class Game {
 		return roundData;
 	}
 
-	public SpectatorData getSpectatorData() {
+	public SpectatorStorage getSpectatorData() {
 		return spectatorData;
 	}
 
