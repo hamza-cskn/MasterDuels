@@ -23,12 +23,13 @@ public class InventoryStorer {
 		return true;
 	}
 
-	public static boolean store(final Player player) {
-		if (player == null) return false;
-		if (inventories.containsKey(player.getUniqueId())) return false;
+	public static PlayerInventoryFrame store(final Player player) {
+		if (player == null) return null;
+		if (inventories.containsKey(player.getUniqueId())) return null;
 
-		inventories.put(player.getUniqueId(), new PlayerInventoryFrame(player.getInventory().getContents(), player.getInventory().getArmorContents()));
-		return true;
+		final PlayerInventoryFrame playerInventoryFrame = new PlayerInventoryFrame(player.getInventory().getContents(), player.getInventory().getArmorContents());
+		inventories.put(player.getUniqueId(), playerInventoryFrame);
+		return playerInventoryFrame;
 	}
 
 

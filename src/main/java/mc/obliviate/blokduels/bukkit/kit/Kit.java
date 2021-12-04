@@ -2,7 +2,6 @@ package mc.obliviate.blokduels.bukkit.kit;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,20 +27,11 @@ public class Kit {
 	}
 
 	public static boolean storeKits(final Player player) {
-		return InventoryStorer.store(player);
+		return InventoryStorer.store(player) != null;
 	}
 
-	public static void reload(final Kit kit, final Player player) {
-		player.getInventory().clear();
-		player.getInventory().setHelmet(null);
-		player.getInventory().setChestplate(null);
-		player.getInventory().setLeggings(null);
-		player.getInventory().setBoots(null);
-		if (kit == null || kit.getContents() == null) return;
-		final PlayerInventory inv = player.getInventory();
-		inv.setContents(kit.getContents());
-		inv.setArmorContents(kit.getArmorContents());
-		player.updateInventory();
+	public static void load(final Kit kit, final Player player) {
+		PlayerInventoryFrame.loadInventoryFrame(player, kit.playerInventoryFrame);
 	}
 
 
