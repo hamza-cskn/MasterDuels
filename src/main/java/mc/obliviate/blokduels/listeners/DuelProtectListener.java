@@ -2,6 +2,8 @@ package mc.obliviate.blokduels.listeners;
 
 import mc.obliviate.blokduels.BlokDuels;
 import mc.obliviate.blokduels.data.DataHandler;
+import mc.obliviate.blokduels.user.Spectator;
+import mc.obliviate.blokduels.user.User;
 import mc.obliviate.blokduels.user.team.Member;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -24,43 +26,51 @@ public class DuelProtectListener implements Listener {
 		this.plugin = plugin;
 	}
 
-	private boolean isMember(final Player player) {
-		final Member member = DataHandler.getMember(player.getUniqueId());
-		return member != null;
+	private boolean isUser(final Player player) {
+		final User user = DataHandler.getUser(player.getUniqueId());
+		return user != null;
 	}
 
-	private boolean isMember(final Entity entity) {
+	private boolean isUser(final Entity entity) {
 		if (entity instanceof Player) {
-			return isMember((Player) entity);
+			return isUser((Player) entity);
 		}
 		return false;
 	}
 
 	@EventHandler
 	public void onBreak(final BlockBreakEvent e) {
-		final Member member = DataHandler.getMember(e.getPlayer().getUniqueId());
-		if (member == null) return;
-		if (!member.getTeam().getGame().getPlacedBlocks().contains(e.getBlock().getLocation())) {
+		final User user = DataHandler.getUser(e.getPlayer().getUniqueId());
+		if (user == null) return;
+		if (user instanceof Spectator) {
+			e.setCancelled(true);
+			return;
+		}
+		if (!((Member) user).getTeam().getGame().getPlacedBlocks().contains(e.getBlock().getLocation())) {
 			e.setCancelled(true);
 		}
 	}
 
 	@EventHandler
 	public void onPlace(final BlockPlaceEvent e) {
-		final Member member = DataHandler.getMember(e.getPlayer().getUniqueId());
-		if (member == null) return;
-		member.getTeam().getGame().addPlacedBlock(e.getBlockPlaced().getLocation());
+		final User user = DataHandler.getUser(e.getPlayer().getUniqueId());
+		if (user == null) return;
+		if (user instanceof Spectator) {
+			e.setCancelled(true);
+			return;
+		}
+		((Member) user).getTeam().getGame().addPlacedBlock(e.getBlockPlaced().getLocation());
 	}
 
 	@EventHandler
 	public void onMultiPlace(final BlockMultiPlaceEvent e) {
-		if (!isMember(e.getPlayer())) return;
+		if (!isUser(e.getPlayer())) return;
 		e.setCancelled(true);
 	}
 
 	@EventHandler
 	public void onInteract(final PlayerInteractEvent e) {
-		if (isMember(e.getPlayer())) {
+		if (isUser(e.getPlayer())) {
 			//fixme crafting, anvil, trapdoor and fence gates are openable
 			if (e.getAction() == Action.PHYSICAL || (e.getClickedBlock() != null && (e.getClickedBlock().getState() instanceof InventoryHolder || e.getClickedBlock().getType().equals(Material.WOOD_BUTTON) || e.getClickedBlock().getType().equals(Material.STONE_BUTTON)))) {
 				e.setCancelled(true);
@@ -89,31 +99,31 @@ public class DuelProtectListener implements Listener {
 	//fixme liquids does not cleans after game end
 	@EventHandler
 	public void onBucketFill(final PlayerBucketFillEvent e) {
-		if (!isMember(e.getPlayer())) return;
+		if (!isUser(e.getPlayer())) return;
 		e.setCancelled(true);
 	}
 
 	@EventHandler
 	public void onBucketEmpty(final PlayerBucketFillEvent e) {
-		if (!isMember(e.getPlayer())) return;
+		if (!isUser(e.getPlayer())) return;
 		e.setCancelled(true);
 	}
 
 	@EventHandler
 	public void onDrop(final PlayerDropItemEvent e) {
-		if (!isMember(e.getPlayer())) return;
+		if (!isUser(e.getPlayer())) return;
 		e.setCancelled(true);
 	}
 
 	@EventHandler
 	public void onBedEnter(final PlayerBedEnterEvent e) {
-		if (!isMember(e.getPlayer())) return;
+		if (!isUser(e.getPlayer())) return;
 		e.setCancelled(true);
 	}
 
 	@EventHandler
 	public void onPlayerItemDamage(final PlayerItemDamageEvent e) {
-		if (!isMember(e.getPlayer())) return;
+		if (!isUser(e.getPlayer())) return;
 		e.setCancelled(true);
 	}
 
@@ -132,14 +142,14 @@ public class DuelProtectListener implements Listener {
 
 	@EventHandler
 	public void onFishing(final PlayerFishEvent e) {
-		if (!isMember(e.getPlayer())) return;
+		if (!isUser(e.getPlayer())) return;
 		e.setCancelled(true);
 	}
 
 	@EventHandler
 	public void onDamage(final EntityDamageByEntityEvent e) {
-		if (isMember(e.getEntity())) {
-			if (!isMember(e.getDamager())) {
+		if (isUser(e.getEntity())) {
+			if (!isUser(e.getDamager())) {
 				//victim is in duel
 				//attacker isn't in duel
 				//cancel it.
