@@ -10,8 +10,10 @@ import mc.obliviate.blokduels.game.round.RoundData;
 import mc.obliviate.blokduels.game.spectator.SpectatorStorage;
 import mc.obliviate.blokduels.kit.InventoryStorer;
 import mc.obliviate.blokduels.kit.Kit;
-import mc.obliviate.blokduels.team.Member;
-import mc.obliviate.blokduels.team.Team;
+import mc.obliviate.blokduels.user.Spectator;
+import mc.obliviate.blokduels.user.User;
+import mc.obliviate.blokduels.user.team.Member;
+import mc.obliviate.blokduels.user.team.Team;
 import mc.obliviate.blokduels.utils.Logger;
 import mc.obliviate.blokduels.utils.MessageUtils;
 import mc.obliviate.blokduels.utils.placeholder.PlaceholderUtil;
@@ -20,9 +22,10 @@ import mc.obliviate.blokduels.utils.scoreboard.ScoreboardManager;
 import mc.obliviate.blokduels.utils.timer.TimerUtils;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
@@ -220,12 +223,14 @@ public class Game {
 
 		for (final Team team : teams.values()) {
 			for (final Member member : team.getMembers()) {
-				leaveMember(member);
+				leave(member);
 			}
 		}
 
 		cancelTasks(null);
-		clearArea();
+		if (plugin.getDatabaseHandler().getConfig().getBoolean("arena-regeneration.enabled", true)) {
+			clearArea();
+		}
 		DataHandler.registerArena(arena);
 	}
 
@@ -244,10 +249,31 @@ public class Game {
 		}
 	}
 
-	public void leaveMember(final Member member) {
+	public void leave(final User user) {
+		if (user instanceof Member) {
+			leave((Member) user);
+		} else if (user instanceof Spectator) {
+			leave((Spectator) user);
+		}
+	}
+
+	public void leave(final Spectator spectator) {
+		spectatorData.unspectate(spectator);
+	}
+
+	public boolean isMember(Player player) {
+		for (Member member : getAllMembers()) {
+			if (member.getPlayer().equals(player)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public void leave(final Member member) {
 		if (!member.getTeam().getMembers().contains(member)) return;
 
-		DataHandler.getMembers().remove(member.getPlayer().getUniqueId());
+		DataHandler.getUsers().remove(member.getPlayer().getUniqueId());
 		member.getTeam().removeMember(member);
 
 		if (!InventoryStorer.restore(member.getPlayer())) {
@@ -301,7 +327,6 @@ public class Game {
 	}
 
 
-
 	public void lockTeams() {
 		for (final Team team : teams.values()) {
 			lockTeam(team);
@@ -316,7 +341,6 @@ public class Game {
 			nextRound();
 		}
 	}
-
 
 
 	public boolean checkTeamEliminated(final Team team) {
@@ -373,7 +397,7 @@ public class Game {
 	}
 
 
-	public void makeSpectator(final Member member) {
+	private void makeSpectator(final Member member) {
 		final Player player = member.getPlayer();
 
 		new PlayerReset().excludeGamemode().excludeLevel().excludeExp().reset(player);

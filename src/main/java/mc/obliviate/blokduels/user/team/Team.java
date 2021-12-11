@@ -1,4 +1,4 @@
-package mc.obliviate.blokduels.team;
+package mc.obliviate.blokduels.user.team;
 
 import mc.obliviate.blokduels.game.Game;
 import org.bukkit.entity.Player;

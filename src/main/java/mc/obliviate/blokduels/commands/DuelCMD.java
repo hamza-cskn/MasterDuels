@@ -1,5 +1,7 @@
 package mc.obliviate.blokduels.commands;
 
+import com.hakan.messageapi.bukkit.MessageAPI;
+import com.hakan.messageapi.bukkit.title.Title;
 import mc.obliviate.blokduels.BlokDuels;
 import mc.obliviate.blokduels.arena.Arena;
 import mc.obliviate.blokduels.data.DataHandler;
@@ -8,7 +10,8 @@ import mc.obliviate.blokduels.game.GameBuilder;
 import mc.obliviate.blokduels.invite.Invite;
 import mc.obliviate.blokduels.invite.InviteResult;
 import mc.obliviate.blokduels.invite.Invites;
-import mc.obliviate.blokduels.team.Member;
+import mc.obliviate.blokduels.user.User;
+import mc.obliviate.blokduels.user.team.Member;
 import mc.obliviate.blokduels.utils.MessageUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -30,7 +33,7 @@ public class DuelCMD implements CommandExecutor {
 
 		final Player player = ((Player) sender).getPlayer();
 
-		final Member member = DataHandler.getMember(player.getUniqueId());
+		final User user = DataHandler.getUser(player.getUniqueId());
 
 		if (args.length == 0) {
 			player.sendMessage("§c§lUSAGE");
@@ -43,13 +46,13 @@ public class DuelCMD implements CommandExecutor {
 		}
 
 		if (args[0].equalsIgnoreCase("leave")) {
-			member.getTeam().getGame().leaveMember(member);
+			user.getGame().leave(user);
 			return true;
 		}
 
 		//THESE COMMANDS BLOCKED FOR PLAYERS WHO IN DUEL
 
-		if (member != null) {
+		if (user instanceof Member) {
 			player.sendMessage("§cYou are in a duel game already.");
 			return false;
 		}
@@ -114,6 +117,8 @@ public class DuelCMD implements CommandExecutor {
 			}
 
 			member.getTeam().getGame().getSpectatorData().spectate(player);
+
+
 
 		} else {
 			player.sendMessage("§cUsage: /duel spectate <player>");

@@ -6,7 +6,7 @@ import mc.obliviate.blokduels.data.DataHandler;
 import mc.obliviate.blokduels.game.Game;
 import mc.obliviate.blokduels.game.GameBuilder;
 import mc.obliviate.blokduels.setup.ArenaSetup;
-import mc.obliviate.blokduels.team.Member;
+import mc.obliviate.blokduels.user.team.Member;
 import mc.obliviate.blokduels.utils.serializer.SerializerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -70,19 +70,19 @@ public class SetupCMD implements CommandExecutor {
 			}
 
 			player.sendMessage(member.getTeam().getGame().getGameState().toString());
-		} else if (args[0].equalsIgnoreCase("testdoubles")) {
+		} else if (args[0].equalsIgnoreCase("test")) {
 
-			final Arena arena = Arena.findArena(2, 2);
+			final Arena arena = Arena.findArena(1, 2);
 
 			if (arena == null) {
 				player.sendMessage("§cCould not found any available arena.");
 				return false;
 			}
 
-			final GameBuilder gameBuilder = Game.create(plugin, arena).teamAmount(2).teamSize(2).finishTime(60).totalRounds(1);
+			final GameBuilder gameBuilder = Game.create(plugin, arena).teamAmount(2).teamSize(1).finishTime(60).totalRounds(1);
 
-			gameBuilder.createTeam(player, Bukkit.getPlayer("KillsGames99"));
-			gameBuilder.createTeam(Bukkit.getPlayer("MHF_Squid"), Bukkit.getPlayer("BeachKills99"));
+			gameBuilder.createTeam(Bukkit.getPlayer("CrazyHyperLP"));
+			gameBuilder.createTeam(Bukkit.getPlayer("WormsBuildHD"));
 			gameBuilder.build().startGame();
 		}
 			return true;

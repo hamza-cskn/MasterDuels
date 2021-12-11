@@ -1,7 +1,7 @@
 package mc.obliviate.blokduels.listeners;
 
 import mc.obliviate.blokduels.data.DataHandler;
-import mc.obliviate.blokduels.team.Member;
+import mc.obliviate.blokduels.user.team.Member;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -13,7 +13,7 @@ public class PlayerConnectionListener implements Listener {
 	public void onDisconnect(PlayerQuitEvent e) {
 		final Member member = DataHandler.getMember(e.getPlayer().getUniqueId());
 		if (member != null) {
-			member.getTeam().getGame().leaveMember(member);
+			member.getTeam().getGame().leave(member);
 		}
 	}
 

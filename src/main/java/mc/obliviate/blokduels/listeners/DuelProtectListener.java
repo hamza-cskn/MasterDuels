@@ -2,7 +2,7 @@ package mc.obliviate.blokduels.listeners;
 
 import mc.obliviate.blokduels.BlokDuels;
 import mc.obliviate.blokduels.data.DataHandler;
-import mc.obliviate.blokduels.team.Member;
+import mc.obliviate.blokduels.user.team.Member;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;

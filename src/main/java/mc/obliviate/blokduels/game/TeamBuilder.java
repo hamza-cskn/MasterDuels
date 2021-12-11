@@ -1,6 +1,6 @@
 package mc.obliviate.blokduels.game;
 
-import mc.obliviate.blokduels.team.Team;
+import mc.obliviate.blokduels.user.team.Team;
 import org.bukkit.entity.Player;
 
 import java.util.List;

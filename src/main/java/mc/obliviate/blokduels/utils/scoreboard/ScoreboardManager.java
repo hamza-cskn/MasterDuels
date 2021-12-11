@@ -5,7 +5,7 @@ import mc.obliviate.blokduels.BlokDuels;
 import mc.obliviate.blokduels.data.DataHandler;
 import mc.obliviate.blokduels.game.Game;
 import mc.obliviate.blokduels.game.GameState;
-import mc.obliviate.blokduels.team.Member;
+import mc.obliviate.blokduels.user.team.Member;
 import mc.obliviate.blokduels.utils.MessageUtils;
 import mc.obliviate.blokduels.utils.timer.TimerUtils;
 import org.bukkit.Bukkit;

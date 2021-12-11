@@ -1,6 +1,6 @@
 package mc.obliviate.blokduels.game.round;
 
-import mc.obliviate.blokduels.team.Team;
+import mc.obliviate.blokduels.user.team.Team;
 
 import java.util.HashMap;
 import java.util.Map;

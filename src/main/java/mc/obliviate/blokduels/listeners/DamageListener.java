@@ -3,7 +3,7 @@ package mc.obliviate.blokduels.listeners;
 import mc.obliviate.blokduels.BlokDuels;
 import mc.obliviate.blokduels.data.DataHandler;
 import mc.obliviate.blokduels.game.spectator.SpectatorStorage;
-import mc.obliviate.blokduels.team.Member;
+import mc.obliviate.blokduels.user.team.Member;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;

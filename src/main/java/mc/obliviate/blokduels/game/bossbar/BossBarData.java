@@ -2,7 +2,7 @@ package mc.obliviate.blokduels.game.bossbar;
 
 import mc.obliviate.blokduels.game.Game;
 import mc.obliviate.blokduels.game.GameState;
-import mc.obliviate.blokduels.team.Member;
+import mc.obliviate.blokduels.user.team.Member;
 import mc.obliviate.blokduels.utils.Utils;
 import mc.obliviate.blokduels.utils.tab.TABManager;
 import mc.obliviate.blokduels.utils.timer.TimerUtils;
