@@ -31,6 +31,7 @@ public class Kit {
 	}
 
 	public static void load(final Kit kit, final Player player) {
+		if (kit == null) return;
 		PlayerInventoryFrame.loadInventoryFrame(player, kit.playerInventoryFrame);
 	}
 
