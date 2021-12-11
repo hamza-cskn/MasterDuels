@@ -231,7 +231,16 @@ public class Game {
 
 	public void clearArea() {
 		for (final Location loc : getPlacedBlocks()) {
-			loc.getBlock().setType(Material.AIR);
+			loc.getBlock().setType(Material.AIR, false);
+		}
+		if (plugin.getDatabaseHandler().getConfig().getBoolean("arena-regeneration.remove-living-entities", true)) {
+			for (final Chunk chunk : arena.getArenaCuboid().getChunks()) {
+				for (final Entity entity : chunk.getEntities()) {
+					if (entity instanceof LivingEntity) {
+						entity.remove();
+					}
+				}
+			}
 		}
 	}
 

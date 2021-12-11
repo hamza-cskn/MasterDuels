@@ -1,6 +1,11 @@
 lock-time: 3 #in seconds
 delay-end-duel-after-player-kill: 20 #in seconds
 
+arena-regeneration:
+  enabled: true # if set true, deletes blocks that is placed by players, after duel game.
+  remove-living-entities: true #removes LIVING ENTITIES in arena region.
+# if you need more complex arena regeneration we recommended rollbackcore: https://www.spigotmc.org/resources/rollbackcore-1-4-7-1-17-1.18517/
+
 executable-commands:
   BATTLE:
     #- this_command_is_executable_in_battle

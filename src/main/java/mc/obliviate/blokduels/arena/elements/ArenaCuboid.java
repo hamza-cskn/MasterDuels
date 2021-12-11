@@ -1,5 +1,6 @@
 package mc.obliviate.blokduels.arena.elements;
 
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -7,6 +8,7 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
 
 public class ArenaCuboid {
@@ -14,7 +16,7 @@ public class ArenaCuboid {
 	/**
 	 * Purpose of class,
 	 * storing blocks as a cuboid
-	 *
+	 * <p>
 	 * Thanks to Tristiisch74 for the code.
 	 * https://www.spigotmc.org/threads/region-cuboid.329859/
 	 */
@@ -50,10 +52,10 @@ public class ArenaCuboid {
 	}
 
 	public Iterator<Block> blockList() {
-		final ArrayList<Block> bL = new ArrayList<Block>(this.getTotalBlockSize());
-		for(int x = this.xMin; x <= this.xMax; ++x) {
-			for(int y = this.yMin; y <= this.yMax; ++y) {
-				for(int z = this.zMin; z <= this.zMax; ++z) {
+		final ArrayList<Block> bL = new ArrayList<>(this.getTotalBlockSize());
+		for (int x = this.xMin; x <= this.xMax; ++x) {
+			for (int y = this.yMin; y <= this.yMax; ++y) {
+				for (int z = this.zMin; z <= this.zMax; ++z) {
 					final Block b = this.world.getBlockAt(x, y, z);
 					bL.add(b);
 				}
@@ -131,6 +133,16 @@ public class ArenaCuboid {
 						loc.getY() <= this.yMaxCentered + marge &&
 						loc.getZ() >= this.zMinCentered - marge &&
 						loc.getZ() <= this.zMaxCentered + marge;
+	}
+
+	public List<Chunk> getChunks() { //todo not tested
+		final List<Chunk> chunks = new ArrayList<>();
+		for (int x = this.xMin; x <= this.xMax; x += 16) {
+			for (int z = this.zMin; z <= this.zMax; z += 16) {
+				chunks.add(this.world.getChunkAt(x, z));
+			}
+		}
+		return chunks;
 	}
 
 }
