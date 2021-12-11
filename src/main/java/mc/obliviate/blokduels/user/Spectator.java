@@ -2,7 +2,7 @@ package mc.obliviate.blokduels.user;
 
 import mc.obliviate.blokduels.data.DataHandler;
 import mc.obliviate.blokduels.game.Game;
-import mc.obliviate.blokduels.kit.InventoryStorer;
+import mc.obliviate.blokduels.game.spectator.SpectatorManager;
 import org.bukkit.entity.Player;
 
 public class Spectator implements User {
@@ -14,7 +14,7 @@ public class Spectator implements User {
 		this.game = game;
 		this.player = player;
 		if (saveInventory) {
-			InventoryStorer.store(player);
+			SpectatorManager.giveSpectatorItems(player);
 		}
 		DataHandler.getUsers().put(player.getUniqueId(), this);
 	}

@@ -43,7 +43,7 @@ public class SpectatorStorage {
 	public Spectator add(final Player player) {
 		Spectator spectator = getSpectator(player);
 		if (spectator != null) return spectator;
-		spectator = new Spectator(game, player, game.isMember(player));
+		spectator = new Spectator(game, player, !game.isMember(player));
 		spectators.add(spectator);
 		return spectator;
 	}
@@ -81,6 +81,7 @@ public class SpectatorStorage {
 		if (!game.isMember(spectator.getPlayer())) {
 			DataHandler.getUsers().remove(spectator.getPlayer().getUniqueId());
 			spectator.getPlayer().teleport(DataHandler.getLobbyLocation());
+			InventoryStorer.restore(spectator.getPlayer());
 			MessageAPI.getInstance(spectator.getGame().getPlugin()).sendTitle(spectator.getPlayer(), new Title("", MessageUtils.parseColor("&cIzleyici modundan ayrıldınız!"), 20, 5, 5));
 
 		}
