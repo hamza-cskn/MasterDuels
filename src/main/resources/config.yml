@@ -1,6 +1,16 @@
 lock-time: 3 #in seconds
 delay-end-duel-after-player-kill: 20 #in seconds
 
+executable-commands:
+  BATTLE:
+    #- this_command_is_executable_in_battle
+  ROUND_STARTING:
+    #- this_command_is_executable_before_game_start
+  GAME_ENDING:
+    #- this_command_is_executable_after_victim_dead
+    #- this_command_is_executable_after_victim_dead_too
+  #empty lists means all commands should be blocked.
+
 scoreboards:
   BATTLE:
     title: '&e&lDUELS'
