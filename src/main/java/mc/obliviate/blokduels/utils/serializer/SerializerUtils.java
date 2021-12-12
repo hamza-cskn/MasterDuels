@@ -1,12 +1,23 @@
 package mc.obliviate.blokduels.utils.serializer;
 
+import mc.obliviate.blokduels.utils.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 public class SerializerUtils {
-	public static void serializeLocation(final ConfigurationSection section, final Location location) {
+
+	// START_TIME;GAME_TIME;UUID1,UUID2,UUID3 | START_TIME;GAME_TIME;UUID1,UUID2,UUID3
+	public static final String ELEMENT_SPLIT_CHARACTER = ",";
+	public static final String OBJECT_SPLIT_CHARACTER = ";";
+	public static final String DATA_SPLIT_CHARACTER = "|";
+
+	public static void serializeLocationYAML(final ConfigurationSection section, final Location location) {
 		section.set("world", location.getWorld().getName());
 		section.set("x", location.getX());
 		section.set("y", location.getY());
@@ -15,7 +26,7 @@ public class SerializerUtils {
 		section.set("pitch", (double) location.getPitch());
 	}
 
-	public static Location deserializeLocation(final ConfigurationSection section) {
+	public static Location deserializeLocationYAML(final ConfigurationSection section) {
 		if (section == null) return null;
 		final World world = Bukkit.getWorld(section.getString("world"));
 		if (world == null) {
@@ -30,6 +41,31 @@ public class SerializerUtils {
 		final double pitch = section.getDouble("pitch", 0);
 
 		return new Location(world, x, y, z, (float) yaw, (float) pitch);
-
 	}
+
+	public static String serializeStringConvertableList(final List<?> list) {
+		final StringBuilder builder = new StringBuilder();
+		int i = 0;
+		for (final Object o : list) {
+			builder.append(o.toString());
+			if (++i != list.size()) {
+				builder.append(ELEMENT_SPLIT_CHARACTER);
+			}
+		}
+		return builder.toString();
+	}
+
+	public static List<UUID> deserializeUUIDList(String serializedString) {
+		final List<UUID> list = new ArrayList<>();
+		for (String uuidString : serializedString.split(ELEMENT_SPLIT_CHARACTER)) {
+			try {
+				list.add(UUID.fromString(uuidString));
+			} catch (IllegalArgumentException e) {
+				Logger.error("String can not deserialized as UUID: " + uuidString);
+			}
+		}
+
+		return list;
+	}
+
 }

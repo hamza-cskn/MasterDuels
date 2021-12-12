@@ -15,21 +15,20 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
-public class DatabaseHandler {
+public class YamlStorageHandler {
 
-	private static final String DATA_FILE_NAME = "data.yml";
+	private static final String DATA_FILE_NAME = "arenadatas.yml";
 	private static final String CONFIG_FILE_NAME = "config.yml";
 	private static File dataFile;
 	private final BlokDuels plugin;
 	private YamlConfiguration data;
 	private YamlConfiguration config;
 
-	public DatabaseHandler(final BlokDuels plugin) {
+	public YamlStorageHandler(final BlokDuels plugin) {
 		this.plugin = plugin;
 	}
 
 	public void init() {
-
 		dataFile = new File(plugin.getDataFolder() + File.separator + DATA_FILE_NAME);
 		final File configFile = new File(plugin.getDataFolder() + File.separator + CONFIG_FILE_NAME);
 
@@ -45,7 +44,7 @@ public class DatabaseHandler {
 		}
 
 		if (data.isSet("lobby-location")) {
-			DataHandler.setLobbyLocation(SerializerUtils.deserializeLocation(data.getConfigurationSection("lobby-location")));
+			DataHandler.setLobbyLocation(SerializerUtils.deserializeLocationYAML(data.getConfigurationSection("lobby-location")));
 		}
 
 		Game.setEndDelay(getConfig().getInt("delay-end-duel-after-player-kill", 20));

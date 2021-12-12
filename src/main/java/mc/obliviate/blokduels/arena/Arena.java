@@ -46,8 +46,8 @@ public class Arena {
 		final String name = section.getString("name");
 		final String mapName = section.getString("map-name");
 
-		final Location cuboidPos1 = SerializerUtils.deserializeLocation(section.getConfigurationSection("arena-cuboid.position-1"));
-		final Location cuboidPos2 = SerializerUtils.deserializeLocation(section.getConfigurationSection("arena-cuboid.position-2"));
+		final Location cuboidPos1 = SerializerUtils.deserializeLocationYAML(section.getConfigurationSection("arena-cuboid.position-1"));
+		final Location cuboidPos2 = SerializerUtils.deserializeLocationYAML(section.getConfigurationSection("arena-cuboid.position-2"));
 
 		if (cuboidPos1 == null || cuboidPos2 == null) {
 			Bukkit.getLogger().severe("Cuboid pos1 or pos2 couldn't deserialized. Arena: " + name);
@@ -68,7 +68,7 @@ public class Arena {
 			positions.put(key, poses);
 			final ConfigurationSection positionSection = positionsSection.getConfigurationSection(key);
 			for (final String idString : positionSection.getKeys(false)) {
-				final Location location = SerializerUtils.deserializeLocation(positionSection.getConfigurationSection(idString));
+				final Location location = SerializerUtils.deserializeLocationYAML(positionSection.getConfigurationSection(idString));
 				poses.registerLocation(Integer.parseInt(idString), location);
 			}
 		}
@@ -83,14 +83,14 @@ public class Arena {
 
 		section.set("name", name);
 		section.set("map-name", mapName);
-		SerializerUtils.serializeLocation(section.createSection("arena-cuboid.position-1"), arenaCuboid.getPoint1());
-		SerializerUtils.serializeLocation(section.createSection("arena-cuboid.position-2"), arenaCuboid.getPoint2());
+		SerializerUtils.serializeLocationYAML(section.createSection("arena-cuboid.position-1"), arenaCuboid.getPoint1());
+		SerializerUtils.serializeLocationYAML(section.createSection("arena-cuboid.position-2"), arenaCuboid.getPoint2());
 		for (final String key : positions.keySet()) {
 			final Positions poses = positions.get(key);
 			for (final int id : poses.getLocations().keySet()) {
 				final ConfigurationSection locSection = section.createSection("positions." + key + "." + id);
 				final Location loc = poses.getLocation(id);
-				SerializerUtils.serializeLocation(locSection, loc);
+				SerializerUtils.serializeLocationYAML(locSection, loc);
 			}
 		}
 
