@@ -59,7 +59,7 @@ public class SetupCMD implements CommandExecutor {
 			return true;
 
 		} else if (args[0].equalsIgnoreCase("setlobby")) {
-			SerializerUtils.serializeLocation(plugin.getDatabaseHandler().getData().createSection("lobby-location"), player.getLocation());
+			SerializerUtils.serializeLocationYAML(plugin.getDatabaseHandler().getData().createSection("lobby-location"), player.getLocation());
 			plugin.getDatabaseHandler().saveDataFile();
 			player.sendMessage("§aLobby has set!");
 		} else if (args[0].equalsIgnoreCase("gamestate")) {
@@ -81,8 +81,8 @@ public class SetupCMD implements CommandExecutor {
 
 			final GameBuilder gameBuilder = Game.create(plugin, arena).teamAmount(2).teamSize(1).finishTime(60).totalRounds(1);
 
-			gameBuilder.createTeam(Bukkit.getPlayer("CrazyHyperLP"));
-			gameBuilder.createTeam(Bukkit.getPlayer("WormsBuildHD"));
+			gameBuilder.createTeam(Bukkit.getPlayer("GamesElderLP"));
+			gameBuilder.createTeam(Bukkit.getPlayer("SlimeSlimeLP"));
 			gameBuilder.build().startGame();
 		}
 			return true;

@@ -8,6 +8,7 @@ import mc.obliviate.blokduels.data.DataHandler;
 import mc.obliviate.blokduels.game.bossbar.BossBarData;
 import mc.obliviate.blokduels.game.round.RoundData;
 import mc.obliviate.blokduels.game.spectator.SpectatorStorage;
+import mc.obliviate.blokduels.history.GameHistoryLog;
 import mc.obliviate.blokduels.kit.InventoryStorer;
 import mc.obliviate.blokduels.kit.Kit;
 import mc.obliviate.blokduels.user.Spectator;
@@ -28,10 +29,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.*;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static mc.obliviate.blokduels.data.DataHandler.LOCK_TIME_IN_SECONDS;
 import static mc.obliviate.blokduels.game.GameState.*;
@@ -51,6 +49,7 @@ public class Game {
 	private final SpectatorStorage spectatorData = new SpectatorStorage(this);
 	private final GameBuilder gameBuilder;
 	private final BossBarData bossBarData = new BossBarData(this);
+	private final GameHistoryLog gameHistoryLog = new GameHistoryLog();
 	private long timer;
 	private GameState gameState = GAME_STARING;
 	//todo is this variables cloned with gamebuilder?
@@ -85,6 +84,30 @@ public class Game {
 
 	public List<Location> getPlacedBlocks() {
 		return placedBlocks;
+	}
+
+	private void setGameState(GameState gameState) {
+		this.gameState = gameState;
+
+		if (gameState.equals(BATTLE)) {
+			gameHistoryLog.setStartTime(System.currentTimeMillis());
+		} else if (gameState.equals(UNINSTALLING)) {
+			gameHistoryLog.setGameTime((int) ((System.currentTimeMillis() - gameHistoryLog.getStartTime())/1000));
+
+			final List<UUID> losers = new ArrayList<>();
+			final List<UUID> winners = new ArrayList<>();
+			for (final Team team : getTeams().values()) {
+				List type;
+				if (checkTeamEliminated(team)) {
+					type = losers;
+				} else {
+					type = winners;
+				}
+				for (Member member : team.getMembers()) {
+					type.add(member.getPlayer().getUniqueId());
+				}
+			}
+		}
 	}
 
 	protected void registerTeam(Team team) {
@@ -124,7 +147,7 @@ public class Game {
 			return;
 		}
 		timer = System.currentTimeMillis() + (LOCK_TIME_IN_SECONDS * 1000L);
-		gameState = ROUND_STARTING;
+		setGameState(ROUND_STARTING);
 		resetPlayers();
 		reloadKits();
 		lockTeams();
@@ -144,6 +167,7 @@ public class Game {
 		setFinishTimer();
 		if (round == 1) {
 			initBossBar();
+			gameHistoryLog.setStartTime(System.currentTimeMillis());
 		}
 	}
 
@@ -201,7 +225,7 @@ public class Game {
 			Logger.severe("Finish Game method called twice.");
 			return;
 		}
-		gameState = GAME_ENDING;
+		setGameState(GAME_ENDING);
 		cancelTasks("REMAINING_TIME");
 		timer = endDelay * 1000L + System.currentTimeMillis();
 		Bukkit.getScheduler().runTaskLater(plugin, this::uninstallGame, endDelay * 20L);
@@ -218,7 +242,7 @@ public class Game {
 			return;
 		}
 
-		gameState = UNINSTALLING;
+		setGameState(UNINSTALLING);
 		broadcastInGame("game-has-finished");
 
 		for (final Team team : teams.values()) {
@@ -232,6 +256,8 @@ public class Game {
 			clearArea();
 		}
 		DataHandler.registerArena(arena);
+
+
 	}
 
 	public void clearArea() {

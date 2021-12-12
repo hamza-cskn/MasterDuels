@@ -51,19 +51,19 @@ public class DuelArenaListGUI extends GUI {
 				player.closeInventory();
 				game.getSpectatorData().spectate(player);
 			}
-		}).setName(MessageUtils.parseColor("&6" + game.getArena().getName())).setLore(MessageUtils.parseColor(Arrays.asList("","&aHarita: " + game.getArena().getMapName(),"","&e&oTıkla ve izle!")));
+		}).setName(MessageUtils.parseColor("&6" + game.getArena().getName())).setLore(MessageUtils.parseColor(Arrays.asList("","&aDurum: &6" + game.getGameState(), "&aHarita: " + game.getArena().getMapName(),"","&e&oTıkla ve izle!")));
 	}
 
 	private ItemStack getStateMaterial(GameState state) {
 		switch (state) {
 			case BATTLE:
-				return new MaterialData(Material.WOOL, (byte) 14).toItemStack();
+				return new MaterialData(Material.WOOL, (byte) 14).toItemStack(1);
 			case GAME_STARING:
-				return new MaterialData(Material.WOOL, (byte) 5).toItemStack();
+				return new MaterialData(Material.WOOL, (byte) 5).toItemStack(1);
 			case GAME_ENDING:
-				return new MaterialData(Material.WOOL, (byte) 1).toItemStack();
+				return new MaterialData(Material.WOOL, (byte) 1).toItemStack(1);
 			default:
-				return new MaterialData(Material.WOOL, (byte) 0).toItemStack();
+				return new MaterialData(Material.WOOL, (byte) 0).toItemStack(1);
 		}
 	}
 }

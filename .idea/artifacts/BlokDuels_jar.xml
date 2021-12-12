@@ -5,6 +5,7 @@
       <element id="module-output" name="BlokDuels" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/github/Obliviated/ObliviateInvs/3.0.1/ObliviateInvs-3.0.1.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/github/hakan-krgn/hMessageAPI/bukkit/1.0.6/bukkit-1.0.6.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../Libraries/SQLiteAPI.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>
