@@ -7,7 +7,7 @@ import mc.obliviate.blokduels.commands.KitEditorCMD;
 import mc.obliviate.blokduels.commands.SetupCMD;
 import mc.obliviate.blokduels.config.ConfigHandler;
 import mc.obliviate.blokduels.data.DataHandler;
-import mc.obliviate.blokduels.data.DatabaseHandler;
+import mc.obliviate.blokduels.data.YamlStorageHandler;
 import mc.obliviate.blokduels.game.Game;
 import mc.obliviate.blokduels.kit.serializer.KitSerializer;
 import mc.obliviate.blokduels.listeners.*;
@@ -23,7 +23,7 @@ import java.io.File;
 public class BlokDuels extends JavaPlugin {
 
 	private final InventoryAPI inventoryAPI = new InventoryAPI(this);
-	private final DatabaseHandler databaseHandler = new DatabaseHandler(this);
+	private final YamlStorageHandler yamlStorageHandler = new YamlStorageHandler(this);
 	private final ConfigHandler configHandler = new ConfigHandler(this);
 	private MessageAPI messageAPI;
 	private ScoreboardManager scoreboardManager;
@@ -43,7 +43,7 @@ public class BlokDuels extends JavaPlugin {
 	}
 
 	private void setupHandlers() {
-		databaseHandler.init();
+		yamlStorageHandler.init();
 		inventoryAPI.init();
 		configHandler.init();
 		scoreboardManager = new ScoreboardManager(this);
@@ -91,8 +91,8 @@ public class BlokDuels extends JavaPlugin {
 		return configHandler;
 	}
 
-	public DatabaseHandler getDatabaseHandler() {
-		return databaseHandler;
+	public YamlStorageHandler getDatabaseHandler() {
+		return yamlStorageHandler;
 	}
 
 	public InventoryAPI getInventoryAPI() {
