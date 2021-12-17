@@ -5,6 +5,8 @@ import mc.obliviate.blokduels.data.DataHandler;
 import mc.obliviate.blokduels.user.Spectator;
 import mc.obliviate.blokduels.user.User;
 import mc.obliviate.blokduels.user.team.Member;
+import mc.obliviate.blokduels.utils.MessageUtils;
+import mc.obliviate.blokduels.utils.placeholder.PlaceholderUtil;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -132,9 +134,9 @@ public class DuelProtectListener implements Listener {
 		final Member member = DataHandler.getMember(e.getPlayer().getUniqueId());
 		if (member == null || e.getPlayer().isOp()) return;
 		if (e.getMessage().startsWith("/")) {
-			if (!plugin.getDatabaseHandler().getConfig().getStringList("executable-commands." + member.getTeam().getGame().getGameState().name()).contains(e.getMessage())) {
+			if (!plugin.getDatabaseHandler().getConfig().getStringList("executable-commands-by-player." + member.getTeam().getGame().getGameState().name()).contains(e.getMessage())) {
 				e.setCancelled(true);
-				e.getPlayer().sendMessage("bu komutu burada kullanamazsın.");
+				MessageUtils.sendMessage(e.getPlayer(),"command-is-blocked",new PlaceholderUtil().add("{command}",e.getMessage()));
 			}
 		}
 

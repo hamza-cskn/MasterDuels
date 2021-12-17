@@ -24,7 +24,7 @@ public class YamlStorageHandler {
 
 	private static final String DATA_FILE_NAME = "arenadatas.yml";
 	private static final String CONFIG_FILE_NAME = "config.yml";
-	private static final String MESSAGES_FILE_NAME = "config.yml";
+	private static final String MESSAGES_FILE_NAME = "messages.yml";
 	private static File dataFile;
 	private final BlokDuels plugin;
 	private YamlConfiguration data;
@@ -123,7 +123,7 @@ public class YamlStorageHandler {
 	}
 
 	private void registerBossbars() {
-		if (config.getBoolean("bossbars.enabled")) {
+		if (config.getBoolean("bossbars.enabled", false)) {
 			BossBarData.NORMAL_TEXT_FORMAT = config.getString("bossbars.in-battle");
 			BossBarData.CLOSING_TEXT_FORMAT = config.getString("bossbars.arena-closing");
 		}
@@ -132,6 +132,7 @@ public class YamlStorageHandler {
 	private void registerTitles() {
 		for (final TitleHandler.TitleType type : TitleHandler.TitleType.values()) {
 			final ConfigurationSection section = config.getConfigurationSection("titles." + type.name());
+			if (section == null) return;
 			TitleHandler.registerTitle(type, section);
 		}
 	}
@@ -162,7 +163,6 @@ public class YamlStorageHandler {
 
 	public void saveArena(final Arena arena) {
 		final ConfigurationSection section = data.createSection(arena.getName());
-
 		arena.serialize(section);
 		saveDataFile();
 

@@ -90,7 +90,7 @@ public class Game {
 	}
 
 	public void startGame() {
-		broadcastInGame("game-has-started");
+		broadcastInGame("game-started");
 		updateScoreboardTasks();
 		storeKits();
 		nextRound();
@@ -149,7 +149,7 @@ public class Game {
 	private void setFinishTimer() {
 		timer = System.currentTimeMillis() + (finishTime * 1000);
 		task("REMAINING_TIME", Bukkit.getScheduler().runTaskLater(plugin, () -> {
-			broadcastInGame("game-has-timed-out");
+			broadcastInGame("game-timed-out");
 			uninstallGame();
 		}, finishTime * 20));
 	}
@@ -218,7 +218,7 @@ public class Game {
 		}
 
 		setGameState(UNINSTALLING);
-		broadcastInGame("game-has-finished");
+		broadcastInGame("game-finished");
 
 		for (final Team team : teams.values()) {
 			for (final Member member : team.getMembers()) {

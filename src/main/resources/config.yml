@@ -10,7 +10,7 @@ arena-regeneration:
 # worlds of arenas. Thats includes game rules of the worlds.
 optimize-duel-worlds: false
 
-executable-commands:
+executable-commands-by-player:
   BATTLE:
     #- this_command_is_executable_in_battle
   ROUND_STARTING:
@@ -20,7 +20,7 @@ executable-commands:
     #- this_command_is_executable_after_victim_dead_too
   #empty lists means all commands should be blocked.
 
-scoreboards: #Requires Title Manager plugin
+scoreboards: #Requires TitleManager plugin
   enabled: true
   BATTLE:
     title: '&e&lDUELS'

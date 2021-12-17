@@ -5,11 +5,12 @@ import mc.obliviate.blokduels.utils.MessageUtils;
 import mc.obliviate.blokduels.utils.placeholder.PlaceholderUtil;
 import org.bukkit.configuration.ConfigurationSection;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class TitleHandler {
 
-	public static Map<TitleType, Title> titles;
+	public final static Map<TitleType, Title> titles = new HashMap<>();
 
 	private static Title deseralize(ConfigurationSection section) {
 		return new Title(section.getString("title", ""), section.getString("subtitle", ""), section.getInt("stay", 20), section.getInt("fadein", 10), section.getInt("fadeout", 10));
