@@ -1,5 +1,6 @@
 lock-time: 3 #in seconds
 delay-end-duel-after-player-kill: 20 #in seconds
+invite-timeout: 120 #in seconds
 
 arena-regeneration:
   enabled: true # if set true, deletes blocks that is placed by players, after duel game.
@@ -65,9 +66,9 @@ titles:
   ROUND_STARTING:
     title: '&c&lGAME STARTING' # also, you can use {round} and {remaining-time-timer} placeholders
     subtitle: '&e{remaining-time-time}'
-    fadein: 20 #in ticks
+    fadein: 5 #in ticks
     stay: 20 #in ticks
-    fadeout: 20 #in ticks
+    fadeout: 3 #in ticks
   SPECTATOR_JOIN:
     title: ''
     subtitle: '&7You are spectator now.'

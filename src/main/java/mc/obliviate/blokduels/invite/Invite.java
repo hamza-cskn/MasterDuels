@@ -30,7 +30,7 @@ public class Invite {
 	private InviteResponse response;
 
 	public Invite(BlokDuels plugin, Player inviter, Player invited, GameBuilder gameBuilder) {
-		this(plugin, inviter, invited, gameBuilder, 120);
+		this(plugin, inviter, invited, gameBuilder, plugin.getDatabaseHandler().getConfig().getInt("invite-timeout"));
 	}
 
 	public Invite(BlokDuels plugin, Player inviter, Player invited, GameBuilder gameBuilder, int expireTime) {
