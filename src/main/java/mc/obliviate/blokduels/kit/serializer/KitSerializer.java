@@ -10,14 +10,17 @@ import java.util.Map;
 public class KitSerializer {
 
 	public static void serialize(Kit kit, ConfigurationSection section) {
+		if (section == null) throw new IllegalArgumentException("section could not deserialized because section was null.");;
 		serializeItemList(section.createSection("items"), kit.getContents());
 		serializeItemList(section.createSection("armors"), kit.getArmorContents());
+
+		section.set("icon", kit.getIcon());
 
 	}
 
 	private static void serializeItemList(ConfigurationSection section, ItemStack[] items) {
 		int i = -1;
-		for (ItemStack item : items) {
+		for (final ItemStack item : items) {
 			i++;
 			if (item == null) continue;
 			section.set(i + "", item);
