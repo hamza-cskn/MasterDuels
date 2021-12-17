@@ -1,10 +1,11 @@
 package mc.obliviate.blokduels.data;
 
-import mc.obliviate.blokduels.arena.Arena;
 import mc.obliviate.blokduels.BlokDuels;
+import mc.obliviate.blokduels.arena.Arena;
 import mc.obliviate.blokduels.game.Game;
 import mc.obliviate.blokduels.game.GameState;
 import mc.obliviate.blokduels.game.bossbar.BossBarData;
+import mc.obliviate.blokduels.gui.DuelHistoryLogGUI;
 import mc.obliviate.blokduels.utils.Logger;
 import mc.obliviate.blokduels.utils.MessageUtils;
 import mc.obliviate.blokduels.utils.scoreboard.ScoreboardFormatConfig;
@@ -47,6 +48,9 @@ public class YamlStorageHandler {
 		registerTitles();
 		registerBossbars();
 		registerTimerFormats();
+		registerHistoryGui();
+
+		DataHandler.LOCK_TIME_IN_SECONDS = config.getInt("lock-time");
 	}
 
 	private void loadDataFile(File dataFile) {
@@ -72,6 +76,10 @@ public class YamlStorageHandler {
 			plugin.saveResource(CONFIG_FILE_NAME, true);
 			config = YamlConfiguration.loadConfiguration(configFile);
 		}
+	}
+
+	private void registerHistoryGui() {
+		DuelHistoryLogGUI.guiSection = config.getConfigurationSection("game-history.gui");
 	}
 
 	private void registerArenas() {
