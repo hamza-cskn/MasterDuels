@@ -89,7 +89,6 @@ public class YamlStorageHandler {
 				world.setAnimalSpawnLimit(0);
 				world.setAmbientSpawnLimit(0);
 				world.setWaterAnimalSpawnLimit(0);
-				world.setKeepSpawnInMemory(false);
 				world.setThundering(false);
 				world.setStorm(false);
 				if (!world.getPVP()) {
