@@ -15,6 +15,7 @@ public class InternalPlaceholder {
 	}
 
 	public String getValue() {
+		if (value == null) return "";
 		return value;
 	}
 }
