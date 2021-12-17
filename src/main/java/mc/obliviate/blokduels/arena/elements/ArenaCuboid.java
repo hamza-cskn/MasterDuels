@@ -135,11 +135,11 @@ public class ArenaCuboid {
 						loc.getZ() <= this.zMaxCentered + marge;
 	}
 
-	public List<Chunk> getChunks() { //todo not tested
+	public List<Chunk> getChunks() {
 		final List<Chunk> chunks = new ArrayList<>();
 		for (int x = this.xMin; x <= this.xMax; x += 16) {
 			for (int z = this.zMin; z <= this.zMax; z += 16) {
-				chunks.add(this.world.getChunkAt(x, z));
+				chunks.add(new Location(world, x, 100, z).getChunk());
 			}
 		}
 		return chunks;

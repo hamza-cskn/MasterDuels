@@ -240,7 +240,7 @@ public class Game {
 		if (plugin.getDatabaseHandler().getConfig().getBoolean("arena-regeneration.remove-entities", true)) {
 			for (final Chunk chunk : arena.getArenaCuboid().getChunks()) {
 				for (final Entity entity : chunk.getEntities()) {
-					if (entity instanceof Item || entity instanceof Projectile) { //todo not tested
+					if (entity instanceof Item || entity instanceof Projectile) {
 						entity.remove();
 					}
 				}
