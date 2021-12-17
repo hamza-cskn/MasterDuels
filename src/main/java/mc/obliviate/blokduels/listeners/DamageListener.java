@@ -36,13 +36,15 @@ public class DamageListener implements Listener {
 		final Player victim = (Player) e.getEntity();
 
 		final Member member = DataHandler.getMember(victim.getUniqueId());
+		Member attackerMember = null;
+
 		if (member == null) return;
 		if (member.getTeam() == null) Bukkit.broadcastMessage("team is null");
 		if (member.getTeam().getGame() == null) Bukkit.broadcastMessage("game is null");
 
 
 		if (e instanceof EntityDamageByEntityEvent && ((EntityDamageByEntityEvent) e).getDamager() instanceof Player) {
-			final Member attackerMember = DataHandler.getMember(((EntityDamageByEntityEvent) e).getDamager().getUniqueId());
+			attackerMember = DataHandler.getMember(((EntityDamageByEntityEvent) e).getDamager().getUniqueId());
 			if (attackerMember == null) {
 				e.setCancelled(true);
 				return;
@@ -61,7 +63,7 @@ public class DamageListener implements Listener {
 
 		if (e.getFinalDamage() >= victim.getHealth()) {
 			e.setCancelled(true);
-			member.getTeam().getGame().onDeath(member);
+			member.getTeam().getGame().onDeath(member, attackerMember);
 		}
 	}
 
