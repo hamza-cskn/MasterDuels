@@ -8,13 +8,14 @@ game-finished: '&cDuel game has been finished.'
 game-started: '&cDuel game has been started!'
 round-has-started: '&c&l{round}. RAUND&7 başladı!'
 round-has-finished: '&c&l{round}. RAUND&7 sona erdi!'
-duel-team-eliminated: '&c{victim}&7 adlı oyuncunun takımı elendi!'
+duel-team-eliminated: '&7The team of &c{victim}&7 has been eleminated!'
 player-dead:
   by-attacker: '&c{victim}&7 has killed by &c{attacker}&7.'
   without-attacker: '&c{victim}&7 has been died.'
 you-are-a-spectator: '&eYou are a spectator.'
-kit-save-usage: '&cCorrect usage: /duelkitsave <kit name>'
-kit-has-saved: '&7Kit saved: &f{kit}&7'
+kit:
+  editor-usage: '&cCorrect usage: /duelkit save <kit name>'
+  has-saved: '&7Kit saved: &f{kit}&7'
 game-timed-out: '&cDuel game you are in, has been timed out.'
 invite:
   usage: '&cCorrect Usage:&7 /duello <player name>'

@@ -3,11 +3,13 @@ package mc.obliviate.blokduels.history;
 import mc.obliviate.blokduels.BlokDuels;
 import mc.obliviate.blokduels.utils.serializer.SerializerUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 public class GameHistoryLog implements HistoryLog {
 
+	public static final List<GameHistoryLog> historyCache = new ArrayList<>();
 	private final UUID uuid;
 	private long startTime = 0L;
 	private long endTime = 0L;

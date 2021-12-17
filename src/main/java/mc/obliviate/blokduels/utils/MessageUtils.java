@@ -46,7 +46,7 @@ public class MessageUtils {
 	public static void sendMessage(final Player player, final String configNode, final PlaceholderUtil placeholderUtil) {
 		String message = getMessage(configNode);
 
-		player.sendMessage(prefix + parseColor(message));
+		player.sendMessage(prefix + parseColor(applyPlaceholders(message,placeholderUtil)));
 	}
 
 	public static String applyPlaceholders(String message, final PlaceholderUtil placeholderUtil) {

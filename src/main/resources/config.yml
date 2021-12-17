@@ -85,3 +85,31 @@ bossbars: #Requires TAB plugin
   enabled: true
   in-battle: 'Remaining Time: {time}' #also, you can use {timer} placeholder
   arena-closing: 'Arena Closing in: {time}'
+game-history:
+  max-amount-of-histories-in-storage: 50
+  cache-refresh: 1200 #in ticks
+
+  gui:
+    title: 'Duel History'
+    solo-games-icon:
+      material-type: PAPER
+      description:
+        - '&dGame Duration: &7{time}' # name of icon
+        - ''
+        - '&a{winner} &8⚔ &c{loser}'
+        - ''
+        - '&8Game played at: {played-date}'
+    non-solo-games-icon:
+      winners-format: ' &a{winner}!'
+      losers-format: ' &c{loser}'
+      material-type: PAPER
+      description:
+        - '&dGame Duration: &7{time}' # name of icon
+        - ''
+        - '&aWinners:'
+        - ' {+winners}'
+        - ''
+        - '&cLosers:'
+        - ' {+losers}'
+        - ''
+        - '&8Game played at: {played-date}'
