@@ -1,6 +1,5 @@
 package mc.obliviate.blokduels.game;
 
-import com.hakan.messageapi.bukkit.title.Title;
 import mc.obliviate.blokduels.BlokDuels;
 import mc.obliviate.blokduels.arena.Arena;
 import mc.obliviate.blokduels.arena.elements.Positions;
@@ -21,7 +20,7 @@ import mc.obliviate.blokduels.utils.placeholder.PlaceholderUtil;
 import mc.obliviate.blokduels.utils.playerreset.PlayerReset;
 import mc.obliviate.blokduels.utils.scoreboard.ScoreboardManager;
 import mc.obliviate.blokduels.utils.timer.TimerUtils;
-import net.md_5.bungee.api.ChatColor;
+import mc.obliviate.blokduels.utils.title.TitleHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -84,30 +83,6 @@ public class Game {
 
 	public List<Location> getPlacedBlocks() {
 		return placedBlocks;
-	}
-
-	private void setGameState(GameState gameState) {
-		this.gameState = gameState;
-
-		if (gameState.equals(BATTLE)) {
-			gameHistoryLog.setStartTime(System.currentTimeMillis());
-		} else if (gameState.equals(UNINSTALLING)) {
-			gameHistoryLog.setGameTime((int) ((System.currentTimeMillis() - gameHistoryLog.getStartTime())/1000));
-
-			final List<UUID> losers = new ArrayList<>();
-			final List<UUID> winners = new ArrayList<>();
-			for (final Team team : getTeams().values()) {
-				List type;
-				if (checkTeamEliminated(team)) {
-					type = losers;
-				} else {
-					type = winners;
-				}
-				for (Member member : team.getMembers()) {
-					type.add(member.getPlayer().getUniqueId());
-				}
-			}
-		}
 	}
 
 	protected void registerTeam(Team team) {
@@ -256,18 +231,16 @@ public class Game {
 			clearArea();
 		}
 		DataHandler.registerArena(arena);
-
-
 	}
 
 	public void clearArea() {
 		for (final Location loc : getPlacedBlocks()) {
 			loc.getBlock().setType(Material.AIR, false);
 		}
-		if (plugin.getDatabaseHandler().getConfig().getBoolean("arena-regeneration.remove-living-entities", true)) {
+		if (plugin.getDatabaseHandler().getConfig().getBoolean("arena-regeneration.remove-entities", true)) {
 			for (final Chunk chunk : arena.getArenaCuboid().getChunks()) {
 				for (final Entity entity : chunk.getEntities()) {
-					if (entity instanceof LivingEntity) {
+					if (entity instanceof Item || entity instanceof Projectile) { //todo not tested
 						entity.remove();
 					}
 				}
@@ -307,11 +280,11 @@ public class Game {
 		}
 
 		showAll(member.getPlayer());
-		new PlayerReset().excludeExp().excludeLevel().excludeInventory().excludeGamemode().excludeTitle().reset(member.getPlayer());
+		new PlayerReset().excludeExp().excludeLevel().excludeInventory().excludeGamemode().reset(member.getPlayer());
 		ScoreboardManager.defaultScoreboard(member.getPlayer());
 
 
-		if (DataHandler.getLobbyLocation() != null || !member.getPlayer().teleport(DataHandler.getLobbyLocation())) {
+		if (DataHandler.getLobbyLocation() != null && !member.getPlayer().teleport(DataHandler.getLobbyLocation())) {
 			if (!BlokDuels.isInShutdownMode()) {
 				member.getPlayer().kickPlayer("You could not teleported to lobby.\n" + DataHandler.getLobbyLocation());
 				Logger.error("Player " + member.getPlayer().getName() + " could not teleported to lobby. BlokDuels kicked him.");
@@ -332,7 +305,6 @@ public class Game {
 		}
 	}
 
-
 	private void showAll(Player player) {
 		for (final Team team : teams.values()) {
 			for (final Member m : team.getMembers()) {
@@ -352,22 +324,24 @@ public class Game {
 		}
 	}
 
-
 	public void lockTeams() {
 		for (final Team team : teams.values()) {
 			lockTeam(team);
 		}
 	}
 
-	public void onDeath(final Member member) {
-		broadcastInGame("duel-player-death", new PlaceholderUtil().add("{victim}", member.getPlayer().getName()));
+	public void onDeath(final Member member, final Member attacker) {
+		if (attacker == null) {
+			broadcastInGame("player-dead.without-attacker", new PlaceholderUtil().add("{victim}", member.getPlayer().getName()));
+		} else {
+			broadcastInGame("player-dead.by-attacker", new PlaceholderUtil().add("{attacker}", attacker.getPlayer().getName()).add("{victim}", member.getPlayer().getName()));
+		}
 		makeSpectator(member);
 		if (checkTeamEliminated(member.getTeam())) {
 			broadcastInGame("duel-team-eliminated", new PlaceholderUtil().add("{victim}", member.getPlayer().getName()));
 			nextRound();
 		}
 	}
-
 
 	public boolean checkTeamEliminated(final Team team) {
 		for (Member p : team.getMembers()) {
@@ -387,7 +361,10 @@ public class Game {
 			if (i == 1 || i % 10 == 0) {
 				task("ROUNDTASK_team-sendTitle-" + team.getTeamId() + "_" + i, Bukkit.getScheduler().runTaskLater(plugin, () -> {
 					for (Member member : getAllMembers()) {
-						plugin.getMessageAPI().sendTitle(member.getPlayer(), new Title(ChatColor.YELLOW + "Raund başlıyor", ChatColor.RED + TimerUtils.convertTimer(timer + 100), 15, 0, 5));
+						plugin.getMessageAPI().sendTitle(member.getPlayer(), TitleHandler.getTitle(TitleHandler.TitleType.ROUND_STARTING,
+								new PlaceholderUtil().add("{round}", roundData.getCurrentRound() + "")
+										.add("{remaining-time-timer}", TimerUtils.formatTimerFormat(timer + 100))
+										.add("{remaining-time-time}", TimerUtils.formatTimeFormat(timer + 100))));
 					}
 				}, i * 2L));
 			}
@@ -422,7 +399,6 @@ public class Game {
 		}
 	}
 
-
 	private void makeSpectator(final Member member) {
 		final Player player = member.getPlayer();
 
@@ -452,6 +428,35 @@ public class Game {
 
 	public GameState getGameState() {
 		return gameState;
+	}
+
+	private void setGameState(GameState gameState) {
+		this.gameState = gameState;
+		onGameStateChange();
+	}
+
+	private void onGameStateChange() {
+		if (gameState.equals(BATTLE)) {
+			gameHistoryLog.setStartTime(System.currentTimeMillis());
+		} else if (gameState.equals(GAME_ENDING)) {
+			gameHistoryLog.setEndTime(System.currentTimeMillis());
+
+			final List<UUID> losers = new ArrayList<>();
+			final List<UUID> winners = new ArrayList<>();
+			for (final Team team : getTeams().values()) {
+				final List<UUID> list;
+
+				if (checkTeamEliminated(team)) list = losers;
+				else list = winners;
+
+				for (final Member member : team.getMembers()) {
+					list.add(member.getPlayer().getUniqueId());
+				}
+			}
+			gameHistoryLog.setLosers(losers);
+			gameHistoryLog.setWinners(winners);
+			gameHistoryLog.save(plugin);
+		}
 	}
 
 	public RoundData getRoundData() {

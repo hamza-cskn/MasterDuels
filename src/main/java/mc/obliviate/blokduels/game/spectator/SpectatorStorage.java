@@ -1,15 +1,13 @@
 package mc.obliviate.blokduels.game.spectator;
 
 import com.hakan.messageapi.bukkit.MessageAPI;
-import com.hakan.messageapi.bukkit.title.Title;
 import mc.obliviate.blokduels.data.DataHandler;
 import mc.obliviate.blokduels.game.Game;
 import mc.obliviate.blokduels.kit.InventoryStorer;
-import mc.obliviate.blokduels.kit.PlayerInventoryFrame;
 import mc.obliviate.blokduels.user.Spectator;
 import mc.obliviate.blokduels.user.team.Member;
-import mc.obliviate.blokduels.utils.MessageUtils;
 import mc.obliviate.blokduels.utils.playerreset.PlayerReset;
+import mc.obliviate.blokduels.utils.title.TitleHandler;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -82,7 +80,7 @@ public class SpectatorStorage {
 			DataHandler.getUsers().remove(spectator.getPlayer().getUniqueId());
 			spectator.getPlayer().teleport(DataHandler.getLobbyLocation());
 			InventoryStorer.restore(spectator.getPlayer());
-			MessageAPI.getInstance(spectator.getGame().getPlugin()).sendTitle(spectator.getPlayer(), new Title("", MessageUtils.parseColor("&cIzleyici modundan ayrıldınız!"), 20, 5, 5));
+			MessageAPI.getInstance(spectator.getGame().getPlugin()).sendTitle(spectator.getPlayer(), TitleHandler.getTitle(TitleHandler.TitleType.SPECTATOR_LEAVE));
 
 		}
 
@@ -94,7 +92,7 @@ public class SpectatorStorage {
 
 		if (!game.isMember(player)) {
 			player.teleport(spectator.getGame().getArena().getPositions().get("spawn-team-1").getLocation(1)); //todo make spectator location
-			MessageAPI.getInstance(spectator.getGame().getPlugin()).sendTitle(player, new Title("", MessageUtils.parseColor("&7Izleyici moduna geçtiniz!"), 20, 5, 5));
+			MessageAPI.getInstance(spectator.getGame().getPlugin()).sendTitle(spectator.getPlayer(), TitleHandler.getTitle(TitleHandler.TitleType.SPECTATOR_JOIN));
 
 		}
 

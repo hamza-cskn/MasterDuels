@@ -49,6 +49,7 @@ public class YamlStorageHandler {
 
 		Game.setEndDelay(getConfig().getInt("delay-end-duel-after-player-kill", 20));
 
+	private void registerScoreboards() {
 		for (final GameState gameState : GameState.values()) {
 			final ConfigurationSection section = getConfig().getConfigurationSection("scoreboards." + gameState);
 			ScoreboardFormatConfig scoreboardFormatConfig;
@@ -59,7 +60,26 @@ public class YamlStorageHandler {
 			}
 			ScoreboardManager.getScoreboardLines().put(gameState, scoreboardFormatConfig);
 
+	private void registerBossbars() {
+		if (config.getBoolean("bossbars.enabled")) {
+			BossBarData.NORMAL_TEXT_FORMAT = config.getString("bossbars.in-battle");
+			BossBarData.CLOSING_TEXT_FORMAT = config.getString("bossbars.arena-closing");
 		}
+	}
+
+	private void registerTitles() {
+		for (final TitleHandler.TitleType type : TitleHandler.TitleType.values()) {
+			final ConfigurationSection section = config.getConfigurationSection("titles." + type.name());
+			TitleHandler.registerTitle(type, section);
+		}
+	}
+
+	private void registerTimerFormats() {
+		TimerUtils.MINUTES = MessageUtils.getMessageConfig().getString("timer-format.minutes");
+		TimerUtils.MINUTE = MessageUtils.getMessageConfig().getString("timer-format.minute");
+		TimerUtils.SECONDS = MessageUtils.getMessageConfig().getString("timer-format.seconds");
+		TimerUtils.SECOND = MessageUtils.getMessageConfig().getString("timer-format.second");
+
 	}
 
 	public YamlConfiguration getData() {

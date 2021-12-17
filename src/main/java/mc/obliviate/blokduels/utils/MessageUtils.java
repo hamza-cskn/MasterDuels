@@ -18,7 +18,10 @@ public class MessageUtils {
 	public static void setMessageConfig(final YamlConfiguration messageConfig) {
 		MessageUtils.messageConfig = messageConfig;
 		MessageUtils.prefix = parseColor(messageConfig.getString("prefix"));
+	}
 
+	public static YamlConfiguration getMessageConfig() {
+		return messageConfig;
 	}
 
 	public static String getMessage(final String node) {
@@ -42,10 +45,15 @@ public class MessageUtils {
 
 	public static void sendMessage(final Player player, final String configNode, final PlaceholderUtil placeholderUtil) {
 		String message = getMessage(configNode);
+
+		player.sendMessage(prefix + parseColor(message));
+	}
+
+	public static String applyPlaceholders(String message, final PlaceholderUtil placeholderUtil) {
 		for (final InternalPlaceholder placeholder : placeholderUtil.getPlaceholders()) {
 			message = message.replace(placeholder.getPlaceholder(),placeholder.getValue());
 		}
-		player.sendMessage(prefix + parseColor(message));
+		return message;
 	}
 
 	public static String parseColor(final String string) {

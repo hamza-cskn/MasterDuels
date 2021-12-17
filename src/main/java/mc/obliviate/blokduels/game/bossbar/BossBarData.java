@@ -15,6 +15,9 @@ import org.bukkit.Bukkit;
 
 public class BossBarData {
 
+	public static String NORMAL_TEXT_FORMAT = "{time}";
+	public static String CLOSING_TEXT_FORMAT = "{time}";
+
 	private final BossBar bar;
 	private final Game game;
 
@@ -24,7 +27,7 @@ public class BossBarData {
 			this.bar = null;
 			return;
 		}
-		this.bar = TABAPI.createBossBar("bossbar", "Kalan Süre: ...", 100f, BarColor.WHITE, BarStyle.NOTCHED_10);
+		this.bar = TABAPI.createBossBar("bossbar", NORMAL_TEXT_FORMAT.replace("{timer}", "...").replace("{time}", "..."), 100f, BarColor.WHITE, BarStyle.NOTCHED_10);
 	}
 
 	public void show(Member member) {
@@ -38,10 +41,10 @@ public class BossBarData {
 		game.task("BOSSBAR", Bukkit.getScheduler().runTaskTimer(game.getPlugin(), () -> {
 			if (game.getGameState().equals(GameState.GAME_ENDING)) {
 				bar.setProgress((Utils.getPercentage(Game.getEndDelay() * 1000, (game.getTimer() - System.currentTimeMillis()))));
-				bar.setTitle("Arenanın Kapatılmasına: " + TimerUtils.convertTimer(game.getTimer()));
+				bar.setTitle(CLOSING_TEXT_FORMAT.replace("{time}", TimerUtils.formatTimerFormat(game.getTimer())).replace("{timer}", TimerUtils.formatTimerFormat(game.getTimer())));
 			} else {
 				bar.setProgress((Utils.getPercentage(game.getFinishTime() * 1000, (game.getTimer() - System.currentTimeMillis()))));
-				bar.setTitle("Kalan Süre: " + TimerUtils.convertTimer(game.getTimer()));
+				bar.setTitle(NORMAL_TEXT_FORMAT.replace("{time}", TimerUtils.formatTimerFormat(game.getTimer())).replace("{timer}", TimerUtils.formatTimerFormat(game.getTimer())));
 			}
 		}, 0, 20));
 	}
