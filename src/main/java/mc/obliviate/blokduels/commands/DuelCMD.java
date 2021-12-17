@@ -8,6 +8,7 @@ import mc.obliviate.blokduels.data.DataHandler;
 import mc.obliviate.blokduels.game.Game;
 import mc.obliviate.blokduels.game.GameBuilder;
 import mc.obliviate.blokduels.gui.DuelHistoryLogGUI;
+import mc.obliviate.blokduels.gui.kit.KitSelectionGUI;
 import mc.obliviate.blokduels.invite.Invite;
 import mc.obliviate.blokduels.invite.InviteResult;
 import mc.obliviate.blokduels.invite.Invites;
@@ -127,9 +128,7 @@ public class DuelCMD implements CommandExecutor {
 				return;
 			}
 
-			member.getTeam().getGame().getSpectatorData().spectate(player);
-
-
+			member.getTeam().getGame().spectate(player);
 
 		} else {
 			player.sendMessage("§cUsage: /duel spectate <player>");
@@ -159,20 +158,23 @@ public class DuelCMD implements CommandExecutor {
 		}
 
 		final GameBuilder gameBuilder = Game.create(plugin, arena).teamAmount(2).teamSize(1).finishTime(60).totalRounds(1);
+		new KitSelectionGUI(player, gameBuilder, selectedKit -> {
+			gameBuilder.createTeam(player);
 
-		gameBuilder.createTeam(player);
-
-		gameBuilder.sendInvite(player, target, result -> {
-			if (result.equals(InviteResult.ACCEPT)) {
-				gameBuilder.createTeam(target);
-				final Game game = gameBuilder.build();
-				if (game == null) {
-					target.sendMessage("arena already started");
-					return;
+			gameBuilder.sendInvite(player, target, result -> {
+				if (result.equals(InviteResult.ACCEPT)) {
+					gameBuilder.createTeam(target);
+					final Game game = gameBuilder.build();
+					if (game == null) {
+						target.sendMessage("arena already started");
+						return;
+					}
+					game.startGame();
 				}
-				game.startGame();
-			}
-		});
+			});
+		}).open();
+
+
 	}
 
 }

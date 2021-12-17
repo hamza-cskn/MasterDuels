@@ -37,9 +37,8 @@ public class DuelArenaListGUI extends GUI {
 	@Override
 	public void onOpen(InventoryOpenEvent event) {
 		int slot = 0;
-		for (Map.Entry<Arena, Game> entry : DataHandler.getArenas().entrySet()) {
+		for (final Map.Entry<Arena, Game> entry : DataHandler.getArenas().entrySet()) {
 			if (entry.getValue() != null) {
-
 				addItem(slot++, getArenaIcon(entry.getValue()));
 			}
 		}
@@ -49,7 +48,8 @@ public class DuelArenaListGUI extends GUI {
 		return new Icon(getStateMaterial(game.getGameState())).onClick(e -> {
 			if (game.getGameState().equals(GameState.BATTLE) || game.getGameState().equals(GameState.ROUND_STARTING)) {
 				player.closeInventory();
-				game.getSpectatorData().spectate(player);
+				game.spectate(player);
+
 			}
 		}).setName(MessageUtils.parseColor("&6" + game.getArena().getName())).setLore(MessageUtils.parseColor(Arrays.asList("","&aDurum: &6" + game.getGameState(), "&aHarita: " + game.getArena().getMapName(),"","&e&oTıkla ve izle!")));
 	}

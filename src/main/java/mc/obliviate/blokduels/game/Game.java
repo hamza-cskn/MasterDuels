@@ -336,11 +336,23 @@ public class Game {
 		} else {
 			broadcastInGame("player-dead.by-attacker", new PlaceholderUtil().add("{attacker}", attacker.getPlayer().getName()).add("{victim}", member.getPlayer().getName()));
 		}
-		makeSpectator(member);
+		spectatorData.spectate(member.getPlayer());
 		if (checkTeamEliminated(member.getTeam())) {
-			broadcastInGame("duel-team-eliminated", new PlaceholderUtil().add("{victim}", member.getPlayer().getName()));
+			if (member.getTeam().getMembers().size() > 1) {
+				broadcastInGame("duel-team-eliminated", new PlaceholderUtil().add("{victim}", member.getPlayer().getName()));
+			}
 			nextRound();
 		}
+	}
+
+	public void spectate(Player player) {
+		if (DataHandler.getUser(player.getUniqueId()) == null) {
+			getSpectatorData().spectate(player);
+		}
+	}
+
+	public void unspectate(Player player) {
+		getSpectatorData().unspectate(player);
 	}
 
 	public boolean checkTeamEliminated(final Team team) {
@@ -397,29 +409,6 @@ public class Game {
 				task.getValue().cancel();
 			}
 		}
-	}
-
-	private void makeSpectator(final Member member) {
-		final Player player = member.getPlayer();
-
-		new PlayerReset().excludeGamemode().excludeLevel().excludeExp().reset(player);
-
-		for (final Team team : teams.values()) {
-			for (final Member m : team.getMembers()) {
-				m.getPlayer().hidePlayer(player);
-			}
-		}
-
-		for (final Player spectator : spectatorData.getSpectators()) {
-			spectator.showPlayer(player);
-			player.showPlayer(spectator);
-		}
-
-		player.setAllowFlight(true);
-		player.setFlying(true);
-
-		spectatorData.add(player);
-		MessageUtils.sendMessage(member.getPlayer(), "you-are-a-spectator");
 	}
 
 	public GameBuilder getTeamBuilder() {

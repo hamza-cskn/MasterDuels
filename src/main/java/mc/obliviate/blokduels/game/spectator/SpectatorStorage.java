@@ -6,6 +6,8 @@ import mc.obliviate.blokduels.game.Game;
 import mc.obliviate.blokduels.kit.InventoryStorer;
 import mc.obliviate.blokduels.user.Spectator;
 import mc.obliviate.blokduels.user.team.Member;
+import mc.obliviate.blokduels.user.team.Team;
+import mc.obliviate.blokduels.utils.MessageUtils;
 import mc.obliviate.blokduels.utils.playerreset.PlayerReset;
 import mc.obliviate.blokduels.utils.title.TitleHandler;
 import org.bukkit.entity.Player;
@@ -38,7 +40,7 @@ public class SpectatorStorage {
 		return null;
 	}
 
-	public Spectator add(final Player player) {
+	protected Spectator add(final Player player) {
 		Spectator spectator = getSpectator(player);
 		if (spectator != null) return spectator;
 		spectator = new Spectator(game, player, !game.isMember(player));
@@ -46,7 +48,7 @@ public class SpectatorStorage {
 		return spectator;
 	}
 
-	public void remove(final Player player) {
+	protected void remove(final Player player) {
 		spectators.removeIf(spectator -> spectator.getPlayer().equals(player));
 	}
 
@@ -89,6 +91,24 @@ public class SpectatorStorage {
 	public void spectate(final Player player) {
 		if (isSpectator(player)) return;
 		final Spectator spectator = add(player);
+
+		new PlayerReset().excludeGamemode().excludeLevel().excludeExp().reset(player);
+
+		for (final Team team : game.getTeams().values()) {
+			for (final Member m : team.getMembers()) {
+				m.getPlayer().hidePlayer(player);
+			}
+		}
+
+		for (final Player spec : getSpectators()) {
+			spec.showPlayer(player);
+			player.showPlayer(spec);
+		}
+
+		player.setAllowFlight(true);
+		player.setFlying(true);
+
+		MessageUtils.sendMessage(player, "you-are-a-spectator");
 
 		if (!game.isMember(player)) {
 			player.teleport(spectator.getGame().getArena().getPositions().get("spawn-team-1").getLocation(1)); //todo make spectator location
