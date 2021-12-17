@@ -2,23 +2,29 @@ package mc.obliviate.blokduels.gui;
 
 import mc.obliviate.blokduels.BlokDuels;
 import mc.obliviate.blokduels.history.GameHistoryLog;
+import mc.obliviate.blokduels.utils.MessageUtils;
+import mc.obliviate.blokduels.utils.placeholder.PlaceholderUtil;
 import mc.obliviate.blokduels.utils.timer.TimerUtils;
 import mc.obliviate.inventory.GUI;
 import mc.obliviate.inventory.Icon;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 
-import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 public class DuelHistoryLogGUI extends GUI {
 
+	public static ConfigurationSection guiSection;
+
 	public DuelHistoryLogGUI(Player player) {
-		super(player, "duel-history-log-gui", "Duel History", 6);
+		super(player, "duel-history-log-gui", "Title could not loaded", 6);
+		setTitle(guiSection.getString("title", "Title could not loaded"));
 	}
 
 	@Override
@@ -26,32 +32,50 @@ public class DuelHistoryLogGUI extends GUI {
 		fillRow(new Icon(Material.STAINED_GLASS_PANE).setDamage(15), 0);
 
 		int slot = 9;
-		//todo clean here
-		//todo may wanna cache?
-		final List<GameHistoryLog> logs;
-		try {
-			logs = ((BlokDuels) getPlugin()).getSqlManager().getAllLogs();
-		} catch (final SQLException e) {
-			e.printStackTrace();
-			player.sendMessage("An error occurred. Please contact to an administrator or developer.");
-			return;
-		}
-		for (final GameHistoryLog log : logs) {
+		for (final GameHistoryLog log : GameHistoryLog.historyCache) {
 
-			final Icon icon = new Icon(Material.STONE_SWORD)
-					.setName(ChatColor.AQUA + "Game Time: " + ChatColor.YELLOW + TimerUtils.getFormattedDifferentTime(log.getStartTime(), log.getEndTime()))
-					.setLore("", ChatColor.DARK_GREEN + " Winners: ");
-			for (final UUID uuid : log.getWinners()) {
-				icon.appendLore(ChatColor.GRAY + "  - " + ChatColor.GREEN + Bukkit.getOfflinePlayer(uuid).getName());
+			ConfigurationSection section;
+			if (log.getLosers().size() == 1) {
+				section = guiSection.getConfigurationSection("solo-games-icon");
+			} else {
+				section = guiSection.getConfigurationSection("non-solo-games-icon");
 			}
 
-			icon.appendLore("", ChatColor.DARK_RED + " Losers: ");
-
-			for (final UUID uuid : log.getLosers()) {
-				icon.appendLore(ChatColor.GRAY + "  - " + ChatColor.RED + Bukkit.getOfflinePlayer(uuid).getName());
-			}
-
-			addItem(slot++, icon);
+			addItem(slot++, deserializeIcon(section, log));
 		}
+	}
+
+	private Icon deserializeIcon(final ConfigurationSection section, GameHistoryLog log) {
+		if (section == null) return new Icon(Material.BEDROCK).setName("Item could not deserialized.");
+
+		final Material material = Material.getMaterial(section.getString("material-type"));
+		final Icon icon = new Icon(material);
+		final List<String> description = section.getStringList("description");
+
+		final PlaceholderUtil placeholderUtil = new PlaceholderUtil().add("{time}", TimerUtils.getFormattedDifferentTime(log.getStartTime(), log.getEndTime()))
+				.add("{played-date}", new SimpleDateFormat("HH:mm dd/MM/yyyy").format(new Date(log.getStartTime())));
+		if (log.getLosers().size() == 1) {
+			placeholderUtil.add("{winner}", Bukkit.getOfflinePlayer(log.getWinners().get(0)).getName());
+			placeholderUtil.add("{loser}", Bukkit.getOfflinePlayer(log.getLosers().get(0)).getName());
+		}
+
+		for (final String line : description.subList(1,description.size())) {
+			if (line.equalsIgnoreCase("{+winners}")) {
+				for (final UUID uuid : log.getWinners()) {
+					icon.appendLore(MessageUtils.parseColor(MessageUtils.applyPlaceholders(section.getString("winners-format"), new PlaceholderUtil().add("{winner}", Bukkit.getOfflinePlayer(uuid).getName()))));
+				}
+				continue;
+			} else if (line.equalsIgnoreCase("{+losers}")) {
+				for (final UUID uuid : log.getLosers()) {
+					icon.appendLore(MessageUtils.parseColor(MessageUtils.applyPlaceholders(section.getString("losers-format"), new PlaceholderUtil().add("{loser}", Bukkit.getOfflinePlayer(uuid).getName()))));
+				}
+				continue;
+			}
+			icon.appendLore(MessageUtils.parseColor(MessageUtils.applyPlaceholders(line, placeholderUtil)));
+		}
+
+		icon.setName(MessageUtils.parseColor(MessageUtils.applyPlaceholders(description.get(0), placeholderUtil)));
+
+		return icon;
 	}
 }

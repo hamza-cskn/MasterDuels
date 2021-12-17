@@ -13,6 +13,7 @@ import mc.obliviate.blokduels.kit.serializer.KitSerializer;
 import mc.obliviate.blokduels.listeners.*;
 import mc.obliviate.blokduels.utils.scoreboard.ScoreboardManager;
 import mc.obliviate.blokduels.utils.tab.TABManager;
+import mc.obliviate.blokduels.utils.timer.SQLCacheTimer;
 import mc.obliviate.inventory.InventoryAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -38,6 +39,7 @@ public class BlokDuels extends JavaPlugin {
 		registerListeners();
 		registerCommands();
 		setupHandlers();
+		setupTimers();
 		loadKits();
 		shutdownMode = false;
 	}
@@ -51,11 +53,15 @@ public class BlokDuels extends JavaPlugin {
 		sqlManager.init();
 	}
 
+	private void setupTimers() {
+		new SQLCacheTimer().init(this);
+	}
+
 	private void registerCommands() {
 		getCommand("duel").setExecutor(new DuelCMD(this));
 		getCommand("duelarenas").setExecutor(new DuelArenasCMD(this));
 		getCommand("duelsetup").setExecutor(new SetupCMD(this));
-		getCommand("duelkitsave").setExecutor(new KitEditorCMD(this));
+		getCommand("duelkit").setExecutor(new KitEditorCMD(this));
 	}
 
 	private void registerListeners() {

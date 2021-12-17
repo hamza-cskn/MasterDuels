@@ -1,7 +1,6 @@
 package mc.obliviate.blokduels.data;
 
 import mc.obliviate.blokduels.BlokDuels;
-import mc.obliviate.blokduels.gui.DuelHistoryLogGUI;
 import mc.obliviate.blokduels.history.GameHistoryLog;
 import mc.obliviate.blokduels.utils.Logger;
 import mc.obliviate.blokduels.utils.serializer.SerializerUtils;
@@ -58,6 +57,17 @@ public class SQLManager extends mc.obliviate.bloksqliteapi.SQLHandler {
 				.putData("startTime", log.getStartTime())
 				.putData("endTime", log.getEndTime());
 		historyTable.insertOrUpdate(update);
+	}
+
+	public void clearOldHistories(final int limit) throws SQLException {
+		final ResultSet rs = historyTable.getHighest("startTime");
+		int amount = 0;
+		while(rs.next()) {
+			amount++;
+			if (amount > limit) {
+				rs.deleteRow();
+			}
+		}
 	}
 
 	public GameHistoryLog getDuelHistory(final UUID uuid) throws SQLException {
