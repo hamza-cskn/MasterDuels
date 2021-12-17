@@ -1,11 +1,14 @@
 package mc.obliviate.blokduels.utils.serializer;
 
+import mc.obliviate.blokduels.history.GameHistoryLog;
 import mc.obliviate.blokduels.utils.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -66,6 +69,17 @@ public class SerializerUtils {
 		}
 
 		return list;
+	}
+
+	public static GameHistoryLog deserializeGameHistoryLog(ResultSet rs) throws SQLException {
+		final String uuid = rs.getString("uuid");
+		final String serializedWinners = rs.getString("winners");
+		final String serializedLosers = rs.getString("losers");
+		final long startTime = rs.getLong("startTime");
+		final long endTime = rs.getLong("endTime");
+
+		return new GameHistoryLog(UUID.fromString(uuid), startTime, endTime, SerializerUtils.deserializeUUIDList(serializedWinners), SerializerUtils.deserializeUUIDList(serializedLosers));
+
 	}
 
 }

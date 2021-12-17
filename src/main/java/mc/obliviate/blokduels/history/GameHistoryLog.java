@@ -1,5 +1,6 @@
 package mc.obliviate.blokduels.history;
 
+import mc.obliviate.blokduels.BlokDuels;
 import mc.obliviate.blokduels.utils.serializer.SerializerUtils;
 
 import java.util.List;
@@ -7,22 +8,24 @@ import java.util.UUID;
 
 public class GameHistoryLog implements HistoryLog {
 
+	private final UUID uuid;
 	private long startTime = 0L;
-	private int gameTime = 0;
+	private long endTime = 0L;
 	private List<UUID> losers = null;
 	private List<UUID> winners = null;
 
-	public GameHistoryLog(long startTime, int gameTime, List<UUID> losers, List<UUID> winners) {
+	public GameHistoryLog(final UUID uuid, long startTime, long endTime, List<UUID> losers, List<UUID> winners) {
 		this.startTime = startTime;
-		this.gameTime = gameTime;
+		this.endTime = endTime;
 		this.losers = losers;
 		this.winners = winners;
+		this.uuid = uuid;
 	}
 
 	public GameHistoryLog() {
+		this(UUID.randomUUID(), 0L, 0L, null, null);
 	}
 
-	//todo not tested
 	public static GameHistoryLog deserialize(String serializedString) {
 		final String[] objects = serializedString.split(SerializerUtils.OBJECT_SPLIT_CHARACTER);
 
@@ -31,7 +34,7 @@ public class GameHistoryLog implements HistoryLog {
 		final List<UUID> losers = SerializerUtils.deserializeUUIDList(objects[2]);
 		final List<UUID> winners = SerializerUtils.deserializeUUIDList(objects[3]);
 
-		return new GameHistoryLog(startTime, gameTime, losers, winners);
+		return new GameHistoryLog(null, startTime, gameTime, losers, winners);
 
 	}
 
@@ -39,7 +42,7 @@ public class GameHistoryLog implements HistoryLog {
 		final StringBuilder builder = new StringBuilder();
 
 		builder.append(startTime).append(SerializerUtils.OBJECT_SPLIT_CHARACTER);
-		builder.append(gameTime).append(SerializerUtils.OBJECT_SPLIT_CHARACTER);
+		builder.append(endTime).append(SerializerUtils.OBJECT_SPLIT_CHARACTER);
 		builder.append(SerializerUtils.serializeStringConvertableList(losers)).append(SerializerUtils.OBJECT_SPLIT_CHARACTER);
 		builder.append(SerializerUtils.serializeStringConvertableList(winners)).append(SerializerUtils.OBJECT_SPLIT_CHARACTER);
 
@@ -63,12 +66,12 @@ public class GameHistoryLog implements HistoryLog {
 		this.winners = winners;
 	}
 
-	public int getGameTime() {
-		return gameTime;
+	public long getEndTime() {
+		return endTime;
 	}
 
-	public void setGameTime(int gameTime) {
-		this.gameTime = gameTime;
+	public void setEndTime(long endTime) {
+		this.endTime = endTime;
 	}
 
 	public long getStartTime() {
@@ -77,5 +80,13 @@ public class GameHistoryLog implements HistoryLog {
 
 	public void setStartTime(long startTime) {
 		this.startTime = startTime;
+	}
+
+	public UUID getUuid() {
+		return uuid;
+	}
+
+	public void save(final BlokDuels plugin) {
+		plugin.getSqlManager().appendDuelHistory(this);
 	}
 }

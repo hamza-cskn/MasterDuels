@@ -45,6 +45,11 @@ public class DuelCMD implements CommandExecutor {
 			return false;
 		}
 
+		if (args[0].equalsIgnoreCase("history")) {
+			new DuelHistoryLogGUI(player).open();
+			return true;
+		}
+
 		if (args[0].equalsIgnoreCase("leave")) {
 			user.getGame().leave(user);
 			return true;

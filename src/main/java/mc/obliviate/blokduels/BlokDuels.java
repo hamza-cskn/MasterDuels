@@ -5,8 +5,8 @@ import mc.obliviate.blokduels.commands.DuelArenasCMD;
 import mc.obliviate.blokduels.commands.DuelCMD;
 import mc.obliviate.blokduels.commands.KitEditorCMD;
 import mc.obliviate.blokduels.commands.SetupCMD;
-import mc.obliviate.blokduels.config.ConfigHandler;
 import mc.obliviate.blokduels.data.DataHandler;
+import mc.obliviate.blokduels.data.SQLManager;
 import mc.obliviate.blokduels.data.YamlStorageHandler;
 import mc.obliviate.blokduels.game.Game;
 import mc.obliviate.blokduels.kit.serializer.KitSerializer;
@@ -22,12 +22,12 @@ import java.io.File;
 
 public class BlokDuels extends JavaPlugin {
 
+	private static boolean shutdownMode = false;
+	private final SQLManager sqlManager = new SQLManager(this);
 	private final InventoryAPI inventoryAPI = new InventoryAPI(this);
 	private final YamlStorageHandler yamlStorageHandler = new YamlStorageHandler(this);
-	private final ConfigHandler configHandler = new ConfigHandler(this);
 	private MessageAPI messageAPI;
 	private ScoreboardManager scoreboardManager;
-	private static boolean shutdownMode = false;
 
 	public static boolean isInShutdownMode() {
 		return shutdownMode;
@@ -45,10 +45,10 @@ public class BlokDuels extends JavaPlugin {
 	private void setupHandlers() {
 		yamlStorageHandler.init();
 		inventoryAPI.init();
-		configHandler.init();
 		scoreboardManager = new ScoreboardManager(this);
 		messageAPI = MessageAPI.getInstance(this);
 		new TABManager(this);
+		sqlManager.init();
 	}
 
 	private void registerCommands() {
@@ -70,11 +70,9 @@ public class BlokDuels extends JavaPlugin {
 	private void loadKits() {
 		final File file = new File(getDataFolder().getPath() + File.separator + "kits.yml");
 		final YamlConfiguration data = YamlConfiguration.loadConfiguration(file);
-		for (String key : data.getKeys(false)) {
+		for (final String key : data.getKeys(false)) {
 			KitSerializer.deserialize(data.getConfigurationSection(key));
 		}
-
-
 	}
 
 	@Override
@@ -85,10 +83,6 @@ public class BlokDuels extends JavaPlugin {
 				game.uninstallGame();
 			}
 		}
-	}
-
-	public ConfigHandler getConfigHandler() {
-		return configHandler;
 	}
 
 	public YamlStorageHandler getDatabaseHandler() {
@@ -105,5 +99,9 @@ public class BlokDuels extends JavaPlugin {
 
 	public MessageAPI getMessageAPI() {
 		return messageAPI;
+	}
+
+	public SQLManager getSqlManager() {
+		return sqlManager;
 	}
 }
