@@ -10,7 +10,7 @@ public class Member implements User {
 	private final Team team;
 	private final Player player;
 
-	public Member(Team team, Player player) {
+	public Member(final Team team, final Player player) {
 		this.team = team;
 		this.player = player;
 		DataHandler.getUsers().put(player.getUniqueId(), this);

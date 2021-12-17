@@ -7,6 +7,7 @@ import mc.obliviate.blokduels.arena.Arena;
 import mc.obliviate.blokduels.data.DataHandler;
 import mc.obliviate.blokduels.game.Game;
 import mc.obliviate.blokduels.game.GameBuilder;
+import mc.obliviate.blokduels.gui.DuelHistoryLogGUI;
 import mc.obliviate.blokduels.invite.Invite;
 import mc.obliviate.blokduels.invite.InviteResult;
 import mc.obliviate.blokduels.invite.Invites;
@@ -42,6 +43,7 @@ public class DuelCMD implements CommandExecutor {
 			player.sendMessage("§7/duel leave");
 			player.sendMessage("§7/duel accept");
 			player.sendMessage("§7/duel decline");
+			player.sendMessage("§7/duel history");
 			return false;
 		}
 
@@ -51,6 +53,10 @@ public class DuelCMD implements CommandExecutor {
 		}
 
 		if (args[0].equalsIgnoreCase("leave")) {
+			if (user == null) {
+				player.sendMessage("§cYou are not in a duel game already.");
+				return false;
+			}
 			user.getGame().leave(user);
 			return true;
 		}

@@ -74,7 +74,7 @@ public class DuelProtectListener implements Listener {
 			//fixme crafting, anvil, trapdoor and fence gates are openable
 			if (e.getAction() == Action.PHYSICAL || (e.getClickedBlock() != null && (e.getClickedBlock().getState() instanceof InventoryHolder || e.getClickedBlock().getType().equals(Material.WOOD_BUTTON) || e.getClickedBlock().getType().equals(Material.STONE_BUTTON)))) {
 				e.setCancelled(true);
-			} else {
+			} else if (e.getClickedBlock() != null){
 				switch (e.getClickedBlock().getType()) {
 					case WORKBENCH:
 					case ANVIL:

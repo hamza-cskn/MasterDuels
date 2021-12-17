@@ -6,6 +6,7 @@ import mc.obliviate.blokduels.user.Spectator;
 import mc.obliviate.blokduels.user.User;
 import mc.obliviate.blokduels.user.team.Member;
 import mc.obliviate.blokduels.user.team.Team;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
 import java.util.HashMap;
@@ -17,7 +18,7 @@ public class DataHandler {
 	private static final Map<UUID, User> users = new HashMap<>();
 	private static final Map<Arena, Game> arenas = new HashMap<>();
 	public static int LOCK_TIME_IN_SECONDS = 3;
-	private static Location lobbyLocation;
+	private static Location lobbyLocation = null;
 
 	public static Team getTeam(final UUID uuid) {
 		final Member member = getMember(uuid);
@@ -76,6 +77,9 @@ public class DataHandler {
 	}
 
 	public static void setLobbyLocation(Location lobbyLocation) {
+		if (lobbyLocation == null) return;
+		if (lobbyLocation.getWorld() == null) return;
+		if (Bukkit.getWorld(lobbyLocation.getWorld().getUID()) != null) return;
 		DataHandler.lobbyLocation = lobbyLocation;
 	}
 }
