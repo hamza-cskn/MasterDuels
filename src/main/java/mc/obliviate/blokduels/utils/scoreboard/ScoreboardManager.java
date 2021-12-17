@@ -87,7 +87,7 @@ public class ScoreboardManager {
 				api.setProcessedScoreboardValue(player, ++index, MessageUtils.parseColor(line
 						.replace("{round}", "" + game.getRoundData().getCurrentRound())
 						.replace("{map}", game.getArena().getMapName() + "")
-						.replace("{timer}", TimerUtils.convertTimer(game.getTimer()))
+						.replace("{timer}", TimerUtils.formatTimerFormat(game.getTimer()))
 						.replace("{placed-blocks}", "" + game.getPlacedBlocks().size())
 						.replace("{team-size}", member.getTeam().getMembers().size() + "")));
 			}
