@@ -31,7 +31,11 @@ public class KitSelectionGUI extends GUI {
 
 			addItem(slot++, icon);
 		}
-		if (slot == 0) response.onSelected(null);
+		if (slot == 0) {
+			event.setCancelled(true);
+			response.onSelected(null);
+		};
+
 	}
 
 	public interface KitSelectResponse {
