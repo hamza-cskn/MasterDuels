@@ -69,6 +69,16 @@ public class DuelCMD implements CommandExecutor {
 			return false;
 		}
 
+		if (args[0].equalsIgnoreCase("toggle")) {
+			final boolean state = plugin.getSqlManager().toggleReceivesInvites(player.getUniqueId());
+			if (state) {
+				MessageUtils.sendMessage(player,"invite.toggle.turned-on");
+			} else {
+				MessageUtils.sendMessage(player, "invite.toggle.turned-off");
+			}
+			return true;
+		}
+
 		if (args[0].equalsIgnoreCase("accept")) {
 			answerInvite(player, true, args);
 			return true;

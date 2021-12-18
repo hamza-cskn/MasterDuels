@@ -4,6 +4,7 @@ import mc.obliviate.blokduels.BlokDuels;
 import mc.obliviate.blokduels.history.GameHistoryLog;
 import mc.obliviate.blokduels.utils.Logger;
 import mc.obliviate.blokduels.utils.serializer.SerializerUtils;
+import mc.obliviate.bloksqliteapi.SQLHandler;
 import mc.obliviate.bloksqliteapi.sqlutils.DataType;
 import mc.obliviate.bloksqliteapi.sqlutils.SQLTable;
 import mc.obliviate.bloksqliteapi.sqlutils.SQLUpdateColumn;
@@ -14,20 +15,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class SQLManager extends mc.obliviate.bloksqliteapi.SQLHandler {
+public class SQLManager extends SQLHandler {
 
-	private final BlokDuels plugin;
-	private final SQLTable statisticsTable;
+	private final SQLTable playerDataTable;
 	private final SQLTable historyTable;
 
 	public SQLManager(BlokDuels plugin) {
 		super(plugin.getDataFolder().getPath(), true);
-		this.plugin = plugin;
 
-		statisticsTable = new SQLTable("statistics", "uuid")
+		playerDataTable = new SQLTable("playerData", "uuid")
 				.addField("uuid", DataType.TEXT)
 				.addField("wins", DataType.INTEGER)
-				.addField("loses", DataType.INTEGER);
+				.addField("loses", DataType.INTEGER)
+				.addField("receivesInvites", DataType.INTEGER);
 
 		historyTable = new SQLTable("history", "uuid")
 				.addField("uuid", DataType.TEXT)
@@ -45,7 +45,7 @@ public class SQLManager extends mc.obliviate.bloksqliteapi.SQLHandler {
 	public void onConnect() {
 		super.onConnect();
 
-		statisticsTable.create();
+		playerDataTable.create();
 		historyTable.create();
 	}
 
@@ -62,7 +62,7 @@ public class SQLManager extends mc.obliviate.bloksqliteapi.SQLHandler {
 	public void clearOldHistories(final int limit) throws SQLException {
 		final ResultSet rs = historyTable.getHighest("startTime");
 		int amount = 0;
-		while(rs.next()) {
+		while (rs.next()) {
 			amount++;
 			if (amount > limit) {
 				rs.deleteRow();
@@ -90,6 +90,29 @@ public class SQLManager extends mc.obliviate.bloksqliteapi.SQLHandler {
 		return logs;
 	}
 
+	public boolean getReceivesInvites(final UUID uuid) {
+		final Integer value = playerDataTable.getInteger(uuid.toString(), "receivesInvites");
+		return value != null && value == 1;
+	}
+
+	/**
+	 * @return new state
+	 */
+	public boolean toggleReceivesInvites(final UUID uuid) {
+		final boolean bool = getReceivesInvites(uuid);
+		if (playerDataTable.exist(uuid.toString())) {
+			sqlUpdate("UPDATE " + playerDataTable.getTableName() + " SET receivesInvites = " + (bool ? 0 : 1) + " WHERE uuid = '" + uuid + "'");
+		} else {
+			final SQLUpdateColumn update = playerDataTable.createUpdate(uuid.toString())
+					.putData("uuid", uuid.toString())
+					.putData("wins", 0)
+					.putData("loses", 0)
+					.putData("receivesInvites", (bool ? 0 : 1));
+			playerDataTable.insert(update);
+		}
+		return !bool;
+	}
+
 	public void addWin(final UUID uuid, int amount) {
 		increaseValue(uuid, amount, "wins");
 	}
@@ -99,16 +122,17 @@ public class SQLManager extends mc.obliviate.bloksqliteapi.SQLHandler {
 	}
 
 	private void increaseValue(final UUID uuid, final int amount, final String type) {
-		if (statisticsTable.exist(uuid.toString())) {
-			sqlUpdate("UPDATE " + statisticsTable.getTableName() + " SET " + type + " = " + type + " + " + amount + " WHERE id = " + uuid);
+		if (playerDataTable.exist(uuid.toString())) {
+			sqlUpdate("UPDATE " + playerDataTable.getTableName() + " SET " + type + " = " + type + " + " + amount + " WHERE id = " + uuid);
 		} else {
-			final SQLUpdateColumn update = statisticsTable.createUpdate(uuid.toString())
+			final SQLUpdateColumn update = playerDataTable.createUpdate(uuid.toString())
 					.putData("uuid", uuid.toString())
 					.putData("wins", 0)
 					.putData("loses", 0)
+					.putData("receivesInvites", 0)
 					.putData(type, amount); //replace type value
 
-			statisticsTable.insertOrUpdate(update);
+			playerDataTable.insert(update);
 		}
 	}
 

@@ -8,9 +8,11 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -41,8 +43,8 @@ public class Invite {
 		this.inviter = inviter;
 		this.invitedTime = System.currentTimeMillis();
 
-		if (gameBuilder.getInvites().containsKey(invited.getUniqueId())) {
-			MessageUtils.sendMessage(inviter, "invite.already-invited", new PlaceholderUtil().add("{inviter}", invited.getName()));
+		if (playerInvites.containsKey(invited.getUniqueId())) {
+			MessageUtils.sendMessage(inviter, "invite.already-invited", new PlaceholderUtil().add("{target}", invited.getName()));
 			expired = true;
 			onExpire();
 			return;
@@ -54,20 +56,38 @@ public class Invite {
 			onExpire();
 			return;
 		}
+
+		if (!plugin.getSqlManager().getReceivesInvites(invited.getUniqueId())) {
+			MessageUtils.sendMessage(inviter, "invite.toggle.you-can-not-invite", new PlaceholderUtil().add("{target}", invited.getName()));
+			expired = true;
+			onExpire();
+			return;
+		}
+
 		addInvite(invited.getUniqueId(), this);
 		MessageUtils.sendMessage(inviter, "invite.target-has-invited", new PlaceholderUtil().add("{target}", target.getName()).add("{expire_time}", expireTime + ""));
-		MessageUtils.sendMessage(target, "invite.you-invited", new PlaceholderUtil().add("{inviter}", inviter.getName()).add("{expire_time}", expireTime + ""));
 
-		final TextComponent acceptButton = new TextComponent(MessageUtils.parseColor(MessageUtils.getMessage("invite.accept-button")));
-		acceptButton.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(MessageUtils.parseColor(MessageUtils.getMessage("invite.accept-button-name"))).create()));
-		acceptButton.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/duel accept"));
+		for (String inviteText : MessageUtils.getMessageConfig().getStringList("invite.you-invited")) {
+			inviteText = inviteText + " ";
+			inviteText = MessageUtils.applyPlaceholders(inviteText, new PlaceholderUtil().add("{inviter}", inviter.getName()).add("{expire_time}", expireTime + ""));
+			inviteText = MessageUtils.parseColor(inviteText);
 
-		final TextComponent declineButton = new TextComponent(MessageUtils.parseColor(MessageUtils.getMessage("invite.decline-button")));
-		declineButton.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(MessageUtils.parseColor(MessageUtils.getMessage("invite.decline-button-name"))).create()));
-		declineButton.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/duel decline"));
+			if (inviteText.contains("{accept-button}") && inviteText.contains("{decline-button}")) {
+				final TextComponent acceptButton = new TextComponent(MessageUtils.parseColor(MessageUtils.getMessage("invite.accept-button")));
+				acceptButton.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(MessageUtils.parseColor(MessageUtils.getMessage("invite.accept-button-name"))).create()));
+				acceptButton.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/duel accept"));
 
-		target.spigot().sendMessage(acceptButton, declineButton);
+				final TextComponent declineButton = new TextComponent(MessageUtils.parseColor(MessageUtils.getMessage("invite.decline-button")));
+				declineButton.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(MessageUtils.parseColor(MessageUtils.getMessage("invite.decline-button-name"))).create()));
+				declineButton.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/duel decline"));
 
+				final String[] strings = inviteText.split("\\{accept-button}|\\{decline-button}");
+
+				target.spigot().sendMessage(new TextComponent(strings[0]), acceptButton, new TextComponent(strings[1]), declineButton, new TextComponent(strings[2]));
+			} else {
+				target.spigot().sendMessage(new TextComponent(inviteText));
+			}
+		}
 		expired = false;
 		new BukkitRunnable() {
 			public void run() {

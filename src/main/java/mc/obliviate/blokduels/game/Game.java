@@ -428,6 +428,8 @@ public class Game {
 		if (gameState.equals(BATTLE)) {
 			gameHistoryLog.setStartTime(System.currentTimeMillis());
 		} else if (gameState.equals(GAME_ENDING)) {
+
+			//save history log
 			gameHistoryLog.setEndTime(System.currentTimeMillis());
 
 			final List<UUID> losers = new ArrayList<>();
@@ -445,6 +447,15 @@ public class Game {
 			gameHistoryLog.setLosers(losers);
 			gameHistoryLog.setWinners(winners);
 			gameHistoryLog.save(plugin);
+
+			//save statistics
+			for (final UUID winner : winners) {
+				plugin.getSqlManager().addWin(winner,1);
+			}
+			for (final UUID loser : losers) {
+				plugin.getSqlManager().addLose(loser,1);
+			}
+
 		}
 	}
 
