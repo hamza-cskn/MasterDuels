@@ -15,24 +15,29 @@ public class MessageUtils {
 	private static YamlConfiguration messageConfig;
 	private static String prefix;
 
+	public static YamlConfiguration getMessageConfig() {
+		return messageConfig;
+	}
+
 	public static void setMessageConfig(final YamlConfiguration messageConfig) {
 		MessageUtils.messageConfig = messageConfig;
 		MessageUtils.prefix = parseColor(messageConfig.getString("prefix"));
-	}
-
-	public static YamlConfiguration getMessageConfig() {
-		return messageConfig;
 	}
 
 	public static String getMessage(final String node) {
 		final String msg = messageConfig.getString(node);
 		if (msg == null) {
 			return "No Message Found: " + node;
+		} else if (msg.equalsIgnoreCase("DISABLED")) {
+			return null;
 		}
 		return msg;
 	}
+
 	public static void sendMessage(final CommandSender player, final String configNode) {
-		final String message = parseColor(getMessage(configNode));
+		String message = getMessage(configNode);
+		if (message == null) return;
+		message = parseColor(message);
 		player.sendMessage(prefix + message);
 	}
 
@@ -45,13 +50,13 @@ public class MessageUtils {
 
 	public static void sendMessage(final Player player, final String configNode, final PlaceholderUtil placeholderUtil) {
 		String message = getMessage(configNode);
-
-		player.sendMessage(prefix + parseColor(applyPlaceholders(message,placeholderUtil)));
+		if (message == null) return;
+		player.sendMessage(prefix + parseColor(applyPlaceholders(message, placeholderUtil)));
 	}
 
 	public static String applyPlaceholders(String message, final PlaceholderUtil placeholderUtil) {
 		for (final InternalPlaceholder placeholder : placeholderUtil.getPlaceholders()) {
-			message = message.replace(placeholder.getPlaceholder(),placeholder.getValue());
+			message = message.replace(placeholder.getPlaceholder(), placeholder.getValue());
 		}
 		return message;
 	}
@@ -74,7 +79,7 @@ public class MessageUtils {
 		if (stringList == null) return null;
 		final List<String> result = new ArrayList<>();
 		for (String str : stringList) {
-			result.add(str.replace(search,replace));
+			result.add(str.replace(search, replace));
 		}
 		return result;
 	}
@@ -99,9 +104,9 @@ public class MessageUtils {
 		return points.toString();
 	}
 
-	public static String convertMode(int size, int amount) {
+	public static String convertMode(final int size, int amount) {
 		final StringBuilder sb = new StringBuilder();
-		for (;amount > 0; amount--) {
+		for (; amount > 0; amount--) {
 			sb.append(size);
 			if (amount != 1) {
 				sb.append("v");
@@ -109,4 +114,10 @@ public class MessageUtils {
 		}
 		return sb.toString();
 	}
+
+	public static double getFirstDigits(final double number, final int digitAmount) {
+		final double multiple = Math.pow(10, digitAmount);
+		return (((int) (number * multiple)) / multiple);
+	}
+
 }
