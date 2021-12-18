@@ -3,8 +3,7 @@ package mc.obliviate.blokduels;
 import com.hakan.messageapi.bukkit.MessageAPI;
 import mc.obliviate.blokduels.commands.DuelArenasCMD;
 import mc.obliviate.blokduels.commands.DuelCMD;
-import mc.obliviate.blokduels.commands.KitEditorCMD;
-import mc.obliviate.blokduels.commands.SetupCMD;
+import mc.obliviate.blokduels.commands.DuelAdminCMD;
 import mc.obliviate.blokduels.data.DataHandler;
 import mc.obliviate.blokduels.data.SQLManager;
 import mc.obliviate.blokduels.data.YamlStorageHandler;
@@ -60,8 +59,7 @@ public class BlokDuels extends JavaPlugin {
 	private void registerCommands() {
 		getCommand("duel").setExecutor(new DuelCMD(this));
 		getCommand("duelarenas").setExecutor(new DuelArenasCMD(this));
-		getCommand("duelsetup").setExecutor(new SetupCMD(this));
-		getCommand("duelkit").setExecutor(new KitEditorCMD(this));
+		getCommand("dueladmin").setExecutor(new DuelAdminCMD(this));
 	}
 
 	private void registerListeners() {

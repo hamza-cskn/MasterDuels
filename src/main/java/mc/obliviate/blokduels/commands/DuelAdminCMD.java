@@ -1,0 +1,96 @@
+package mc.obliviate.blokduels.commands;
+
+import mc.obliviate.blokduels.BlokDuels;
+import mc.obliviate.blokduels.gui.kit.KitListGUI;
+import mc.obliviate.blokduels.kit.Kit;
+import mc.obliviate.blokduels.setup.ArenaSetup;
+import mc.obliviate.blokduels.utils.MessageUtils;
+import mc.obliviate.blokduels.utils.placeholder.PlaceholderUtil;
+import mc.obliviate.blokduels.utils.serializer.SerializerUtils;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.Arrays;
+import java.util.List;
+
+public class DuelAdminCMD implements CommandExecutor {
+
+	private final BlokDuels plugin;
+
+	public DuelAdminCMD(BlokDuels plugin) {
+		this.plugin = plugin;
+	}
+
+	@Override
+	public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
+		if (!(sender instanceof Player)) return false;
+
+		final Player player = ((Player) sender).getPlayer();
+
+		if (!player.isOp()) return false;
+
+		if (args.length == 0) {
+			player.sendMessage("§6§lMasterDuels §6Administrator Commands");
+			player.sendMessage("§7/" + s + " create §8- §9enables arena setup mode");
+			player.sendMessage("§7/" + s + " setlobby§8- §9sets lobby location to teleport players after duel game");
+			player.sendMessage("§7/" + s + " kitsave§8- §9saves your current inventory as new kit");
+			player.sendMessage("§7/" + s + " kiteditor§8- §9opens kit editor gui");
+			player.sendMessage("");
+			player.sendMessage("&fMasterDuels v" + plugin.getDescription().getVersion());
+			return false;
+		}
+
+		if (args[0].equalsIgnoreCase("create")) {
+
+			try {
+				final ArenaSetup setup = new ArenaSetup(plugin, player);
+				Bukkit.getPluginManager().registerEvents(setup, plugin);
+			} catch (IllegalStateException e) {
+				player.sendMessage("§cYou are already in a Arena setup mode.");
+				return false;
+			}
+
+			player.sendMessage("§e§l- SETUPING AN ARENA -");
+			player.sendMessage("§6§lINFO: §7Use blaze rod to select cuboid.");
+			player.sendMessage("§6§lINFO: §7Use blaze powder to open arena setup gui.");
+			player.sendMessage("§6§lINFO: §7Selected blocks will be redstone block at client-side");
+
+			player.getInventory().addItem(new ItemStack(Material.BLAZE_POWDER));
+			player.getInventory().addItem(new ItemStack(Material.BLAZE_ROD));
+			return true;
+
+		} else if (args[0].equalsIgnoreCase("setlobby")) {
+			SerializerUtils.serializeLocationYAML(plugin.getDatabaseHandler().getData().createSection("lobby-location"), player.getLocation());
+			plugin.getDatabaseHandler().saveDataFile();
+			player.sendMessage("§aLobby set successfully!");
+		} else if (args[0].equalsIgnoreCase("kiteditor")) {
+			new KitListGUI(player).open();
+		} else if (args[0].equalsIgnoreCase("kitsave")) {
+			kitSave(player, Arrays.asList(args));
+		}
+
+		return true;
+	}
+
+	private void kitSave(Player player, List<String> args) {
+		if (args.size() < 2) {
+			MessageUtils.sendMessage(player, "kit.editor-usage");
+			return;
+		}
+		args = args.subList(1, args.size());
+		final String name = String.join(" ", args);
+
+		final Kit kit = new Kit(name, player.getInventory().getContents(), player.getInventory().getArmorContents());
+
+		MessageUtils.sendMessage(player, "kit.has-saved", new PlaceholderUtil().add("{kit}", name));
+
+		Kit.save(plugin, kit);
+	}
+
+
+}
