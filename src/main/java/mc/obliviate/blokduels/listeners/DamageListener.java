@@ -43,21 +43,28 @@ public class DamageListener implements Listener {
 		if (member.getTeam().getGame() == null) Bukkit.broadcastMessage("game is null");
 
 
-		if (e instanceof EntityDamageByEntityEvent && ((EntityDamageByEntityEvent) e).getDamager() instanceof Player) {
-			attackerMember = DataHandler.getMember(((EntityDamageByEntityEvent) e).getDamager().getUniqueId());
-			if (attackerMember == null) {
-				e.setCancelled(true);
-				return;
-			}
-			if (attackerMember.getTeam().equals(member.getTeam())) {
-				e.setCancelled(true);
-				//friendly protect
-				return;
-			}
-			final SpectatorStorage spectatorData = member.getTeam().getGame().getSpectatorData();
-			if (spectatorData.isSpectator(victim) || spectatorData.isSpectator(attackerMember.getPlayer())) {
-				e.setCancelled(true);
-				//spectator protect
+		if (e instanceof EntityDamageByEntityEvent) {
+			if (((EntityDamageByEntityEvent) e).getDamager() instanceof Player) {
+				attackerMember = DataHandler.getMember(((EntityDamageByEntityEvent) e).getDamager().getUniqueId());
+				if (attackerMember == null) {
+					e.setCancelled(true);
+					return;
+				}
+				if (attackerMember.getTeam().equals(member.getTeam())) {
+					e.setCancelled(true);
+					//friendly protect
+					return;
+				}
+				final SpectatorStorage spectatorData = member.getTeam().getGame().getSpectatorData();
+				if (spectatorData.isSpectator(victim) || spectatorData.isSpectator(attackerMember.getPlayer())) {
+					e.setCancelled(true);
+					//spectator protect
+				}
+			} else if (((EntityDamageByEntityEvent) e).getDamager() instanceof Projectile) {
+				final Projectile projectile = (Projectile) ((EntityDamageByEntityEvent) e).getDamager();
+				if (projectile.getShooter() instanceof Player) {
+					attackerMember = DataHandler.getMember(((Player) projectile.getShooter()).getUniqueId());
+				}
 			}
 		}
 
