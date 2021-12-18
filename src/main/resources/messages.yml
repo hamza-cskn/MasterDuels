@@ -5,25 +5,41 @@
 prefix: '&7[&6MasterDuels&7] &7'
 unknown-usage: '&cKullandığınız komut kullanımı hatalı.'
 command-is-blocked: '&cYou can not use &4''{command}''&c in duel match.'
+arena-already-started: '&cThis arena already started.'
+no-arena-found: '&cCould not found available arena.'
 target-is-not-online: '&cThis player is not online rightnow.'
 this-is-not-valid-number: '&cYou entered invalid number.'
 you-left-from-duel: '&cYou left from duel.'
 game-finished: '&cDuel game has been finished.'
 game-started: '&cDuel game has been started!'
-round-has-started: '&c&l{round}. RAUND&7 başladı!'
-round-has-finished: '&c&l{round}. RAUND&7 sona erdi!'
-duel-team-eliminated: '&7The team of &c{victim}&7 has been eleminated!'
+round-has-started: '&c&l{round}. ROUND&7 started!'
+round-has-finished: '&c&l{round}. ROUND&7 finished!'
+duel-team-eliminated: '&7The team of &c{victim}&7 has been eleminated!' #for non-solo games
+you-are-in-duel: '&cYou cannot do this in duel game.'
+you-are-not-in-duel: '&cYou are not in a duel game.'
+target-already-in-duel: '&c{target} is already in duel game.'
 player-dead:
   by-attacker: '&c{victim}&7 has killed by &c{attacker}&7.'
   without-attacker: '&c{victim}&7 has been died.'
 you-are-a-spectator: '&eYou are a spectator.'
 kit:
-  editor-usage: '&cCorrect usage: /duelkit save <kit name>'
+  editor-usage: '&cCorrect usage: /dueladmin kitsave <kit name>'
   has-saved: '&7Kit saved: &f{kit}&7'
 game-timed-out: '&cDuel game you are in, has been timed out.'
 arrow-hit-notify:
   action-bar: '&c{victim}'' health is {health}'
   message: '&cYou hit {victim} from {distance} blocks far!'
+duel-command:
+  usage:
+    - '&6&lMasterDuels&6 commands'
+    - '&7 /duel [invite] <player name> &8- &9sends duel invite to a player'
+    - '&7 /duel accept &8- &9accept a duel invite'
+    - '&7 /duel decline &8- &9decline a duel invite'
+    - '&7 /duel spectate &8- &9spectate a player who are in duel'
+    - '&7 /duel leave &8- &9leave from duel game'
+    - '&7 /duel toggle &8- &9toggles invite receive state of you'
+    - '&7 /duel history &8- &9opens duel history gui'
+    - '&7 /duel stats [player name] &8- &9shows statistics of player'
 invite:
   usage: '&cCorrect Usage:&7 /duel <player name>'
   toggle:
@@ -32,17 +48,20 @@ invite:
     you-can-not-invite: '&c{invited} disabled duel requests.'
   you-dont-have-invite: '&cYou don''t have any duel invite :('
   already-invited: '&cYou already invited this player.'
+  invite-expired-inviter: '&7Duel invite that is sent by &f{target}&7 to you, has expired.'
+  invite-expired-target: '&7Invite that is came from &f{inviter}&7, has expired.'
+  target-has-invited: '&7You sent a duel invite to &f{target}&7. The invite will be expired after &f{expire_time} seconds&7.'
   target-declined-the-invite: '&7{target}, &cdeclined&7 your duel invite.'
   successfully-declined: '&7You &cdeclined &f{target}&7''s duel invite.'
   target-accepted-the-invite: '&f{target} &7accepted your duel invite.'
   successfully-accepted: '&7You have accepted &f{inviter}&7''s invite.'
-  accept-button-name: '&aClick to accept duel request!'
-  accept-button: '&a&l[ACCEPT]'
-  decline-button-name: '&cClick to decline duel request!'
-  decline-button: '&c&l[DECLINE]'
-  invite-expired-inviter: '&7Duel invite that is sent by &f{target}&7 to you, has expired.'
-  invite-expired-target: '&7Invite that is came from &f{inviter}&7, has expired.'
-  target-has-invited: '&7You sent a duel invite to &f{target}&7. The invite will be expired after &f{expire_time} seconds&7.'
+  button:
+    accept-button:
+      hover: '&aClick to accept duel request!'
+      text: '&a&l[ACCEPT]'
+    decline-button:
+      hover: '&cClick to decline duel request!'
+      text: '&c&l[DECLINE]'
   you-invited:
     - '    &5&m                 &r       &d&lDUEL REQUEST       &5&m                 &r    '
     - '            &f{inviter}&7 is challenging to you in a duel game!'

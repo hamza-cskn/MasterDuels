@@ -1,7 +1,5 @@
 package mc.obliviate.blokduels.commands;
 
-import com.hakan.messageapi.bukkit.MessageAPI;
-import com.hakan.messageapi.bukkit.title.Title;
 import mc.obliviate.blokduels.BlokDuels;
 import mc.obliviate.blokduels.arena.Arena;
 import mc.obliviate.blokduels.data.DataHandler;
@@ -42,13 +40,7 @@ public class DuelCMD implements CommandExecutor {
 		final User user = DataHandler.getUser(player.getUniqueId());
 
 		if (args.length == 0) {
-			player.sendMessage("§c§lUSAGE");
-			player.sendMessage("§7/duel <player>");
-			player.sendMessage("§7/duel invite <player>");
-			player.sendMessage("§7/duel leave");
-			player.sendMessage("§7/duel accept");
-			player.sendMessage("§7/duel decline");
-			player.sendMessage("§7/duel history");
+			MessageUtils.sendMessageList(player,"duel-command.usage");
 			return false;
 		}
 
@@ -59,7 +51,7 @@ public class DuelCMD implements CommandExecutor {
 
 		if (args[0].equalsIgnoreCase("leave")) {
 			if (user == null) {
-				player.sendMessage("§cYou are not in a duel game already.");
+				MessageUtils.sendMessage(player,"you-are-not-in-duel");
 				return false;
 			}
 			user.getGame().leave(user);
@@ -69,7 +61,7 @@ public class DuelCMD implements CommandExecutor {
 		//THESE COMMANDS BLOCKED FOR PLAYERS WHO IN DUEL
 
 		if (user instanceof Member) {
-			player.sendMessage("§cYou are in a duel game already.");
+			MessageUtils.sendMessage(player,"you-are-in-duel");
 			return false;
 		}
 
@@ -168,12 +160,12 @@ public class DuelCMD implements CommandExecutor {
 		final Player target = Bukkit.getPlayerExact(targetName);
 
 		if (target == null) {
-			player.sendMessage("§cThis player is not online.");
+			MessageUtils.sendMessage(player,"target-is-not-online");
 			return;
 		}
 
 		if (DataHandler.getMember(target.getUniqueId()) != null) {
-			player.sendMessage("§cThis player is already in a duel.");
+			MessageUtils.sendMessage(player,"target-already-in-duel");
 			return;
 		}
 
@@ -181,7 +173,7 @@ public class DuelCMD implements CommandExecutor {
 		final Arena arena = Arena.findArena(1, 2);
 
 		if (arena == null) {
-			player.sendMessage("§cCould not found any available arena.");
+			MessageUtils.sendMessage(player,"no-arena-found");
 			return;
 		}
 
@@ -194,7 +186,7 @@ public class DuelCMD implements CommandExecutor {
 					gameBuilder.createTeam(target);
 					final Game game = gameBuilder.build();
 					if (game == null) {
-						target.sendMessage("arena already started");
+						MessageUtils.sendMessage(target,"arena-already-started");
 						return;
 					}
 					game.startGame();
