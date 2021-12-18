@@ -115,17 +115,17 @@ public class SQLManager extends SQLHandler {
 	}
 
 	public DuelStatistic getStatistic(final UUID uuid) {
-		if (!playerDataTable.exist(uuid.toString())) {
+		if (playerDataTable.exist(uuid.toString())) {
 			final ResultSet rs = playerDataTable.select(uuid.toString());
 			try {
-				rs.next();
-				final int wins = rs.getInt("wins");
-				final int loses = rs.getInt("loses");
-				while (rs.next()) {
-					Logger.severe("Statistics duplication found: " + uuid);
+				if (rs.next()) {
+					final int wins = rs.getInt("wins");
+					final int loses = rs.getInt("loses");
+					while (rs.next()) {
+						Logger.severe("Statistics duplication found: " + uuid);
+					}
+					return new DuelStatistic(uuid, wins, loses);
 				}
-				return new DuelStatistic(uuid, wins, loses);
-
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
@@ -143,13 +143,13 @@ public class SQLManager extends SQLHandler {
 
 	private void increaseValue(final UUID uuid, final int amount, final String type) {
 		if (playerDataTable.exist(uuid.toString())) {
-			sqlUpdate("UPDATE " + playerDataTable.getTableName() + " SET " + type + " = " + type + " + " + amount + " WHERE id = " + uuid);
+			sqlUpdate("UPDATE " + playerDataTable.getTableName() + " SET " + type + " = " + type + " + " + amount + " WHERE uuid = '" + uuid + "'");
 		} else {
 			final SQLUpdateColumn update = playerDataTable.createUpdate(uuid.toString())
 					.putData("uuid", uuid.toString())
 					.putData("wins", 0)
 					.putData("loses", 0)
-					.putData("receivesInvites", 0)
+					.putData("receivesInvites", 1)
 					.putData(type, amount); //replace type value
 
 			playerDataTable.insert(update);
