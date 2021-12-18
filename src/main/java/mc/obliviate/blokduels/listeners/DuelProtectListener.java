@@ -9,6 +9,7 @@ import mc.obliviate.blokduels.utils.MessageUtils;
 import mc.obliviate.blokduels.utils.placeholder.PlaceholderUtil;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -76,7 +77,7 @@ public class DuelProtectListener implements Listener {
 			//fixme crafting, anvil, trapdoor and fence gates are openable
 			if (e.getAction() == Action.PHYSICAL || (e.getClickedBlock() != null && (e.getClickedBlock().getState() instanceof InventoryHolder || e.getClickedBlock().getType().equals(Material.WOOD_BUTTON) || e.getClickedBlock().getType().equals(Material.STONE_BUTTON)))) {
 				e.setCancelled(true);
-			} else if (e.getClickedBlock() != null){
+			} else if (e.getClickedBlock() != null) {
 				switch (e.getClickedBlock().getType()) {
 					case WORKBENCH:
 					case ANVIL:
@@ -136,7 +137,7 @@ public class DuelProtectListener implements Listener {
 		if (e.getMessage().startsWith("/")) {
 			if (!plugin.getDatabaseHandler().getConfig().getStringList("executable-commands-by-player." + member.getTeam().getGame().getGameState().name()).contains(e.getMessage())) {
 				e.setCancelled(true);
-				MessageUtils.sendMessage(e.getPlayer(),"command-is-blocked",new PlaceholderUtil().add("{command}",e.getMessage()));
+				MessageUtils.sendMessage(e.getPlayer(), "command-is-blocked", new PlaceholderUtil().add("{command}", e.getMessage()));
 			}
 		}
 

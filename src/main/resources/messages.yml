@@ -1,3 +1,7 @@
+# Write 'DISABLED' to disable a message.
+# Ex.
+#game-finished: 'DISABLED'
+
 prefix: '&7[&6MasterDuels&7] &7'
 unknown-usage: '&cKullandığınız komut kullanımı hatalı.'
 command-is-blocked: '&cYou can not use &4''{command}''&c in duel match.'
@@ -17,8 +21,15 @@ kit:
   editor-usage: '&cCorrect usage: /duelkit save <kit name>'
   has-saved: '&7Kit saved: &f{kit}&7'
 game-timed-out: '&cDuel game you are in, has been timed out.'
+arrow-hit-notify:
+  action-bar: '&c{victim}'' health is {health}'
+  message: '&cYou hit {victim} from {distance} blocks far!'
 invite:
   usage: '&cCorrect Usage:&7 /duello <player name>'
+  toggle:
+    turned-on: '&7You have enabled duel requests!'
+    turned-of: '&7You have disabled duel requests!'
+    you-can-not-invite: '&c{invited} disabled duel requests.'
   you-dont-have-invite: '&cYou don''t have any duel invite :('
   already-invited: '&cYou already invited this player.'
   target-declined-the-invite: '&7{target}, &cdeclined&7 your duel invite.'
@@ -34,7 +45,12 @@ invite:
       aşımına uğradı.'
   target-has-invited: '&f{target}&7 adlı oyuncuya düello davetinizi ilettik. Davet
       &f{expire_time} saniye &7sonra sona erecek.'
-  you-invited: '&f{inviter}&7 is challenging to you in a duel game! Do you want accept the invite?'
+  you-invited:
+    - '    &5&m                 &r       &d&lDUEL REQUEST       &5&m                 &r    '
+    - '            &f{inviter}&7 is challenging to you in a duel game!'
+    - '                  &7Do you want accept the invite?'
+    - '&f'
+    - '                    {accept-button}    &r{decline-button}'
 timer-format:
   second: 'second'
   seconds: 'seconds'

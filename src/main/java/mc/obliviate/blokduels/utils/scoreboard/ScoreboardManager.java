@@ -82,7 +82,6 @@ public class ScoreboardManager {
 						}
 					}
 				}
-
 			} else {
 				api.setProcessedScoreboardValue(player, ++index, MessageUtils.parseColor(line
 						.replace("{round}", "" + game.getRoundData().getCurrentRound())
