@@ -89,6 +89,7 @@ public class BlokDuels extends JavaPlugin {
 				game.uninstallGame();
 			}
 		}
+		getSqlManager().disconnect();
 	}
 
 	public YamlStorageHandler getDatabaseHandler() {
