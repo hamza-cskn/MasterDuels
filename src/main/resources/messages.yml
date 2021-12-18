@@ -25,7 +25,7 @@ arrow-hit-notify:
   action-bar: '&c{victim}'' health is {health}'
   message: '&cYou hit {victim} from {distance} blocks far!'
 invite:
-  usage: '&cCorrect Usage:&7 /duello <player name>'
+  usage: '&cCorrect Usage:&7 /duel <player name>'
   toggle:
     turned-on: '&7You have enabled duel requests!'
     turned-of: '&7You have disabled duel requests!'
@@ -34,23 +34,22 @@ invite:
   already-invited: '&cYou already invited this player.'
   target-declined-the-invite: '&7{target}, &cdeclined&7 your duel invite.'
   successfully-declined: '&7You &cdeclined &f{target}&7''s duel invite.'
-  target-accepted-the-invite: '&7{target} adlı oyuncu düello davetinizi &akabul etti&7.'
-  successfully-accepted: '&7{inviter} adlı oyuncunun düello davetini kabul ettiniz.'
+  target-accepted-the-invite: '&f{target} &7accepted your duel invite.'
+  successfully-accepted: '&7You have accepted &f{inviter}&7''s invite.'
   accept-button-name: '&aClick to accept duel request!'
   accept-button: '&a&l[ACCEPT]'
   decline-button-name: '&cClick to decline duel request!'
   decline-button: '&c&l[DECLINE]'
   invite-expired-inviter: '&7Duel invite that is sent by &f{target}&7 to you, has expired.'
-  invite-expired-target: '&f{inviter}&7 adlı oyuncudan gelen düello davetiniz zaman
-      aşımına uğradı.'
-  target-has-invited: '&f{target}&7 adlı oyuncuya düello davetinizi ilettik. Davet
-      &f{expire_time} saniye &7sonra sona erecek.'
+  invite-expired-target: '&7Invite that is came from &f{inviter}&7, has expired.'
+  target-has-invited: '&7You sent a duel invite to &f{target}&7. The invite will be expired after &f{expire_time} seconds&7.'
   you-invited:
     - '    &5&m                 &r       &d&lDUEL REQUEST       &5&m                 &r    '
     - '            &f{inviter}&7 is challenging to you in a duel game!'
     - '                  &7Do you want accept the invite?'
     - '&f'
     - '                    {accept-button}    &r{decline-button}'
+statistics: '&aWins: {wins}&c Loses: {loses}'
 timer-format:
   second: 'second'
   seconds: 'seconds'

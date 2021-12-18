@@ -12,14 +12,18 @@ import mc.obliviate.blokduels.gui.kit.KitSelectionGUI;
 import mc.obliviate.blokduels.invite.Invite;
 import mc.obliviate.blokduels.invite.InviteResult;
 import mc.obliviate.blokduels.invite.Invites;
+import mc.obliviate.blokduels.statistics.DuelStatistic;
 import mc.obliviate.blokduels.user.User;
 import mc.obliviate.blokduels.user.team.Member;
 import mc.obliviate.blokduels.utils.MessageUtils;
+import mc.obliviate.blokduels.utils.placeholder.PlaceholderUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.UUID;
 
 public class DuelCMD implements CommandExecutor {
 
@@ -72,10 +76,15 @@ public class DuelCMD implements CommandExecutor {
 		if (args[0].equalsIgnoreCase("toggle")) {
 			final boolean state = plugin.getSqlManager().toggleReceivesInvites(player.getUniqueId());
 			if (state) {
-				MessageUtils.sendMessage(player,"invite.toggle.turned-on");
+				MessageUtils.sendMessage(player, "invite.toggle.turned-on");
 			} else {
 				MessageUtils.sendMessage(player, "invite.toggle.turned-off");
 			}
+			return true;
+		}
+
+		if (args[0].equalsIgnoreCase("stats")) {
+			stats(player, args);
 			return true;
 		}
 
@@ -92,6 +101,15 @@ public class DuelCMD implements CommandExecutor {
 			invite(player, args);
 		}
 		return true;
+
+	}
+
+	private void stats(final Player player, final String[] args) {
+		final UUID target = args.length == 1 ? player.getUniqueId() : Bukkit.getOfflinePlayer(args[1]).getUniqueId();
+		final DuelStatistic statistic = plugin.getSqlManager().getStatistic(target);
+		MessageUtils.sendMessage(player, "statistics",
+				new PlaceholderUtil()
+						.add("{wins}", statistic.getWins() + "").add("{loses}", statistic.getLoses() + ""));
 
 	}
 

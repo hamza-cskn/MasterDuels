@@ -2,6 +2,7 @@ package mc.obliviate.blokduels.data;
 
 import mc.obliviate.blokduels.BlokDuels;
 import mc.obliviate.blokduels.history.GameHistoryLog;
+import mc.obliviate.blokduels.statistics.DuelStatistic;
 import mc.obliviate.blokduels.utils.Logger;
 import mc.obliviate.blokduels.utils.serializer.SerializerUtils;
 import mc.obliviate.bloksqliteapi.SQLHandler;
@@ -111,6 +112,25 @@ public class SQLManager extends SQLHandler {
 			playerDataTable.insert(update);
 		}
 		return !bool;
+	}
+
+	public DuelStatistic getStatistic(final UUID uuid) {
+		if (!playerDataTable.exist(uuid.toString())) {
+			final ResultSet rs = playerDataTable.select(uuid.toString());
+			try {
+				rs.next();
+				final int wins = rs.getInt("wins");
+				final int loses = rs.getInt("loses");
+				while (rs.next()) {
+					Logger.severe("Statistics duplication found: " + uuid);
+				}
+				return new DuelStatistic(uuid, wins, loses);
+
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return new DuelStatistic(uuid, 0, 0);
 	}
 
 	public void addWin(final UUID uuid, int amount) {
