@@ -150,12 +150,14 @@ public class DuelProtectListener implements Listener {
 
 	@EventHandler
 	public void onDamage(final EntityDamageByEntityEvent e) {
-		if (isUser(e.getEntity())) {
-			if (!isUser(e.getDamager())) {
-				//victim is in duel
-				//attacker isn't in duel
-				//cancel it.
-				e.setCancelled(true);
+		if (e.getEntity().getType().equals(EntityType.PLAYER) && e.getDamager().getType().equals(EntityType.PLAYER)) {
+			if (isUser(e.getEntity())) {
+				if (!isUser(e.getDamager())) {
+					//victim is in duel
+					//attacker isn't in duel
+					//cancel it.
+					e.setCancelled(true);
+				}
 			}
 		}
 	}
