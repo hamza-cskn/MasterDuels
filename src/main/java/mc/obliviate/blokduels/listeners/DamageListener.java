@@ -4,10 +4,12 @@ import mc.obliviate.blokduels.BlokDuels;
 import mc.obliviate.blokduels.data.DataHandler;
 import mc.obliviate.blokduels.game.spectator.SpectatorStorage;
 import mc.obliviate.blokduels.user.team.Member;
-import net.md_5.bungee.api.ChatColor;
+import mc.obliviate.blokduels.utils.MessageUtils;
+import mc.obliviate.blokduels.utils.placeholder.PlaceholderUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -76,11 +78,30 @@ public class DamageListener implements Listener {
 
 	@EventHandler
 	public void onDamage(EntityDamageByEntityEvent e) {
-		if (e.getEntity() instanceof Player && e.getDamager() instanceof Player) {
-			final Member member = DataHandler.getMember(e.getDamager().getUniqueId());
-			if (member == null) return;
-			final Player attacker = (Player) e.getDamager();
-			plugin.getMessageAPI().sendActionBar(attacker, ChatColor.RED + "" + e.getDamage() + " ❤");
+		if (e.getEntity() instanceof Player && e.getDamager() instanceof Projectile) {
+			if (((Projectile) e.getDamager()).getShooter() instanceof Player) {
+				final Player attacker = (Player) ((Projectile) e.getDamager()).getShooter();
+				final Member member = DataHandler.getMember(attacker.getUniqueId());
+				if (member == null) return;
+				final double distance = MessageUtils.getFirstDigits(e.getEntity().getLocation().toVector().distance(attacker.getLocation().toVector()), 2);
+				MessageUtils.sendMessage(attacker, "arrow-hit-notify.message",
+						new PlaceholderUtil()
+								.add("{health}", ((Player) e.getEntity()).getHealthScale() + "")
+								.add("{damage}", e.getFinalDamage() + "")
+								.add("{victim}", e.getEntity().getName())
+								.add("{distance}", distance + "")
+				);
+				plugin.getMessageAPI().sendActionBar(attacker,
+						MessageUtils.parseColor(
+								MessageUtils.applyPlaceholders(
+										MessageUtils.getMessage("arrow-hit-notify.action-bar"),
+										new PlaceholderUtil()
+												.add("{health}", ((Player) e.getEntity()).getHealthScale() + "")
+												.add("{damage}", e.getFinalDamage() + "")
+												.add("{victim}", e.getEntity().getName())
+												.add("{distance}", distance + "")
+								)));
+			}
 		}
 	}
 }
