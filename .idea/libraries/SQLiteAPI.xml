@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="SQLiteAPI">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/../../Libraries/SQLiteAPI.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>
