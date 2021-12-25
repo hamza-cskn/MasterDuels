@@ -24,7 +24,7 @@ public class WorkLoadThread implements Runnable {
 	public void run() {
 		final long stopTime = System.currentTimeMillis() + MAX_MS_PER_TICK;
 		while (next() && System.currentTimeMillis() <= stopTime) {
-			workLoadDeque.poll().compute();
+			workLoadDeque.poll().compute(plugin);
 		}
 		if (next()) {
 			Bukkit.getScheduler().runTaskLater(plugin, this, 1);

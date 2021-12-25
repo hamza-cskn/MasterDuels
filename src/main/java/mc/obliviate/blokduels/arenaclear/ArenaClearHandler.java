@@ -17,7 +17,7 @@ public class ArenaClearHandler {
 	}
 
 	public void init() {
-		Bukkit.getPluginManager().registerEvents(new RollbackListener(plugin), plugin);
+		Bukkit.getPluginManager().registerEvents(new RollbackListener(plugin, plugin.getDatabaseHandler().getConfig().getBoolean("prevent-break-non-placed-blocks", true)), plugin);
 	}
 
 	public void add(Game game, BlokDuels plugin) {

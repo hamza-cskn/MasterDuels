@@ -8,6 +8,9 @@ arena-regeneration:
 
 # if you need more complex arena regeneration we recommend rollbackcore: https://www.spigotmc.org/resources/rollbackcore-1-4-7-1-17-1.18517/
 
+#if set true, players can break only placed blocks by a player.
+prevent-break-non-placed-blocks: true
+
 # if set true, MasterDuels will changes Bukkit world configurations of all
 # worlds of arenas. Thats includes game rules of the worlds. We recommend this,
 # if your duel arenas are in different world from another worlds you're using for another thing.

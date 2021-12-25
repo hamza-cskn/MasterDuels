@@ -87,7 +87,6 @@ public class ScoreboardManager {
 						.replace("{round}", "" + game.getRoundData().getCurrentRound())
 						.replace("{map}", game.getArena().getMapName() + "")
 						.replace("{timer}", TimerUtils.formatTimerFormat(game.getTimer()))
-						.replace("{placed-blocks}", "" + game.getPlacedBlocks().size())
 						.replace("{team-size}", member.getTeam().getMembers().size() + "")));
 			}
 		}

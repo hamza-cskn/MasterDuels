@@ -2,6 +2,7 @@ package mc.obliviate.blokduels.arenaclear.workloads;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.plugin.Plugin;
 
 import java.util.UUID;
 
@@ -20,12 +21,13 @@ public class LiquidWorkload implements IWorkLoad {
 	}
 
 	@Override
-	public void compute() {
+	public void compute(Plugin plugin) {
 		final Block block = getBlock();
 		if (block == null) return;
 		if (block.getType() == null) return;
 		if (block.getType().equals(Material.AIR)) return;
 
+		block.removeMetadata("placedByPlayer", plugin);
 		block.setType(Material.SPONGE, true);
 		block.setType(Material.AIR, true);
 	}
