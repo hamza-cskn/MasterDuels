@@ -101,7 +101,7 @@ public class YamlStorageHandler {
 				world.setStorm(false);
 				world.setGameRuleValue("doFireTick","false");
 				world.setGameRuleValue("doDaylightCycle","false");
-				world.setGameRuleValue("randomTickSpeed","false");
+				world.setGameRuleValue("randomTickSpeed","0");
 				world.setGameRuleValue("doMobSpawning","false");
 				if (!world.getPVP()) {
 					Logger.warn("PVP is disabled at " + world.getName() + " world! Then why i am here :(");
