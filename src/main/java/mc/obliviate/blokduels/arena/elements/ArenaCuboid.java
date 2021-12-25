@@ -51,13 +51,12 @@ public class ArenaCuboid {
 		this.zMaxCentered = this.zMax + 0.5;
 	}
 
-	public Iterator<Block> blockList() {
-		final ArrayList<Block> bL = new ArrayList<>(this.getTotalBlockSize());
+	public Iterator<Location> blockList() {
+		final ArrayList<Location> bL = new ArrayList<>(this.getTotalBlockSize());
 		for (int x = this.xMin; x <= this.xMax; ++x) {
 			for (int y = this.yMin; y <= this.yMax; ++y) {
 				for (int z = this.zMin; z <= this.zMax; ++z) {
-					final Block b = this.world.getBlockAt(x, y, z);
-					bL.add(b);
+					bL.add(new Location(world, x, y, z));
 				}
 			}
 		}
@@ -145,4 +144,31 @@ public class ArenaCuboid {
 		return chunks;
 	}
 
+	public int getxMin() {
+		return xMin;
+	}
+
+	public int getxMax() {
+		return xMax;
+	}
+
+	public int getyMin() {
+		return yMin;
+	}
+
+	public int getyMax() {
+		return yMax;
+	}
+
+	public int getzMin() {
+		return zMin;
+	}
+
+	public int getzMax() {
+		return zMax;
+	}
+
+	public World getWorld() {
+		return world;
+	}
 }

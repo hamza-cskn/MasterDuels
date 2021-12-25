@@ -13,10 +13,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockMultiPlaceEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.*;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.InventoryHolder;
@@ -101,15 +98,10 @@ public class DuelProtectListener implements Listener {
 
 	//fixme liquids does not cleans after game end
 	@EventHandler
-	public void onBucketFill(final PlayerBucketFillEvent e) {
-		if (!isUser(e.getPlayer())) return;
-		e.setCancelled(true);
-	}
-
-	@EventHandler
-	public void onBucketEmpty(final PlayerBucketFillEvent e) {
-		if (!isUser(e.getPlayer())) return;
-		e.setCancelled(true);
+	public void onBucketFill(final PlayerBucketEmptyEvent e) {
+		final Member member = DataHandler.getMember(e.getPlayer().getUniqueId());
+		if (member == null) return;
+		member.getGame().addPlacedBlock(e.getBlockClicked().getLocation().add(e.getBlockFace().getModX(), e.getBlockFace().getModY(), e.getBlockFace().getModZ()));
 	}
 
 	@EventHandler
