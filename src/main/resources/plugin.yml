@@ -2,13 +2,12 @@ name: BlokDuels
 main: mc.obliviate.blokduels.BlokDuels
 author: Mr_Obliviate
 description: Duel plugin codded for Blok Dunyasi!
-version: 1.0.0
+version: 2.0-build134
 softdepend:
   - Multiverse-Core
   - TitleManager
   - TAB
 commands:
-  duelsetup:
   duelarenas:
   duel:
-  duelkit:
+  dueladmin:
