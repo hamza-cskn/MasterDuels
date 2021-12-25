@@ -66,11 +66,11 @@ public class Invite {
 		}
 
 		addInvite(invited.getUniqueId(), this);
-		MessageUtils.sendMessage(inviter, "invite.target-has-invited", new PlaceholderUtil().add("{target}", target.getName()).add("{expire_time}", expireTime + ""));
+		MessageUtils.sendMessage(inviter, "invite.target-has-invited", new PlaceholderUtil().add("{target}", target.getName()).add("{expire-time}", expireTime + ""));
 
 		for (String inviteText : MessageUtils.getMessageConfig().getStringList("invite.you-invited")) {
 			inviteText = inviteText + " ";
-			inviteText = MessageUtils.applyPlaceholders(inviteText, new PlaceholderUtil().add("{inviter}", inviter.getName()).add("{expire_time}", expireTime + ""));
+			inviteText = MessageUtils.applyPlaceholders(inviteText, new PlaceholderUtil().add("{inviter}", inviter.getName()).add("{expire-time}", expireTime + ""));
 			inviteText = MessageUtils.parseColor(inviteText);
 
 			if (inviteText.contains("{accept-button}") && inviteText.contains("{decline-button}")) {
@@ -166,12 +166,6 @@ public class Invite {
 			MessageUtils.sendMessage(getInviter(), "invite.target-accepted-the-invite", new PlaceholderUtil().add("{target}", target.getName()));
 			final Player player = getTarget();
 			MessageUtils.sendMessage(player, "invite.successfully-accepted", new PlaceholderUtil().add("{inviter}", target.getName()));
-			/*if (teamBuilder.getTeamSize() < ConfigHandler.getMemberLimitPerClan()) {
-				teamBuilder.addMember(getTarget());
-			} else {
-				MessageUtils.sendMessage(getTarget(),"invite.clan-is-full");
-			}
-			 */
 			response.onResponse(InviteResult.ACCEPT);
 		}
 		//DECLINE

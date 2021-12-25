@@ -1,6 +1,8 @@
 package mc.obliviate.blokduels.game.spectator;
 
 import com.hakan.messageapi.bukkit.MessageAPI;
+import mc.obliviate.blokduels.api.events.spectator.DuelGamePreSpectatorJoinEvent;
+import mc.obliviate.blokduels.api.events.spectator.DuelGameSpectatorLeaveEvent;
 import mc.obliviate.blokduels.data.DataHandler;
 import mc.obliviate.blokduels.game.Game;
 import mc.obliviate.blokduels.kit.InventoryStorer;
@@ -10,6 +12,7 @@ import mc.obliviate.blokduels.user.team.Team;
 import mc.obliviate.blokduels.utils.MessageUtils;
 import mc.obliviate.blokduels.utils.playerreset.PlayerReset;
 import mc.obliviate.blokduels.utils.title.TitleHandler;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -75,6 +78,8 @@ public class SpectatorStorage {
 	public void unspectate(final Spectator spectator) {
 		if (!isSpectator(spectator)) return;
 
+		Bukkit.getPluginManager().callEvent(new DuelGameSpectatorLeaveEvent(spectator));
+
 		spectators.remove(spectator);
 		playerReset.reset(spectator.getPlayer());
 
@@ -88,11 +93,18 @@ public class SpectatorStorage {
 
 	}
 
+	//todo is it spectator switch event?
 	public void spectate(final Player player) {
 		if (isSpectator(player)) return;
+
+		final DuelGamePreSpectatorJoinEvent duelGamePreSpectatorJoinEvent = new DuelGamePreSpectatorJoinEvent(player, game);
+		Bukkit.getPluginManager().callEvent(duelGamePreSpectatorJoinEvent);
+		if (duelGamePreSpectatorJoinEvent.isCancelled()) return;
+
 		final Spectator spectator = add(player);
 
-		new PlayerReset().excludeGamemode().excludeLevel().excludeExp().reset(player);
+
+		new PlayerReset().excludeGamemode().excludeInventory().excludeLevel().excludeExp().reset(player);
 
 		for (final Team team : game.getTeams().values()) {
 			for (final Member m : team.getMembers()) {

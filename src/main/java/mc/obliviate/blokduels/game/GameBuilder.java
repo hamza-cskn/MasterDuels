@@ -20,7 +20,7 @@ public class GameBuilder {
 	private int teamSize = 1;
 	private int totalRounds = 1;
 	private int finishTime = 60;
-	private Kit kit = Kit.getKits().get("test");
+	private Kit kit = null;
 	private Game game = null;
 	private List<GameRules> gameRules = null;
 	private int createdTeamsAmount = 0;

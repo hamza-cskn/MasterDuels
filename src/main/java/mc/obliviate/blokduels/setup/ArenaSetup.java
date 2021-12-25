@@ -6,6 +6,7 @@ import mc.obliviate.blokduels.arena.elements.ArenaCuboid;
 import mc.obliviate.blokduels.arena.elements.Positions;
 import mc.obliviate.blokduels.data.DataHandler;
 import mc.obliviate.blokduels.setup.gui.ArenaSetupGUI;
+import mc.obliviate.blokduels.utils.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -66,7 +67,7 @@ public class ArenaSetup implements Listener {
 			if (posSelection.getPos1() != null && posSelection.getPos1().equals(e.getClickedBlock().getLocation()))
 				return;
 			posSelection.setPos1(e.getClickedBlock().getLocation());
-			player.sendMessage("Position 1 has selected!");
+			player.sendMessage("§7Position §61§7 has selected!");
 			Bukkit.getScheduler().runTaskLater(plugin, () -> player.sendBlockChange(e.getClickedBlock().getLocation(), Material.REDSTONE_BLOCK, (byte) 0), 2);
 			return;
 		}
@@ -77,7 +78,7 @@ public class ArenaSetup implements Listener {
 				return;
 			}
 			posSelection.setPos2(e.getClickedBlock().getLocation());
-			player.sendMessage("Position 2 has selected!");
+			player.sendMessage("§7Position §62§7 has selected!");
 			Bukkit.getScheduler().runTaskLater(plugin, () -> player.sendBlockChange(e.getClickedBlock().getLocation(), Material.REDSTONE_BLOCK, (byte) 0), 2);
 
 		}
@@ -192,7 +193,7 @@ public class ArenaSetup implements Listener {
 		for (int i = 1; getTeamAmount() >= i; i++) {
 			final Positions positions = positionsMap.get("spawn-team-" + i);
 			if (positions == null) {
-				Bukkit.broadcastMessage("spawn-team-" + i + "... is null");
+				Logger.debug("spawn-team-" + i + "... is null");
 				continue;
 			}
 			if (positions.getLocations() == null) continue;

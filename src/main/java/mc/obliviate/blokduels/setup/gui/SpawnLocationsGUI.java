@@ -51,7 +51,7 @@ public class SpawnLocationsGUI extends GUI {
 								ChatColor.GRAY + "Set " + i + ". team's " + pos + ". player's spawn",
 								ChatColor.GRAY + "position.",
 								"",
-								ChatColor.GRAY + "Currently: " + ChatColor.RED + PositionSelection.formatLocation(location),
+								ChatColor.GRAY + "Currently: " + ChatColor.GREEN + PositionSelection.formatLocation(location),
 								ChatColor.YELLOW + "Click to set position!")
 						.onClick(e -> {
 							positions.registerLocation(playerNo, player.getLocation());
@@ -62,7 +62,7 @@ public class SpawnLocationsGUI extends GUI {
 			}
 
 			if (slot >= 44) {
-				player.sendMessage("There are tooooo many spawn position!");
+				player.sendMessage("§cThere are tooooo many spawn position!");
 				break;
 			}
 		}

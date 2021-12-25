@@ -1,6 +1,9 @@
 package mc.obliviate.blokduels.game;
 
 import mc.obliviate.blokduels.BlokDuels;
+import mc.obliviate.blokduels.api.events.DuelGameMemberDeathEvent;
+import mc.obliviate.blokduels.api.events.DuelGameTeamEleminateEvent;
+import mc.obliviate.blokduels.api.events.arena.*;
 import mc.obliviate.blokduels.arena.Arena;
 import mc.obliviate.blokduels.arena.elements.Positions;
 import mc.obliviate.blokduels.data.DataHandler;
@@ -21,17 +24,19 @@ import mc.obliviate.blokduels.utils.playerreset.PlayerReset;
 import mc.obliviate.blokduels.utils.scoreboard.ScoreboardManager;
 import mc.obliviate.blokduels.utils.timer.TimerUtils;
 import mc.obliviate.blokduels.utils.title.TitleHandler;
-import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.entity.*;
+import org.bukkit.*;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Item;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.*;
 
 import static mc.obliviate.blokduels.data.DataHandler.LOCK_TIME_IN_SECONDS;
 import static mc.obliviate.blokduels.game.GameState.*;
+import static mc.obliviate.blokduels.kit.Kit.USE_PLAYER_INVENTORIES;
 
 public class Game {
 
@@ -117,6 +122,15 @@ public class Game {
 	}
 
 	public void nextRound() {
+
+		if (roundData.getCurrentRound() != 0) {
+			Bukkit.getPluginManager().callEvent(new DuelGameRoundEndEvent(this));
+		} else {
+			Bukkit.getPluginManager().callEvent(new DuelGameStartEvent(this));
+		}
+
+		Bukkit.getPluginManager().callEvent(new DuelGamePreRoundStartEvent(this));
+
 		if (!roundData.addRound()) {
 			finishGame();
 			return;
@@ -132,8 +146,6 @@ public class Game {
 			gameState = BATTLE;
 			onRoundStart(roundData.getCurrentRound());
 		}, LOCK_TIME_IN_SECONDS * 20L + 1));
-
-
 	}
 
 	public void onRoundStart(final int round) {
@@ -142,8 +154,9 @@ public class Game {
 		setFinishTimer();
 		if (round == 1) {
 			initBossBar();
-			gameHistoryLog.setStartTime(System.currentTimeMillis());
 		}
+
+		Bukkit.getPluginManager().callEvent(new DuelGameRoundStartEvent(this));
 	}
 
 	private void setFinishTimer() {
@@ -157,7 +170,7 @@ public class Game {
 	public void storeKits() {
 		for (final Member member : getAllMembers()) {
 			if (!Kit.storeKits(member.getPlayer())) {
-				Logger.severe(member.getPlayer().getName() + "'s inventory could not stored! Game cancelling.");
+				Logger.error(member.getPlayer().getName() + "'s inventory could not stored! Duel game cancelling for security.");
 				uninstallGame();
 			}
 		}
@@ -216,12 +229,57 @@ public class Game {
 			Logger.severe("Finish Game method called twice.");
 			return;
 		}
+
+		Bukkit.getPluginManager().callEvent(new DuelGameFinishEvent(this));
+
+		if (USE_PLAYER_INVENTORIES) {
+			for (final Team team : getTeams().values()) {
+				if (checkTeamEliminated(team)) {
+					for (final Member member : team.getMembers()) {
+						dropItems(member.getPlayer());
+					}
+				}
+			}
+		}
+
 		setGameState(GAME_ENDING);
 		cancelTasks("REMAINING_TIME");
 		timer = endDelay * 1000L + System.currentTimeMillis();
 		Bukkit.getScheduler().runTaskLater(plugin, this::uninstallGame, endDelay * 20L);
+	}
 
+	private void broadcastGameEnd() {
+		final String mode = plugin.getDatabaseHandler().getConfig().getString("game-end-broadcast-mode", "SERVER_WIDE");
 
+		List<Player> receivers = null;
+
+		switch (mode) {
+			case "SERVER_WIDE":
+				receivers = new ArrayList<>(Bukkit.getOnlinePlayers());
+				break;
+			case "SPECTATORS_AND_MEMBERS":
+				receivers = new ArrayList<>(getAllMembersAndSpectatorsAsPlayer());
+				break;
+			case "DISABLED":
+				return;
+		}
+
+		if (receivers == null) return;
+
+		if (gameHistoryLog.getWinners().size() == 1) {
+			for (final Player player : receivers) {
+				final Player winner = Bukkit.getPlayer(gameHistoryLog.getWinners().get(0));
+				final String loserName = Bukkit.getOfflinePlayer(gameHistoryLog.getLosers().get(0)).getName();
+				MessageUtils.sendMessage(player, "game-end-broadcast.solo", new PlaceholderUtil().add("{winner}", winner.getName()).add("{loser}", loserName).add("{winner-health}", "" + winner.getHealthScale()));
+			}
+		} else {
+			for (final Player player : receivers) {
+				final Player winner = Bukkit.getPlayer(gameHistoryLog.getWinners().get(0));
+				final String loserName = Bukkit.getOfflinePlayer(gameHistoryLog.getLosers().get(0)).getName();
+
+				MessageUtils.sendMessage(player, "game-end-broadcast.non-solo", new PlaceholderUtil().add("{winner}", winner.getName()).add("{loser}", loserName));
+			}
+		}
 	}
 
 	/**
@@ -232,6 +290,8 @@ public class Game {
 			Logger.severe("Uninstall Game method called twice.");
 			return;
 		}
+
+		Bukkit.getPluginManager().callEvent(new DuelArenaUninstallEvent(this));
 
 		setGameState(UNINSTALLING);
 		broadcastInGame("game-finished");
@@ -313,7 +373,10 @@ public class Game {
 			Logger.severe("Inventory could not restored: " + member.getPlayer());
 		}
 
+
 		showAll(member.getPlayer());
+
+
 		new PlayerReset().excludeExp().excludeLevel().excludeInventory().excludeGamemode().reset(member.getPlayer());
 		ScoreboardManager.defaultScoreboard(member.getPlayer());
 
@@ -364,16 +427,22 @@ public class Game {
 		}
 	}
 
-	public void onDeath(final Member member, final Member attacker) {
+	public void onDeath(final Member victim, final Member attacker) {
+		final DuelGameMemberDeathEvent duelGameMemberDeathEvent = new DuelGameMemberDeathEvent(victim, attacker);
+		Bukkit.getPluginManager().callEvent(duelGameMemberDeathEvent);
+
 		if (attacker == null) {
-			broadcastInGame("player-dead.without-attacker", new PlaceholderUtil().add("{victim}", member.getPlayer().getName()));
+			broadcastInGame("player-dead.without-attacker", new PlaceholderUtil().add("{victim}", victim.getPlayer().getName()));
 		} else {
-			broadcastInGame("player-dead.by-attacker", new PlaceholderUtil().add("{attacker}", attacker.getPlayer().getName()).add("{victim}", member.getPlayer().getName()));
+			broadcastInGame("player-dead.by-attacker", new PlaceholderUtil().add("{attacker}", attacker.getPlayer().getName()).add("{victim}", victim.getPlayer().getName()));
 		}
-		spectatorData.spectate(member.getPlayer());
-		if (checkTeamEliminated(member.getTeam())) {
-			if (member.getTeam().getMembers().size() > 1) {
-				broadcastInGame("duel-team-eliminated", new PlaceholderUtil().add("{victim}", member.getPlayer().getName()));
+		spectatorData.spectate(victim.getPlayer());
+		if (checkTeamEliminated(victim.getTeam())) {
+
+			new DuelGameTeamEleminateEvent(victim.getTeam(), duelGameMemberDeathEvent);
+
+			if (victim.getTeam().getMembers().size() > 1) {
+				broadcastInGame("duel-team-eliminated", new PlaceholderUtil().add("{victim}", victim.getPlayer().getName()));
 			}
 			nextRound();
 		}

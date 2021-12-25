@@ -24,7 +24,7 @@ import java.util.Arrays;
 
 public class YamlStorageHandler {
 
-	private static final String DATA_FILE_NAME = "arenadatas.yml";
+	private static final String DATA_FILE_NAME = "arenas.yml";
 	private static final String CONFIG_FILE_NAME = "config.yml";
 	private static final String MESSAGES_FILE_NAME = "messages.yml";
 	private static File dataFile;
@@ -151,10 +151,10 @@ public class YamlStorageHandler {
 	}
 
 	private void registerTimerFormats() {
-		TimerUtils.MINUTES = MessageUtils.getMessageConfig().getString("timer-format.minutes");
-		TimerUtils.MINUTE = MessageUtils.getMessageConfig().getString("timer-format.minute");
-		TimerUtils.SECONDS = MessageUtils.getMessageConfig().getString("timer-format.seconds");
-		TimerUtils.SECOND = MessageUtils.getMessageConfig().getString("timer-format.second");
+		TimerUtils.MINUTES = MessageUtils.getMessageConfig().getString("time-format.minutes");
+		TimerUtils.MINUTE = MessageUtils.getMessageConfig().getString("time-format.minute");
+		TimerUtils.SECONDS = MessageUtils.getMessageConfig().getString("time-format.seconds");
+		TimerUtils.SECOND = MessageUtils.getMessageConfig().getString("time-format.second");
 
 	}
 

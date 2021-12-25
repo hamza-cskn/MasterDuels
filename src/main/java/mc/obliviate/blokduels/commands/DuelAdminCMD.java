@@ -35,13 +35,13 @@ public class DuelAdminCMD implements CommandExecutor {
 		if (!player.isOp()) return false;
 
 		if (args.length == 0) {
-			player.sendMessage("§6§lMasterDuels §6Administrator Commands");
-			player.sendMessage("§7/" + s + " create §8- §9enables arena setup mode");
-			player.sendMessage("§7/" + s + " setlobby§8- §9sets lobby location to teleport players after duel game");
-			player.sendMessage("§7/" + s + " kitsave§8- §9saves your current inventory as new kit");
-			player.sendMessage("§7/" + s + " kiteditor§8- §9opens kit editor gui");
+			player.sendMessage("§c§lMasterDuels §cAdministrator Commands");
+			player.sendMessage(" §7/" + s + " create §8- §9enables arena setup mode");
+			player.sendMessage(" §7/" + s + " setlobby §8- §9sets lobby location to teleport players after duel game");
+			player.sendMessage(" §7/" + s + " kitsave §8- §9saves your current inventory as new kit");
+			player.sendMessage(" §7/" + s + " kiteditor §8- §9opens kit editor gui");
 			player.sendMessage("");
-			player.sendMessage("&fMasterDuels v" + plugin.getDescription().getVersion());
+			player.sendMessage("§nMasterDuels v" + plugin.getDescription().getVersion());
 			return false;
 		}
 
