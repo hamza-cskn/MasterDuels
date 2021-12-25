@@ -3,10 +3,12 @@ package mc.obliviate.blokduels.listeners;
 import mc.obliviate.blokduels.BlokDuels;
 import mc.obliviate.blokduels.data.DataHandler;
 import mc.obliviate.blokduels.game.spectator.SpectatorStorage;
+import mc.obliviate.blokduels.user.Spectator;
+import mc.obliviate.blokduels.user.User;
 import mc.obliviate.blokduels.user.team.Member;
+import mc.obliviate.blokduels.utils.Logger;
 import mc.obliviate.blokduels.utils.MessageUtils;
 import mc.obliviate.blokduels.utils.placeholder.PlaceholderUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -37,43 +39,52 @@ public class DamageListener implements Listener {
 
 		final Player victim = (Player) e.getEntity();
 
-		final Member member = DataHandler.getMember(victim.getUniqueId());
-		Member attackerMember = null;
+		final User victimUser = DataHandler.getUser(victim.getUniqueId());
+		if (victimUser == null) return;
 
-		if (member == null) return;
-		if (member.getTeam() == null) Bukkit.broadcastMessage("team is null");
-		if (member.getTeam().getGame() == null) Bukkit.broadcastMessage("game is null");
+		if (victimUser instanceof Member) {
+			final Member victimMember = (Member) victimUser;
+			Member attackerMember = null;
+
+			if (victimMember.getTeam() == null) Logger.error("Team is null! on damage listener");
+			if (victimMember.getTeam().getGame() == null) Logger.error("Game is null! on damage listener");
 
 
-		if (e instanceof EntityDamageByEntityEvent) {
-			if (((EntityDamageByEntityEvent) e).getDamager() instanceof Player) {
-				attackerMember = DataHandler.getMember(((EntityDamageByEntityEvent) e).getDamager().getUniqueId());
-				if (attackerMember == null) {
-					e.setCancelled(true);
-					return;
+			if (e instanceof EntityDamageByEntityEvent) {
+				if (((EntityDamageByEntityEvent) e).getDamager() instanceof Player) {
+					attackerMember = DataHandler.getMember(((EntityDamageByEntityEvent) e).getDamager().getUniqueId());
+					if (attackerMember == null) {
+						e.setCancelled(true);
+						return;
+					}
+					if (attackerMember.getTeam().equals(victimMember.getTeam())) {
+						e.setCancelled(true);
+						//friendly protect
+						return;
+					}
+					final SpectatorStorage spectatorData = victimMember.getTeam().getGame().getSpectatorData();
+					if (spectatorData.isSpectator(victim) || spectatorData.isSpectator(attackerMember.getPlayer())) {
+						e.setCancelled(true);
+						//spectator protect
+					}
+				} else if (((EntityDamageByEntityEvent) e).getDamager() instanceof Projectile) {
+					final Projectile projectile = (Projectile) ((EntityDamageByEntityEvent) e).getDamager();
+					if (projectile.getShooter() instanceof Player) {
+						attackerMember = DataHandler.getMember(((Player) projectile.getShooter()).getUniqueId());
+					}
 				}
-				if (attackerMember.getTeam().equals(member.getTeam())) {
-					e.setCancelled(true);
-					//friendly protect
-					return;
-				}
-				final SpectatorStorage spectatorData = member.getTeam().getGame().getSpectatorData();
-				if (spectatorData.isSpectator(victim) || spectatorData.isSpectator(attackerMember.getPlayer())) {
-					e.setCancelled(true);
-					//spectator protect
-				}
-			} else if (((EntityDamageByEntityEvent) e).getDamager() instanceof Projectile) {
-				final Projectile projectile = (Projectile) ((EntityDamageByEntityEvent) e).getDamager();
-				if (projectile.getShooter() instanceof Player) {
-					attackerMember = DataHandler.getMember(((Player) projectile.getShooter()).getUniqueId());
-				}
+			}
+			if (e.getFinalDamage() >= victim.getHealth()) {
+				e.setCancelled(true);
+				victimMember.getTeam().getGame().onDeath(victimMember, attackerMember);
 			}
 		}
 
-		if (e.getFinalDamage() >= victim.getHealth()) {
+		else if (victim instanceof Spectator) {
 			e.setCancelled(true);
-			member.getTeam().getGame().onDeath(member, attackerMember);
 		}
+
+
 	}
 
 	@EventHandler

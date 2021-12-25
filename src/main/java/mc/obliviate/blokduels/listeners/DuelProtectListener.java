@@ -39,30 +39,6 @@ public class DuelProtectListener implements Listener {
 	}
 
 	@EventHandler
-	public void onBreak(final BlockBreakEvent e) {
-		final User user = DataHandler.getUser(e.getPlayer().getUniqueId());
-		if (user == null) return;
-		if (user instanceof Spectator) {
-			e.setCancelled(true);
-			return;
-		}
-		if (!((Member) user).getTeam().getGame().getPlacedBlocks().contains(e.getBlock().getLocation())) {
-			e.setCancelled(true);
-		}
-	}
-
-	@EventHandler
-	public void onPlace(final BlockPlaceEvent e) {
-		final User user = DataHandler.getUser(e.getPlayer().getUniqueId());
-		if (user == null) return;
-		if (user instanceof Spectator) {
-			e.setCancelled(true);
-			return;
-		}
-		((Member) user).getTeam().getGame().addPlacedBlock(e.getBlockPlaced().getLocation());
-	}
-
-	@EventHandler
 	public void onMultiPlace(final BlockMultiPlaceEvent e) {
 		if (!isUser(e.getPlayer())) return;
 		e.setCancelled(true);
@@ -71,7 +47,6 @@ public class DuelProtectListener implements Listener {
 	@EventHandler
 	public void onInteract(final PlayerInteractEvent e) {
 		if (isUser(e.getPlayer())) {
-			//fixme crafting, anvil, trapdoor and fence gates are openable
 			if (e.getAction() == Action.PHYSICAL || (e.getClickedBlock() != null && (e.getClickedBlock().getState() instanceof InventoryHolder || e.getClickedBlock().getType().equals(Material.WOOD_BUTTON) || e.getClickedBlock().getType().equals(Material.STONE_BUTTON)))) {
 				e.setCancelled(true);
 			} else if (e.getClickedBlock() != null) {
@@ -96,14 +71,6 @@ public class DuelProtectListener implements Listener {
 		}
 	}
 
-	//fixme liquids does not cleans after game end
-	@EventHandler
-	public void onBucketFill(final PlayerBucketEmptyEvent e) {
-		final Member member = DataHandler.getMember(e.getPlayer().getUniqueId());
-		if (member == null) return;
-		member.getGame().addPlacedBlock(e.getBlockClicked().getLocation().add(e.getBlockFace().getModX(), e.getBlockFace().getModY(), e.getBlockFace().getModZ()));
-	}
-
 	@EventHandler
 	public void onDrop(final PlayerDropItemEvent e) {
 		if (!isUser(e.getPlayer())) return;
@@ -113,6 +80,12 @@ public class DuelProtectListener implements Listener {
 	@EventHandler
 	public void onBedEnter(final PlayerBedEnterEvent e) {
 		if (!isUser(e.getPlayer())) return;
+		e.setCancelled(true);
+	}
+
+	@EventHandler
+	public void onPickup(final PlayerPickupItemEvent e) {
+		if (DataHandler.getSpectator(e.getPlayer().getUniqueId()) == null) return;
 		e.setCancelled(true);
 	}
 

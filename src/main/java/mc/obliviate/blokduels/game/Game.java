@@ -24,15 +24,17 @@ import mc.obliviate.blokduels.utils.playerreset.PlayerReset;
 import mc.obliviate.blokduels.utils.scoreboard.ScoreboardManager;
 import mc.obliviate.blokduels.utils.timer.TimerUtils;
 import mc.obliviate.blokduels.utils.title.TitleHandler;
-import org.bukkit.*;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Item;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static mc.obliviate.blokduels.data.DataHandler.LOCK_TIME_IN_SECONDS;
 import static mc.obliviate.blokduels.game.GameState.*;
@@ -47,7 +49,6 @@ public class Game {
 	private final Kit kit;
 	private final long finishTime;
 	private final List<GameRules> gameRules;
-	private final List<Location> placedBlocks = new ArrayList<>();
 	private final Map<String, BukkitTask> tasks = new HashMap<>();
 	private final RoundData roundData = new RoundData();
 	private final SpectatorStorage spectatorData = new SpectatorStorage(this);
@@ -80,14 +81,6 @@ public class Game {
 
 	public static GameBuilder create(BlokDuels plugin, Arena arena) {
 		return new GameBuilder(plugin, arena);
-	}
-
-	public void addPlacedBlock(Location location) {
-		placedBlocks.add(location);
-	}
-
-	public List<Location> getPlacedBlocks() {
-		return placedBlocks;
 	}
 
 	protected void registerTeam(Team team) {

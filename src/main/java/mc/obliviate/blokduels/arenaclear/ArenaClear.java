@@ -6,7 +6,6 @@ import mc.obliviate.blokduels.arenaclear.workloads.BlockWorkLoad;
 import mc.obliviate.blokduels.arenaclear.workloads.LiquidWorkload;
 import mc.obliviate.blokduels.arenaclear.workloads.WorkLoadThread;
 import org.bukkit.Chunk;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Projectile;
