@@ -48,7 +48,9 @@ public class BlokDuels extends JavaPlugin {
 	private void setupHandlers() {
 		yamlStorageHandler.init();
 		inventoryAPI.init();
-		arenaClearHandler.init();
+		if (yamlStorageHandler.getConfig().getBoolean("arena-regeneration.enabled")) {
+			arenaClearHandler.init();
+		}
 		scoreboardManager = new ScoreboardManager(this);
 		messageAPI = MessageAPI.getInstance(this);
 		new TABManager(this);
