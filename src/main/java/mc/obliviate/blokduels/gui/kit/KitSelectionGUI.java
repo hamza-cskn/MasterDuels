@@ -4,6 +4,7 @@ import mc.obliviate.blokduels.game.GameBuilder;
 import mc.obliviate.blokduels.kit.Kit;
 import mc.obliviate.inventory.GUI;
 import mc.obliviate.inventory.Icon;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 
@@ -32,9 +33,10 @@ public class KitSelectionGUI extends GUI {
 			addItem(slot++, icon);
 		}
 		if (slot == 0) {
-			event.setCancelled(true);
+			Bukkit.getScheduler().runTaskLater(getPlugin(), () -> player.closeInventory(), 1);
 			response.onSelected(null);
-		};
+		}
+
 
 	}
 
