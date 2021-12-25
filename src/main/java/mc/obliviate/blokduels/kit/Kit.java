@@ -14,6 +14,7 @@ import java.util.Map;
 
 public class Kit {
 
+	public static boolean USE_PLAYER_INVENTORIES = false;
 	private static final Map<String, Kit> kits = new HashMap<>();
 	private final PlayerInventoryFrame playerInventoryFrame;
 	private final String kitName;
@@ -35,16 +36,18 @@ public class Kit {
 	}
 
 	public static boolean storeKits(final Player player) {
+		if (USE_PLAYER_INVENTORIES) return true;
 		return InventoryStorer.store(player) != null;
 	}
 
 	public static void load(final Kit kit, final Player player) {
+		if (USE_PLAYER_INVENTORIES) return;
 		if (kit == null) return;
 		PlayerInventoryFrame.loadInventoryFrame(player, kit.playerInventoryFrame);
 	}
 
 	public static void save(BlokDuels plugin, Kit kit) {
-		final File file = new File(plugin.getDataFolder().getPath() + File.separator + "kits.yml");
+		final File file = new File(plugin.getDataFolder().getPath() + File.separator + "kits.yml"); //todo connect this file name to a static final variable
 		final YamlConfiguration data = YamlConfiguration.loadConfiguration(file);
 
 		KitSerializer.serialize(kit, data.createSection(kit.getKitName()));

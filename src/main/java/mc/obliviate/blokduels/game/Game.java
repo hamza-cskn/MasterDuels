@@ -186,6 +186,22 @@ public class Game {
 		return members;
 	}
 
+	public List<Player> getAllMembersAndSpectatorsAsPlayer() {
+		final List<Member> members = getAllMembers();
+		final List<Player> allPlayers = new ArrayList<>();
+		members.forEach(mem -> allPlayers.add(mem.getPlayer()));
+
+		for (final Player spectator : spectatorData.getSpectators()) {
+			for (final Player member : allPlayers) {
+				if (member.equals(spectator)) {
+					break;
+				}
+			}
+		}
+
+		return allPlayers;
+	}
+
 	private void broadcastInGame(final String node, final PlaceholderUtil placeholderUtil) {
 		for (final Member member : getAllMembers()) {
 			MessageUtils.sendMessage(member.getPlayer(), node, placeholderUtil);
@@ -248,6 +264,24 @@ public class Game {
 		}
 	}
 
+	public void dropItems(final Player player) {
+		if (!BlokDuels.isInShutdownMode()) {
+			final Location loc = player.getLocation();
+			for (ItemStack item : player.getInventory().getContents()) {
+				if (item != null && !item.getType().equals(Material.AIR)) {
+					player.getWorld().dropItemNaturally(loc, item);
+				}
+			}
+			for (ItemStack item : player.getInventory().getArmorContents()) {
+				if (item != null && !item.getType().equals(Material.AIR)) {
+					player.getWorld().dropItemNaturally(loc, item);
+				}
+			}
+			player.getInventory().clear();
+		}
+
+	}
+
 	public void leave(final User user) {
 		if (user instanceof Member) {
 			leave((Member) user);
@@ -275,7 +309,7 @@ public class Game {
 		DataHandler.getUsers().remove(member.getPlayer().getUniqueId());
 		member.getTeam().removeMember(member);
 
-		if (!InventoryStorer.restore(member.getPlayer())) {
+		if (!USE_PLAYER_INVENTORIES && !InventoryStorer.restore(member.getPlayer())) {
 			Logger.severe("Inventory could not restored: " + member.getPlayer());
 		}
 

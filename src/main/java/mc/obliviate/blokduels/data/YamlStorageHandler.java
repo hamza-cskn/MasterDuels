@@ -6,6 +6,7 @@ import mc.obliviate.blokduels.game.Game;
 import mc.obliviate.blokduels.game.GameState;
 import mc.obliviate.blokduels.game.bossbar.BossBarData;
 import mc.obliviate.blokduels.gui.DuelHistoryLogGUI;
+import mc.obliviate.blokduels.kit.Kit;
 import mc.obliviate.blokduels.utils.Logger;
 import mc.obliviate.blokduels.utils.MessageUtils;
 import mc.obliviate.blokduels.utils.scoreboard.ScoreboardFormatConfig;
@@ -50,7 +51,8 @@ public class YamlStorageHandler {
 		registerTimerFormats();
 		registerHistoryGui();
 
-		DataHandler.LOCK_TIME_IN_SECONDS = config.getInt("lock-time");
+		DataHandler.LOCK_TIME_IN_SECONDS = config.getInt("game-starting-lock-time", 3);
+		Kit.USE_PLAYER_INVENTORIES = config.getBoolean("use-player-inventories", false);
 	}
 
 	private void loadDataFile(File dataFile) {
