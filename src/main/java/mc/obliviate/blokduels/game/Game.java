@@ -523,7 +523,9 @@ public class Game {
 	}
 
 	private void setGameState(GameState gameState) {
+		final GameStateChangeEvent gameStateChangeEvent = new GameStateChangeEvent(this, this.gameState);
 		this.gameState = gameState;
+		Bukkit.getPluginManager().callEvent(gameStateChangeEvent);
 		onGameStateChange();
 	}
 
