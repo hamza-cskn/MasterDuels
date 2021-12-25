@@ -15,7 +15,7 @@ public class SpectatorListener implements Listener {
 		final User user = DataHandler.getUser(e.getPlayer().getUniqueId());
 		if (user instanceof Spectator) {
 			e.setCancelled(true);
-			if (e.getItem().getType().equals(Material.BARRIER)) {
+			if (e.getItem() != null && e.getItem().getType().equals(Material.BARRIER)) {
 				user.getGame().leave((Spectator) user);
 			}
 		}
