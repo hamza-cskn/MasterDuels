@@ -1,7 +1,6 @@
-package mc.obliviate.blokduels.arenaclear;
+package mc.obliviate.blokduels.arenaclear.workloads;
 
 import com.google.common.collect.Queues;
-import mc.obliviate.blokduels.arenaclear.workloads.IWorkLoad;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 

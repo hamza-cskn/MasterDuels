@@ -2,27 +2,52 @@ package mc.obliviate.blokduels.arenaclear;
 
 import mc.obliviate.blokduels.BlokDuels;
 import mc.obliviate.blokduels.arena.Arena;
+import mc.obliviate.blokduels.arenaclear.workloads.BlockWorkLoad;
+import mc.obliviate.blokduels.arenaclear.workloads.LiquidWorkload;
+import mc.obliviate.blokduels.arenaclear.workloads.WorkLoadThread;
+import org.bukkit.Chunk;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Item;
+import org.bukkit.entity.Projectile;
+
+import java.util.UUID;
 
 public class ArenaClear {
 
-	public final Arena arena;
-	private final BlokDuels plugin;
-	public final WorkLoadThread workLoadThread;
+	public static boolean removeEntities = true;
+	private final WorkLoadThread thread;
+	private final Arena arena;
 
-	public ArenaClear(Arena arena, BlokDuels plugin) {
+	public ArenaClear(BlokDuels plugin, Arena arena) {
+		this.thread = new WorkLoadThread(plugin);
 		this.arena = arena;
-		this.plugin = plugin;
-		workLoadThread = new WorkLoadThread(plugin);
 	}
+
+	public void addBlock(int x, int y, int z, UUID worldUID) {
+		thread.addWorkLoad(new BlockWorkLoad(x, y, z, worldUID));
+	}
+
+	public void addLiquid(int x, int y, int z, UUID worldUID) {
+		thread.addWorkLoad(new LiquidWorkload(x, y, z, worldUID));
+	}
+
 
 	public void clear() {
+		thread.run();
+		if (removeEntities) {
+			clearEntities();
+		}
 	}
 
-	public Arena getArena() {
-		return arena;
+	public void clearEntities() {
+		for (final Chunk chunk : arena.getArenaCuboid().getChunks()) {
+			for (final Entity entity : chunk.getEntities()) {
+				if (entity instanceof Item || entity instanceof Projectile) {
+					entity.remove();
+				}
+			}
+		}
+
 	}
 
-	public WorkLoadThread getWorkLoadThread() {
-		return workLoadThread;
-	}
 }

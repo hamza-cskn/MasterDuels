@@ -2,6 +2,7 @@ package mc.obliviate.blokduels.data;
 
 import mc.obliviate.blokduels.BlokDuels;
 import mc.obliviate.blokduels.arena.Arena;
+import mc.obliviate.blokduels.arenaclear.ArenaClear;
 import mc.obliviate.blokduels.game.Game;
 import mc.obliviate.blokduels.game.GameState;
 import mc.obliviate.blokduels.game.bossbar.BossBarData;
@@ -53,6 +54,7 @@ public class YamlStorageHandler {
 
 		DataHandler.LOCK_TIME_IN_SECONDS = config.getInt("game-starting-lock-time", 3);
 		Kit.USE_PLAYER_INVENTORIES = config.getBoolean("use-player-inventories", false);
+		ArenaClear.removeEntities = plugin.getDatabaseHandler().getConfig().getBoolean("arena-regeneration.remove-entities", true);
 	}
 
 	private void loadDataFile(File dataFile) {

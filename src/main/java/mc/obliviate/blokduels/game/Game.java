@@ -303,26 +303,9 @@ public class Game {
 		}
 
 		cancelTasks(null);
-		if (plugin.getDatabaseHandler().getConfig().getBoolean("arena-regeneration.enabled", true)) {
-			clearArea();
-		}
 		DataHandler.registerArena(arena);
 	}
 
-	public void clearArea() {
-		for (final Location loc : getPlacedBlocks()) {
-			loc.getBlock().setType(Material.AIR, false);
-		}
-		if (plugin.getDatabaseHandler().getConfig().getBoolean("arena-regeneration.remove-entities", true)) {
-			for (final Chunk chunk : arena.getArenaCuboid().getChunks()) {
-				for (final Entity entity : chunk.getEntities()) {
-					if (entity instanceof Item || entity instanceof Projectile) {
-						entity.remove();
-					}
-				}
-			}
-		}
-	}
 
 	public void dropItems(final Player player) {
 		if (!BlokDuels.isInShutdownMode()) {

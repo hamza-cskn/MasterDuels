@@ -1,6 +1,4 @@
-package mc.obliviate.blokduels.arenaclear;
-
-import mc.obliviate.rollback.workload.workloads.IWorkLoad;
+package mc.obliviate.blokduels.arenaclear.workloads;
 
 import java.util.List;
 import java.util.UUID;

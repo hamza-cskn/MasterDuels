@@ -1,6 +1,7 @@
 package mc.obliviate.blokduels;
 
 import com.hakan.messageapi.bukkit.MessageAPI;
+import mc.obliviate.blokduels.arenaclear.ArenaClearHandler;
 import mc.obliviate.blokduels.commands.DuelArenasCMD;
 import mc.obliviate.blokduels.commands.DuelCMD;
 import mc.obliviate.blokduels.commands.DuelAdminCMD;
@@ -25,6 +26,7 @@ public class BlokDuels extends JavaPlugin {
 	private static boolean shutdownMode = false;
 	private final SQLManager sqlManager = new SQLManager(this);
 	private final InventoryAPI inventoryAPI = new InventoryAPI(this);
+	private final ArenaClearHandler arenaClearHandler = new ArenaClearHandler(this);
 	private final YamlStorageHandler yamlStorageHandler = new YamlStorageHandler(this);
 	private MessageAPI messageAPI;
 	private ScoreboardManager scoreboardManager;
@@ -46,6 +48,7 @@ public class BlokDuels extends JavaPlugin {
 	private void setupHandlers() {
 		yamlStorageHandler.init();
 		inventoryAPI.init();
+		arenaClearHandler.init();
 		scoreboardManager = new ScoreboardManager(this);
 		messageAPI = MessageAPI.getInstance(this);
 		new TABManager(this);
@@ -63,6 +66,7 @@ public class BlokDuels extends JavaPlugin {
 	}
 
 	private void registerListeners() {
+		//RollbackListener registering from ArenaClear.java
 		Bukkit.getPluginManager().registerEvents(new ChatListener(), this);
 		Bukkit.getPluginManager().registerEvents(new DuelProtectListener(this), this);
 		Bukkit.getPluginManager().registerEvents(new DamageListener(this), this);
@@ -108,5 +112,9 @@ public class BlokDuels extends JavaPlugin {
 
 	public SQLManager getSqlManager() {
 		return sqlManager;
+	}
+
+	public ArenaClearHandler getArenaClearHandler() {
+		return arenaClearHandler;
 	}
 }
