@@ -18,20 +18,23 @@ duel-team-eliminated: '&7The team of &c{victim}&7 has been eleminated!' #for non
 you-are-in-duel: '&cYou cannot do this in duel game.'
 you-are-not-in-duel: '&cYou are not in a duel game.'
 target-already-in-duel: '&c{target} is already in duel game.'
+you-are-a-spectator: '&eYou are a spectator.'
+game-timed-out: '&cDuel game you are in, has been timed out.'
 player-dead:
   by-attacker: '&c{victim}&7 has killed by &c{attacker}&7.'
   without-attacker: '&c{victim}&7 has been died.'
-you-are-a-spectator: '&eYou are a spectator.'
 kit:
   editor-usage: '&cCorrect usage: /dueladmin kitsave <kit name>'
   has-saved: '&7Kit saved: &f{kit}&7'
-game-timed-out: '&cDuel game you are in, has been timed out.'
+game-end-broadcast:
+  solo: '&a{winner}&7 has won duel with &c{winner-health} health&7! (&a{winner}&7 vs &c{loser}&7)'
+  non-solo: '&a{winner}&7 and her team has won duel!' # i do not know how i can show loser and winner teams in chat. it'll be changed future.
 arrow-hit-notify:
   action-bar: '&c{victim}'' health is {health}'
   message: '&cYou hit {victim} from {distance} blocks far!'
 duel-command:
   usage:
-    - '&6&lMasterDuels&6 commands'
+    - '&6&lMasterDuels&6 Commands'
     - '&7 /duel [invite] <player name> &8- &9sends duel invite to a player'
     - '&7 /duel accept &8- &9accept a duel invite'
     - '&7 /duel decline &8- &9decline a duel invite'
@@ -44,13 +47,13 @@ invite:
   usage: '&cCorrect Usage:&7 /duel <player name>'
   toggle:
     turned-on: '&7You have enabled duel requests!'
-    turned-of: '&7You have disabled duel requests!'
-    you-can-not-invite: '&c{invited} disabled duel requests.'
+    turned-off: '&7You have disabled duel requests!'
+    you-can-not-invite: '&c{target} disabled duel requests.'
   you-dont-have-invite: '&cYou don''t have any duel invite :('
   already-invited: '&cYou already invited this player.'
   invite-expired-inviter: '&7Duel invite that is sent by &f{target}&7 to you, has expired.'
   invite-expired-target: '&7Invite that is came from &f{inviter}&7, has expired.'
-  target-has-invited: '&7You sent a duel invite to &f{target}&7. The invite will be expired after &f{expire_time} seconds&7.'
+  target-has-invited: '&7You sent a duel invite to &f{target}&7. The invite will be expired after &f{expire-time} seconds&7.'
   target-declined-the-invite: '&7{target}, &cdeclined&7 your duel invite.'
   successfully-declined: '&7You &cdeclined &f{target}&7''s duel invite.'
   target-accepted-the-invite: '&f{target} &7accepted your duel invite.'
@@ -69,7 +72,7 @@ invite:
     - '&f'
     - '                    {accept-button}    &r{decline-button}'
 statistics: '&aWins: {wins}&c Loses: {loses}'
-timer-format:
+time-format:
   second: 'second'
   seconds: 'seconds'
   minute: 'minute'
