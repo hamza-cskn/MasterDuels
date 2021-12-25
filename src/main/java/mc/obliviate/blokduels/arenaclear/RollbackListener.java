@@ -1,6 +1,7 @@
 package mc.obliviate.blokduels.arenaclear;
 
 import mc.obliviate.blokduels.BlokDuels;
+import mc.obliviate.blokduels.api.events.arena.DuelArenaUninstallEvent;
 import mc.obliviate.blokduels.api.events.arena.DuelGameFinishEvent;
 import mc.obliviate.blokduels.api.events.arena.DuelGameStartEvent;
 import mc.obliviate.blokduels.arena.Arena;
@@ -28,7 +29,7 @@ public class RollbackListener implements Listener {
 	}
 
 	@EventHandler
-	public void onGameEnd(final DuelGameFinishEvent event) {
+	public void onGameEnd(final DuelArenaUninstallEvent event) {
 		api.getArenaClearHandler().getArenaClear(event.getGame().getArena().getName()).clear();
 	}
 
