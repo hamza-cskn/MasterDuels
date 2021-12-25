@@ -16,23 +16,17 @@ public class PositionSelection {
 	}
 
 	public void setPos1(Location pos1) {
+		pos1.setY(0);
 		this.pos1 = pos1;
 	}
 
 	public void setPos2(Location pos2) {
+		pos2.setY(255);
 		this.pos2 = pos2;
 	}
 
-	public String formattedPos1() {
-		return formatLocation(pos1);
-	}
-
-	public String formattedPos2() {
-		return formatLocation(pos2);
-	}
-
 	public static String formatLocation(final Location loc) {
-		if (loc == null) return "No Location";
+		if (loc == null) return "§cNo Location";
 		return loc.getBlockX() + " " + loc.getBlockY() + " " + loc.getBlockZ();
 	}
 }
