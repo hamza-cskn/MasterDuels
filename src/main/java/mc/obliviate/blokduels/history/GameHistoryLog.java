@@ -1,6 +1,9 @@
 package mc.obliviate.blokduels.history;
 
 import mc.obliviate.blokduels.BlokDuels;
+import mc.obliviate.blokduels.game.Game;
+import mc.obliviate.blokduels.user.team.Member;
+import mc.obliviate.blokduels.user.team.Team;
 import mc.obliviate.blokduels.utils.serializer.SerializerUtils;
 
 import java.util.ArrayList;
@@ -28,28 +31,35 @@ public class GameHistoryLog implements HistoryLog {
 		this(UUID.randomUUID(), 0L, 0L, null, null);
 	}
 
-	public static GameHistoryLog deserialize(String serializedString) {
-		final String[] objects = serializedString.split(SerializerUtils.OBJECT_SPLIT_CHARACTER);
+	public void finish(Game game) {
+		//save history log
+		setEndTime(System.currentTimeMillis());
 
-		final int startTime = Integer.parseInt(objects[0]);
-		final int gameTime = Integer.parseInt(objects[1]);
-		final List<UUID> losers = SerializerUtils.deserializeUUIDList(objects[2]);
-		final List<UUID> winners = SerializerUtils.deserializeUUIDList(objects[3]);
+		final List<UUID> losers = new ArrayList<>();
+		final List<UUID> winners = new ArrayList<>();
+		for (final Team team : game.getTeams().values()) {
+			final List<UUID> list;
 
-		return new GameHistoryLog(null, startTime, gameTime, losers, winners);
+			if (game.checkTeamEliminated(team)) list = losers;
+			else list = winners;
 
-	}
+			for (final Member member : team.getMembers()) {
+				list.add(member.getPlayer().getUniqueId());
+			}
+		}
+		setLosers(losers);
+		setWinners(winners);
+		save(game.getPlugin());
 
-	public String serialize() {
-		final StringBuilder builder = new StringBuilder();
-
-		builder.append(startTime).append(SerializerUtils.OBJECT_SPLIT_CHARACTER);
-		builder.append(endTime).append(SerializerUtils.OBJECT_SPLIT_CHARACTER);
-		builder.append(SerializerUtils.serializeStringConvertableList(losers)).append(SerializerUtils.OBJECT_SPLIT_CHARACTER);
-		builder.append(SerializerUtils.serializeStringConvertableList(winners)).append(SerializerUtils.OBJECT_SPLIT_CHARACTER);
-
-		return builder.toString();
-
+		//save statistics
+		for (final UUID winner : winners) {
+			game.getPlugin().getSqlManager().addWin(winner, 1);
+		}
+		for (final UUID loser : losers) {
+			game.getPlugin().getSqlManager().addLose(loser, 1);
+		}
+		setWinners(winners);
+		setLosers(losers);
 	}
 
 	public List<UUID> getLosers() {

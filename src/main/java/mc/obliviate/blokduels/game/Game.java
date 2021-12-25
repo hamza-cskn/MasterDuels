@@ -462,34 +462,8 @@ public class Game {
 		if (gameState.equals(BATTLE)) {
 			gameHistoryLog.setStartTime(System.currentTimeMillis());
 		} else if (gameState.equals(GAME_ENDING)) {
-
-			//save history log
-			gameHistoryLog.setEndTime(System.currentTimeMillis());
-
-			final List<UUID> losers = new ArrayList<>();
-			final List<UUID> winners = new ArrayList<>();
-			for (final Team team : getTeams().values()) {
-				final List<UUID> list;
-
-				if (checkTeamEliminated(team)) list = losers;
-				else list = winners;
-
-				for (final Member member : team.getMembers()) {
-					list.add(member.getPlayer().getUniqueId());
-				}
-			}
-			gameHistoryLog.setLosers(losers);
-			gameHistoryLog.setWinners(winners);
-			gameHistoryLog.save(plugin);
-
-			//save statistics
-			for (final UUID winner : winners) {
-				plugin.getSqlManager().addWin(winner,1);
-			}
-			for (final UUID loser : losers) {
-				plugin.getSqlManager().addLose(loser,1);
-			}
-
+			gameHistoryLog.finish(this);
+			broadcastGameEnd();
 		}
 	}
 
