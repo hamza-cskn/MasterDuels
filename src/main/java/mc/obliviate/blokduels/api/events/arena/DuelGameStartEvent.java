@@ -23,4 +23,8 @@ public class DuelGameStartEvent extends Event implements GameEvent {
 		return handlers;
 	}
 
+	public static HandlerList getHandlerList() {
+		return handlers;
+	}
+
 }

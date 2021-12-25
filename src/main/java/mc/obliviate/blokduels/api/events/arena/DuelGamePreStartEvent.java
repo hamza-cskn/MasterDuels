@@ -14,6 +14,10 @@ public class DuelGamePreStartEvent extends Event implements GameEvent {
 		this.game = game;
 	}
 
+	public static HandlerList getHandlerList() {
+		return handlers;
+	}
+
 	public Game getGame() {
 		return game;
 	}
@@ -22,6 +26,4 @@ public class DuelGamePreStartEvent extends Event implements GameEvent {
 	public HandlerList getHandlers() {
 		return handlers;
 	}
-
-
 }

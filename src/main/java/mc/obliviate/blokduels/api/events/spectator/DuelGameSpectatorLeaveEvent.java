@@ -16,6 +16,10 @@ public class DuelGameSpectatorLeaveEvent extends Event implements GameEvent {
 		this.spectator = spectator;
 	}
 
+	public static HandlerList getHandlerList() {
+		return handlers;
+	}
+
 	public Game getGame() {
 		return spectator.getGame();
 	}

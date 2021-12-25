@@ -17,6 +17,10 @@ public class GameStateChangeEvent extends Event implements GameEvent {
 		this.old = old;
 	}
 
+	public static HandlerList getHandlerList() {
+		return handlers;
+	}
+
 	public Game getGame() {
 		return game;
 	}
@@ -29,5 +33,4 @@ public class GameStateChangeEvent extends Event implements GameEvent {
 	public GameState getOldGameState() {
 		return old;
 	}
-
 }

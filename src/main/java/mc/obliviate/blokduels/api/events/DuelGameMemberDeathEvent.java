@@ -17,6 +17,10 @@ public class DuelGameMemberDeathEvent extends Event {
 		this.attacker = attacker;
 	}
 
+	public static HandlerList getHandlerList() {
+		return handlers;
+	}
+
 	public Game getGame() {
 		return victim.getGame();
 	}

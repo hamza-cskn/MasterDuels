@@ -18,6 +18,10 @@ public class DuelGameTeamEleminateEvent extends Event {
 		this.duelGameMemberDeathEvent = duelGameMemberDeathEvent;
 	}
 
+	public static HandlerList getHandlerList() {
+		return handlers;
+	}
+
 	@Override
 	public HandlerList getHandlers() {
 		return handlers;
