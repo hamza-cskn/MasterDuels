@@ -25,8 +25,19 @@ public class RoundData {
 	 * returns false when last round is finished.
 	 */
 	public boolean addRound() {
+		for (final Map.Entry<Team, Integer> entry : teamWins.entrySet()) {
+			//3 rounds, 2 win means no third round.
+			if (entry.getValue() > totalRounds/2) {
+				return false;
+			}
+		}
+
 		//remove 1 to compare as unadded.
 		return ++round-1 < totalRounds;
+	}
+
+	public boolean isLastRound() {
+		return totalRounds == round;
 	}
 
 	public int getTotalRounds() {
