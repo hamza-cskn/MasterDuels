@@ -9,25 +9,20 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class Invite {
 
-	private static final Map<UUID, Invites> playerInvites = new HashMap<>();
+	private static final Map<UUID, Invites> INVITES_MAP = new HashMap<>();
 	private final GameBuilder gameBuilder;
 	private final Player target;
 	private final Player inviter;
 	private final int expireTime;
 	private final long invitedTime;
-	private final BlokDuels plugin;
 	private boolean expired;
 	private Boolean answer = null;
 	private InviteResponse response;
@@ -37,30 +32,26 @@ public class Invite {
 	}
 
 	public Invite(BlokDuels plugin, Player inviter, Player invited, GameBuilder gameBuilder, int expireTime) {
-		this.plugin = plugin;
 		this.gameBuilder = gameBuilder;
 		this.expireTime = expireTime;
 		this.target = invited;
 		this.inviter = inviter;
 		this.invitedTime = System.currentTimeMillis();
 
-		if (playerInvites.containsKey(invited.getUniqueId())) {
+		if (gameBuilder.getInvites().containsKey(invited.getUniqueId())) {
 			MessageUtils.sendMessage(inviter, "invite.already-invited", new PlaceholderUtil().add("{target}", invited.getName()));
-			expired = true;
 			onExpire();
 			return;
 		}
 
 		if (!invited.isOnline()) {
 			MessageUtils.sendMessage(inviter, "target-is-not-online");
-			expired = true;
 			onExpire();
 			return;
 		}
 
 		if (!plugin.getSqlManager().getReceivesInvites(invited.getUniqueId())) {
 			MessageUtils.sendMessage(inviter, "invite.toggle.you-can-not-invite", new PlaceholderUtil().add("{target}", invited.getName()));
-			expired = true;
 			onExpire();
 			return;
 		}
@@ -89,11 +80,9 @@ public class Invite {
 				target.spigot().sendMessage(new TextComponent(inviteText));
 			}
 		}
-		expired = false;
 		new BukkitRunnable() {
 			public void run() {
 				if (!expired && answer == null) {
-					expired = true;
 					onExpire();
 					MessageUtils.sendMessage(target, "invite.invite-expired-target", new PlaceholderUtil().add("{inviter}", inviter.getName()));
 					MessageUtils.sendMessage(inviter, "invite.invite-expired-inviter", new PlaceholderUtil().add("{target}", target.getName()));
@@ -106,24 +95,36 @@ public class Invite {
 	}
 
 	public static Invites findInvites(final Player player) {
-		return playerInvites.get(player.getUniqueId());
+		return INVITES_MAP.get(player.getUniqueId());
+	}
 
+	public static List<Invite> findInvites(final GameBuilder builder) {
+		final List<Invite> inviteList = new ArrayList<>();
+		for (Invites invites : INVITES_MAP.values()) {
+			for (Invite invite : invites.getInvites()) {
+				if (invite.getGameBuilder().equals(builder)) {
+					inviteList.add(invite);
+				}
+			}
+		}
+		return inviteList;
 	}
 
 	private static void addInvite(final UUID uuid, final Invite invite) {
-		Invites invites = playerInvites.get(uuid);
+		Invites invites = INVITES_MAP.get(uuid);
 		if (invites == null) {
 			invites = new Invites(uuid);
 		}
 		invites.add(invite);
-		playerInvites.put(uuid, invites);
+		INVITES_MAP.put(uuid, invites);
 	}
 
 	public int getExpireTime() {
 		return this.expireTime;
 	}
 
-	private void onExpire() {
+	public void onExpire() {
+		expired = true;
 		gameBuilder.removeInvite(target.getUniqueId());
 	}
 
@@ -140,7 +141,7 @@ public class Invite {
 		return expired;
 	}
 
-	public GameBuilder getTeamBuilder() {
+	public GameBuilder getGameBuilder() {
 		return gameBuilder;
 	}
 
@@ -153,9 +154,9 @@ public class Invite {
 	}
 
 	public void setResult(boolean answer) {
-		final Invites invites = playerInvites.get(target.getUniqueId());
+		final Invites invites = INVITES_MAP.get(target.getUniqueId());
 		if (invites.removeInvite(this)) {
-			playerInvites.remove(invites.getPlayerUniqueId());
+			INVITES_MAP.remove(invites.getPlayerUniqueId());
 		}
 		expired = true;
 		onExpire();

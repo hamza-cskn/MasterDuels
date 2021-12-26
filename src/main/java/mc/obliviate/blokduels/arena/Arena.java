@@ -33,14 +33,12 @@ public class Arena {
 
 	public static Arena findArena(int teamSize, int teamAmount) {
 		for (final Map.Entry<Arena, Game> entry : DataHandler.getArenas().entrySet()) {
-			if (entry.getKey().getTeamAmount() == teamAmount && entry.getKey().getTeamSize() == teamSize) {
+			if (entry.getKey().getTeamAmount() >= teamAmount && entry.getKey().getTeamSize() >= teamSize) {
 				if (entry.getValue() == null) return entry.getKey();
 			}
 		}
 		return null;
 	}
-
-
 
 	public static Arena deserialize(ConfigurationSection section) {
 		final String name = section.getString("name");

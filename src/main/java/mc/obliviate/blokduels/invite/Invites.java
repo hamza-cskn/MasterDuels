@@ -15,7 +15,7 @@ public class Invites {
 
 	public Invite getInvite(final GameBuilder gameBuilder) {
 		for (Invite invite : invites) {
-			if (invite.getTeamBuilder().equals(gameBuilder)) {
+			if (invite.getGameBuilder().equals(gameBuilder)) {
 				return invite;
 			}
 		}

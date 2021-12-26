@@ -1,10 +1,10 @@
 package mc.obliviate.blokduels.commands;
 
 import mc.obliviate.blokduels.BlokDuels;
-import mc.obliviate.blokduels.arena.Arena;
 import mc.obliviate.blokduels.data.DataHandler;
 import mc.obliviate.blokduels.game.Game;
 import mc.obliviate.blokduels.game.GameBuilder;
+import mc.obliviate.blokduels.gui.room.DuelGameCreatorGUI;
 import mc.obliviate.blokduels.gui.DuelHistoryLogGUI;
 import mc.obliviate.blokduels.gui.kit.KitSelectionGUI;
 import mc.obliviate.blokduels.invite.Invite;
@@ -40,7 +40,7 @@ public class DuelCMD implements CommandExecutor {
 		final User user = DataHandler.getUser(player.getUniqueId());
 
 		if (args.length == 0) {
-			MessageUtils.sendMessageList(player,"duel-command.usage");
+			MessageUtils.sendMessageList(player, "duel-command.usage");
 			return false;
 		}
 
@@ -51,7 +51,7 @@ public class DuelCMD implements CommandExecutor {
 
 		if (args[0].equalsIgnoreCase("leave")) {
 			if (user == null) {
-				MessageUtils.sendMessage(player,"you-are-not-in-duel");
+				MessageUtils.sendMessage(player, "you-are-not-in-duel");
 				return false;
 			}
 			user.getGame().leave(user);
@@ -61,7 +61,7 @@ public class DuelCMD implements CommandExecutor {
 		//THESE COMMANDS BLOCKED FOR PLAYERS WHO IN DUEL
 
 		if (user instanceof Member) {
-			MessageUtils.sendMessage(player,"you-are-in-duel");
+			MessageUtils.sendMessage(player, "you-are-in-duel");
 			return false;
 		}
 
@@ -88,7 +88,10 @@ public class DuelCMD implements CommandExecutor {
 			return true;
 		} else if (args[0].equalsIgnoreCase("spectate")) {
 			spectate(player, args);
-
+		} else if (args[0].equalsIgnoreCase("creator")) {
+			GameBuilder gameBuilder = GameBuilder.getGameBuilderMap().get(player.getUniqueId());
+			if (gameBuilder == null) gameBuilder = new GameBuilder(plugin, player.getUniqueId());
+			new DuelGameCreatorGUI(player, gameBuilder).open();
 		} else if (args.length == 1 || args[0].equalsIgnoreCase("invite")) {
 			invite(player, args);
 		}
@@ -160,24 +163,18 @@ public class DuelCMD implements CommandExecutor {
 		final Player target = Bukkit.getPlayerExact(targetName);
 
 		if (target == null) {
-			MessageUtils.sendMessage(player,"target-is-not-online");
+			MessageUtils.sendMessage(player, "target-is-not-online");
 			return;
 		}
 
 		if (DataHandler.getMember(target.getUniqueId()) != null) {
-			MessageUtils.sendMessage(player,"target-already-in-duel");
+			MessageUtils.sendMessage(player, "target-already-in-duel");
 			return;
 		}
 
 		//1v1
-		final Arena arena = Arena.findArena(1, 2);
+		final GameBuilder gameBuilder = Game.create(plugin, player.getUniqueId()).teamAmount(2).teamSize(1).finishTime(60).totalRounds(1);
 
-		if (arena == null) {
-			MessageUtils.sendMessage(player,"no-arena-found");
-			return;
-		}
-
-		final GameBuilder gameBuilder = Game.create(plugin, arena).teamAmount(2).teamSize(1).finishTime(60).totalRounds(1);
 		new KitSelectionGUI(player, gameBuilder, selectedKit -> {
 			gameBuilder.createTeam(player);
 
@@ -186,7 +183,7 @@ public class DuelCMD implements CommandExecutor {
 					gameBuilder.createTeam(target);
 					final Game game = gameBuilder.build();
 					if (game == null) {
-						MessageUtils.sendMessage(target,"arena-already-started");
+						MessageUtils.sendMessage(player, "no-arena-found");
 						return;
 					}
 					game.startGame();

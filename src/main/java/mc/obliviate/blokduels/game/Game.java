@@ -8,6 +8,7 @@ import mc.obliviate.blokduels.arena.Arena;
 import mc.obliviate.blokduels.arena.elements.Positions;
 import mc.obliviate.blokduels.data.DataHandler;
 import mc.obliviate.blokduels.game.bossbar.BossBarData;
+import mc.obliviate.blokduels.game.gamerule.GameRule;
 import mc.obliviate.blokduels.game.round.RoundData;
 import mc.obliviate.blokduels.game.spectator.SpectatorStorage;
 import mc.obliviate.blokduels.history.GameHistoryLog;
@@ -31,10 +32,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static mc.obliviate.blokduels.data.DataHandler.LOCK_TIME_IN_SECONDS;
 import static mc.obliviate.blokduels.game.GameState.*;
@@ -48,7 +46,7 @@ public class Game {
 	private final Map<Integer, Team> teams = new HashMap<>();
 	private final Kit kit;
 	private final long finishTime;
-	private final List<GameRules> gameRules;
+	private final List<GameRule> IGameRules;
 	private final Map<String, BukkitTask> tasks = new HashMap<>();
 	private final RoundData roundData = new RoundData();
 	private final SpectatorStorage spectatorData = new SpectatorStorage(this);
@@ -59,12 +57,12 @@ public class Game {
 	private GameState gameState = GAME_STARING;
 	//todo is this variables cloned with gamebuilder?
 
-	protected Game(final BlokDuels plugin, final GameBuilder gameBuilder, final int totalRounds, final Arena arena, final Kit kit, final long finishTime, final List<GameRules> gameRules) {
+	protected Game(final BlokDuels plugin, final GameBuilder gameBuilder, final int totalRounds, final Arena arena, final Kit kit, final long finishTime, final List<GameRule> IGameRules) {
 		this.plugin = plugin;
 		this.arena = arena;
 		this.kit = kit;
 		this.finishTime = finishTime;
-		this.gameRules = gameRules;
+		this.IGameRules = IGameRules;
 		this.gameBuilder = gameBuilder;
 
 		roundData.setTotalRounds(totalRounds);
@@ -79,8 +77,8 @@ public class Game {
 		Game.endDelay = endDelay;
 	}
 
-	public static GameBuilder create(BlokDuels plugin, Arena arena) {
-		return new GameBuilder(plugin, arena);
+	public static GameBuilder create(BlokDuels plugin, UUID owner) {
+		return new GameBuilder(plugin, owner);
 	}
 
 	protected void registerTeam(Team team) {
@@ -530,8 +528,8 @@ public class Game {
 		return kit;
 	}
 
-	public List<GameRules> getGameRules() {
-		return gameRules;
+	public List<GameRule> getGameRules() {
+		return IGameRules;
 	}
 
 	public Map<Integer, Team> getTeams() {
