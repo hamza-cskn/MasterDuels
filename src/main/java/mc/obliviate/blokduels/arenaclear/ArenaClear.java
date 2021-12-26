@@ -31,7 +31,6 @@ public class ArenaClear {
 		thread.addWorkLoad(new LiquidWorkload(x, y, z, worldUID));
 	}
 
-
 	public void clear() {
 		thread.run();
 		if (removeEntities) {
