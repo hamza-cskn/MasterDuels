@@ -93,7 +93,7 @@ public class SQLManager extends SQLHandler {
 
 	public boolean getReceivesInvites(final UUID uuid) {
 		final Integer value = playerDataTable.getInteger(uuid.toString(), "receivesInvites");
-		return value != null && value == 1;
+		return value == null || value == 1;
 	}
 
 	/**
