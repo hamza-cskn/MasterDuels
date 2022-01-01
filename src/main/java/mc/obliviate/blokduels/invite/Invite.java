@@ -2,6 +2,7 @@ package mc.obliviate.blokduels.invite;
 
 import mc.obliviate.blokduels.BlokDuels;
 import mc.obliviate.blokduels.game.GameBuilder;
+import mc.obliviate.blokduels.utils.Logger;
 import mc.obliviate.blokduels.utils.MessageUtils;
 import mc.obliviate.blokduels.utils.placeholder.PlaceholderUtil;
 import mc.obliviate.blokduels.utils.timer.TimerUtils;
@@ -37,6 +38,18 @@ public class Invite {
 		this.target = invited;
 		this.inviter = inviter;
 		this.invitedTime = System.currentTimeMillis();
+
+		if (inviter == null) {
+			onExpire();
+			Logger.error("An invite sent by null player!");
+			return;
+		}
+
+		if (invited == null) {
+			MessageUtils.sendMessage(inviter, "target-is-not-online");
+			onExpire();
+			return;
+		}
 
 		if (gameBuilder.getInvites().containsKey(invited.getUniqueId())) {
 			MessageUtils.sendMessage(inviter, "invite.already-invited", new PlaceholderUtil().add("{target}", invited.getName()));

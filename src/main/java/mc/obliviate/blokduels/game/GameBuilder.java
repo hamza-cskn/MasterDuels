@@ -3,10 +3,14 @@ package mc.obliviate.blokduels.game;
 import com.sun.istack.internal.Nullable;
 import mc.obliviate.blokduels.arena.Arena;
 import mc.obliviate.blokduels.BlokDuels;
+import mc.obliviate.blokduels.data.DataHandler;
 import mc.obliviate.blokduels.game.gamerule.GameRule;
 import mc.obliviate.blokduels.invite.Invite;
 import mc.obliviate.blokduels.invite.InviteResponse;
 import mc.obliviate.blokduels.kit.Kit;
+import mc.obliviate.blokduels.user.User;
+import mc.obliviate.blokduels.user.team.Member;
+import mc.obliviate.blokduels.utils.MessageUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -113,9 +117,25 @@ public class GameBuilder {
 		return invites;
 	}
 
-	//todo check invited is in a duel, is in a game builder.
-	//todo remove players if they are disconnected
 	public void sendInvite(final Player inviter, final Player invited, final InviteResponse response) {
+		if (invited == null) {
+			MessageUtils.sendMessage(inviter, "target-is-not-online");
+			return;
+		}
+
+		final User invitedUser = DataHandler.getUser(invited.getUniqueId());
+
+		if (invitedUser instanceof Member) {
+			MessageUtils.sendMessage(inviter, "target-already-in-duel");
+			return;
+		}
+
+		for (final GameBuilder builder : GAME_BUILDER_MAP.values()) {
+			if (builder.getPlayers().contains(invited)) {
+				MessageUtils.sendMessage(inviter, "target-already-in-duel");
+			}
+		}
+
 		final Invite invite = new Invite(plugin, inviter, invited, this);
 		invites.put(invited.getUniqueId(), invite);
 		invite.onResponse(response);
