@@ -25,11 +25,16 @@ public class MessageUtils {
 	}
 
 	public static String getMessage(final String node) {
-		final String msg = messageConfig.getString(node);
+		String msg = messageConfig.getString(node);
 		if (msg == null) {
 			return "No Message Found: " + node;
 		} else if (msg.equalsIgnoreCase("DISABLED")) {
 			return null;
+		}
+		if (msg.startsWith("[DISABLE_PREFIX]")) {
+			msg = msg.replace("[DISABLE_PREFIX]", "");
+		} else {
+			msg = prefix + msg;
 		}
 		return msg;
 	}
@@ -38,7 +43,7 @@ public class MessageUtils {
 		String message = getMessage(configNode);
 		if (message == null) return;
 		message = parseColor(message);
-		player.sendMessage(prefix + message);
+		player.sendMessage(message);
 	}
 
 	public static void sendMessageList(final CommandSender player, final String configNode) {
@@ -51,7 +56,7 @@ public class MessageUtils {
 	public static void sendMessage(final Player player, final String configNode, final PlaceholderUtil placeholderUtil) {
 		String message = getMessage(configNode);
 		if (message == null) return;
-		player.sendMessage(prefix + parseColor(applyPlaceholders(message, placeholderUtil)));
+		player.sendMessage(parseColor(applyPlaceholders(message, placeholderUtil)));
 	}
 
 	public static String applyPlaceholders(String message, final PlaceholderUtil placeholderUtil) {
