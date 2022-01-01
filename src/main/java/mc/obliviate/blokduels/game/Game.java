@@ -415,6 +415,8 @@ public class Game {
 			broadcastInGame("player-dead.by-attacker", new PlaceholderUtil().add("{attacker}", attacker.getPlayer().getName()).add("{victim}", victim.getPlayer().getName()));
 		}
 
+		spectatorData.spectate(victim.getPlayer());
+
 		if (checkTeamEliminated(victim.getTeam())) {
 
 			new DuelGameTeamEleminateEvent(victim.getTeam(), duelGameMemberDeathEvent);
@@ -423,8 +425,6 @@ public class Game {
 				broadcastInGame("duel-team-eliminated", new PlaceholderUtil().add("{victim}", victim.getPlayer().getName()));
 			}
 			nextRound();
-		} else {
-			spectatorData.spectate(victim.getPlayer());
 		}
 	}
 
@@ -434,6 +434,7 @@ public class Game {
 		}
 	}
 
+	//todo test: start a game when players is spectating
 	public void unspectate(Player player) {
 		getSpectatorData().unspectate(player);
 	}
