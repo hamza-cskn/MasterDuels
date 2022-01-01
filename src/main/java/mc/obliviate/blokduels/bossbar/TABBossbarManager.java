@@ -1,4 +1,4 @@
-package mc.obliviate.blokduels.game.bossbar;
+package mc.obliviate.blokduels.bossbar;
 
 import mc.obliviate.blokduels.game.Game;
 import mc.obliviate.blokduels.game.GameState;
@@ -6,39 +6,51 @@ import mc.obliviate.blokduels.user.team.Member;
 import mc.obliviate.blokduels.utils.Utils;
 import mc.obliviate.blokduels.utils.tab.TABManager;
 import mc.obliviate.blokduels.utils.timer.TimerUtils;
-import me.neznamy.tab.api.TABAPI;
+import me.neznamy.tab.api.TabAPI;
 import me.neznamy.tab.api.TabPlayer;
 import me.neznamy.tab.api.bossbar.BarColor;
 import me.neznamy.tab.api.bossbar.BarStyle;
 import me.neznamy.tab.api.bossbar.BossBar;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
-public class BossBarData {
+import java.util.ArrayList;
+import java.util.List;
+
+public class TABBossbarManager implements BossBarManager {
 
 	public static String NORMAL_TEXT_FORMAT = "{time}";
 	public static String CLOSING_TEXT_FORMAT = "{time}";
+	private final List<TabPlayer> playerList = new ArrayList<>();
 
 	private final BossBar bar;
 	private final Game game;
 
-	public BossBarData(Game game) {
+	public TABBossbarManager(Game game) {
 		this.game = game;
 		if (!TABManager.isEnabled()) {
 			this.bar = null;
 			return;
 		}
-		this.bar = TABAPI.createBossBar("bossbar", NORMAL_TEXT_FORMAT.replace("{timer}", "...").replace("{time}", "..."), 100f, BarColor.WHITE, BarStyle.NOTCHED_10);
+		final String title = NORMAL_TEXT_FORMAT.replace("{timer}", "...").replace("{time}", "...");
+		//this.bar = TabAPI.getInstance().getBossBarManager().createBossBar("bossbar", NORMAL_TEXT_FORMAT.replace("{timer}", "...").replace("{time}", "..."), 100f, BarColor.WHITE, BarStyle.NOTCHED_10);
+		this.bar = TabAPI.getInstance().getBossBarManager().createBossBar(title, 100f, BarColor.WHITE, BarStyle.NOTCHED_10);
 	}
 
+	@Override
 	public void show(Member member) {
 		if (this.bar == null) return;
-		final TabPlayer player = TABAPI.getPlayer(member.getPlayer().getUniqueId());
-		player.showBossBar(bar);
+		final TabPlayer player = TabAPI.getInstance().getPlayer(member.getPlayer().getUniqueId());
+		playerList.add(player);
 	}
 
+	@Override
 	public void init() {
 		if (this.bar == null) return;
 		game.task("BOSSBAR", Bukkit.getScheduler().runTaskTimer(game.getPlugin(), () -> {
+			for (TabPlayer p : playerList) {
+				TabAPI.getInstance().getBossBarManager().sendBossBarTemporarily(p, bar.getName(), 1000); //in ms
+			}
 			if (game.getGameState().equals(GameState.GAME_ENDING)) {
 				bar.setProgress((Utils.getPercentage(Game.getEndDelay() * 1000, (game.getTimer() - System.currentTimeMillis()))));
 				bar.setTitle(CLOSING_TEXT_FORMAT.replace("{time}", TimerUtils.formatTimerFormat(game.getTimer())).replace("{timer}", TimerUtils.formatTimerFormat(game.getTimer())));

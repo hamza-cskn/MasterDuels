@@ -14,8 +14,7 @@ public class TABManager {
 
 		if (Bukkit.getServer().getPluginManager().isPluginEnabled("TAB")) {
 			try {
-				Class.forName("me.neznamy.tab.shared.TAB");
-				Class.forName("me.neznamy.tab.api.TABAPI");
+				Class.forName("me.neznamy.tab.api.TabAPI");
 				enabled = true;
 				plugin.getLogger().info("TAB plugin found. The API successfully hooked.");
 			} catch (ClassNotFoundException ignored) {
