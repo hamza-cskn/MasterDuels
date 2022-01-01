@@ -6,6 +6,7 @@ import mc.obliviate.blokduels.api.events.arena.DuelGameStartEvent;
 import mc.obliviate.blokduels.arena.Arena;
 import mc.obliviate.blokduels.data.DataHandler;
 import mc.obliviate.blokduels.user.team.Member;
+import mc.obliviate.blokduels.utils.MessageUtils;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.EventHandler;
@@ -55,7 +56,7 @@ public class RollbackListener implements Listener {
 			if (member == null) return;
 			if (e.getBlock().getMetadata("placedByPlayer").isEmpty()) {
 				e.setCancelled(true);
-				e.getPlayer().sendMessage("You can not break this block.");
+				MessageUtils.sendMessage(e.getPlayer(), "you-can-not-break");
 			}
 		}
 	}
