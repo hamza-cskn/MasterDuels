@@ -82,7 +82,7 @@ public class SQLManager extends SQLHandler {
 	}
 
 	public LinkedList<GameHistoryLog> getAllLogs() throws SQLException {
-		final ResultSet rs = historyTable.getHighest("startTime");
+		final ResultSet rs = sqlQuery("SELECT * FROM " + historyTable.getTableName() + " ORDER BY startTime DESC");
 		final LinkedList<GameHistoryLog> logs = new LinkedList<>();
 		while (rs.next()) {
 			logs.add(SerializerUtils.deserializeGameHistoryLog(rs));
