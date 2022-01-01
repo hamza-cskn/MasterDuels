@@ -37,6 +37,9 @@ public class DuelAdminCMD implements CommandExecutor {
 		if (args.length == 0) {
 			player.sendMessage("§c§lMasterDuels §cAdministrator Commands");
 			player.sendMessage(" §7/" + s + " create §8- §9enables arena setup mode");
+			player.sendMessage(" §7/" + s + " arena disable <arena name> §8- §9disables an duel arena");
+			player.sendMessage(" §7/" + s + " arena enable  <arena name> §8- §9enables an duel arena");
+			player.sendMessage(" §7/" + s + " arena list §8- §9list arenas");
 			player.sendMessage(" §7/" + s + " setlobby §8- §9sets lobby location to teleport players after duel game");
 			player.sendMessage(" §7/" + s + " kitsave §8- §9saves your current inventory as new kit");
 			player.sendMessage(" §7/" + s + " kiteditor §8- §9opens kit editor gui");
@@ -72,9 +75,38 @@ public class DuelAdminCMD implements CommandExecutor {
 			new KitListGUI(player).open();
 		} else if (args[0].equalsIgnoreCase("kitsave")) {
 			kitSave(player, Arrays.asList(args));
+		} else if (args[0].equalsIgnoreCase("arena")) {
+			if (args.length == 1) {
+
+				return false;
+			}
+			if (args[1].equalsIgnoreCase("disable")) {
+				toggleArena(player, Arrays.asList(args), false);
+			} else if (args[1].equalsIgnoreCase("enable")) {
+				toggleArena(player, Arrays.asList(args), true);
+			}else if (args[1].equalsIgnoreCase("list")) {
+
+			}
 		}
 
 		return true;
+	}
+
+	private void toggleArena(Player player, List<String> args, boolean toggleState) {
+		if (args.size() < 3) {
+			MessageUtils.sendMessage(player, "duel-command.arena-toggle." + (toggleState ? "enable" : "disable") + "-usage");
+			return;
+		}
+
+		final Arena arena = DataHandler.getArenaFromName(args.get(2));
+		if (arena == null) {
+			MessageUtils.sendMessage(player, "duel-command.no-arena-found-with-this-name");
+			return;
+		}
+
+		arena.setEnabled(toggleState);
+		MessageUtils.sendMessage(player, "duel-command.arena-toggle." + (toggleState ? "enabled" : "disabled"));
+
 	}
 
 	private void kitSave(Player player, List<String> args) {

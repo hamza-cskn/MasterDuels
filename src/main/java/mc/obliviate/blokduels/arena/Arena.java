@@ -20,20 +20,27 @@ public class Arena {
 	private final Map<String, Positions> positions;
 	private final int teamSize;
 	private final int teamAmount;
+	private boolean enabled;
 
 	public Arena(String name, String mapName, ArenaCuboid arenaCuboid, Map<String, Positions> positions, int teamSize, int teamAmount) {
+		this(name, mapName, arenaCuboid, positions, teamSize, teamAmount, true);
+	}
+
+	public Arena(String name, String mapName, ArenaCuboid arenaCuboid, Map<String, Positions> positions, int teamSize, int teamAmount, boolean enabled) {
 		this.name = name;
 		this.mapName = mapName;
 		this.arenaCuboid = arenaCuboid;
 		this.positions = positions;
 		this.teamSize = teamSize;
 		this.teamAmount = teamAmount;
+		this.enabled = enabled;
 		DataHandler.registerArena(this);
 	}
 
 	public static Arena findArena(int teamSize, int teamAmount) {
 		for (final Map.Entry<Arena, Game> entry : DataHandler.getArenas().entrySet()) {
 			if (entry.getKey().getTeamAmount() >= teamAmount && entry.getKey().getTeamSize() >= teamSize) {
+				if (!entry.getKey().isEnabled()) continue;
 				if (entry.getValue() == null) return entry.getKey();
 			}
 		}
@@ -75,6 +82,14 @@ public class Arena {
 		final int teamAmount = section.getInt("team-amount");
 
 		return new Arena(name, mapName, arenaCuboid, positions, teamSize, teamAmount);
+	}
+
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
 	}
 
 	public ConfigurationSection serialize(ConfigurationSection section) {
