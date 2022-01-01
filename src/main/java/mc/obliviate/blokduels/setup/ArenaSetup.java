@@ -8,6 +8,7 @@ import mc.obliviate.blokduels.data.DataHandler;
 import mc.obliviate.blokduels.setup.gui.ArenaSetupGUI;
 import mc.obliviate.blokduels.utils.Logger;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -33,9 +34,9 @@ public class ArenaSetup implements Listener {
 	private String mapName = "Unknown";
 	private ArenaCuboid arenaCuboid = null;
 	private Map<String, Positions> positions = new HashMap<>();
+	private Location spectatorLocation = null;
 	private int teamSize = 1;
 	private int teamAmount = 2;
-
 
 	public ArenaSetup(BlokDuels plugin, final Player player) {
 		this.plugin = plugin;
@@ -47,14 +48,15 @@ public class ArenaSetup implements Listener {
 	}
 
 	public static boolean isNameUnique(String checkName) {
-		for (final Arena arena : DataHandler.getArenas().keySet()) {
-			if (arena == null) continue;
-			if (arena.getName() == null) continue;
-			if (arena.getName().equalsIgnoreCase(checkName)) {
-				return false;
-			}
-		}
-		return true;
+		return DataHandler.getArenaFromName(checkName) == null;
+	}
+
+	public Location getSpectatorLocation() {
+		return spectatorLocation;
+	}
+
+	public void setSpectatorLocation(Location spectatorLocation) {
+		this.spectatorLocation = spectatorLocation;
 	}
 
 	@EventHandler
@@ -68,7 +70,7 @@ public class ArenaSetup implements Listener {
 			if (posSelection.getPos1() != null && posSelection.getPos1().equals(e.getClickedBlock().getLocation()))
 				return;
 			posSelection.setPos1(e.getClickedBlock().getLocation());
-			player.sendMessage("§7Position §61§7 has selected!");
+			player.sendMessage("§7Position §61§7 has selected! Selected block is showing as redstone block. (client-side)");
 			Bukkit.getScheduler().runTaskLater(plugin, () -> player.sendBlockChange(e.getClickedBlock().getLocation(), Material.REDSTONE_BLOCK, (byte) 0), 2);
 			return;
 		}
@@ -79,7 +81,7 @@ public class ArenaSetup implements Listener {
 				return;
 			}
 			posSelection.setPos2(e.getClickedBlock().getLocation());
-			player.sendMessage("§7Position §62§7 has selected!");
+			player.sendMessage("§7Position §62§7 has selected! Selected block is showing as redstone block. (client-side)");
 			Bukkit.getScheduler().runTaskLater(plugin, () -> player.sendBlockChange(e.getClickedBlock().getLocation(), Material.REDSTONE_BLOCK, (byte) 0), 2);
 
 		}

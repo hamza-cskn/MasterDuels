@@ -7,7 +7,7 @@ import mc.obliviate.blokduels.api.events.arena.*;
 import mc.obliviate.blokduels.arena.Arena;
 import mc.obliviate.blokduels.arena.elements.Positions;
 import mc.obliviate.blokduels.data.DataHandler;
-import mc.obliviate.blokduels.game.bossbar.BossBarData;
+import mc.obliviate.blokduels.bossbar.TABBossbarManager;
 import mc.obliviate.blokduels.game.gamerule.GameRule;
 import mc.obliviate.blokduels.game.round.RoundData;
 import mc.obliviate.blokduels.game.spectator.SpectatorStorage;
@@ -51,7 +51,7 @@ public class Game {
 	private final RoundData roundData = new RoundData();
 	private final SpectatorStorage spectatorData = new SpectatorStorage(this);
 	private final GameBuilder gameBuilder;
-	private final BossBarData bossBarData = new BossBarData(this);
+	private final TABBossbarManager bossBarData = new TABBossbarManager(this);
 	private final GameHistoryLog gameHistoryLog = new GameHistoryLog();
 	private long timer;
 	private GameState gameState = GAME_STARING;
@@ -292,6 +292,10 @@ public class Game {
 				leave(member);
 			}
 		}
+		//todo is it works?
+		for (final Player spectator : spectatorData.getSpectators()) {
+			leave(getSpectatorData().getSpectator(spectator));
+		}
 
 		cancelTasks(null);
 		DataHandler.registerArena(arena);
@@ -355,7 +359,7 @@ public class Game {
 		ScoreboardManager.defaultScoreboard(member.getPlayer());
 
 
-		if (DataHandler.getLobbyLocation() != null && !member.getPlayer().teleport(DataHandler.getLobbyLocation())) {
+		if (DataHandler.getLobbyLocation() != null && DataHandler.getLobbyLocation().getWorld() != null && !member.getPlayer().teleport(DataHandler.getLobbyLocation())) {
 			if (!BlokDuels.isInShutdownMode()) {
 				member.getPlayer().kickPlayer("You could not teleported to lobby.\n" + DataHandler.getLobbyLocation());
 				Logger.error("Player " + member.getPlayer().getName() + " could not teleported to lobby. BlokDuels kicked him.");
@@ -410,7 +414,7 @@ public class Game {
 		} else {
 			broadcastInGame("player-dead.by-attacker", new PlaceholderUtil().add("{attacker}", attacker.getPlayer().getName()).add("{victim}", victim.getPlayer().getName()));
 		}
-		spectatorData.spectate(victim.getPlayer());
+
 		if (checkTeamEliminated(victim.getTeam())) {
 
 			new DuelGameTeamEleminateEvent(victim.getTeam(), duelGameMemberDeathEvent);
@@ -419,6 +423,8 @@ public class Game {
 				broadcastInGame("duel-team-eliminated", new PlaceholderUtil().add("{victim}", victim.getPlayer().getName()));
 			}
 			nextRound();
+		} else {
+			spectatorData.spectate(victim.getPlayer());
 		}
 	}
 
@@ -488,7 +494,7 @@ public class Game {
 		}
 	}
 
-	public GameBuilder getTeamBuilder() {
+	public GameBuilder getGameBuilder() {
 		return gameBuilder;
 	}
 

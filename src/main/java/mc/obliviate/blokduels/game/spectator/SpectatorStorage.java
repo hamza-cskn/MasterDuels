@@ -85,7 +85,9 @@ public class SpectatorStorage {
 
 		if (!game.isMember(spectator.getPlayer())) {
 			DataHandler.getUsers().remove(spectator.getPlayer().getUniqueId());
-			spectator.getPlayer().teleport(DataHandler.getLobbyLocation());
+			if (DataHandler.getLobbyLocation() != null) {
+				spectator.getPlayer().teleport(DataHandler.getLobbyLocation());
+			}
 			InventoryStorer.restore(spectator.getPlayer());
 			MessageAPI.getInstance(spectator.getGame().getPlugin()).sendTitle(spectator.getPlayer(), TitleHandler.getTitle(TitleHandler.TitleType.SPECTATOR_LEAVE));
 

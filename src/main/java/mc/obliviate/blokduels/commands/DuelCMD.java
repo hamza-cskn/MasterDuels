@@ -40,7 +40,7 @@ public class DuelCMD implements CommandExecutor {
 		final User user = DataHandler.getUser(player.getUniqueId());
 
 		if (args.length == 0) {
-			MessageUtils.sendMessageList(player, "duel-command.usage");
+			MessageUtils.sendMessage(player, "duel-command.usage");
 			return false;
 		}
 

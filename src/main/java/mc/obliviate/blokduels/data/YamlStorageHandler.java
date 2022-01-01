@@ -2,10 +2,12 @@ package mc.obliviate.blokduels.data;
 
 import mc.obliviate.blokduels.BlokDuels;
 import mc.obliviate.blokduels.arena.Arena;
+import mc.obliviate.blokduels.arena.BasicArenaState;
 import mc.obliviate.blokduels.arenaclear.ArenaClear;
 import mc.obliviate.blokduels.game.Game;
 import mc.obliviate.blokduels.game.GameState;
-import mc.obliviate.blokduels.game.bossbar.BossBarData;
+import mc.obliviate.blokduels.bossbar.TABBossbarManager;
+import mc.obliviate.blokduels.gui.DuelArenaListGUI;
 import mc.obliviate.blokduels.gui.DuelHistoryLogGUI;
 import mc.obliviate.blokduels.kit.Kit;
 import mc.obliviate.blokduels.utils.Logger;
@@ -15,13 +17,15 @@ import mc.obliviate.blokduels.utils.scoreboard.ScoreboardManager;
 import mc.obliviate.blokduels.utils.serializer.SerializerUtils;
 import mc.obliviate.blokduels.utils.timer.TimerUtils;
 import mc.obliviate.blokduels.utils.title.TitleHandler;
+import mc.obliviate.blokduels.utils.xmaterial.XMaterial;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.*;
 
 public class YamlStorageHandler {
 
@@ -51,10 +55,12 @@ public class YamlStorageHandler {
 		registerBossbars();
 		registerTimerFormats();
 		registerHistoryGui();
+		registerDuelListGUIConfig(config.getConfigurationSection("duel-arenas-gui"));
 
 		DataHandler.LOCK_TIME_IN_SECONDS = config.getInt("game-starting-lock-time", 3);
 		Kit.USE_PLAYER_INVENTORIES = config.getBoolean("use-player-inventories", false);
 		ArenaClear.removeEntities = plugin.getDatabaseHandler().getConfig().getBoolean("arena-regeneration.remove-entities", true);
+
 	}
 
 	private void loadDataFile(File dataFile) {
@@ -66,7 +72,7 @@ public class YamlStorageHandler {
 		YamlConfiguration messages = YamlConfiguration.loadConfiguration(messagesFile);
 
 		if (messages.getKeys(false).isEmpty()) {
-			plugin.saveResource(MESSAGES_FILE_NAME,true);
+			plugin.saveResource(MESSAGES_FILE_NAME, true);
 			messages = YamlConfiguration.loadConfiguration(messagesFile);
 		}
 
@@ -80,6 +86,26 @@ public class YamlStorageHandler {
 			plugin.saveResource(CONFIG_FILE_NAME, true);
 			config = YamlConfiguration.loadConfiguration(configFile);
 		}
+	}
+
+	private void registerDuelListGUIConfig(final ConfigurationSection section) {
+		final Map<BasicArenaState, List<String>> description = new HashMap<>();
+		for (final BasicArenaState state : BasicArenaState.values()) {
+			description.put(state, section.getStringList(state + ".description"));
+		}
+
+		final Map<BasicArenaState, ItemStack> gamestateMaterials = new HashMap<>();
+		for (final BasicArenaState state : BasicArenaState.values()) {
+			final String materialName = section.getString(state.name() + ".material", "STONE");
+			final Optional<XMaterial> xm = XMaterial.matchXMaterial(materialName);
+			if (xm.isPresent()) {
+				gamestateMaterials.put(state, xm.get().parseItem());
+			} else {
+				Logger.error("Material could not found: " + materialName);
+			}
+		}
+
+		DuelArenaListGUI.guiConfig = new DuelArenaListGUI.DuelArenaListGUIConfig(gamestateMaterials, description, section.getString("title"));
 	}
 
 	private void registerHistoryGui() {
@@ -103,10 +129,10 @@ public class YamlStorageHandler {
 				world.setWaterAnimalSpawnLimit(0);
 				world.setThundering(false);
 				world.setStorm(false);
-				world.setGameRuleValue("doFireTick","false");
-				world.setGameRuleValue("doDaylightCycle","false");
-				world.setGameRuleValue("randomTickSpeed","0");
-				world.setGameRuleValue("doMobSpawning","false");
+				world.setGameRuleValue("doFireTick", "false");
+				world.setGameRuleValue("doDaylightCycle", "false");
+				world.setGameRuleValue("randomTickSpeed", "0");
+				world.setGameRuleValue("doMobSpawning", "false");
 				if (!world.getPVP()) {
 					Logger.warn("PVP is disabled at " + world.getName() + " world! Then why i am here :(");
 				}
@@ -139,8 +165,8 @@ public class YamlStorageHandler {
 
 	private void registerBossbars() {
 		if (config.getBoolean("bossbars.enabled", false)) {
-			BossBarData.NORMAL_TEXT_FORMAT = config.getString("bossbars.in-battle");
-			BossBarData.CLOSING_TEXT_FORMAT = config.getString("bossbars.arena-closing");
+			TABBossbarManager.NORMAL_TEXT_FORMAT = config.getString("bossbars.in-battle");
+			TABBossbarManager.CLOSING_TEXT_FORMAT = config.getString("bossbars.arena-closing");
 		}
 	}
 

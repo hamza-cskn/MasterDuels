@@ -12,6 +12,8 @@ import org.bukkit.configuration.ConfigurationSection;
 import java.util.HashMap;
 import java.util.Map;
 
+import static mc.obliviate.blokduels.arena.BasicArenaState.*;
+
 public class Arena {
 
 	private final String name;
@@ -45,6 +47,34 @@ public class Arena {
 			}
 		}
 		return null;
+	}
+
+	public static BasicArenaState getBasicArenaState(Arena arena) {
+		if (arena == null) return UNKNOWN;
+		final Game game = DataHandler.getArenas().get(arena);
+
+
+		if (game == null) {
+			if (arena.isEnabled()) {
+				return EMPTY;
+			} else {
+				return DISABLED;
+			}
+		}
+
+		switch (game.getGameState()) {
+			case BATTLE:
+				return PLAYING;
+			case GAME_ENDING:
+			case UNINSTALLING:
+				return ENDING;
+			case ROUND_STARTING:
+			case ROUND_ENDING:
+			case GAME_STARING:
+				return STARTING;
+		}
+		return UNKNOWN;
+
 	}
 
 	public static Arena deserialize(ConfigurationSection section) {
@@ -113,6 +143,7 @@ public class Arena {
 		return section;
 
 	}
+
 
 	public ArenaCuboid getArenaCuboid() {
 		return arenaCuboid;

@@ -30,6 +30,11 @@
             <id>bungeecord-repo</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </repository>
+        <repository>
+            <id>krypton</id>
+            <url>https://repo.kryptonmc.org/releases</url>
+        </repository>
+
     </repositories>
 
 
@@ -55,11 +60,11 @@
             <artifactId>bukkit</artifactId>
             <version>1.0.6</version>
         </dependency>
+        <!-- TAB -->
         <dependency>
-            <groupId>com.github.NEZNAMY</groupId>
-            <artifactId>TAB</artifactId>
-            <version>2.9.2</version>
-            <scope>provided</scope>
+            <groupId>me.neznamy</groupId>
+            <artifactId>tab-api</artifactId>
+            <version>3.0.1</version>
         </dependency>
         <dependency>
             <groupId>com.github.Obliviated</groupId>

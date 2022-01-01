@@ -131,3 +131,59 @@ game-history:
         - ' {+losers}'
         - ''
         - '&8Game played at: {played-date}'
+duel-arenas-gui:
+  #You need 'masterduels.see-non-playing-games' permission to see 'disabled' and 'empty' arenas.
+  title: 'Duel Arenas'
+  STARTING:
+    material: YELLOW_WOOL
+    description:
+      - '&dArena: #{arena}' # first line is name of icon
+      - ''
+      - '&7State: &eStarting...'
+      - '&7Players: &b{players}'
+      - '&7Mode: &b{mode}'
+      - ''
+      - '&eClick to spectate game!'
+  PLAYING:
+    material: RED_WOOL
+    description:
+      - '&dArena: #{arena}' # first line is name of icon
+      - ''
+      - '&7State: &cPlaying'
+      - '&7Players: &b{players}'
+      - '&7Mode: &b{mode}'
+      - ''
+      - '&eClick to spectate game!'
+  ENDING:
+    material: YELLOW_WOOL
+    description:
+      - '&dArena: #{arena}' # first line is name of icon
+      - ''
+      - '&7State: &eEnding'
+      - '&7Players: &b{players}'
+      - '&7Mode: &b{mode}'
+      - ''
+      - '&eClick to spectate game!'
+  EMPTY:
+    material: LIME_WOOL
+    description:
+      - '&dArena: #{arena}' # first line is name of icon
+      - ''
+      - '&7State: &aAvailable'
+      - '&7Map: &9{map}'
+      - ''
+  DISABLED:
+    material: REDSTONE_BLOCK
+    description:
+      - '&dArena: #{arena}' # first line is name of icon
+      - ''
+      - '&cThis arena currently'
+      - '&cdisabled by administrators.'
+      - ''
+  UNKNOWN:
+    material: BEDROCK
+    description:
+      - '&dArena: #{arena}' # first line is name of icon
+      - ''
+      - '&4Error'
+

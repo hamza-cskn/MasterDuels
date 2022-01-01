@@ -82,4 +82,13 @@ public class DataHandler {
 		if (Bukkit.getWorld(lobbyLocation.getWorld().getUID()) != null) return;
 		DataHandler.lobbyLocation = lobbyLocation;
 	}
+
+	public static Arena getArenaFromName(String arenaName) {
+		for (final Arena arena : arenas.keySet()) {
+			if (arena != null && arena.getName() != null && arena.getName().equalsIgnoreCase(arenaName)) {
+				return arena;
+			}
+		}
+		return null;
+	}
 }

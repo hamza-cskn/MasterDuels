@@ -37,7 +37,7 @@ public class GameBuilder {
 		GAME_BUILDER_MAP.put(owner, this);
 		this.plugin = plugin;
 		this.owner = owner;
-		//todo target is offline stack trace error possible
+		//todo target is offline stack trace error is possible
 		players.add(Bukkit.getPlayer(owner));
 	}
 
