@@ -4,6 +4,7 @@ import mc.obliviate.blokduels.BlokDuels;
 import mc.obliviate.blokduels.kit.Kit;
 import mc.obliviate.blokduels.kit.serializer.KitSerializer;
 import mc.obliviate.blokduels.utils.MessageUtils;
+import mc.obliviate.blokduels.utils.xmaterial.XMaterial;
 import mc.obliviate.inventory.GUI;
 import mc.obliviate.inventory.Icon;
 import org.bukkit.Material;
@@ -22,8 +23,8 @@ public class KitEditGUI extends GUI {
 
 	@Override
 	public void onOpen(InventoryOpenEvent event) {
-		fillRow(new Icon(Material.STAINED_GLASS_PANE).setDamage(15), 0);
-		fillRow(new Icon(Material.STAINED_GLASS_PANE).setDamage(15), 5);
+		fillRow(new Icon(XMaterial.BLACK_STAINED_GLASS_PANE.parseItem()), 0);
+		fillRow(new Icon(XMaterial.BLACK_STAINED_GLASS_PANE.parseItem()), 5);
 
 		addAdvancedHytem(4, new Icon(Material.BARRIER)
 				.setName(MessageUtils.parseColor("&cChange icon of kit"))
@@ -36,10 +37,11 @@ public class KitEditGUI extends GUI {
 			kit.setIcon(e.getInventory().getItem(4));
 		});
 
-		addAdvancedHytem(45, new Icon(Material.BARRIER).setName(MessageUtils.parseColor("&cChange helmet of kit")).setLore("", MessageUtils.parseColor("&7Put an Itemstack to set helmet"), MessageUtils.parseColor("&7of this kit."), "", MessageUtils.parseColor("&fCurrent: &e" + getMaterialName(kit.getArmorContents()[3]))));
-		addAdvancedHytem(46, new Icon(Material.BARRIER).setName(MessageUtils.parseColor("&cChange chestplate of kit")).setLore("", MessageUtils.parseColor("&7Put an Itemstack to set chestplate"), MessageUtils.parseColor("&7of this kit."), "", MessageUtils.parseColor("&fCurrent: &e" + getMaterialName(kit.getArmorContents()[2]))));
-		addAdvancedHytem(47, new Icon(Material.BARRIER).setName(MessageUtils.parseColor("&cChange leggings of kit")).setLore("", MessageUtils.parseColor("&7Put an Itemstack to set leggings"), MessageUtils.parseColor("&7of this kit."), "", MessageUtils.parseColor("&fCurrent: &e" + getMaterialName(kit.getArmorContents()[1]))));
-		addAdvancedHytem(48, new Icon(Material.BARRIER).setName(MessageUtils.parseColor("&cChange boots of kit")).setLore("", MessageUtils.parseColor("&7Put an Itemstack to set boots"), MessageUtils.parseColor("&7of this kit."), "", MessageUtils.parseColor("&fCurrent: &e" + getMaterialName(kit.getArmorContents()[0]))));
+		//todo search why barriers are invisible in 1.17
+		addAdvancedHytem(45, new Icon(XMaterial.BARRIER.parseItem()).setName(MessageUtils.parseColor("&cChange helmet of kit")).setLore("", MessageUtils.parseColor("&7Put an Itemstack to set helmet"), MessageUtils.parseColor("&7of this kit."), "", MessageUtils.parseColor("&fCurrent: &e" + getMaterialName(kit.getArmorContents()[3]))));
+		addAdvancedHytem(46, new Icon(XMaterial.BARRIER.parseItem()).setName(MessageUtils.parseColor("&cChange chestplate of kit")).setLore("", MessageUtils.parseColor("&7Put an Itemstack to set chestplate"), MessageUtils.parseColor("&7of this kit."), "", MessageUtils.parseColor("&fCurrent: &e" + getMaterialName(kit.getArmorContents()[2]))));
+		addAdvancedHytem(47, new Icon(XMaterial.BARRIER.parseItem()).setName(MessageUtils.parseColor("&cChange leggings of kit")).setLore("", MessageUtils.parseColor("&7Put an Itemstack to set leggings"), MessageUtils.parseColor("&7of this kit."), "", MessageUtils.parseColor("&fCurrent: &e" + getMaterialName(kit.getArmorContents()[1]))));
+		addAdvancedHytem(48, new Icon(XMaterial.BARRIER.parseItem()).setName(MessageUtils.parseColor("&cChange boots of kit")).setLore("", MessageUtils.parseColor("&7Put an Itemstack to set boots"), MessageUtils.parseColor("&7of this kit."), "", MessageUtils.parseColor("&fCurrent: &e" + getMaterialName(kit.getArmorContents()[0]))));
 
 		int slot = 9;
 		for (final ItemStack item : kit.getContents()) {
@@ -48,11 +50,11 @@ public class KitEditGUI extends GUI {
 			}));
 		}
 
-		addItem(0, new Icon(Material.ARROW).setName(MessageUtils.parseColor("&cGo Back")).onClick(e -> {
+		addItem(0, new Icon(XMaterial.ARROW.parseItem()).setName(MessageUtils.parseColor("&cGo Back")).onClick(e -> {
 			new KitListGUI(player).open();
 		}));
 
-		addItem(8, new Icon(Material.EMERALD_BLOCK).setName(MessageUtils.parseColor("&aSave")).onClick(e -> {
+		addItem(8, new Icon(XMaterial.EMERALD_BLOCK.parseItem()).setName(MessageUtils.parseColor("&aSave")).onClick(e -> {
 			int index = 0;
 			final ItemStack[] items = new ItemStack[36];
 			for (final ItemStack item : getInventory().getContents()) {
@@ -65,7 +67,8 @@ public class KitEditGUI extends GUI {
 			final ItemStack[] armors = new ItemStack[4];
 			for (int i = 0; i < 4; i++) {
 				ItemStack item = getInventory().getItem(48 - i);
-				if (item.getType().equals(Material.BARRIER)) {
+				if (item == null) continue;
+				if (item.getType().equals(XMaterial.BARRIER.parseMaterial())) {
 					item = kit.getArmorContents()[i];
 				}
 				armors[i] = item;

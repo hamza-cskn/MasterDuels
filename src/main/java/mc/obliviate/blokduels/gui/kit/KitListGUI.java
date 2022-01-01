@@ -2,6 +2,7 @@ package mc.obliviate.blokduels.gui.kit;
 
 import mc.obliviate.blokduels.kit.Kit;
 import mc.obliviate.blokduels.utils.MessageUtils;
+import mc.obliviate.blokduels.utils.xmaterial.XMaterial;
 import mc.obliviate.inventory.GUI;
 import mc.obliviate.inventory.Icon;
 import org.bukkit.Material;
@@ -19,7 +20,7 @@ public class KitListGUI extends GUI {
 
 	@Override
 	public void onOpen(InventoryOpenEvent event) {
-		fillRow(new Icon(Material.STAINED_GLASS_PANE).setDamage(15), 0);
+		fillRow(new Icon(XMaterial.BLACK_STAINED_GLASS_PANE.parseItem()).setDamage(15), 0);
 
 		int slot = 9;
 		for (final Kit kit : Kit.getKits().values()) {

@@ -3,18 +3,33 @@ package mc.obliviate.blokduels.setup.gui;
 import mc.obliviate.blokduels.arena.elements.Positions;
 import mc.obliviate.blokduels.setup.ArenaSetup;
 import mc.obliviate.blokduels.setup.PositionSelection;
+import mc.obliviate.blokduels.utils.Logger;
+import mc.obliviate.blokduels.utils.xmaterial.XMaterial;
+import mc.obliviate.inventory.GUI;
 import mc.obliviate.inventory.Icon;
 import net.md_5.bungee.api.ChatColor;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryOpenEvent;
-import mc.obliviate.inventory.GUI;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class SpawnLocationsGUI extends GUI {
 
 	private final ArenaSetup arenaSetup;
+	private static final List<ItemStack> icons = Arrays.asList(
+			XMaterial.RED_STAINED_GLASS.parseItem(),
+			XMaterial.BLUE_STAINED_GLASS.parseItem(),
+			XMaterial.YELLOW_STAINED_GLASS.parseItem(),
+			XMaterial.LIME_STAINED_GLASS.parseItem(),
+			XMaterial.PURPLE_STAINED_GLASS.parseItem(),
+			XMaterial.CYAN_STAINED_GLASS.parseItem(),
+			XMaterial.ORANGE_STAINED_GLASS.parseItem(),
+			XMaterial.PINK_STAINED_GLASS.parseItem(),
+			XMaterial.LIGHT_BLUE_STAINED_GLASS.parseItem(),
+			XMaterial.GREEN_STAINED_GLASS.parseItem());
 
 	public SpawnLocationsGUI(Player player, ArenaSetup arenaSetup) {
 		super(player, "spawn-locations-gui", "Select Spawn Location", 6);
@@ -31,7 +46,7 @@ public class SpawnLocationsGUI extends GUI {
 				final Location location;
 
 				if (positions == null) {
-					Bukkit.broadcastMessage("positions is null: " + i);
+					Logger.error("positions is null: " + i);
 					return;
 				}
 
@@ -42,8 +57,7 @@ public class SpawnLocationsGUI extends GUI {
 				}
 
 				final int playerNo = pos;
-				addItem(slot++, new Icon(Material.STAINED_GLASS_PANE)
-						.setDamage(i)
+				addItem(slot++, new Icon(icons.get(i-1))
 						.setAmount(pos)
 						.setName(ChatColor.LIGHT_PURPLE + "Team " + i + ChatColor.GRAY + " - " + ChatColor.LIGHT_PURPLE + "Player " + pos)
 						.setLore(
@@ -61,14 +75,14 @@ public class SpawnLocationsGUI extends GUI {
 				);
 			}
 
-			if (slot >= 44) {
-				player.sendMessage("§cThere are tooooo many spawn position!");
+			if (slot >= 44 || i > 9) {
+				player.sendMessage("§cThere are toooo many spawn position!");
 				break;
 			}
 		}
 
-		fillRow(new Icon(Material.STAINED_GLASS_PANE).setDamage(15), 5);
-		addItem(49, new Icon(Material.ARROW).setName(ChatColor.RED + "Back").onClick(e -> {
+		fillRow(new Icon(XMaterial.BLACK_STAINED_GLASS_PANE.parseItem()).setDamage(15), 5);
+		addItem(49, new Icon(XMaterial.ARROW.parseItem()).setName(ChatColor.RED + "Back").onClick(e -> {
 			new ArenaSetupGUI(player, arenaSetup).open();
 		}));
 

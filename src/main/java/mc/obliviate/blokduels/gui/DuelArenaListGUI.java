@@ -1,69 +1,73 @@
 package mc.obliviate.blokduels.gui;
 
 import mc.obliviate.blokduels.arena.Arena;
+import mc.obliviate.blokduels.arena.BasicArenaState;
 import mc.obliviate.blokduels.data.DataHandler;
 import mc.obliviate.blokduels.game.Game;
-import mc.obliviate.blokduels.game.GameState;
 import mc.obliviate.blokduels.utils.MessageUtils;
-import org.bukkit.Material;
+import mc.obliviate.blokduels.utils.placeholder.PlaceholderUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import mc.obliviate.inventory.GUI;
 import mc.obliviate.inventory.Icon;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.MaterialData;
 
-import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 public class DuelArenaListGUI extends GUI {
 
+	public static DuelArenaListGUIConfig guiConfig;
+
 	public DuelArenaListGUI(Player player) {
-		super(player, "duel-games-list-gui", "Oynanan Düellolar (/duel)", 6);
-	}
-
-	private static String convertMode(int size, int amount) {
-		final StringBuilder sb = new StringBuilder();
-		for (; amount > 0; amount--) {
-			sb.append(size);
-			if (amount != 1) {
-				sb.append("v");
-			}
-		}
-
-		return sb.toString();
+		super(player, "duel-games-list-gui", "Duel Arenas", 6);
+		setTitle(guiConfig.guiTitle);
 	}
 
 	@Override
 	public void onOpen(InventoryOpenEvent event) {
 		int slot = 0;
 		for (final Map.Entry<Arena, Game> entry : DataHandler.getArenas().entrySet()) {
-			if (entry.getValue() != null) {
-				addItem(slot++, getArenaIcon(entry.getValue()));
-			}
+			addItem(slot++, getGameIcon(entry.getKey()));
 		}
 	}
 
-	private Icon getArenaIcon(final Game game) {
-		return new Icon(getStateMaterial(game.getGameState())).onClick(e -> {
-			if (game.getGameState().equals(GameState.BATTLE) || game.getGameState().equals(GameState.ROUND_STARTING)) {
-				player.closeInventory();
-				game.spectate(player);
+	private Icon getGameIcon(final Arena arena) {
+		final PlaceholderUtil placeholderUtil = new PlaceholderUtil().add("{arena}", arena.getName()).add("{map}", arena.getName());
+		final Game game = DataHandler.getArenas().get(arena);
+		final BasicArenaState state = Arena.getBasicArenaState(arena);
+		if (game != null) {
+			final int players = game.getGameBuilder().getPlayers().size();
+			final int spectators = game.getSpectatorData().getSpectators().size();
+			placeholderUtil.add("{players}", players + "");
+			placeholderUtil.add("{spectators}", spectators + "");
+			placeholderUtil.add("{playersandspectators}", (spectators + players) + "");
+			placeholderUtil.add("{kit}", game.getKit().getKitName());
+			placeholderUtil.add("{mode}", MessageUtils.convertMode(game.getGameBuilder().getTeamSize(), game.getGameBuilder().getTeamAmount()));
+		}
+		final Icon icon = new Icon(guiConfig.gameStateMaterial.get(state).clone());
+		icon.setName(MessageUtils.parseColor(MessageUtils.applyPlaceholders(guiConfig.gameIconDescription.get(state).get(0), placeholderUtil)));
 
-			}
-		}).setName(MessageUtils.parseColor("&6" + game.getArena().getName())).setLore(MessageUtils.parseColor(Arrays.asList("","&aDurum: &6" + game.getGameState(), "&aHarita: " + game.getArena().getMapName(),"","&e&oTıkla ve izle!")));
+		for (final String line : guiConfig.gameIconDescription.get(state).subList(1, guiConfig.gameIconDescription.size()-1)) {
+			icon.appendLore(MessageUtils.parseColor(MessageUtils.applyPlaceholders(line, placeholderUtil)));
+		}
+		return icon;
 	}
 
-	private ItemStack getStateMaterial(GameState state) {
-		switch (state) {
-			case BATTLE:
-				return new MaterialData(Material.WOOL, (byte) 14).toItemStack(1);
-			case GAME_STARING:
-				return new MaterialData(Material.WOOL, (byte) 5).toItemStack(1);
-			case GAME_ENDING:
-				return new MaterialData(Material.WOOL, (byte) 1).toItemStack(1);
-			default:
-				return new MaterialData(Material.WOOL, (byte) 0).toItemStack(1);
+	/**
+	 * Purpose of this class is storing duel arena list
+	 * gui configuration datas.
+	 */
+	public static class DuelArenaListGUIConfig {
+		protected final Map<BasicArenaState, ItemStack> gameStateMaterial;
+		protected final Map<BasicArenaState, List<String>> gameIconDescription;
+		protected final String guiTitle;
+
+		public DuelArenaListGUIConfig(Map<BasicArenaState, ItemStack> gameStateMaterial, Map<BasicArenaState, List<String>> gameIconDescription, String guiTitle) {
+			this.gameStateMaterial = gameStateMaterial;
+			this.gameIconDescription = gameIconDescription;
+			this.guiTitle = guiTitle;
 		}
+
 	}
 }

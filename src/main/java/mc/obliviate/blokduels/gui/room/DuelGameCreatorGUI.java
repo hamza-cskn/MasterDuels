@@ -3,10 +3,9 @@ package mc.obliviate.blokduels.gui.room;
 import mc.obliviate.blokduels.game.Game;
 import mc.obliviate.blokduels.game.GameBuilder;
 import mc.obliviate.blokduels.utils.MessageUtils;
+import mc.obliviate.blokduels.utils.xmaterial.XMaterial;
 import mc.obliviate.inventory.GUI;
 import mc.obliviate.inventory.Icon;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 
@@ -29,7 +28,7 @@ public class DuelGameCreatorGUI extends GUI {
 
 	@Override
 	public void onOpen(InventoryOpenEvent event) {
-		fillRow(new Icon(Material.STAINED_GLASS_PANE).setDamage(15),4);
+		fillRow(new Icon(XMaterial.BLACK_STAINED_GLASS_PANE.parseItem()).setDamage(15),4);
 		addItem(10, getTeamAmountIcon());
 		addItem(12, getTeamSizeIcon());
 		addItem(14, getInvitesIcon());
@@ -38,7 +37,7 @@ public class DuelGameCreatorGUI extends GUI {
 	}
 
 	private Icon getStartGameIcon() {
-		return new Icon(Material.EMERALD_BLOCK).setName("Click to start game").onClick(e -> {
+		return new Icon(XMaterial.EMERALD_BLOCK.parseItem()).setName("Click to start game").onClick(e -> {
 			if (gameBuilder.getTeamSize() * gameBuilder.getTeamAmount() != gameBuilder.getPlayers().size()) return;
 			for (int i = gameBuilder.getTeamAmount(); i > 0; i--) {
 				final List<Player> playerList = gameBuilder.getPlayers().subList((i - 1) * gameBuilder.getTeamSize(), i * gameBuilder.getTeamAmount());
@@ -55,19 +54,19 @@ public class DuelGameCreatorGUI extends GUI {
 	}
 
 	private Icon getSettingsIcon() {
-		return new Icon(Material.REDSTONE_COMPARATOR).setName(MessageUtils.parseColor("&aSettings")).onClick(e -> {
+		return new Icon(XMaterial.COMPARATOR.parseItem()).setName(MessageUtils.parseColor("&aSettings")).onClick(e -> {
 			new DuelSettingsGUI(player, gameBuilder).open();
 		});
 	}
 
 	private Icon getInvitesIcon() {
-		return new Icon(Material.BOOK_AND_QUILL).setName(MessageUtils.parseColor("&aInvites")).onClick(e -> {
+		return new Icon(XMaterial.WRITABLE_BOOK.parseItem()).setName(MessageUtils.parseColor("&aInvites")).onClick(e -> {
 			new DuelInvitesGUI(player, gameBuilder).open();
 		});
 	}
 
 	private Icon getTeamAmountIcon() {
-		final Icon teamAmountIcon = new Icon(Material.MINECART).setName(MessageUtils.parseColor("&aTeam Amount")).setLore(MessageUtils.parseColor("&bCurrently: &f" + gameBuilder.getTeamAmount()), "", MessageUtils.parseColor("&eLeft click to increase"), MessageUtils.parseColor("&eRight click to decrease"));
+		final Icon teamAmountIcon = new Icon(XMaterial.MINECART.parseItem()).setName(MessageUtils.parseColor("&aTeam Amount")).setLore(MessageUtils.parseColor("&bCurrently: &f" + gameBuilder.getTeamAmount()), "", MessageUtils.parseColor("&eLeft click to increase"), MessageUtils.parseColor("&eRight click to decrease"));
 		return teamAmountIcon.onClick(e -> {
 			if (e.isRightClick()) {
 				gameBuilder.teamAmount(Math.max(gameBuilder.getTeamAmount() - 1, 2));
@@ -79,7 +78,7 @@ public class DuelGameCreatorGUI extends GUI {
 	}
 
 	private Icon getTeamSizeIcon() {
-		final Icon teamAmountIcon = new Icon(Material.SKULL_ITEM).setDamage(3).setName(MessageUtils.parseColor("&aTeam Size")).setLore(MessageUtils.parseColor("&bCurrently: &f" + gameBuilder.getTeamSize()), "", MessageUtils.parseColor("&eLeft click to increase"), MessageUtils.parseColor("&eRight click to decrease"));
+		final Icon teamAmountIcon = new Icon(XMaterial.PLAYER_HEAD.parseItem()).setName(MessageUtils.parseColor("&aTeam Size")).setLore(MessageUtils.parseColor("&bCurrently: &f" + gameBuilder.getTeamSize()), "", MessageUtils.parseColor("&eLeft click to increase"), MessageUtils.parseColor("&eRight click to decrease"));
 		return teamAmountIcon.onClick(e -> {
 			if (e.isRightClick()) {
 				gameBuilder.teamSize(Math.max(gameBuilder.getTeamSize() - 1, 1));

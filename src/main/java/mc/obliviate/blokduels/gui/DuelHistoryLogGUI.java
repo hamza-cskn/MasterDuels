@@ -1,14 +1,13 @@
 package mc.obliviate.blokduels.gui;
 
-import mc.obliviate.blokduels.BlokDuels;
 import mc.obliviate.blokduels.history.GameHistoryLog;
 import mc.obliviate.blokduels.utils.MessageUtils;
 import mc.obliviate.blokduels.utils.placeholder.PlaceholderUtil;
 import mc.obliviate.blokduels.utils.timer.TimerUtils;
+import mc.obliviate.blokduels.utils.xmaterial.XMaterial;
 import mc.obliviate.inventory.GUI;
 import mc.obliviate.inventory.Icon;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryOpenEvent;
@@ -16,6 +15,7 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public class DuelHistoryLogGUI extends GUI {
@@ -29,7 +29,7 @@ public class DuelHistoryLogGUI extends GUI {
 
 	@Override
 	public void onOpen(InventoryOpenEvent event) {
-		fillRow(new Icon(Material.STAINED_GLASS_PANE).setDamage(15), 0);
+		fillRow(new Icon(XMaterial.BLACK_STAINED_GLASS_PANE.parseItem()), 0);
 
 		int slot = 9;
 		for (final GameHistoryLog log : GameHistoryLog.historyCache) {
@@ -45,11 +45,12 @@ public class DuelHistoryLogGUI extends GUI {
 		}
 	}
 
-	private Icon deserializeIcon(final ConfigurationSection section, GameHistoryLog log) {
-		if (section == null) return new Icon(Material.BEDROCK).setName("Item could not deserialized.");
+	private Icon deserializeIcon(final ConfigurationSection section, GameHistoryLog log) { //todo make config storage class to store itemstacks in cache
+		if (section == null) return new Icon(XMaterial.BEDROCK.parseItem()).setName("Item could not deserialized. (Config Section is null)");
+		final Optional<XMaterial> xMaterial = XMaterial.matchXMaterial(section.getString("material-type"));
 
-		final Material material = Material.getMaterial(section.getString("material-type"));
-		final Icon icon = new Icon(material);
+		if (!xMaterial.isPresent()) return new Icon(XMaterial.BEDROCK.parseItem()).setName("Item could not deserialized.");
+		final Icon icon = new Icon(xMaterial.get().parseItem());
 		final List<String> description = section.getStringList("description");
 
 		final PlaceholderUtil placeholderUtil = new PlaceholderUtil().add("{time}", TimerUtils.getFormattedDifferentTime(log.getStartTime(), log.getEndTime()))
