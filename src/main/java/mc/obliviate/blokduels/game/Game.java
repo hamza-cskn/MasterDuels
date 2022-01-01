@@ -90,6 +90,8 @@ public class Game {
 		updateScoreboardTasks();
 		storeKits();
 		nextRound();
+
+		GameBuilder.getGameBuilderMap().remove(gameBuilder.getOwner());
 	}
 
 	public void initBossBar() {
