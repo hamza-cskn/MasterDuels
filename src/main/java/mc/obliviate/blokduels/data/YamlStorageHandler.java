@@ -105,7 +105,7 @@ public class YamlStorageHandler {
 			}
 		}
 
-		DuelArenaListGUI.guiConfig = new DuelArenaListGUI.DuelArenaListGUIConfig(gamestateMaterials, description, section.getString("title"));
+		DuelArenaListGUI.guiConfig = new DuelArenaListGUI.DuelArenaListGUIConfig(gamestateMaterials, description, section.getString("title", "Duel Arenas"));
 	}
 
 	private void registerHistoryGui() {
