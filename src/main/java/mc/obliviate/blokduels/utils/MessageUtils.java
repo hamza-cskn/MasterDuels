@@ -31,19 +31,39 @@ public class MessageUtils {
 		} else if (msg.equalsIgnoreCase("DISABLED")) {
 			return null;
 		}
-		if (msg.startsWith("[DISABLE_PREFIX]")) {
-			msg = msg.replace("[DISABLE_PREFIX]", "");
-		} else {
-			msg = prefix + msg;
-		}
 		return msg;
 	}
 
 	public static void sendMessage(final CommandSender player, final String configNode) {
-		String message = getMessage(configNode);
+		sendMessage(player, configNode, false);
+	}
+
+	public static void sendMessage(final Player player, final String configNode, final PlaceholderUtil placeholderUtil) {
+		sendMessage(player, configNode, placeholderUtil, false);
+	}
+
+	public static void sendMessage(final CommandSender player, final String configNode, final boolean forceDisablePrefix) {
+		final String message = getMessage(configNode);
 		if (message == null) return;
-		message = parseColor(message);
-		player.sendMessage(message);
+		send(player, parseColor(message), forceDisablePrefix);
+	}
+
+	public static void sendMessage(final Player player, final String configNode, final PlaceholderUtil placeholderUtil, final boolean forceDisablePrefix) {
+		final String message = getMessage(configNode);
+		if (message == null) return;
+		send(player, parseColor(applyPlaceholders(message, placeholderUtil)), forceDisablePrefix);
+	}
+
+
+	private static void send(final CommandSender player, String finalMessage, final boolean forceDisablePrefix) {
+		if (!forceDisablePrefix) {
+			if (finalMessage.startsWith("[DISABLE_PREFIX]")) {
+				finalMessage = finalMessage.replace("[DISABLE_PREFIX]", "");
+			} else {
+				finalMessage = prefix + finalMessage;
+			}
+		}
+		player.sendMessage(finalMessage);
 	}
 
 	public static void sendMessageList(final CommandSender player, final String configNode) {
@@ -51,12 +71,6 @@ public class MessageUtils {
 		for (final String str : messages) {
 			player.sendMessage(str);
 		}
-	}
-
-	public static void sendMessage(final Player player, final String configNode, final PlaceholderUtil placeholderUtil) {
-		String message = getMessage(configNode);
-		if (message == null) return;
-		player.sendMessage(parseColor(applyPlaceholders(message, placeholderUtil)));
 	}
 
 	public static String applyPlaceholders(String message, final PlaceholderUtil placeholderUtil) {
