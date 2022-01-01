@@ -21,7 +21,7 @@ public class SQLManager extends SQLHandler {
 	private final SQLTable historyTable;
 
 	public SQLManager(BlokDuels plugin) {
-		super(plugin.getDataFolder().getPath(), true);
+		super(plugin.getDataFolder().getPath());
 
 		playerDataTable = new SQLTable("playerData", "uuid")
 				.addField("uuid", DataType.TEXT)
