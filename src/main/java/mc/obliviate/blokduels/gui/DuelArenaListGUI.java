@@ -42,13 +42,13 @@ public class DuelArenaListGUI extends GUI {
 			placeholderUtil.add("{players}", players + "");
 			placeholderUtil.add("{spectators}", spectators + "");
 			placeholderUtil.add("{playersandspectators}", (spectators + players) + "");
-			placeholderUtil.add("{kit}", game.getKit().getKitName());
+			placeholderUtil.add("{kit}", game.getKit() == null ? "" : game.getKit().getKitName());
 			placeholderUtil.add("{mode}", MessageUtils.convertMode(game.getGameBuilder().getTeamSize(), game.getGameBuilder().getTeamAmount()));
 		}
 		final Icon icon = new Icon(guiConfig.gameStateMaterial.get(state).clone());
 		icon.setName(MessageUtils.parseColor(MessageUtils.applyPlaceholders(guiConfig.gameIconDescription.get(state).get(0), placeholderUtil)));
 
-		for (final String line : guiConfig.gameIconDescription.get(state).subList(1, guiConfig.gameIconDescription.size()-1)) {
+		for (final String line : guiConfig.gameIconDescription.get(state).subList(1, guiConfig.gameIconDescription.size() - 1)) {
 			icon.appendLore(MessageUtils.parseColor(MessageUtils.applyPlaceholders(line, placeholderUtil)));
 		}
 		return icon;
