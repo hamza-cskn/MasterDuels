@@ -7,12 +7,13 @@ import mc.obliviate.blokduels.user.team.Team;
 import mc.obliviate.blokduels.utils.serializer.SerializerUtils;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
 public class GameHistoryLog implements HistoryLog {
 
-	public static final List<GameHistoryLog> historyCache = new ArrayList<>();
+	public static final LinkedList<GameHistoryLog> historyCache = new LinkedList<>();
 	private final UUID uuid;
 	private long startTime = 0L;
 	private long endTime = 0L;

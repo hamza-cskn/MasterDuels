@@ -12,8 +12,7 @@ import mc.obliviate.bloksqliteapi.sqlutils.SQLUpdateColumn;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedList;
 import java.util.UUID;
 
 public class SQLManager extends SQLHandler {
@@ -82,9 +81,9 @@ public class SQLManager extends SQLHandler {
 		return log;
 	}
 
-	public List<GameHistoryLog> getAllLogs() throws SQLException {
-		final ResultSet rs = historyTable.selectAll();
-		final List<GameHistoryLog> logs = new ArrayList<>();
+	public LinkedList<GameHistoryLog> getAllLogs() throws SQLException {
+		final ResultSet rs = historyTable.getHighest("startTime");
+		final LinkedList<GameHistoryLog> logs = new LinkedList<>();
 		while (rs.next()) {
 			logs.add(SerializerUtils.deserializeGameHistoryLog(rs));
 		}
