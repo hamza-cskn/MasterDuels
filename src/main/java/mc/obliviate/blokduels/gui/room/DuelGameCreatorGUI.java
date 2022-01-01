@@ -40,7 +40,7 @@ public class DuelGameCreatorGUI extends GUI {
 		return new Icon(XMaterial.EMERALD_BLOCK.parseItem()).setName("Click to start game").onClick(e -> {
 			if (gameBuilder.getTeamSize() * gameBuilder.getTeamAmount() != gameBuilder.getPlayers().size()) return;
 			for (int i = gameBuilder.getTeamAmount(); i > 0; i--) {
-				final List<Player> playerList = gameBuilder.getPlayers().subList((i - 1) * gameBuilder.getTeamSize(), i * gameBuilder.getTeamAmount());
+				final List<Player> playerList = gameBuilder.getPlayers().subList((i - 1) * gameBuilder.getTeamSize(), i * gameBuilder.getTeamSize());
 				gameBuilder.createTeam(playerList);
 			}
 
