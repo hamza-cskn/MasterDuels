@@ -11,6 +11,7 @@ import mc.obliviate.blokduels.kit.Kit;
 import mc.obliviate.blokduels.user.User;
 import mc.obliviate.blokduels.user.team.Member;
 import mc.obliviate.blokduels.utils.MessageUtils;
+import mc.obliviate.blokduels.utils.placeholder.PlaceholderUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -126,13 +127,14 @@ public class GameBuilder {
 		final User invitedUser = DataHandler.getUser(invited.getUniqueId());
 
 		if (invitedUser instanceof Member) {
-			MessageUtils.sendMessage(inviter, "target-already-in-duel");
+			MessageUtils.sendMessage(inviter, "target-already-in-duel", new PlaceholderUtil().add("{target}", inviter.getName()));
 			return;
 		}
 
 		for (final GameBuilder builder : GAME_BUILDER_MAP.values()) {
 			if (builder.getPlayers().contains(invited)) {
-				MessageUtils.sendMessage(inviter, "target-already-in-duel");
+				MessageUtils.sendMessage(inviter, "target-already-in-duel", new PlaceholderUtil().add("{target}", inviter.getName()));
+				return;
 			}
 		}
 
@@ -198,8 +200,12 @@ public class GameBuilder {
 	}
 
 	public void destory() {
-		for (Invite invite : invites.values()) {
+		for (final Invite invite : invites.values()) {
 			invite.onExpire();
 		}
+	}
+
+	public UUID getOwner() {
+		return owner;
 	}
 }
