@@ -54,7 +54,6 @@ public class MessageUtils {
 		send(player, parseColor(applyPlaceholders(message, placeholderUtil)), forceDisablePrefix);
 	}
 
-
 	private static void send(final CommandSender player, String finalMessage, final boolean forceDisablePrefix) {
 		if (!forceDisablePrefix) {
 			if (finalMessage.startsWith("[DISABLE_PREFIX]")) {
