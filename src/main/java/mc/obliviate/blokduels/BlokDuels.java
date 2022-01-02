@@ -2,13 +2,13 @@ package mc.obliviate.blokduels;
 
 import com.hakan.messageapi.bukkit.MessageAPI;
 import mc.obliviate.blokduels.arenaclear.ArenaClearHandler;
-import mc.obliviate.blokduels.commands.DuelArenasCMD;
 import mc.obliviate.blokduels.commands.DuelCMD;
 import mc.obliviate.blokduels.commands.DuelAdminCMD;
 import mc.obliviate.blokduels.data.DataHandler;
 import mc.obliviate.blokduels.data.SQLManager;
 import mc.obliviate.blokduels.data.YamlStorageHandler;
 import mc.obliviate.blokduels.game.Game;
+import mc.obliviate.blokduels.game.gamerule.GameRuleListener;
 import mc.obliviate.blokduels.kit.serializer.KitSerializer;
 import mc.obliviate.blokduels.listeners.*;
 import mc.obliviate.blokduels.utils.scoreboard.ScoreboardManager;
@@ -63,7 +63,6 @@ public class BlokDuels extends JavaPlugin {
 
 	private void registerCommands() {
 		getCommand("duel").setExecutor(new DuelCMD(this));
-		getCommand("duelarenas").setExecutor(new DuelArenasCMD(this));
 		getCommand("dueladmin").setExecutor(new DuelAdminCMD(this));
 	}
 
@@ -75,6 +74,7 @@ public class BlokDuels extends JavaPlugin {
 		Bukkit.getPluginManager().registerEvents(new PlayerConnectionListener(), this);
 		Bukkit.getPluginManager().registerEvents(new TeleportListener(), this);
 		Bukkit.getPluginManager().registerEvents(new SpectatorListener(), this);
+		Bukkit.getPluginManager().registerEvents(new GameRuleListener(), this);
 	}
 
 	private void loadKits() {

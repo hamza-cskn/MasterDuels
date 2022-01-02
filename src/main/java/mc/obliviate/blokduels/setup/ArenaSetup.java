@@ -7,6 +7,7 @@ import mc.obliviate.blokduels.arena.elements.Positions;
 import mc.obliviate.blokduels.data.DataHandler;
 import mc.obliviate.blokduels.setup.gui.ArenaSetupGUI;
 import mc.obliviate.blokduels.utils.Logger;
+import mc.obliviate.blokduels.utils.xmaterial.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -71,7 +72,7 @@ public class ArenaSetup implements Listener {
 				return;
 			posSelection.setPos1(e.getClickedBlock().getLocation());
 			player.sendMessage("§7Position §61§7 has selected! Selected block is showing as redstone block. (client-side)");
-			Bukkit.getScheduler().runTaskLater(plugin, () -> player.sendBlockChange(e.getClickedBlock().getLocation(), Material.REDSTONE_BLOCK, (byte) 0), 2);
+			Bukkit.getScheduler().runTaskLater(plugin, () -> player.sendBlockChange(e.getClickedBlock().getLocation(), XMaterial.REDSTONE_BLOCK.parseMaterial(), (byte) 0), 2);
 			return;
 		}
 
@@ -82,7 +83,7 @@ public class ArenaSetup implements Listener {
 			}
 			posSelection.setPos2(e.getClickedBlock().getLocation());
 			player.sendMessage("§7Position §62§7 has selected! Selected block is showing as redstone block. (client-side)");
-			Bukkit.getScheduler().runTaskLater(plugin, () -> player.sendBlockChange(e.getClickedBlock().getLocation(), Material.REDSTONE_BLOCK, (byte) 0), 2);
+			Bukkit.getScheduler().runTaskLater(plugin, () -> player.sendBlockChange(e.getClickedBlock().getLocation(), XMaterial.REDSTONE_BLOCK.parseMaterial(), (byte) 0), 2);
 
 		}
 	}
