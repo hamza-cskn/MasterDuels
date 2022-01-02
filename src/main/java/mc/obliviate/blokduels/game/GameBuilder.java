@@ -77,7 +77,7 @@ public class GameBuilder {
 			throw new IllegalStateException("Game Builder already built before.");
 		}
 
-		final Game game = new Game(plugin, this, totalRounds, arena, kit, finishTime, null);
+		final Game game = new Game(plugin, this, totalRounds, arena, kit, finishTime, gameRules);
 
 		for (final TeamBuilder builder : teamBuilders) {
 			game.registerTeam(builder.build(game));

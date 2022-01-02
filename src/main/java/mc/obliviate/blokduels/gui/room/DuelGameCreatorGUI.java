@@ -3,6 +3,7 @@ package mc.obliviate.blokduels.gui.room;
 import mc.obliviate.blokduels.game.Game;
 import mc.obliviate.blokduels.game.GameBuilder;
 import mc.obliviate.blokduels.utils.MessageUtils;
+import mc.obliviate.blokduels.utils.placeholder.PlaceholderUtil;
 import mc.obliviate.blokduels.utils.xmaterial.XMaterial;
 import mc.obliviate.inventory.GUI;
 import mc.obliviate.inventory.Icon;
@@ -22,7 +23,7 @@ public class DuelGameCreatorGUI extends GUI {
 
 	@Override
 	public void open() {
-		setTitle("Duel Creator: " + MessageUtils.convertMode(gameBuilder.getTeamSize(), gameBuilder.getTeamAmount()));
+		setTitle("Duel Creator: " + MessageUtils.convertMode(gameBuilder.getTeamSize(), gameBuilder.getTeamAmount()) + " §c§l BETA");
 		super.open();
 	}
 
@@ -38,7 +39,10 @@ public class DuelGameCreatorGUI extends GUI {
 
 	private Icon getStartGameIcon() {
 		return new Icon(XMaterial.EMERALD_BLOCK.parseItem()).setName("Click to start game").onClick(e -> {
-			if (gameBuilder.getTeamSize() * gameBuilder.getTeamAmount() != gameBuilder.getPlayers().size()) return;
+			if (gameBuilder.getTeamSize() * gameBuilder.getTeamAmount() != gameBuilder.getPlayers().size()) {
+				MessageUtils.sendMessage(player,"game-builder.wrong-player-amount",new PlaceholderUtil().add("{expected}",(gameBuilder.getTeamSize() * gameBuilder.getTeamAmount()) + "").add("{found}",gameBuilder.getPlayers().size() + ""));
+				return;
+			}
 			for (int i = gameBuilder.getTeamAmount(); i > 0; i--) {
 				final List<Player> playerList = gameBuilder.getPlayers().subList((i - 1) * gameBuilder.getTeamSize(), i * gameBuilder.getTeamSize());
 				gameBuilder.createTeam(playerList);

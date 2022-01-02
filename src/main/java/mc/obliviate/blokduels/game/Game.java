@@ -46,7 +46,7 @@ public class Game {
 	private final Map<Integer, Team> teams = new HashMap<>();
 	private final Kit kit;
 	private final long finishTime;
-	private final List<GameRule> IGameRules;
+	private final List<GameRule> gameRules;
 	private final Map<String, BukkitTask> tasks = new HashMap<>();
 	private final RoundData roundData = new RoundData();
 	private final SpectatorStorage spectatorData = new SpectatorStorage(this);
@@ -57,12 +57,12 @@ public class Game {
 	private GameState gameState = GAME_STARING;
 	//todo is this variables cloned with gamebuilder?
 
-	protected Game(final BlokDuels plugin, final GameBuilder gameBuilder, final int totalRounds, final Arena arena, final Kit kit, final long finishTime, final List<GameRule> IGameRules) {
+	protected Game(final BlokDuels plugin, final GameBuilder gameBuilder, final int totalRounds, final Arena arena, final Kit kit, final long finishTime, final List<GameRule> gameRules) {
 		this.plugin = plugin;
 		this.arena = arena;
 		this.kit = kit;
 		this.finishTime = finishTime;
-		this.IGameRules = IGameRules;
+		this.gameRules = gameRules;
 		this.gameBuilder = gameBuilder;
 
 		roundData.setTotalRounds(totalRounds);
@@ -294,7 +294,6 @@ public class Game {
 				leave(member);
 			}
 		}
-		//todo is it works?
 		for (final Player spectator : spectatorData.getSpectators()) {
 			leave(getSpectatorData().getSpectator(spectator));
 		}
@@ -538,7 +537,7 @@ public class Game {
 	}
 
 	public List<GameRule> getGameRules() {
-		return IGameRules;
+		return gameRules;
 	}
 
 	public Map<Integer, Team> getTeams() {

@@ -20,6 +20,7 @@ public class DuelSettingsGUI extends GUI {
 
 	@Override
 	public void onOpen(InventoryOpenEvent event) {
+		fillRow(new Icon(XMaterial.BLACK_STAINED_GLASS_PANE.parseItem()),0);
 		addItem(0, new Icon(XMaterial.ARROW.parseItem()).onClick(e -> {
 			new DuelGameCreatorGUI(player, gameBuilder).open();
 		}));
@@ -29,7 +30,7 @@ public class DuelSettingsGUI extends GUI {
 
 			Icon icon;
 			if (gameBuilder.getGameRules().contains(rule)) {
-				icon = new Icon(XMaterial.GREEN_DYE.parseItem()).setName(MessageUtils.parseColor("&a" + rule.name()));
+				icon = new Icon(XMaterial.LIME_DYE.parseItem()).setName(MessageUtils.parseColor("&a" + rule.name()));
 				icon.onClick(e -> {
 					gameBuilder.removeGameRule(rule);
 					open();
@@ -42,9 +43,6 @@ public class DuelSettingsGUI extends GUI {
 				});
 			}
 			addItem(i++, icon);
-
-
-
 		}
 	}
 
