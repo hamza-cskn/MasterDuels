@@ -132,6 +132,7 @@ game-history:
         - ''
         - '&8Game played at: {played-date}'
 duel-arenas-gui:
+  enabled: true
   #You need 'masterduels.see-non-playing-games' permission to see 'disabled' and 'empty' arenas.
   title: 'Duel Arenas'
   STARTING:

@@ -47,9 +47,11 @@ game-end-broadcast:
 arrow-hit-notify:
   action-bar: '&c{victim}''s health is {health}'
   message: '&cYou hit {victim} from {distance} blocks far!'
+game-builder:
+  wrong-player-amount: '&cYou can not create this game. Because you need {expected} players but you invited {found} players.'
 duel-command:
   usage: |-
-    &6&lMasterDuels&6 Commands
+    [DISABLE_PREFIX]&6&lMasterDuels&6 Commands
     &7 /duel [invite] <player name> &8- &9sends duel invite to a player
     &7 /duel accept &8- &9accept a duel invite
     &7 /duel decline &8- &9decline a duel invite
@@ -58,6 +60,8 @@ duel-command:
     &7 /duel toggle &8- &9toggles invite receive state of you
     &7 /duel history &8- &9opens duel history gui
     &7 /duel stats [player name] &8- &9shows statistics of player
+    &7 /duel arenas &8- &9lists arena list.
+    &7 /duel creator &c&l[BETA] &8- &9opens game builder gui
   admin:
     arena:
       usage: '&cCorrect usage: /dueladmin arena <disable/enable/list>'

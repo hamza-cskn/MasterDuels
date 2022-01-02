@@ -4,6 +4,7 @@ import mc.obliviate.blokduels.BlokDuels;
 import mc.obliviate.blokduels.data.DataHandler;
 import mc.obliviate.blokduels.game.Game;
 import mc.obliviate.blokduels.game.GameBuilder;
+import mc.obliviate.blokduels.gui.DuelArenaListGUI;
 import mc.obliviate.blokduels.gui.room.DuelGameCreatorGUI;
 import mc.obliviate.blokduels.gui.DuelHistoryLogGUI;
 import mc.obliviate.blokduels.gui.kit.KitSelectionGUI;
@@ -78,9 +79,11 @@ public class DuelCMD implements CommandExecutor {
 		if (args[0].equalsIgnoreCase("stats")) {
 			stats(player, args);
 			return true;
-		}
 
-		if (args[0].equalsIgnoreCase("accept")) {
+		} else if (args[0].equalsIgnoreCase("arenas")) {
+			new DuelArenaListGUI(player).open();
+			return true;
+		} else if (args[0].equalsIgnoreCase("accept")) {
 			answerInvite(player, true, args);
 			return true;
 		} else if (args[0].equalsIgnoreCase("decline")) {
@@ -95,6 +98,8 @@ public class DuelCMD implements CommandExecutor {
 		} else if (args.length == 1 || args[0].equalsIgnoreCase("invite")) {
 			invite(player, args);
 		}
+
+
 		return true;
 
 	}

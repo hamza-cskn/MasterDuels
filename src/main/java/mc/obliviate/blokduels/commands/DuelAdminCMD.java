@@ -3,6 +3,7 @@ package mc.obliviate.blokduels.commands;
 import mc.obliviate.blokduels.BlokDuels;
 import mc.obliviate.blokduels.arena.Arena;
 import mc.obliviate.blokduels.data.DataHandler;
+import mc.obliviate.blokduels.gui.DuelArenaListGUI;
 import mc.obliviate.blokduels.gui.kit.KitListGUI;
 import mc.obliviate.blokduels.kit.Kit;
 import mc.obliviate.blokduels.setup.ArenaSetup;
@@ -41,7 +42,6 @@ public class DuelAdminCMD implements CommandExecutor {
 			player.sendMessage(" §7/" + s + " create §8- §9enables arena setup mode");
 			player.sendMessage(" §7/" + s + " arena disable <arena name> §8- §9disables an duel arena");
 			player.sendMessage(" §7/" + s + " arena enable  <arena name> §8- §9enables an duel arena");
-			player.sendMessage(" §7/" + s + " arena list §8- §9list arenas");
 			player.sendMessage(" §7/" + s + " setlobby §8- §9sets lobby location to teleport players after duel game");
 			player.sendMessage(" §7/" + s + " kitsave §8- §9saves your current inventory as new kit");
 			player.sendMessage(" §7/" + s + " kiteditor §8- §9opens kit editor gui");
@@ -79,15 +79,13 @@ public class DuelAdminCMD implements CommandExecutor {
 			kitSave(player, Arrays.asList(args));
 		} else if (args[0].equalsIgnoreCase("arena")) {
 			if (args.length == 1) {
-
+				//todo wrong usage
 				return false;
 			}
 			if (args[1].equalsIgnoreCase("disable")) {
 				toggleArena(player, Arrays.asList(args), false);
 			} else if (args[1].equalsIgnoreCase("enable")) {
 				toggleArena(player, Arrays.asList(args), true);
-			}else if (args[1].equalsIgnoreCase("list")) {
-
 			}
 		}
 
