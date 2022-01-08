@@ -258,6 +258,7 @@ public class Game {
 		}
 
 		if (receivers == null) return;
+		if (gameHistoryLog.getWinners().isEmpty()) return;
 
 		if (gameHistoryLog.getWinners().size() == 1) {
 			for (final Player player : receivers) {
@@ -372,7 +373,7 @@ public class Game {
 
 		if (member.getTeam().getMembers().size() == 0) {
 			if (gameState.equals(GAME_ENDING) || gameState.equals(UNINSTALLING)) return;
-			if (gameState.equals(BATTLE)) {
+			if (gameState.equals(BATTLE) && getAllMembers().size() > 0) {
 				Logger.debug("Game finishing in 20s");
 				finishGame();
 			} else {
