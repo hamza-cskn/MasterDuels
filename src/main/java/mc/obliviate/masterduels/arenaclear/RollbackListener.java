@@ -54,12 +54,13 @@ public class RollbackListener implements Listener {
 	}
 
 	@EventHandler
+	//todo optimized block from to simulation
 	public void onBlockForm(BlockFromToEvent e) {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
-				final Block block = e.getBlock();
-				switch (e.getToBlock().getType()) {
+				final Block block = e.getToBlock();
+				switch (block.getType()) {
 					case OBSIDIAN:
 					case COBBLESTONE:
 					case STONE:
@@ -73,7 +74,7 @@ public class RollbackListener implements Listener {
 				if (arenaClear == null) return;
 				plugin.getArenaClearHandler().getArenaClear(arena.getName()).addBlock(block.getX(), block.getY(), block.getZ(), block.getWorld().getUID());
 				if (preventNonPlacedBlocks) {
-					e.getBlock().setMetadata("placedByPlayer", new FixedMetadataValue(plugin, true));
+					block.setMetadata("placedByPlayer", new FixedMetadataValue(plugin, true));
 				}
 
 			}
