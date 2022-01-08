@@ -65,6 +65,29 @@ public class DuelTeamManagerGUI extends GUI {
 						case PICKUP_ALL:
 						case HOTBAR_MOVE_AND_READD:
 							e.setCancelled(false);
+							break;
+						case SWAP_WITH_CURSOR:
+							final ItemStack cursor = e.getCursor();
+							if (!isCursorValidPlayerHead(cursor)) break;
+
+							//get players that will swap
+							final Player requester = Bukkit.getPlayerExact(ChatColor.stripColor(cursor.getItemMeta().getDisplayName()));
+							final Player target = Bukkit.getPlayerExact(ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName()));
+
+							//and their teams
+							final TeamBuilder requesterTeamBuilder = gameBuilder.getTeamBuilder(requester);
+							final TeamBuilder targetTeamBuilder = gameBuilder.getTeamBuilder(target);
+
+							//swap!
+							targetTeamBuilder.remove(target);
+							targetTeamBuilder.add(requester);
+
+							requesterTeamBuilder.remove(requester);
+							requesterTeamBuilder.add(target);
+
+							e.setCursor(null);
+							open();
+							break;
 					}
 				}));
 
@@ -72,12 +95,19 @@ public class DuelTeamManagerGUI extends GUI {
 		}
 	}
 
+	private boolean isCursorValidPlayerHead(ItemStack item) {
+		if (item == null) return false;
+		if (item.getAmount() != 1) return false;
+		if (!item.getType().equals(XMaterial.PLAYER_HEAD.parseMaterial())) return false;
+		return true;
+
+	}
+
 	private Icon getNullMemberSlotIcon(TeamBuilder teamBuilder) {
 		return new Icon(XMaterial.BARRIER.parseItem()).setName("§cEmpty!").setLore("","§7Put a player's head here","§7to add him to team.").onClick(e -> {
-			if (e.getCursor() == null) return;
-			if (e.getCursor().getAmount() != 1) return;
-			if (!e.getCursor().getType().equals(XMaterial.PLAYER_HEAD.parseMaterial())) return;
-
+			if (!isCursorValidPlayerHead(e.getCursor())) {
+				return;
+			}
 			final Player target = Bukkit.getPlayerExact(ChatColor.stripColor(e.getCursor().getItemMeta().getDisplayName()));
 			e.setCursor(null);
 			if (target == null) {

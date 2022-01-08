@@ -63,7 +63,6 @@ public class GameBuilder {
 		teamBuilders.add(new TeamBuilder(teamBuilders.size() + 1, teamSize, players));
 	}
 
-
 	public Game build() {
 		final Arena arena = Arena.findArena(teamSize, teamAmount);
 
@@ -88,6 +87,13 @@ public class GameBuilder {
 
 	public List<TeamBuilder> getTeamBuilders() {
 		return teamBuilders;
+	}
+
+	public TeamBuilder getTeamBuilder(Player player) {
+		for (final TeamBuilder teamBuilder : teamBuilders) {
+			if (teamBuilder.getMembers().contains(player)) return teamBuilder;
+		}
+		return null;
 	}
 
 	@Nullable
