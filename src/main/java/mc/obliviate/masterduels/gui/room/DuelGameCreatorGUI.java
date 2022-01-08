@@ -40,12 +40,11 @@ public class DuelGameCreatorGUI extends GUI {
 	}
 
 	private Icon getStartGameIcon() {
-		return new Icon(XMaterial.EMERALD_BLOCK.parseItem()).setName("Click to start game with randomized teams").onClick(e -> {
+		return new Icon(XMaterial.EMERALD_BLOCK.parseItem()).setName("Click to start game").onClick(e -> {
 			if (gameBuilder.getTeamSize() * gameBuilder.getTeamAmount() != gameBuilder.getPlayers().size()) {
 				MessageUtils.sendMessage(player, "game-builder.wrong-player-amount", new PlaceholderUtil().add("{expected}", (gameBuilder.getTeamSize() * gameBuilder.getTeamAmount()) + "").add("{found}", gameBuilder.getPlayers().size() + ""));
 				return;
 			}
-			gameBuilder.createRandomizedTeams();
 
 			final Game game = gameBuilder.build();
 			if (game == null) {
