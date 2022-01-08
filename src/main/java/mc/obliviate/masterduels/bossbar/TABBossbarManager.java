@@ -59,5 +59,10 @@ public class TABBossbarManager implements BossBarManager {
 		}
 	}
 
+	@Override
+	public void hide(final Member member) {
+		final TabPlayer player = TabAPI.getInstance().getPlayer(member.getPlayer().getUniqueId());
+		bar.removePlayer(player);
 
+	}
 }
