@@ -44,7 +44,7 @@ public class SpawnLocationsGUI extends GUI {
 				}
 
 				final int playerNo = pos;
-				addItem(slot++, new Icon(Utils.teamIcons.get(i-1))
+				addItem(slot++, new Icon(Utils.teamIcons.get(i-1).clone())
 						.setAmount(pos)
 						.setName(ChatColor.LIGHT_PURPLE + "Team " + i + ChatColor.GRAY + " - " + ChatColor.LIGHT_PURPLE + "Player " + pos)
 						.setLore(
