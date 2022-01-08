@@ -20,7 +20,6 @@ public class TABBossbarManager implements BossBarManager {
 
 	public static String NORMAL_TEXT_FORMAT = "{time}";
 	public static String CLOSING_TEXT_FORMAT = "{time}";
-	private final List<TabPlayer> playerList = new ArrayList<>();
 
 	private final BossBar bar;
 	private final Game game;
@@ -40,16 +39,13 @@ public class TABBossbarManager implements BossBarManager {
 	public void show(Member member) {
 		if (this.bar == null) return;
 		final TabPlayer player = TabAPI.getInstance().getPlayer(member.getPlayer().getUniqueId());
-		playerList.add(player);
+		bar.addPlayer(player);
 	}
 
 	@Override
 	public void init() {
 		if (this.bar == null) return;
 		game.task("BOSSBAR", Bukkit.getScheduler().runTaskTimer(game.getPlugin(), () -> {
-			for (TabPlayer p : playerList) {
-				TabAPI.getInstance().getBossBarManager().sendBossBarTemporarily(p, bar.getName(), 1000); //in ms
-			}
 			if (game.getGameState().equals(GameState.GAME_ENDING)) {
 				bar.setProgress((Utils.getPercentage(Game.getEndDelay() * 1000, (game.getTimer() - System.currentTimeMillis()))));
 				bar.setTitle(CLOSING_TEXT_FORMAT.replace("{time}", TimerUtils.formatTimerFormat(game.getTimer())).replace("{timer}", TimerUtils.formatTimerFormat(game.getTimer())));
@@ -59,5 +55,13 @@ public class TABBossbarManager implements BossBarManager {
 			}
 		}, 0, 20));
 	}
+
+	@Override
+	public void finish() {
+		for (final TabPlayer tabPlayer : bar.getPlayers()) {
+			bar.removePlayer(tabPlayer);
+		}
+	}
+
 
 }

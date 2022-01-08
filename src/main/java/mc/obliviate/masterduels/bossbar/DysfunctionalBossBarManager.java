@@ -12,4 +12,9 @@ public class DysfunctionalBossBarManager implements BossBarManager{
 	public void init() {
 
 	}
+
+	@Override
+	public void finish() {
+
+	}
 }

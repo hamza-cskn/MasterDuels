@@ -6,4 +6,5 @@ public interface BossBarManager {
 
 	void show(Member member);
 	void init();
+	void finish();
 }
