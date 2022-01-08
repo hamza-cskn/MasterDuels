@@ -192,8 +192,22 @@ public class GameBuilder {
 	}
 
 	public void addPlayer(Player player) {
-		if (invites.containsKey())
+		for (final Invite invite : findInvites(player.getUniqueId())) {
+			invite.setResult(false);
+		}
 		players.add(player);
+	}
+
+	public List<Invite> findInvites(final UUID player) {
+		final List<Invite> invites = new ArrayList<>();
+		for (final GameBuilder builder : GAME_BUILDER_MAP.values()) {
+			for (final UUID uuid : builder.getInvites().keySet()) {
+				if (uuid.equals(player)) {
+					invites.add(builder.getInvites().get(uuid));
+				}
+			}
+		}
+		return invites;
 	}
 
 	public void removePlayer(Player player) {
