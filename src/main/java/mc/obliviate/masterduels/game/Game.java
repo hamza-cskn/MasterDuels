@@ -304,6 +304,7 @@ public class Game {
 
 
 	public void dropItems(final Player player) {
+		if (!gameRules.contains(GameRule.NO_DEAD_DROP)) return;
 		if (!MasterDuels.isInShutdownMode()) {
 			final Location loc = player.getLocation();
 			for (ItemStack item : player.getInventory().getContents()) {
