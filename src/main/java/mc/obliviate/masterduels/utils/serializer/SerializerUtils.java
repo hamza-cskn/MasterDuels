@@ -59,6 +59,7 @@ public class SerializerUtils {
 	}
 
 	public static List<UUID> deserializeUUIDList(String serializedString) {
+		if (serializedString.isEmpty()) return new ArrayList<>();
 		final List<UUID> list = new ArrayList<>();
 		for (String uuidString : serializedString.split(ELEMENT_SPLIT_CHARACTER)) {
 			try {
