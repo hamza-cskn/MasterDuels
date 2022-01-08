@@ -39,6 +39,13 @@ public class Arena {
 		DataHandler.registerArena(this);
 	}
 
+	public static Arena getArenaAt(Location loc) {
+		for (final Arena arena : DataHandler.getArenas().keySet()) {
+			if (arena.arenaCuboid.isIn(loc)) return arena;
+		}
+		return null;
+	}
+
 	public static Arena findArena(int teamSize, int teamAmount) {
 		for (final Map.Entry<Arena, Game> entry : DataHandler.getArenas().entrySet()) {
 			if (entry.getKey().getTeamAmount() >= teamAmount && entry.getKey().getTeamSize() >= teamSize) {

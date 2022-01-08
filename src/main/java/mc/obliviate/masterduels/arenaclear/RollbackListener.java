@@ -6,16 +6,20 @@ import mc.obliviate.masterduels.api.events.arena.DuelGameStartEvent;
 import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.user.team.Member;
+import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.MessageUtils;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.*;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class RollbackListener implements Listener {
 
@@ -47,6 +51,34 @@ public class RollbackListener implements Listener {
 		if (preventNonPlacedBlocks) {
 			e.getBlock().setMetadata("placedByPlayer", new FixedMetadataValue(plugin, true));
 		}
+	}
+
+	@EventHandler
+	public void onBlockForm(BlockFromToEvent e) {
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				final Block block = e.getBlock();
+				switch (e.getToBlock().getType()) {
+					case OBSIDIAN:
+					case COBBLESTONE:
+					case STONE:
+						break;
+					default:
+						return;
+				}
+				final Arena arena = Arena.getArenaAt(block.getLocation());
+				if (arena == null) return;
+				final ArenaClear arenaClear = plugin.getArenaClearHandler().getArenaClear(arena.getName());
+				if (arenaClear == null) return;
+				plugin.getArenaClearHandler().getArenaClear(arena.getName()).addBlock(block.getX(), block.getY(), block.getZ(), block.getWorld().getUID());
+				if (preventNonPlacedBlocks) {
+					e.getBlock().setMetadata("placedByPlayer", new FixedMetadataValue(plugin, true));
+				}
+
+			}
+		}.runTaskLater(plugin, 1);
+
 	}
 
 	@EventHandler
