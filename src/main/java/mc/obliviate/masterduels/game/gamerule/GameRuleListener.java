@@ -4,6 +4,7 @@ import mc.obliviate.masterduels.api.events.spectator.DuelGamePreSpectatorJoinEve
 import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.user.team.Member;
 import mc.obliviate.masterduels.utils.xmaterial.XMaterial;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -11,23 +12,35 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityCombustEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
+import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.Potion;
 
 public class GameRuleListener implements Listener {
 
 	@EventHandler
-	public void onIgnite(EntityCombustEvent e) {
-		if (!e.getEntityType().equals(EntityType.PLAYER))
-			return;
+	public void onIgnite(EntityDamageEvent e) {
+		if (!e.getEntityType().equals(EntityType.PLAYER)) return;
+
+		switch (e.getCause()) {
+			case LAVA:
+			case FIRE:
+			case FIRE_TICK:
+				break;
+			default:
+				return;
+		}
 
 		final Player player = (Player) e.getEntity();
 		final Member member = DataHandler.getMember(player.getUniqueId());
 		if (member == null) return;
 		if (!member.getGame().getGameRules().contains(GameRule.NO_FIRE)) return;
 		e.setCancelled(true);
+		player.setFireTicks(0);
 	}
 
 	@EventHandler
@@ -47,13 +60,17 @@ public class GameRuleListener implements Listener {
 	}
 
 	@EventHandler
-	public void onPotion(PotionSplashEvent e) {
-		if (!(e.getEntity().getShooter() instanceof Player)) return;
-		final Player player = (Player) e.getEntity().getShooter();
-		final Member member = DataHandler.getMember(player.getUniqueId());
+	public void onPotion(PlayerInteractEvent e) {
+		if (!(e.getAction().equals(Action.RIGHT_CLICK_BLOCK) || e.getAction().equals(Action.RIGHT_CLICK_AIR))) return;
+		if (e.getItem() == null || e.getItem().getItemMeta() == null) return;
+		if (!(e.getItem().getItemMeta() instanceof PotionMeta)) return;
+
+		final Member member = DataHandler.getMember(e.getPlayer().getUniqueId());
 		if (member == null) return;
 		if (!member.getGame().getGameRules().contains(GameRule.NO_POTION)) return;
 		e.setCancelled(true);
+		e.getPlayer().updateInventory();
+
 	}
 
 	@EventHandler
@@ -71,7 +88,6 @@ public class GameRuleListener implements Listener {
 		if (!e.getGame().getGameRules().contains(GameRule.NO_SPECTATOR)) return;
 		e.setCancelled(true);
 	}
-
 
 
 }
