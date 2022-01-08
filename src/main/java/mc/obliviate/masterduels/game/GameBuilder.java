@@ -1,8 +1,8 @@
 package mc.obliviate.masterduels.game;
 
 import com.sun.istack.internal.Nullable;
-import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.MasterDuels;
+import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.game.gamerule.GameRule;
 import mc.obliviate.masterduels.invite.Invite;
@@ -36,13 +36,19 @@ public class GameBuilder {
 	public GameBuilder(final MasterDuels plugin, UUID owner) {
 		final GameBuilder builder = GAME_BUILDER_MAP.get(owner);
 		if (builder != null) {
-			builder.destory();
+			builder.destroy();
 		}
-		GAME_BUILDER_MAP.put(owner, this);
 		this.plugin = plugin;
 		this.owner = owner;
-		//todo target is offline stack trace error is possible
-		players.add(Bukkit.getPlayer(owner));
+
+		final Player player = Bukkit.getPlayer(owner);
+		if (player == null) {
+			destroy();
+			return;
+		}
+
+		GAME_BUILDER_MAP.put(owner, this);
+		players.add(player);
 		setTeamSize(1);
 		setTeamAmount(2);
 
@@ -212,6 +218,7 @@ public class GameBuilder {
 			invite.setResult(false);
 		}
 		players.add(player);
+		createRandomizedTeams();
 	}
 
 	public List<Invite> findInvites(final UUID player) {
@@ -230,10 +237,11 @@ public class GameBuilder {
 		players.remove(player);
 	}
 
-	public void destory() {
+	public void destroy() {
 		for (final Invite invite : invites.values()) {
 			invite.onExpire();
 		}
+		GAME_BUILDER_MAP.remove(owner);
 	}
 
 	public UUID getOwner() {

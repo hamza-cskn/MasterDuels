@@ -370,6 +370,7 @@ public class Game {
 		}
 
 		MessageUtils.sendMessage(member.getPlayer(), "you-left-from-duel");
+		bossBarData.hide(member);
 
 		if (member.getTeam().getMembers().size() == 0) {
 			if (gameState.equals(GAME_ENDING) || gameState.equals(UNINSTALLING)) return;
