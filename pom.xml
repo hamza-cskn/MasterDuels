@@ -102,11 +102,11 @@
                             <relocations>
                                 <relocation>
                                     <pattern>mc.obliviate.inventory</pattern>
-                                    <shadedPattern>mc.obliviate.blokduels.libraries.inventory</shadedPattern>
+                                    <shadedPattern>mc.obliviate.masterduels.libraries.inventory</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>com.hakan.messageapi</pattern>
-                                    <shadedPattern>mc.obliviate.blokduels.libraries.messageapi</shadedPattern>
+                                    <shadedPattern>mc.obliviate.masterduels.libraries.messageapi</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>

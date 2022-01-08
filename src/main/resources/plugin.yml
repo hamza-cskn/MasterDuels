@@ -1,7 +1,7 @@
-name: BlokDuels
-main: mc.obliviate.blokduels.BlokDuels
+name: MasterDuels
+main: mc.obliviate.MasterDuels.MasterDuels
 author: Mr_Obliviate
-description: Duel plugin codded for Blok Dunyasi!
+description: Professional duel game plugin for professional servers.
 version: 2.2
 api-version: 1.13
 softdepend:
