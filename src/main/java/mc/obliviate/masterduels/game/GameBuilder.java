@@ -26,13 +26,12 @@ public class GameBuilder {
 	private final UUID owner;
 	private final List<Player> players = new ArrayList<>();
 	private final List<GameRule> gameRules = new ArrayList<>();
-	private int teamAmount = 2;
-	private int teamSize = 1;
+	private int teamAmount = -1;
+	private int teamSize = -1;
 	private int totalRounds = 1;
 	private int finishTime = 60;
 	private Kit kit = null;
 	private Game game = null;
-	private int createdTeamsAmount = 0;
 
 	public GameBuilder(final MasterDuels plugin, UUID owner) {
 		final GameBuilder builder = GAME_BUILDER_MAP.get(owner);
@@ -44,6 +43,9 @@ public class GameBuilder {
 		this.owner = owner;
 		//todo target is offline stack trace error is possible
 		players.add(Bukkit.getPlayer(owner));
+		setTeamSize(1);
+		setTeamAmount(2);
+
 	}
 
 	public static Map<UUID, GameBuilder> getGameBuilderMap() {
@@ -55,13 +57,10 @@ public class GameBuilder {
 	}
 
 	public void createTeam(List<Player> players) {
-		if (players.size() != teamSize)
-			throw new IllegalArgumentException("Team size is " + teamSize + " but given " + players.size() + " players.");
-
-		if (createdTeamsAmount > teamSize)
-			throw new IllegalStateException("Team amount is " + teamAmount + ". All teams has created already.");
-
-		teamBuilders.add(new TeamBuilder(++createdTeamsAmount, teamSize, players));
+		if (teamBuilders.size() > teamAmount) {
+			throw new IllegalStateException("Team amount limit is " + teamAmount + ". All teams has created already. Team amount is " + teamBuilders.size());
+		}
+		teamBuilders.add(new TeamBuilder(teamBuilders.size() + 1, teamSize, players));
 	}
 
 
@@ -87,6 +86,10 @@ public class GameBuilder {
 		return game;
 	}
 
+	public List<TeamBuilder> getTeamBuilders() {
+		return teamBuilders;
+	}
+
 	@Nullable
 	public Game getGame() {
 		return game;
@@ -96,8 +99,9 @@ public class GameBuilder {
 		return teamSize;
 	}
 
-	public GameBuilder teamSize(int teamSize) {
+	public GameBuilder setTeamSize(int teamSize) {
 		this.teamSize = teamSize;
+		createRandomizedTeams();
 		return this;
 	}
 
@@ -105,13 +109,19 @@ public class GameBuilder {
 		return teamAmount;
 	}
 
-	public GameBuilder teamAmount(int teamAmount) {
+	public GameBuilder setTeamAmount(int teamAmount) {
 		this.teamAmount = teamAmount;
+		createRandomizedTeams();
 		return this;
 	}
 
-	public int getCreatedTeamsAmount() {
-		return createdTeamsAmount;
+	public void createRandomizedTeams() {
+		teamBuilders.clear();
+		for (int i = 1; i <= teamAmount; i++) {
+			final List<Player> playerList = players.subList(Math.min(players.size(), (i - 1) * teamSize), Math.min(players.size(), i * teamSize));
+			createTeam(playerList);
+		}
+
 	}
 
 	public Map<UUID, Invite> getInvites() {

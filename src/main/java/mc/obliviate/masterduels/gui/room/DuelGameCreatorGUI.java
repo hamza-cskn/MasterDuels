@@ -40,15 +40,12 @@ public class DuelGameCreatorGUI extends GUI {
 	}
 
 	private Icon getStartGameIcon() {
-		return new Icon(XMaterial.EMERALD_BLOCK.parseItem()).setName("Click to start game").onClick(e -> {
+		return new Icon(XMaterial.EMERALD_BLOCK.parseItem()).setName("Click to start game with randomized teams").onClick(e -> {
 			if (gameBuilder.getTeamSize() * gameBuilder.getTeamAmount() != gameBuilder.getPlayers().size()) {
 				MessageUtils.sendMessage(player, "game-builder.wrong-player-amount", new PlaceholderUtil().add("{expected}", (gameBuilder.getTeamSize() * gameBuilder.getTeamAmount()) + "").add("{found}", gameBuilder.getPlayers().size() + ""));
 				return;
 			}
-			for (int i = gameBuilder.getTeamAmount(); i > 0; i--) {
-				final List<Player> playerList = gameBuilder.getPlayers().subList((i - 1) * gameBuilder.getTeamSize(), i * gameBuilder.getTeamSize());
-				gameBuilder.createTeam(playerList);
-			}
+			gameBuilder.createRandomizedTeams();
 
 			final Game game = gameBuilder.build();
 			if (game == null) {
@@ -78,24 +75,24 @@ public class DuelGameCreatorGUI extends GUI {
 	}
 
 	private Icon getTeamAmountIcon() {
-		final Icon teamAmountIcon = new Icon(XMaterial.MINECART.parseItem()).setName(MessageUtils.parseColor("&aTeam Amount")).setLore(MessageUtils.parseColor("&bCurrently: &f" + gameBuilder.getTeamAmount()), "", MessageUtils.parseColor("&eLeft click to increase"), MessageUtils.parseColor("&eRight click to decrease"));
+		final Icon teamAmountIcon = new Icon(XMaterial.MINECART.parseItem()).setName(MessageUtils.parseColor("&aTeam Amount")).setLore(MessageUtils.parseColor("&bCurrently: &f" + gameBuilder.getTeamAmount()), "", MessageUtils.parseColor("&c&lWARNING:&c If you change team"), MessageUtils.parseColor("&camount, all teams will reset"), "", MessageUtils.parseColor("&eLeft click to increase"), MessageUtils.parseColor("&eRight click to decrease"));
 		return teamAmountIcon.onClick(e -> {
 			if (e.isRightClick()) {
-				gameBuilder.teamAmount(Math.max(gameBuilder.getTeamAmount() - 1, 2));
+				gameBuilder.setTeamAmount(Math.max(gameBuilder.getTeamAmount() - 1, 2));
 			} else if (e.isLeftClick()) {
-				gameBuilder.teamAmount(gameBuilder.getTeamAmount() + 1);
+				gameBuilder.setTeamAmount(gameBuilder.getTeamAmount() + 1);
 			}
 			open();
 		});
 	}
 
 	private Icon getTeamSizeIcon() {
-		final Icon teamAmountIcon = new Icon(XMaterial.PLAYER_HEAD.parseItem()).setName(MessageUtils.parseColor("&aTeam Size")).setLore(MessageUtils.parseColor("&bCurrently: &f" + gameBuilder.getTeamSize()), "", MessageUtils.parseColor("&eLeft click to increase"), MessageUtils.parseColor("&eRight click to decrease"));
+		final Icon teamAmountIcon = new Icon(XMaterial.PLAYER_HEAD.parseItem()).setName(MessageUtils.parseColor("&aTeam Size")).setLore(MessageUtils.parseColor("&bCurrently: &f" + gameBuilder.getTeamSize()), "", MessageUtils.parseColor("&c&lWARNING:&c If you change team"), MessageUtils.parseColor("&camount, all teams will reset"), "", MessageUtils.parseColor("&eLeft click to increase"), MessageUtils.parseColor("&eRight click to decrease"));
 		return teamAmountIcon.onClick(e -> {
 			if (e.isRightClick()) {
-				gameBuilder.teamSize(Math.max(gameBuilder.getTeamSize() - 1, 1));
+				gameBuilder.setTeamSize(Math.max(gameBuilder.getTeamSize() - 1, 1));
 			} else if (e.isLeftClick()) {
-				gameBuilder.teamSize(gameBuilder.getTeamSize() + 1);
+				gameBuilder.setTeamSize(gameBuilder.getTeamSize() + 1);
 			}
 			open();
 		});
