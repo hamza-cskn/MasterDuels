@@ -181,11 +181,9 @@ public class DuelCMD implements CommandExecutor {
 		final GameBuilder gameBuilder = Game.create(plugin, player.getUniqueId()).setTeamAmount(2).setTeamSize(1).finishTime(60).totalRounds(1);
 
 		new KitSelectionGUI(player, gameBuilder, selectedKit -> {
-			gameBuilder.createTeam(player);
-
 			gameBuilder.sendInvite(player, target, result -> {
 				if (result.equals(InviteResult.ACCEPT)) {
-					gameBuilder.createTeam(target);
+					gameBuilder.addPlayer(target);
 					final Game game = gameBuilder.build();
 					if (game == null) {
 						MessageUtils.sendMessage(player, "no-arena-found");
