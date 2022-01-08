@@ -1,5 +1,5 @@
 name: MasterDuels
-main: mc.obliviate.MasterDuels.MasterDuels
+main: mc.obliviate.masterduels.MasterDuels
 author: Mr_Obliviate
 description: Professional duel game plugin for professional servers.
 version: 2.2
