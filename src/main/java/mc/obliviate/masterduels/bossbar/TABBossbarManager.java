@@ -13,9 +13,6 @@ import me.neznamy.tab.api.bossbar.BarStyle;
 import me.neznamy.tab.api.bossbar.BossBar;
 import org.bukkit.Bukkit;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class TABBossbarManager implements BossBarManager {
 
 	public static String NORMAL_TEXT_FORMAT = "{time}";
@@ -24,19 +21,18 @@ public class TABBossbarManager implements BossBarManager {
 	private final BossBar bar;
 	private final Game game;
 
-	public TABBossbarManager(Game game) {
+	public TABBossbarManager(final Game game) {
 		this.game = game;
 		if (!TABManager.isEnabled()) {
 			this.bar = null;
 			return;
 		}
 		final String title = NORMAL_TEXT_FORMAT.replace("{timer}", "...").replace("{time}", "...");
-		//this.bar = TabAPI.getInstance().getBossBarManager().createBossBar("bossbar", NORMAL_TEXT_FORMAT.replace("{timer}", "...").replace("{time}", "..."), 100f, BarColor.WHITE, BarStyle.NOTCHED_10);
 		this.bar = TabAPI.getInstance().getBossBarManager().createBossBar(title, 100f, BarColor.WHITE, BarStyle.NOTCHED_10);
 	}
 
 	@Override
-	public void show(Member member) {
+	public void show(final Member member) {
 		if (this.bar == null) return;
 		final TabPlayer player = TabAPI.getInstance().getPlayer(member.getPlayer().getUniqueId());
 		bar.addPlayer(player);
