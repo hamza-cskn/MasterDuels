@@ -2,6 +2,7 @@ package mc.obliviate.masterduels;
 
 import com.hakan.messageapi.bukkit.MessageAPI;
 import mc.obliviate.masterduels.arenaclear.ArenaClearHandler;
+import mc.obliviate.masterduels.commands.DeveloperCMD;
 import mc.obliviate.masterduels.commands.DuelCMD;
 import mc.obliviate.masterduels.commands.DuelAdminCMD;
 import mc.obliviate.masterduels.data.DataHandler;
@@ -75,6 +76,7 @@ public class MasterDuels extends JavaPlugin {
 		Bukkit.getPluginManager().registerEvents(new TeleportListener(), this);
 		Bukkit.getPluginManager().registerEvents(new SpectatorListener(), this);
 		Bukkit.getPluginManager().registerEvents(new GameRuleListener(), this);
+		Bukkit.getPluginManager().registerEvents(new DeveloperCMD(this), this);
 	}
 
 	private void loadKits() {
