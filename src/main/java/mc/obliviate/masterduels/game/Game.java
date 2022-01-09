@@ -8,6 +8,7 @@ import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.arena.elements.Positions;
 import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.bossbar.TABBossbarManager;
+import mc.obliviate.masterduels.game.bet.Bet;
 import mc.obliviate.masterduels.game.gamerule.GameRule;
 import mc.obliviate.masterduels.game.round.RoundData;
 import mc.obliviate.masterduels.game.spectator.SpectatorStorage;
@@ -53,6 +54,7 @@ public class Game {
 	private final GameBuilder gameBuilder;
 	private final TABBossbarManager bossBarData = new TABBossbarManager(this);
 	private final GameHistoryLog gameHistoryLog = new GameHistoryLog();
+	private final Bet bet;
 	private long timer;
 	private GameState gameState = GAME_STARING;
 
@@ -63,6 +65,7 @@ public class Game {
 		this.kit = gameBuilder.getKit();
 		this.finishTime = gameBuilder.getFinishTime();
 		this.gameRules = gameBuilder.getGameRules();
+		this.bet = gameBuilder.getBet();
 
 		roundData.setTotalRounds(gameBuilder.getTotalRounds());
 		DataHandler.registerGame(arena, this);
@@ -89,6 +92,10 @@ public class Game {
 		updateScoreboardTasks();
 		storeKits();
 		nextRound();
+
+		for (final Member member : getAllMembers()) {
+			bet.remove(member.getPlayer());
+		}
 
 		GameBuilder.getGameBuilderMap().remove(gameBuilder.getOwner());
 	}
@@ -232,6 +239,10 @@ public class Game {
 					}
 				}
 			}
+		}
+
+		for (final Member member : getAllMembers()) {
+			bet.delivery(member.getPlayer());
 		}
 
 		setGameState(GAME_ENDING);
@@ -549,6 +560,8 @@ public class Game {
 	public long getFinishTime() {
 		return finishTime;
 	}
+
+
 
 	public Map<String, BukkitTask> getTasks() {
 		return tasks;

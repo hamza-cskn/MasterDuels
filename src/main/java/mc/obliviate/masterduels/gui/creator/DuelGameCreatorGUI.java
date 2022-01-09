@@ -2,6 +2,7 @@ package mc.obliviate.masterduels.gui.creator;
 
 import mc.obliviate.masterduels.game.Game;
 import mc.obliviate.masterduels.game.GameBuilder;
+import mc.obliviate.masterduels.setup.chatentry.ChatEntry;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
 import mc.obliviate.masterduels.utils.xmaterial.XMaterial;
@@ -35,8 +36,9 @@ public class DuelGameCreatorGUI extends GUI {
 		addItem(13, getSettingsIcon());
 		addItem(14, getTeamManagerIcon());
 		addItem(15, getRoundAmountIcon());
+		addItem(31, getBetIcon());
 		addItem(16, getFinishTimeIcon());
-		addItem(31, getStartGameIcon());
+		addItem(49, getStartGameIcon());
 	}
 
 	private Icon getStartGameIcon() {
@@ -70,6 +72,22 @@ public class DuelGameCreatorGUI extends GUI {
 	private Icon getInvitesIcon() {
 		return new Icon(XMaterial.WRITABLE_BOOK.parseItem()).setName(MessageUtils.parseColor("&aInvites")).onClick(e -> {
 			new DuelInvitesGUI(player, gameBuilder).open();
+		});
+	}
+
+	private Icon getBetIcon() {
+		final Icon betIcon = new Icon(XMaterial.EMERALD.parseItem()).setName(MessageUtils.parseColor("&aBet")).setLore(MessageUtils.parseColor("&bCurrently: &f" + gameBuilder.getBet().getMoney() + " money"), "", MessageUtils.parseColor("&eClick to change bet"));
+		return betIcon.onClick(e -> {
+			player.closeInventory();
+			new ChatEntry(player.getUniqueId(), getPlugin()).onResponse(event -> {
+				try {
+					gameBuilder.getBet().setMoney(Integer.parseInt(event.getMessage()));
+				} catch (NumberFormatException exception) {
+					MessageUtils.sendMessage(event.getPlayer(), "invalid-number", new PlaceholderUtil().add("{entry}", event.getMessage()));
+				}finally {
+					open();
+				}
+			});
 		});
 	}
 

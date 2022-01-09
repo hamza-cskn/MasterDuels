@@ -4,6 +4,7 @@ import com.sun.istack.internal.Nullable;
 import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.data.DataHandler;
+import mc.obliviate.masterduels.game.bet.Bet;
 import mc.obliviate.masterduels.game.gamerule.GameRule;
 import mc.obliviate.masterduels.invite.Invite;
 import mc.obliviate.masterduels.invite.InviteResponse;
@@ -26,6 +27,7 @@ public class GameBuilder {
 	private final UUID owner;
 	private final List<Player> players = new ArrayList<>();
 	private final List<GameRule> gameRules = new ArrayList<>();
+	private final Bet bet = new Bet();
 	private int teamAmount = -1;
 	private int teamSize = -1;
 	private int totalRounds = 1;
@@ -242,6 +244,10 @@ public class GameBuilder {
 			invite.onExpire();
 		}
 		GAME_BUILDER_MAP.remove(owner);
+	}
+
+	public Bet getBet() {
+		return bet;
 	}
 
 	public UUID getOwner() {
