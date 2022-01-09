@@ -8,6 +8,7 @@ softdepend:
   - Multiverse-Core
   - TitleManager
   - TAB
+  - Vault
 commands:
   duelarenas:
   duel:

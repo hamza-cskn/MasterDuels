@@ -4,12 +4,10 @@ invite-timeout: 120 #in seconds
 
 arena-regeneration:
   # SMART - removes only placed blocks, liquids and formed blocks(blocks creating when lava touched to water)
-  # ROLLBACKCORE (COMING SOON) - regenerates all blocks in arena region
-  # SLIMEWORLD (COMING SOON) - regenerates world completely
+  # ROLLBACKCORE (COMING SOON) - regenerates all blocks in arena region (https://www.spigotmc.org/resources/rollbackcore-1-4-7-1-17-1.18517/)
+  # SLIMEWORLD (COMING SOON) - regenerates world completely (https://www.spigotmc.org/resources/advanced-slimeworldmanager.87209/)
   regenerate-mode: SMART
   remove-entities: true #removes DROPPED ITEMS and PROJECTILES that are in arena region.
-
-# if you need more complex arena regeneration we recommend rollbackcore: https://www.spigotmc.org/resources/rollbackcore-1-4-7-1-17-1.18517/
 
 #if set true, players can break only placed blocks by a player (and formed blocks).
 prevent-break-non-placed-blocks: true
@@ -22,6 +20,10 @@ optimize-duel-worlds: false
 # if set true, MasterDuels will not reset and backup inventory. (so this is means disabling kits)
 # also, when a player die in duel, their items will drops. Do not change this option during server working.
 use-player-inventories: false
+
+#if set true, players can bet for their duel games.
+#needs Vault
+enable-bets: true
 
 # SERVER_WIDE - Send game end message to all players in the server
 # SPECTATORS_AND_MEMBERS - Send game end message to all players in duel game

@@ -7,6 +7,7 @@ import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.game.Game;
 import mc.obliviate.masterduels.kit.InventoryStorer;
 import mc.obliviate.masterduels.user.Spectator;
+import mc.obliviate.masterduels.user.User;
 import mc.obliviate.masterduels.user.team.Member;
 import mc.obliviate.masterduels.user.team.Team;
 import mc.obliviate.masterduels.utils.MessageUtils;
@@ -95,16 +96,15 @@ public class SpectatorStorage {
 
 	}
 
-	//todo is it spectator switch event?
 	public void spectate(final Player player) {
-		if (isSpectator(player)) return;
+		final User user = DataHandler.getUser(player.getUniqueId());
+		if (user == null || user instanceof Spectator || user instanceof Member) return;
 
 		final DuelGamePreSpectatorJoinEvent duelGamePreSpectatorJoinEvent = new DuelGamePreSpectatorJoinEvent(player, game);
 		Bukkit.getPluginManager().callEvent(duelGamePreSpectatorJoinEvent);
 		if (duelGamePreSpectatorJoinEvent.isCancelled()) return;
 
 		final Spectator spectator = add(player);
-
 
 		new PlayerReset().excludeGamemode().excludeInventory().excludeLevel().excludeExp().reset(player);
 

@@ -71,6 +71,12 @@
             <artifactId>BlokSQLiteAPI</artifactId>
             <version>1.0.6-d</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.MilkBowl</groupId>
+            <artifactId>VaultAPI</artifactId>
+            <version>1.7</version>
+            <scope>provided</scope>
+        </dependency>
 
     </dependencies>
 

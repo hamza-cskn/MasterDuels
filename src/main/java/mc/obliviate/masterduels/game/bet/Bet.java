@@ -4,6 +4,8 @@ import org.bukkit.entity.Player;
 
 public class Bet {
 
+	public static boolean betsEnabled = true;
+
 	int money = 0;
 
 	public int getMoney() {
@@ -15,10 +17,10 @@ public class Bet {
 	}
 
 	public void remove(Player player) {
-
+		if (!betsEnabled) return;
 	}
 
 	public void delivery(Player player) {
-
+		if (!betsEnabled) return;
 	}
 }

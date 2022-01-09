@@ -2,6 +2,7 @@ package mc.obliviate.masterduels.gui.creator;
 
 import mc.obliviate.masterduels.game.Game;
 import mc.obliviate.masterduels.game.GameBuilder;
+import mc.obliviate.masterduels.game.bet.Bet;
 import mc.obliviate.masterduels.setup.chatentry.ChatEntry;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
@@ -36,9 +37,11 @@ public class DuelGameCreatorGUI extends GUI {
 		addItem(13, getSettingsIcon());
 		addItem(14, getTeamManagerIcon());
 		addItem(15, getRoundAmountIcon());
-		addItem(31, getBetIcon());
+		if (Bet.betsEnabled) {
+			addItem(22, getBetIcon());
+		}
 		addItem(16, getFinishTimeIcon());
-		addItem(49, getStartGameIcon());
+		addItem(40, getStartGameIcon());
 	}
 
 	private Icon getStartGameIcon() {
@@ -84,7 +87,7 @@ public class DuelGameCreatorGUI extends GUI {
 					gameBuilder.getBet().setMoney(Integer.parseInt(event.getMessage()));
 				} catch (NumberFormatException exception) {
 					MessageUtils.sendMessage(event.getPlayer(), "invalid-number", new PlaceholderUtil().add("{entry}", event.getMessage()));
-				}finally {
+				} finally {
 					open();
 				}
 			});
@@ -107,7 +110,7 @@ public class DuelGameCreatorGUI extends GUI {
 		final Icon finishTimeIcon = new Icon(XMaterial.CLOCK.parseItem()).setName(MessageUtils.parseColor("&aGame Time")).setLore(MessageUtils.parseColor("&bCurrently: &f" + MessageUtils.getFirstDigits(gameBuilder.getFinishTime() / 60d, 1) + " minutes"), "", MessageUtils.parseColor("&eLeft click to increase"), MessageUtils.parseColor("&eRight click to decrease"));
 		return finishTimeIcon.onClick(e -> {
 			if (e.isRightClick()) {
-				gameBuilder.setFinishTime(Math.max(gameBuilder.getFinishTime() - 30, 120));
+				gameBuilder.setFinishTime(Math.max(gameBuilder.getFinishTime() - 30, 60));
 			} else if (e.isLeftClick()) {
 				gameBuilder.setFinishTime(Math.min(gameBuilder.getFinishTime() + 30, 600));
 			}
@@ -121,7 +124,7 @@ public class DuelGameCreatorGUI extends GUI {
 			if (e.isRightClick()) {
 				gameBuilder.setTeamAmount(Math.max(gameBuilder.getTeamAmount() - 1, 2));
 			} else if (e.isLeftClick()) {
-				gameBuilder.setTeamAmount(gameBuilder.getTeamAmount() + 1);
+				gameBuilder.setTeamAmount(Math.min(gameBuilder.getTeamAmount() + 1, 10));
 			}
 			open();
 		});
@@ -133,7 +136,7 @@ public class DuelGameCreatorGUI extends GUI {
 			if (e.isRightClick()) {
 				gameBuilder.setTeamSize(Math.max(gameBuilder.getTeamSize() - 1, 1));
 			} else if (e.isLeftClick()) {
-				gameBuilder.setTeamSize(gameBuilder.getTeamSize() + 1);
+				gameBuilder.setTeamSize(Math.min(gameBuilder.getTeamSize() + 1, 8));
 			}
 			open();
 		});
