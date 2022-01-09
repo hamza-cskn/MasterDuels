@@ -55,17 +55,16 @@ public class Game {
 	private final GameHistoryLog gameHistoryLog = new GameHistoryLog();
 	private long timer;
 	private GameState gameState = GAME_STARING;
-	//todo is this variables cloned with gamebuilder?
 
-	protected Game(final MasterDuels plugin, final GameBuilder gameBuilder, final int totalRounds, final Arena arena, final Kit kit, final long finishTime, final List<GameRule> gameRules) {
+	protected Game(final MasterDuels plugin, final GameBuilder gameBuilder, final Arena arena) {
 		this.plugin = plugin;
 		this.arena = arena;
-		this.kit = kit;
-		this.finishTime = finishTime;
-		this.gameRules = gameRules;
 		this.gameBuilder = gameBuilder;
+		this.kit = gameBuilder.getKit();
+		this.finishTime = gameBuilder.getFinishTime();
+		this.gameRules = gameBuilder.getGameRules();
 
-		roundData.setTotalRounds(totalRounds);
+		roundData.setTotalRounds(gameBuilder.getTotalRounds());
 		DataHandler.registerGame(arena, this);
 	}
 
@@ -102,7 +101,7 @@ public class Game {
 	}
 
 	public void updateScoreboardTasks() {
-		for (Member member : getAllMembers()) {
+		for (final Member member : getAllMembers()) {
 			updateScoreboardTask(member);
 		}
 	}
