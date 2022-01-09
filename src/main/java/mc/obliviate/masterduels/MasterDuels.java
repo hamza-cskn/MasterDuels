@@ -51,7 +51,7 @@ public class MasterDuels extends JavaPlugin {
 	private void setupHandlers() {
 		yamlStorageHandler.init();
 		inventoryAPI.init();
-		switch (yamlStorageHandler.getConfig().getString("arena-regeneration.mode")) {
+		switch (yamlStorageHandler.getConfig().getString("arena-regeneration.mode", "SMART")) {
 			case "ROLLBACKCORE":
 			case "SLIMEWORLD":
 			case "DISABLED":
