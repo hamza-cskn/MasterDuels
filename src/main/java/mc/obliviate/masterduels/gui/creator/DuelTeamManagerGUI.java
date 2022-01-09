@@ -1,4 +1,4 @@
-package mc.obliviate.masterduels.gui.room;
+package mc.obliviate.masterduels.gui.creator;
 
 import mc.obliviate.inventory.GUI;
 import mc.obliviate.inventory.Icon;

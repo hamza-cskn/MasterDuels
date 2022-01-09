@@ -1,4 +1,4 @@
-package mc.obliviate.masterduels.gui.room;
+package mc.obliviate.masterduels.gui.creator;
 
 import mc.obliviate.masterduels.game.GameBuilder;
 import mc.obliviate.masterduels.game.gamerule.GameRule;

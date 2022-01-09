@@ -5,7 +5,7 @@ import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.game.Game;
 import mc.obliviate.masterduels.game.GameBuilder;
 import mc.obliviate.masterduels.gui.DuelArenaListGUI;
-import mc.obliviate.masterduels.gui.room.DuelGameCreatorGUI;
+import mc.obliviate.masterduels.gui.creator.DuelGameCreatorGUI;
 import mc.obliviate.masterduels.gui.DuelHistoryLogGUI;
 import mc.obliviate.masterduels.gui.kit.KitSelectionGUI;
 import mc.obliviate.masterduels.invite.Invite;

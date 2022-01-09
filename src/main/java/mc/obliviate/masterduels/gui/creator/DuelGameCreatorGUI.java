@@ -1,4 +1,4 @@
-package mc.obliviate.masterduels.gui.room;
+package mc.obliviate.masterduels.gui.creator;
 
 import mc.obliviate.masterduels.game.Game;
 import mc.obliviate.masterduels.game.GameBuilder;
@@ -9,8 +9,6 @@ import mc.obliviate.inventory.GUI;
 import mc.obliviate.inventory.Icon;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryOpenEvent;
-
-import java.util.List;
 
 public class DuelGameCreatorGUI extends GUI {
 
