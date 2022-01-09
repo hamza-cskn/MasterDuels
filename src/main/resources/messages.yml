@@ -18,6 +18,7 @@
 
 prefix: '&7[&6MasterDuels&7] &7'
 unknown-usage: '&cWrong command usage!'
+invalid-number: '&c{entry} is not a valid number.'
 command-is-blocked: '&cYou can not use &4''{command}''&c in duel match.'
 arena-already-started: '&cThis arena already started.'
 no-arena-found: '&cCould not found available arena.'
