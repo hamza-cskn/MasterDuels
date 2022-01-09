@@ -18,6 +18,7 @@ public class Kit {
 	private static final Map<String, Kit> kits = new HashMap<>();
 	private final PlayerInventoryFrame playerInventoryFrame;
 	private final String kitName;
+	private static final String kitFileName = "kits.yml";
 	private ItemStack icon;
 
 	public Kit(String name, ItemStack[] contents, ItemStack[] armorContents) {
@@ -47,7 +48,7 @@ public class Kit {
 	}
 
 	public static void save(MasterDuels plugin, Kit kit) {
-		final File file = new File(plugin.getDataFolder().getPath() + File.separator + "kits.yml"); //todo connect this file name to a static final variable
+		final File file = new File(plugin.getDataFolder().getPath() + File.separator + kitFileName);
 		final YamlConfiguration data = YamlConfiguration.loadConfiguration(file);
 
 		KitSerializer.serialize(kit, data.createSection(kit.getKitName()));
