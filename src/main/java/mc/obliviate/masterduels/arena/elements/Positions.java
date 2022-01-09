@@ -5,7 +5,16 @@ import org.bukkit.Location;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Purpose of this class is,
+ * storing location groups.
+ *
+ * ex.
+ * spawn positions of a team
+ */
+
 public class Positions {
+
 
 	private final Map<Integer, Location> locations = new HashMap<>();
 

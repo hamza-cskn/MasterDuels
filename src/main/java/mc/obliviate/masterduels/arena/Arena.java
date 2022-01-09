@@ -22,19 +22,21 @@ public class Arena {
 	private final Map<String, Positions> positions;
 	private final int teamSize;
 	private final int teamAmount;
+	private final Location spectatorLocation;
 	private boolean enabled;
 
-	public Arena(String name, String mapName, ArenaCuboid arenaCuboid, Map<String, Positions> positions, int teamSize, int teamAmount) {
-		this(name, mapName, arenaCuboid, positions, teamSize, teamAmount, true);
+	public Arena(String name, String mapName, ArenaCuboid arenaCuboid, Map<String, Positions> positions, int teamSize, int teamAmount, Location spectatorLocation) {
+		this(name, mapName, arenaCuboid, positions, teamSize, teamAmount, spectatorLocation, true);
 	}
 
-	public Arena(String name, String mapName, ArenaCuboid arenaCuboid, Map<String, Positions> positions, int teamSize, int teamAmount, boolean enabled) {
+	public Arena(String name, String mapName, ArenaCuboid arenaCuboid, Map<String, Positions> positions, int teamSize, int teamAmount, Location spectatorLocation, boolean enabled) {
 		this.name = name;
 		this.mapName = mapName;
 		this.arenaCuboid = arenaCuboid;
 		this.positions = positions;
 		this.teamSize = teamSize;
 		this.teamAmount = teamAmount;
+		this.spectatorLocation = spectatorLocation;
 		this.enabled = enabled;
 		DataHandler.registerArena(this);
 	}
@@ -118,7 +120,13 @@ public class Arena {
 		final int teamSize = section.getInt("team-size");
 		final int teamAmount = section.getInt("team-amount");
 
-		return new Arena(name, mapName, arenaCuboid, positions, teamSize, teamAmount);
+		Location spectatorLocation;
+		if (section.isSet("spectator-position")) {
+			spectatorLocation = SerializerUtils.deserializeLocationYAML(section.getConfigurationSection("spectator-position"));
+		} else {
+			spectatorLocation = positions.get("spawn-team-1").getLocation(1);
+		}
+		return new Arena(name, mapName, arenaCuboid, positions, teamSize, teamAmount, spectatorLocation);
 	}
 
 	public boolean isEnabled() {
@@ -135,6 +143,7 @@ public class Arena {
 		section.set("map-name", mapName);
 		SerializerUtils.serializeLocationYAML(section.createSection("arena-cuboid.position-1"), arenaCuboid.getPoint1());
 		SerializerUtils.serializeLocationYAML(section.createSection("arena-cuboid.position-2"), arenaCuboid.getPoint2());
+		SerializerUtils.serializeLocationYAML(section.createSection("spectator-position"), spectatorLocation);
 		for (final String key : positions.keySet()) {
 			final Positions poses = positions.get(key);
 			for (final int id : poses.getLocations().keySet()) {
@@ -174,5 +183,9 @@ public class Arena {
 
 	public String getMapName() {
 		return mapName;
+	}
+
+	public Location getSpectatorLocation() {
+		return spectatorLocation;
 	}
 }

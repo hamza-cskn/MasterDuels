@@ -125,7 +125,7 @@ public class SpectatorStorage {
 		MessageUtils.sendMessage(player, "you-are-a-spectator");
 
 		if (!game.isMember(player)) {
-			player.teleport(spectator.getGame().getArena().getPositions().get("spawn-team-1").getLocation(1)); //todo make spectator location
+			player.teleport(spectator.getGame().getArena().getSpectatorLocation());
 			MessageAPI.getInstance(spectator.getGame().getPlugin()).sendTitle(spectator.getPlayer(), TitleHandler.getTitle(TitleHandler.TitleType.SPECTATOR_JOIN));
 
 		}

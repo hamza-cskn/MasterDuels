@@ -183,7 +183,7 @@ public class ArenaSetup implements Listener {
 
 	public Arena compile() {
 		if (canCompile()) {
-			final Arena arena = new Arena(arenaName, mapName, arenaCuboid, positions, teamSize, teamAmount);
+			final Arena arena = new Arena(arenaName, mapName, arenaCuboid, positions, teamSize, teamAmount, spectatorLocation);
 			plugin.getDatabaseHandler().saveArena(arena);
 			destroy();
 			return arena;
