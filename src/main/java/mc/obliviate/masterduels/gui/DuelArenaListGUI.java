@@ -33,7 +33,7 @@ public class DuelArenaListGUI extends GUI {
 	}
 
 	private Icon getGameIcon(final Arena arena) {
-		final PlaceholderUtil placeholderUtil = new PlaceholderUtil().add("{arena}", arena.getName()).add("{map}", arena.getName());
+		final PlaceholderUtil placeholderUtil = new PlaceholderUtil().add("{arena}", arena.getName()).add("{map}", arena.getMapName());
 		final Game game = DataHandler.getArenas().get(arena);
 		final BasicArenaState state = Arena.getBasicArenaState(arena);
 		if (game != null) {
