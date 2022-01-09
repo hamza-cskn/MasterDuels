@@ -1,4 +1,4 @@
-package mc.obliviate.masterduels.arenaclear.workloads;
+package mc.obliviate.masterduels.arenaclear.modes.smart.workloads;
 
 import java.util.List;
 import java.util.UUID;

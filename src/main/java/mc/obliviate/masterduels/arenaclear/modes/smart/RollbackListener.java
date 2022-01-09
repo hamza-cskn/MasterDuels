@@ -1,16 +1,10 @@
-package mc.obliviate.masterduels.arenaclear;
+package mc.obliviate.masterduels.arenaclear.modes.smart;
 
 import mc.obliviate.masterduels.MasterDuels;
-import mc.obliviate.masterduels.api.events.arena.DuelArenaUninstallEvent;
-import mc.obliviate.masterduels.api.events.arena.DuelGameStartEvent;
 import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.user.team.Member;
-import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.MessageUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.EventHandler;
@@ -32,22 +26,14 @@ public class RollbackListener implements Listener {
 	}
 
 	@EventHandler
-	public void onGameStart(final DuelGameStartEvent event) {
-		plugin.getArenaClearHandler().add(event.getGame(), plugin);
-	}
-
-	@EventHandler
-	public void onGameEnd(final DuelArenaUninstallEvent event) {
-		plugin.getArenaClearHandler().getArenaClear(event.getGame().getArena().getName()).clear();
-	}
-
-	@EventHandler
 	public void onBlockPlace(BlockPlaceEvent e) {
 		final Member member = DataHandler.getMember(e.getPlayer().getUniqueId());
 		if (member == null) return;
 		final Arena arena = member.getGame().getArena();
 		final Block block = e.getBlockPlaced();
-		plugin.getArenaClearHandler().getArenaClear(arena.getName()).addBlock(block.getX(), block.getY(), block.getZ(), block.getWorld().getUID());
+		final SmartArenaClear arenaClear = (SmartArenaClear) plugin.getArenaClearHandler().getArenaClear(arena.getName());
+		arenaClear.addBlock(block.getX(), block.getY(), block.getZ(), block.getWorld().getUID());
+		//todo move prevent non placed blocks methods to duel protect listener
 		if (preventNonPlacedBlocks) {
 			e.getBlock().setMetadata("placedByPlayer", new FixedMetadataValue(plugin, true));
 		}
@@ -70,9 +56,9 @@ public class RollbackListener implements Listener {
 				}
 				final Arena arena = Arena.getArenaAt(block.getLocation());
 				if (arena == null) return;
-				final ArenaClear arenaClear = plugin.getArenaClearHandler().getArenaClear(arena.getName());
+				final SmartArenaClear arenaClear = (SmartArenaClear) plugin.getArenaClearHandler().getArenaClear(arena.getName());
 				if (arenaClear == null) return;
-				plugin.getArenaClearHandler().getArenaClear(arena.getName()).addBlock(block.getX(), block.getY(), block.getZ(), block.getWorld().getUID());
+				arenaClear.addBlock(block.getX(), block.getY(), block.getZ(), block.getWorld().getUID());
 				if (preventNonPlacedBlocks) {
 					block.setMetadata("placedByPlayer", new FixedMetadataValue(plugin, true));
 				}
@@ -101,7 +87,8 @@ public class RollbackListener implements Listener {
 		final Arena arena = member.getGame().getArena();
 		final Block block = e.getBlockClicked();
 		final BlockFace face = e.getBlockFace();
-		plugin.getArenaClearHandler().getArenaClear(arena.getName()).addLiquid(block.getX() + face.getModX(), block.getY() + face.getModY(), block.getZ() + face.getModZ(), block.getWorld().getUID());
+		final SmartArenaClear arenaClear = (SmartArenaClear) plugin.getArenaClearHandler().getArenaClear(arena.getName());
+		arenaClear.addLiquid(block.getX() + face.getModX(), block.getY() + face.getModY(), block.getZ() + face.getModZ(), block.getWorld().getUID());
 	}
 
 

@@ -3,7 +3,7 @@ package mc.obliviate.masterduels.data;
 import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.arena.BasicArenaState;
-import mc.obliviate.masterduels.arenaclear.ArenaClear;
+import mc.obliviate.masterduels.arenaclear.modes.smart.SmartArenaClear;
 import mc.obliviate.masterduels.game.Game;
 import mc.obliviate.masterduels.game.GameState;
 import mc.obliviate.masterduels.bossbar.TABBossbarManager;
@@ -59,7 +59,7 @@ public class YamlStorageHandler {
 
 		DataHandler.LOCK_TIME_IN_SECONDS = config.getInt("game-starting-lock-time", 3);
 		Kit.USE_PLAYER_INVENTORIES = config.getBoolean("use-player-inventories", false);
-		ArenaClear.removeEntities = plugin.getDatabaseHandler().getConfig().getBoolean("arena-regeneration.remove-entities", true);
+		SmartArenaClear.removeEntities = plugin.getDatabaseHandler().getConfig().getBoolean("arena-regeneration.remove-entities", true);
 
 	}
 

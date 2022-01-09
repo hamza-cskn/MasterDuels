@@ -1,10 +1,11 @@
-package mc.obliviate.masterduels.arenaclear;
+package mc.obliviate.masterduels.arenaclear.modes.smart;
 
 import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.arena.Arena;
-import mc.obliviate.masterduels.arenaclear.workloads.BlockWorkLoad;
-import mc.obliviate.masterduels.arenaclear.workloads.LiquidWorkload;
-import mc.obliviate.masterduels.arenaclear.workloads.WorkLoadThread;
+import mc.obliviate.masterduels.arenaclear.IArenaClear;
+import mc.obliviate.masterduels.arenaclear.modes.smart.workloads.BlockWorkLoad;
+import mc.obliviate.masterduels.arenaclear.modes.smart.workloads.LiquidWorkload;
+import mc.obliviate.masterduels.arenaclear.modes.smart.workloads.WorkLoadThread;
 import org.bukkit.Chunk;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
@@ -12,13 +13,13 @@ import org.bukkit.entity.Projectile;
 
 import java.util.UUID;
 
-public class ArenaClear {
+public class SmartArenaClear implements IArenaClear {
 
 	public static boolean removeEntities = true;
 	private final WorkLoadThread thread;
 	private final Arena arena;
 
-	public ArenaClear(MasterDuels plugin, Arena arena) {
+	public SmartArenaClear(MasterDuels plugin, Arena arena) {
 		this.thread = new WorkLoadThread(plugin);
 		this.arena = arena;
 	}

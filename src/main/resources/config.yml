@@ -3,12 +3,15 @@ delay-end-duel-after-player-kill: 20 #in seconds
 invite-timeout: 120 #in seconds
 
 arena-regeneration:
-  enabled: true # if set true, deletes blocks that is placed by players, after duel game.
+  # SMART - removes only placed blocks, liquids and formed blocks(blocks creating when lava touched to water)
+  # ROLLBACKCORE (COMING SOON) - regenerates all blocks in arena region
+  # SLIMEWORLD (COMING SOON) - regenerates world completely
+  regenerate-mode: SMART
   remove-entities: true #removes DROPPED ITEMS and PROJECTILES that are in arena region.
 
 # if you need more complex arena regeneration we recommend rollbackcore: https://www.spigotmc.org/resources/rollbackcore-1-4-7-1-17-1.18517/
 
-#if set true, players can break only placed blocks by a player.
+#if set true, players can break only placed blocks by a player (and formed blocks).
 prevent-break-non-placed-blocks: true
 
 # if set true, MasterDuels will changes Bukkit world configurations of all
@@ -34,8 +37,6 @@ executable-commands-by-player:
     #- this_command_is_executable_after_victim_dead
     #- this_command_is_executable_after_victim_dead_too
   #empty lists means all commands should be blocked.
-
-
 
 #{timer} = 13:59
 #{time} = 13 minutes 59 seconds

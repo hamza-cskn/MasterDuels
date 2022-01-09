@@ -1,4 +1,4 @@
-package mc.obliviate.masterduels.arenaclear.workloads;
+package mc.obliviate.masterduels.arenaclear.modes.smart.workloads;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

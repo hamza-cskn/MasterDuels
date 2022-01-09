@@ -1,4 +1,4 @@
-package mc.obliviate.masterduels.arenaclear.workloads;
+package mc.obliviate.masterduels.arenaclear.modes.smart.workloads;
 
 import com.google.common.collect.Queues;
 import org.bukkit.Bukkit;

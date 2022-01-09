@@ -1,18 +1,19 @@
-package mc.obliviate.masterduels.arenaclear;
+package mc.obliviate.masterduels.arenaclear.modes.smart;
 
 import mc.obliviate.masterduels.MasterDuels;
+import mc.obliviate.masterduels.arenaclear.IArenaClearHandler;
 import mc.obliviate.masterduels.game.Game;
 import org.bukkit.Bukkit;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class ArenaClearHandler {
+public class SmartArenaClearHandler implements IArenaClearHandler {
 
-	private final Map<String, ArenaClear> arenaClearMap = new HashMap<>();
+	private final Map<String, SmartArenaClear> arenaClearMap = new HashMap<>();
 	private final MasterDuels plugin;
 
-	public ArenaClearHandler(MasterDuels plugin) {
+	public SmartArenaClearHandler(MasterDuels plugin) {
 		this.plugin = plugin;
 	}
 
@@ -21,14 +22,14 @@ public class ArenaClearHandler {
 	}
 
 	public void add(Game game, MasterDuels plugin) {
-		arenaClearMap.put(game.getArena().getName(), new ArenaClear(plugin, game.getArena()));
+		arenaClearMap.put(game.getArena().getName(), new SmartArenaClear(plugin, game.getArena()));
 	}
 
-	public Map<String, ArenaClear> getArenaClearMap() {
+	public Map<String, SmartArenaClear> getArenaClearMap() {
 		return arenaClearMap;
 	}
 
-	public ArenaClear getArenaClear(String arenaName) {
+	public SmartArenaClear getArenaClear(String arenaName) {
 		return arenaClearMap.get(arenaName);
 	}
 

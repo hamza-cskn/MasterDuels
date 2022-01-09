@@ -1,7 +1,9 @@
 package mc.obliviate.masterduels;
 
 import com.hakan.messageapi.bukkit.MessageAPI;
-import mc.obliviate.masterduels.arenaclear.ArenaClearHandler;
+import mc.obliviate.masterduels.arenaclear.ArenaClearListener;
+import mc.obliviate.masterduels.arenaclear.IArenaClearHandler;
+import mc.obliviate.masterduels.arenaclear.modes.smart.SmartArenaClearHandler;
 import mc.obliviate.masterduels.commands.DeveloperCMD;
 import mc.obliviate.masterduels.commands.DuelCMD;
 import mc.obliviate.masterduels.commands.DuelAdminCMD;
@@ -27,7 +29,7 @@ public class MasterDuels extends JavaPlugin {
 	private static boolean shutdownMode = false;
 	private final SQLManager sqlManager = new SQLManager(this);
 	private final InventoryAPI inventoryAPI = new InventoryAPI(this);
-	private final ArenaClearHandler arenaClearHandler = new ArenaClearHandler(this);
+	private IArenaClearHandler arenaClearHandler;
 	private final YamlStorageHandler yamlStorageHandler = new YamlStorageHandler(this);
 	private MessageAPI messageAPI;
 	private ScoreboardManager scoreboardManager;
@@ -49,7 +51,14 @@ public class MasterDuels extends JavaPlugin {
 	private void setupHandlers() {
 		yamlStorageHandler.init();
 		inventoryAPI.init();
-		if (yamlStorageHandler.getConfig().getBoolean("arena-regeneration.enabled")) {
+		switch (yamlStorageHandler.getConfig().getString("arena-regeneration.mode")) {
+			case "ROLLBACKCORE":
+			case "SLIMEWORLD":
+			case "DISABLED":
+				break;
+			default: //SMART
+				arenaClearHandler = new SmartArenaClearHandler(this);
+			Bukkit.getPluginManager().registerEvents(new ArenaClearListener(this), this);
 			arenaClearHandler.init();
 		}
 		scoreboardManager = new ScoreboardManager(this);
@@ -118,7 +127,7 @@ public class MasterDuels extends JavaPlugin {
 		return sqlManager;
 	}
 
-	public ArenaClearHandler getArenaClearHandler() {
+	public IArenaClearHandler getArenaClearHandler() {
 		return arenaClearHandler;
 	}
 }
