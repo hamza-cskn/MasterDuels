@@ -31,7 +31,8 @@ public class DuelTeamManagerGUI extends GUI {
 		}));
 
 		for (int team = 0; team < gameBuilder.getTeamAmount(); team++) {
-			addItem((team + 1) * 9, Utils.teamIcons.get(team));
+			final Icon icon = new Icon(Utils.teamIcons.get(team).clone());
+			addItem((team + 1) * 9, icon.setName("§f"+(team+1)+". team"));
 			for (int member = 0; member < gameBuilder.getTeamSize(); member++) {
 				final int slot = ((team + 1) * 9 + 1 + member);
 

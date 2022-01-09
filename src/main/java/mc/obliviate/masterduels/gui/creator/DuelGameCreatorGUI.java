@@ -30,15 +30,17 @@ public class DuelGameCreatorGUI extends GUI {
 	public void onOpen(InventoryOpenEvent event) {
 		fillRow(new Icon(XMaterial.BLACK_STAINED_GLASS_PANE.parseItem()).setDamage(15), 4);
 		addItem(10, getTeamAmountIcon());
-		addItem(12, getTeamSizeIcon());
-		addItem(14, getInvitesIcon());
-		addItem(16, getSettingsIcon());
-		addItem(31, getTeamManagerIcon());
-		addItem(40, getStartGameIcon());
+		addItem(11, getTeamSizeIcon());
+		addItem(12, getInvitesIcon());
+		addItem(13, getSettingsIcon());
+		addItem(14, getTeamManagerIcon());
+		addItem(15, getRoundAmountIcon());
+		addItem(16, getFinishTimeIcon());
+		addItem(31, getStartGameIcon());
 	}
 
 	private Icon getStartGameIcon() {
-		return new Icon(XMaterial.EMERALD_BLOCK.parseItem()).setName("Click to start game").onClick(e -> {
+		return new Icon(XMaterial.EMERALD_BLOCK.parseItem()).setName("§aClick to start game").onClick(e -> {
 			if (gameBuilder.getTeamSize() * gameBuilder.getTeamAmount() != gameBuilder.getPlayers().size()) {
 				MessageUtils.sendMessage(player, "game-builder.wrong-player-amount", new PlaceholderUtil().add("{expected}", (gameBuilder.getTeamSize() * gameBuilder.getTeamAmount()) + "").add("{found}", gameBuilder.getPlayers().size() + ""));
 				return;
@@ -54,7 +56,7 @@ public class DuelGameCreatorGUI extends GUI {
 	}
 
 	public Icon getTeamManagerIcon() {
-		return new Icon(XMaterial.PAINTING.parseItem()).onClick(e -> {
+		return new Icon(XMaterial.PAINTING.parseItem()).setName(MessageUtils.parseColor("&aManage Teams")).onClick(e -> {
 			new DuelTeamManagerGUI(player, gameBuilder).open();
 		});
 	}
@@ -68,6 +70,30 @@ public class DuelGameCreatorGUI extends GUI {
 	private Icon getInvitesIcon() {
 		return new Icon(XMaterial.WRITABLE_BOOK.parseItem()).setName(MessageUtils.parseColor("&aInvites")).onClick(e -> {
 			new DuelInvitesGUI(player, gameBuilder).open();
+		});
+	}
+
+	private Icon getRoundAmountIcon() {
+		final Icon roundAmountIcon = new Icon(XMaterial.DIAMOND_HORSE_ARMOR.parseItem()).setName(MessageUtils.parseColor("&aRound Amount")).setLore(MessageUtils.parseColor("&bCurrently: &f" + gameBuilder.getTotalRounds() + " rounds"), "", MessageUtils.parseColor("&eLeft click to increase"), MessageUtils.parseColor("&eRight click to decrease"));
+		return roundAmountIcon.onClick(e -> {
+			if (e.isRightClick()) {
+				gameBuilder.setTotalRounds(Math.max(gameBuilder.getTotalRounds() - 1, 1));
+			} else if (e.isLeftClick()) {
+				gameBuilder.setTotalRounds(Math.min(gameBuilder.getTotalRounds() + 1, 5));
+			}
+			open();
+		});
+	}
+
+	private Icon getFinishTimeIcon() {
+		final Icon finishTimeIcon = new Icon(XMaterial.CLOCK.parseItem()).setName(MessageUtils.parseColor("&aGame Time")).setLore(MessageUtils.parseColor("&bCurrently: &f" + MessageUtils.getFirstDigits(gameBuilder.getFinishTime() / 60d, 1) + " minutes"), "", MessageUtils.parseColor("&eLeft click to increase"), MessageUtils.parseColor("&eRight click to decrease"));
+		return finishTimeIcon.onClick(e -> {
+			if (e.isRightClick()) {
+				gameBuilder.setFinishTime(Math.max(gameBuilder.getFinishTime() - 30, 120));
+			} else if (e.isLeftClick()) {
+				gameBuilder.setFinishTime(Math.min(gameBuilder.getFinishTime() + 30, 600));
+			}
+			open();
 		});
 	}
 

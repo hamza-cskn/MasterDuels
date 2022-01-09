@@ -247,4 +247,12 @@ public class GameBuilder {
 	public UUID getOwner() {
 		return owner;
 	}
+
+	public void setTotalRounds(int totalRounds) {
+		this.totalRounds = totalRounds;
+	}
+
+	public void setFinishTime(int finishTime) {
+		this.finishTime = finishTime;
+	}
 }
