@@ -20,8 +20,4 @@ public class SpectatorListener implements Listener {
 			}
 		}
 	}
-
-
-
-
 }
