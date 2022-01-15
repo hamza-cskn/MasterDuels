@@ -29,6 +29,8 @@ game-finished: '&cDuel game has been finished.'
 game-started: '&cDuel game has been started!'
 round-has-started: '&c&l{round}. ROUND&7 started!'
 round-has-finished: '&c&l{round}. ROUND&7 finished!'
+enter-bet-amount: '&cEnter bet amount to chat.'
+enter-player-name-to-invite: '&cEnter player name you want to invite.'
 you-can-not-place: '&cYou can not place block here.'
 you-can-not-break: '&cYou can not break this block.'
 duel-team-eliminated: '&7The team of &c{victim}&7 has been eleminated!' #for non-solo games

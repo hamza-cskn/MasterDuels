@@ -34,6 +34,7 @@ public class DuelInvitesGUI extends GUI {
 				});
 				open();
 			});
+			MessageUtils.sendMessage(player, "enter-player-name-to-invite");
 		}));
 		int i = 9;
 		for (Invite invite : gameBuilder.getInvites().values()) {

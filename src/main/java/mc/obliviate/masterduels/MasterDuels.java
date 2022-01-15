@@ -145,6 +145,7 @@ public class MasterDuels extends JavaPlugin {
 		return permissions != null;
 	}
 
+
 	public YamlStorageHandler getDatabaseHandler() {
 		return yamlStorageHandler;
 	}

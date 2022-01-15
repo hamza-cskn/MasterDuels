@@ -16,7 +16,7 @@ public class InventoryStorer {
 	public static boolean restore(final Player player) {
 		if (player == null) return false;
 		final PlayerInventoryFrame inv = inventories.get(player.getUniqueId());
-		if (inv == null) return false;
+		if (inv == null) return true;
 		player.getInventory().setContents(inv.getContents());
 		player.getInventory().setArmorContents(inv.getArmorContents());
 		inventories.remove(player.getUniqueId());
