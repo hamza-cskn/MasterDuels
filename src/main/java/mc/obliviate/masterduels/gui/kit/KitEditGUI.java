@@ -50,7 +50,7 @@ public class KitEditGUI extends GUI {
 		}
 
 		addItem(0, new Icon(XMaterial.ARROW.parseItem()).setName(MessageUtils.parseColor("&cGo Back")).onClick(e -> {
-			new KitListGUI(player).open();
+			new KitListEditorGUI(player).open();
 		}));
 
 		addItem(8, new Icon(XMaterial.EMERALD_BLOCK.parseItem()).setName(MessageUtils.parseColor("&aSave")).onClick(e -> {
