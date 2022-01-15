@@ -39,13 +39,32 @@ public class RollbackListener implements Listener {
 		}
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGHEST)
 	//todo optimized block from to simulation
 	public void onBlockForm(BlockFromToEvent e) {
+		final Block block = e.getToBlock();
+		final Arena arena = Arena.getArenaAt(block.getLocation());
+		if (arena == null) return;
+		final SmartArenaClear arenaClear = (SmartArenaClear) plugin.getArenaClearHandler().getArenaClear(arena.getName());
+		if (arenaClear == null) return;
+
+		//check is it destroy event
+		switch (e.getToBlock().getType()) {
+			case AIR:
+			case WATER:
+			case STATIONARY_WATER:
+			case LAVA:
+			case STATIONARY_LAVA:
+				break;
+			default:
+				e.setCancelled(true);
+				return;
+		}
+
+		//wait and check is it a transform event
 		new BukkitRunnable() {
 			@Override
 			public void run() {
-				final Block block = e.getToBlock();
 				switch (block.getType()) {
 					case OBSIDIAN:
 					case COBBLESTONE:
@@ -54,10 +73,6 @@ public class RollbackListener implements Listener {
 					default:
 						return;
 				}
-				final Arena arena = Arena.getArenaAt(block.getLocation());
-				if (arena == null) return;
-				final SmartArenaClear arenaClear = (SmartArenaClear) plugin.getArenaClearHandler().getArenaClear(arena.getName());
-				if (arenaClear == null) return;
 				arenaClear.addBlock(block.getX(), block.getY(), block.getZ(), block.getWorld().getUID());
 				if (preventNonPlacedBlocks) {
 					block.setMetadata("placedByPlayer", new FixedMetadataValue(plugin, true));
