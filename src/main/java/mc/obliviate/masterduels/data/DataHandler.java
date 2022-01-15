@@ -79,7 +79,6 @@ public class DataHandler {
 	public static void setLobbyLocation(Location lobbyLocation) {
 		if (lobbyLocation == null) return;
 		if (lobbyLocation.getWorld() == null) return;
-		if (Bukkit.getWorld(lobbyLocation.getWorld().getUID()) != null) return;
 		DataHandler.lobbyLocation = lobbyLocation;
 	}
 
