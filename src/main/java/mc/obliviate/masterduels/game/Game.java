@@ -340,8 +340,7 @@ public class Game {
 		spectatorManager.unspectate(spectator.getPlayer());
 		new PlayerReset().excludeExp().excludeLevel().excludeInventory().excludeGamemode().reset(spectator.getPlayer());
 		MessageUtils.sendMessage(spectator.getPlayer(), "you-left-from-duel");
-
-
+		teleportToLobby(spectator.getPlayer());
 	}
 
 	public boolean isMember(Player player) {
@@ -351,6 +350,20 @@ public class Game {
 			}
 		}
 		return false;
+	}
+
+	private void teleportToLobby(final Player player) {
+		if (DataHandler.getLobbyLocation() != null) {
+			if (DataHandler.getLobbyLocation().getWorld() != null) {
+				if (!player.teleport(DataHandler.getLobbyLocation())) {
+					if (!MasterDuels.isInShutdownMode()) {
+						player.kickPlayer("You could not teleported to lobby.\n" + DataHandler.getLobbyLocation());
+						Logger.error("Player " + player.getName() + " could not teleported to lobby. MasterDuels kicked him.");
+					}
+				}
+			}
+		}
+
 	}
 
 	public void leave(final Member member) {
@@ -369,12 +382,7 @@ public class Game {
 		ScoreboardManager.defaultScoreboard(member.getPlayer());
 
 
-		if (DataHandler.getLobbyLocation() != null && DataHandler.getLobbyLocation().getWorld() != null && !member.getPlayer().teleport(DataHandler.getLobbyLocation())) {
-			if (!MasterDuels.isInShutdownMode()) {
-				member.getPlayer().kickPlayer("You could not teleported to lobby.\n" + DataHandler.getLobbyLocation());
-				Logger.error("Player " + member.getPlayer().getName() + " could not teleported to lobby. BlokDuels kicked him.");
-			}
-		}
+		teleportToLobby(member.getPlayer());
 
 		MessageUtils.sendMessage(member.getPlayer(), "you-left-from-duel");
 		bossBarData.hide(member);
