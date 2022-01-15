@@ -11,9 +11,9 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-public class KitListGUI extends GUI {
+public class KitListEditorGUI extends GUI {
 
-	public KitListGUI(Player player) {
+	public KitListEditorGUI(Player player) {
 		super(player, "kit-list-gui", "Kit Editor", 6);
 	}
 

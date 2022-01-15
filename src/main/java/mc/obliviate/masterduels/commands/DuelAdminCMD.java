@@ -4,7 +4,7 @@ import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.game.GameBuilder;
-import mc.obliviate.masterduels.gui.kit.KitListGUI;
+import mc.obliviate.masterduels.gui.kit.KitListEditorGUI;
 import mc.obliviate.masterduels.kit.Kit;
 import mc.obliviate.masterduels.setup.ArenaSetup;
 import mc.obliviate.masterduels.utils.MessageUtils;
@@ -42,9 +42,9 @@ public class DuelAdminCMD implements CommandExecutor {
 			player.sendMessage(" §7/" + s + " create §8- §9enables arena setup mode");
 			player.sendMessage(" §7/" + s + " arena disable <arena name> §8- §9disables an duel arena");
 			player.sendMessage(" §7/" + s + " arena enable  <arena name> §8- §9enables an duel arena");
+			player.sendMessage(" §7/" + s + " kit save §8- §9saves your current inventory as new kit");
+			player.sendMessage(" §7/" + s + " kit editor §8- §9opens kit editor gui");
 			player.sendMessage(" §7/" + s + " setlobby §8- §9sets lobby location to teleport players after duel game");
-			player.sendMessage(" §7/" + s + " kitsave §8- §9saves your current inventory as new kit");
-			player.sendMessage(" §7/" + s + " kiteditor §8- §9opens kit editor gui");
 			player.sendMessage("");
 			player.sendMessage("§nMasterDuels v" + plugin.getDescription().getVersion());
 			return false;
@@ -73,10 +73,16 @@ public class DuelAdminCMD implements CommandExecutor {
 			SerializerUtils.serializeLocationYAML(plugin.getDatabaseHandler().getData().createSection("lobby-location"), player.getLocation());
 			plugin.getDatabaseHandler().saveDataFile();
 			player.sendMessage("§aLobby set successfully!");
-		} else if (args[0].equalsIgnoreCase("kiteditor")) {
-			new KitListGUI(player).open();
-		} else if (args[0].equalsIgnoreCase("kitsave")) {
-			kitSave(player, Arrays.asList(args));
+		} else if (args[0].equalsIgnoreCase("kit")) {
+			if (args.length == 1) {
+				//todo wrong usage
+				return false;
+			}
+			if (args[1].equalsIgnoreCase("editor")) {
+				new KitListEditorGUI(player).open();
+			} else if (args[1].equalsIgnoreCase("save")) {
+				kitSave(player, Arrays.asList(args));
+			}
 		} else if (args[0].equalsIgnoreCase("arena")) {
 			if (args.length == 1) {
 				//todo wrong usage
@@ -87,27 +93,33 @@ public class DuelAdminCMD implements CommandExecutor {
 			} else if (args[1].equalsIgnoreCase("enable")) {
 				toggleArena(player, Arrays.asList(args), true);
 			}
+			return true;
 		} else if (args[0].equalsIgnoreCase("forcestart")) {
-			if (args.length != 3) {
-				player.sendMessage("§cWrong usage! §7/dueladmin forcestart <player 1> <player 2>");
-				return false;
-			}
-
-			final Player p1 = Bukkit.getPlayerExact(args[1]);
-			final Player p2 = Bukkit.getPlayerExact(args[2]);
-			if (p1 == null || p2 == null) {
-				player.sendMessage("§cA player is not online");
-				return false;
-			}
-
-			final GameBuilder gameBuilder = new GameBuilder(plugin, p1.getUniqueId());
-			gameBuilder.addPlayer(p2);
-			gameBuilder.setFinishTime(1440);
-			gameBuilder.build().startGame();
-			return false;
+			forceStart(player, Arrays.asList(args));
+			return true;
 		}
 
 		return true;
+	}
+
+	private void forceStart(Player player, List<String> args) {
+		if (args.size() != 3) {
+			player.sendMessage("§cWrong usage! §7/dueladmin forcestart <player 1> <player 2>");
+			return;
+		}
+
+		final Player p1 = Bukkit.getPlayerExact(args.get(1));
+		final Player p2 = Bukkit.getPlayerExact(args.get(2));
+		if (p1 == null || p2 == null) {
+			player.sendMessage("§cA player is not online");
+			return;
+		}
+
+		final GameBuilder gameBuilder = new GameBuilder(plugin, p1.getUniqueId());
+		gameBuilder.addPlayer(p2);
+		gameBuilder.setFinishTime(1440);
+		gameBuilder.build().startGame();
+
 	}
 
 	private void toggleArena(Player player, List<String> args, boolean toggleState) {

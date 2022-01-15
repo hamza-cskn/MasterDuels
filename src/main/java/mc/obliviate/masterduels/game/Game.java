@@ -255,7 +255,7 @@ public class Game {
 				receivers = new ArrayList<>(Bukkit.getOnlinePlayers());
 				break;
 			case "SPECTATORS_AND_MEMBERS":
-				receivers = new ArrayList<>(getAllMembersAndSpectatorsAsPlayer());
+				receivers = getAllMembersAndSpectatorsAsPlayer();
 				break;
 			case "DISABLED":
 				return;
@@ -267,7 +267,7 @@ public class Game {
 		if (gameHistoryLog.getWinners().size() == 1) {
 			for (final Player player : receivers) {
 				final Player winner = Bukkit.getPlayer(gameHistoryLog.getWinners().get(0));
-				final String loserName = Bukkit.getOfflinePlayer(gameHistoryLog.getLosers().get(0)).getName();
+				final String loserName = gameHistoryLog.getLosers().size() == 0 ? "" : Bukkit.getOfflinePlayer(gameHistoryLog.getLosers().get(0)).getName();
 				MessageUtils.sendMessage(player, "game-end-broadcast.solo", new PlaceholderUtil().add("{winner}", winner.getName()).add("{loser}", loserName).add("{winner-health}", "" + winner.getHealthScale()));
 			}
 		} else {
