@@ -16,11 +16,13 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 public class DuelGameCreatorGUI extends GUI {
 
 	private final GameBuilder gameBuilder;
+	private final MasterDuels plugin;
 
 	//todo open team manager gui to non-owners
 	public DuelGameCreatorGUI(Player player, GameBuilder gameBuilder) {
 		super(player, "duel-game-creator-gui", "Loading...", 5);
 		this.gameBuilder = gameBuilder;
+		plugin = (MasterDuels) getPlugin();
 	}
 
 	@Override
@@ -32,17 +34,26 @@ public class DuelGameCreatorGUI extends GUI {
 	@Override
 	public void onOpen(InventoryOpenEvent event) {
 		fillRow(new Icon(XMaterial.BLACK_STAINED_GLASS_PANE.parseItem()).setDamage(15), 4);
-		addItem(10, getTeamAmountIcon());
-		addItem(11, getTeamSizeIcon());
-		addItem(12, getInvitesIcon());
-		addItem(13, getSettingsIcon());
-		addItem(14, getTeamManagerIcon());
-		addItem(15, getRoundAmountIcon());
-		addItem(17, getKitIcon());
+
+		if (VaultUtil.checkPermission(player, "masterduels.duelcreator.set.teamsize"))
+			addItem(11, getTeamSizeIcon());
+		if (VaultUtil.checkPermission(player, "masterduels.duelcreator.set.invite"))
+			addItem(12, getInvitesIcon());
+		if (VaultUtil.checkPermission(player, "masterduels.duelcreator.set.settings"))
+			addItem(13, getSettingsIcon());
+		if (VaultUtil.checkPermission(player, "masterduels.duelcreator.set.teamamount"))
+			addItem(10, getTeamAmountIcon());
+		if (VaultUtil.checkPermission(player, "masterduels.duelcreator.set.teammanager"))
+			addItem(14, getTeamManagerIcon());
+		if (VaultUtil.checkPermission(player, "masterduels.duelcreator.set.roundamount"))
+			addItem(15, getRoundAmountIcon());
+		if (VaultUtil.checkPermission(player, "masterduels.duelcreator.set.kit"))
+			addItem(17, getKitIcon());
 		if (Bet.betsEnabled) {
 			addItem(22, getBetIcon());
 		}
-		addItem(16, getFinishTimeIcon());
+		if (VaultUtil.checkPermission(player, "masterduels.duelcreator.set.finishtime"))
+			addItem(16, getFinishTimeIcon());
 		addItem(40, getStartGameIcon());
 	}
 
