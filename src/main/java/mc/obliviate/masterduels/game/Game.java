@@ -96,6 +96,7 @@ public class Game {
 
 		for (final Member member : getAllMembers()) {
 			bet.remove(member.getPlayer());
+			showAll(member.getPlayer());
 		}
 
 		GameBuilder.getGameBuilderMap().get(gameBuilder.getOwner()).destroy();
@@ -337,6 +338,10 @@ public class Game {
 
 	public void leave(final Spectator spectator) {
 		spectatorManager.unspectate(spectator.getPlayer());
+		new PlayerReset().excludeExp().excludeLevel().excludeInventory().excludeGamemode().reset(spectator.getPlayer());
+		MessageUtils.sendMessage(spectator.getPlayer(), "you-left-from-duel");
+
+
 	}
 
 	public boolean isMember(Player player) {
