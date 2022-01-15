@@ -31,7 +31,6 @@ public class TitleHandler {
 	}
 
 	public static Title format(final Title title, final PlaceholderUtil placeholderUtil) {
-		if (placeholderUtil == null) return title;
 		title.setTitle(MessageUtils.parseColor(MessageUtils.applyPlaceholders(title.getTitle(), placeholderUtil)));
 		title.setSubtitle(MessageUtils.parseColor(MessageUtils.applyPlaceholders(title.getSubtitle(), placeholderUtil)));
 		return title;
