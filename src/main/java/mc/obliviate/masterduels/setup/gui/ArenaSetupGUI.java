@@ -29,8 +29,8 @@ public class ArenaSetupGUI extends GUI {
 	@Override
 	public void onOpen(InventoryOpenEvent event) {
 
-		fillRow(new Icon(XMaterial.BLACK_STAINED_GLASS_PANE.parseItem()),5);
-		addItem(new Icon(XMaterial.GRAY_STAINED_GLASS_PANE.parseItem()),52,45,46);
+		fillRow(new Icon(XMaterial.BLACK_STAINED_GLASS_PANE.parseItem()), 5);
+		addItem(new Icon(XMaterial.GRAY_STAINED_GLASS_PANE.parseItem()), 52, 45, 46);
 		arenaNameHytem();
 		mapNameHytem();
 		cuboidHytem();
@@ -101,11 +101,17 @@ public class ArenaSetupGUI extends GUI {
 						ChatColor.GRAY + " 1st Position: " + ChatColor.RED + pos1State,
 						ChatColor.GRAY + " 2nd Position: " + ChatColor.RED + pos2State,
 						"",
-						ChatColor.YELLOW + "Click to create Arena Cuboid!"
+						ChatColor.YELLOW + "Left click to create Arena Cuboid!",
+						ChatColor.YELLOW + "Right click to expand vert positions."
 				)
 
 
 				.onClick(e -> {
+					if (e.isRightClick()) {
+						arenaSetup.getPosSelection().getPos1().setY(0);
+						arenaSetup.getPosSelection().getPos2().setY(255);
+
+					}
 					if (arenaSetup.getPosSelection().getPos1() == null || arenaSetup.getPosSelection().getPos2() == null) {
 						player.sendMessage(ChatColor.RED + "Please select 2 different positions to create arena cuboid.");
 						return;
@@ -113,8 +119,8 @@ public class ArenaSetupGUI extends GUI {
 
 					final ArenaCuboid cuboid = new ArenaCuboid(arenaSetup.getPosSelection().getPos1(), arenaSetup.getPosSelection().getPos2());
 					arenaSetup.setArenaCuboid(cuboid);
-
 					update(this);
+
 				})
 		);
 	}
@@ -217,7 +223,7 @@ public class ArenaSetupGUI extends GUI {
 
 		addItem(49, new Icon(XMaterial.BOOKSHELF.parseItem())
 				.setName(ChatColor.GOLD + "State of arena setup")
-				.setLore(ChatColor.GRAY + "Mode: §b" + MessageUtils.convertMode(arenaSetup.getTeamSize(),arenaSetup.getTeamAmount()),
+				.setLore(ChatColor.GRAY + "Mode: §b" + MessageUtils.convertMode(arenaSetup.getTeamSize(), arenaSetup.getTeamAmount()),
 						ChatColor.GRAY + "Positions: §b" + size + "/" + (arenaSetup.getTeamSize() * arenaSetup.getTeamAmount()),
 						ChatColor.GRAY + "Map: §b" + arenaSetup.getMapName(),
 						ChatColor.GRAY + "Arena Name: §b" + arenaSetup.getArenaName()
@@ -239,7 +245,7 @@ public class ArenaSetupGUI extends GUI {
 				}
 			}));
 		} else {
-			addItem(31, new Icon(XMaterial.REDSTONE_BLOCK.parseItem()).setName("§cSetup is not ready").setLore("","§7§oPlease be sure you've ","§7§ocompleted all requirements."));
+			addItem(31, new Icon(XMaterial.REDSTONE_BLOCK.parseItem()).setName("§cSetup is not ready").setLore("", "§7§oPlease be sure you've ", "§7§ocompleted all requirements."));
 		}
 	}
 

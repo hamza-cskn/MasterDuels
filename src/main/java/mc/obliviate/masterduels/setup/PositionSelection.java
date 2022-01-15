@@ -16,12 +16,10 @@ public class PositionSelection {
 	}
 
 	public void setPos1(Location pos1) {
-		pos1.setY(0);
 		this.pos1 = pos1;
 	}
 
 	public void setPos2(Location pos2) {
-		pos2.setY(255);
 		this.pos2 = pos2;
 	}
 
