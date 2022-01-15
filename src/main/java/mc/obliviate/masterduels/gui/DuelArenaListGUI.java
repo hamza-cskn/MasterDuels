@@ -51,6 +51,12 @@ public class DuelArenaListGUI extends GUI {
 		for (final String line : guiConfig.gameIconDescription.get(state).subList(1, guiConfig.gameIconDescription.size() - 1)) {
 			icon.appendLore(MessageUtils.parseColor(MessageUtils.applyPlaceholders(line, placeholderUtil)));
 		}
+		icon.onClick(e -> {
+			final Game g = DataHandler.getArenas().get(arena);
+			if (g != null) {
+				g.spectate(player);
+			}
+		});
 		return icon;
 	}
 
