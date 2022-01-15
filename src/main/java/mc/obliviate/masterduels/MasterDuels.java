@@ -49,9 +49,9 @@ public class MasterDuels extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
+		setupHandlers();
 		registerListeners();
 		registerCommands();
-		setupHandlers();
 		setupTimers();
 		loadKits();
 		shutdownMode = false;
