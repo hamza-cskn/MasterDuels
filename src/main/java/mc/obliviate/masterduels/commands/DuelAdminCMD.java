@@ -3,6 +3,7 @@ package mc.obliviate.masterduels.commands;
 import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.data.DataHandler;
+import mc.obliviate.masterduels.game.GameBuilder;
 import mc.obliviate.masterduels.gui.kit.KitListGUI;
 import mc.obliviate.masterduels.kit.Kit;
 import mc.obliviate.masterduels.setup.ArenaSetup;
@@ -86,6 +87,24 @@ public class DuelAdminCMD implements CommandExecutor {
 			} else if (args[1].equalsIgnoreCase("enable")) {
 				toggleArena(player, Arrays.asList(args), true);
 			}
+		} else if (args[0].equalsIgnoreCase("forcestart")) {
+			if (args.length != 3) {
+				player.sendMessage("§cWrong usage! §7/dueladmin forcestart <player 1> <player 2>");
+				return false;
+			}
+
+			final Player p1 = Bukkit.getPlayerExact(args[1]);
+			final Player p2 = Bukkit.getPlayerExact(args[2]);
+			if (p1 == null || p2 == null) {
+				player.sendMessage("§cA player is not online");
+				return false;
+			}
+
+			final GameBuilder gameBuilder = new GameBuilder(plugin, p1.getUniqueId());
+			gameBuilder.addPlayer(p2);
+			gameBuilder.setFinishTime(1440);
+			gameBuilder.build().startGame();
+			return false;
 		}
 
 		return true;
