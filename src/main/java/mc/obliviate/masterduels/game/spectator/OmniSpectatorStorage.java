@@ -1,14 +1,8 @@
 package mc.obliviate.masterduels.game.spectator;
 
 import com.hakan.messageapi.bukkit.MessageAPI;
-import mc.obliviate.masterduels.api.events.spectator.DuelGamePreSpectatorJoinEvent;
-import mc.obliviate.masterduels.api.events.spectator.DuelGameSpectatorLeaveEvent;
-import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.game.Game;
-import mc.obliviate.masterduels.kit.InventoryStorer;
-import mc.obliviate.masterduels.user.spectator.Spectator;
 import mc.obliviate.masterduels.user.team.Member;
-import mc.obliviate.masterduels.user.team.Team;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.playerreset.PlayerReset;
 import mc.obliviate.masterduels.utils.title.TitleHandler;
@@ -18,7 +12,7 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OmniSpectatorStorage implements ISpectatorStorage{
+public class OmniSpectatorStorage implements ISpectatorStorage {
 
 	protected static final PlayerReset playerReset = new PlayerReset().excludeExp().excludeLevel().excludeInventory().excludeTitle();
 	private final GameSpectatorManager gsm;
@@ -46,6 +40,10 @@ public class OmniSpectatorStorage implements ISpectatorStorage{
 		Bukkit.broadcastMessage("omni spectator unspectate()");
 		playerReset.reset(player);
 
+		for (final Member member : game.getAllMembers()) {
+			member.getPlayer().showPlayer(player);
+		}
+
 		MessageAPI.getInstance(game.getPlugin()).sendTitle(player, TitleHandler.getTitle(TitleHandler.TitleType.SPECTATOR_LEAVE));
 
 	}
@@ -58,17 +56,14 @@ public class OmniSpectatorStorage implements ISpectatorStorage{
 		/*final DuelGamePreSpectatorJoinEvent duelGamePreSpectatorJoinEvent = new DuelGamePreSpectatorJoinEvent(player, game);
 		Bukkit.getPluginManager().callEvent(duelGamePreSpectatorJoinEvent);
 		if (duelGamePreSpectatorJoinEvent.isCancelled()) return;
-
 		 */
 
 		new PlayerReset().excludeGamemode().excludeInventory().excludeLevel().excludeExp().reset(player);
 
 		Bukkit.broadcastMessage("omni spectator spectate()");
 
-		for (final Team team : game.getTeams().values()) {
-			for (final Member m : team.getMembers()) {
-				m.getPlayer().hidePlayer(player);
-			}
+		for (final Member m : game.getAllMembers()) {
+			m.getPlayer().hidePlayer(player);
 		}
 
 		for (final Player spec : gsm.getAllSpectators()) {
@@ -82,8 +77,6 @@ public class OmniSpectatorStorage implements ISpectatorStorage{
 		MessageUtils.sendMessage(player, "you-are-a-spectator");
 
 		MessageAPI.getInstance(game.getPlugin()).sendTitle(player, TitleHandler.getTitle(TitleHandler.TitleType.SPECTATOR_JOIN));
-
-
 	}
 
 	@Override
