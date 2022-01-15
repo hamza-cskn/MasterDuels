@@ -4,8 +4,8 @@ import mc.obliviate.masterduels.arena.elements.ArenaCuboid;
 import mc.obliviate.masterduels.arena.elements.Positions;
 import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.game.Game;
+import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.serializer.SerializerUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -94,17 +94,22 @@ public class Arena {
 		final Location cuboidPos2 = SerializerUtils.deserializeLocationYAML(section.getConfigurationSection("arena-cuboid.position-2"));
 
 		if (cuboidPos1 == null || cuboidPos2 == null) {
-			Bukkit.getLogger().severe("Cuboid pos1 or pos2 couldn't deserialized. Arena: " + name);
+			Logger.error("Cuboid pos1 or pos2 couldn't deserialized. Arena: " + name);
 			return null;
 		}
 		if (cuboidPos1.getWorld() != cuboidPos2.getWorld()) {
-			Bukkit.getLogger().severe("Cuboid pos1 and pos2 are in different world. Arena: " + name);
+			Logger.error("Cuboid pos1 and pos2 are in different world. Arena: " + name);
 			return null;
 		}
 
 		final ArenaCuboid arenaCuboid = new ArenaCuboid(cuboidPos1, cuboidPos2);
 
 		final ConfigurationSection positionsSection = section.getConfigurationSection("positions");
+
+		if (positionsSection == null) {
+			Logger.error("Arena could not deserialized. Position node is null!");
+			return null;
+		}
 
 		final Map<String, Positions> positions = new HashMap<>();
 		for (final String key : positionsSection.getKeys(false)) {
