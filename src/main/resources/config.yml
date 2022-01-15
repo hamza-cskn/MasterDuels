@@ -9,8 +9,12 @@ arena-regeneration:
   regenerate-mode: SMART
   remove-entities: true #removes DROPPED ITEMS and PROJECTILES that are in arena region.
 
-#if set true, players can break only placed blocks by a player (and formed blocks).
+# if set true, players can break only placed blocks by a player (and formed blocks).
 prevent-break-non-placed-blocks: true
+
+# if set true, teleports player to arena area(1. team's 1. position) when they break/place block
+# to out of arena cuboid. Do not set it true if you didn't set arena cuboids correctly.
+teleport-back-when-arena-cuboid-violated: false
 
 # if set true, MasterDuels will changes Bukkit world configurations of all
 # worlds of arenas. Thats includes game rules of the worlds. We recommend this,

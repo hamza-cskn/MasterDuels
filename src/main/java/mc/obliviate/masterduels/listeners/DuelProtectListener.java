@@ -20,9 +20,11 @@ import org.bukkit.inventory.InventoryHolder;
 public class DuelProtectListener implements Listener {
 
 	private final MasterDuels plugin;
+	private final boolean teleportBackWhenLimitViolate;
 
 	public DuelProtectListener(MasterDuels plugin) {
 		this.plugin = plugin;
+		teleportBackWhenLimitViolate = plugin.getDatabaseHandler().getConfig().getBoolean("teleport-back-when-arena-cuboid-violated", false);
 	}
 
 	private boolean isUser(final Player player) {
@@ -111,6 +113,25 @@ public class DuelProtectListener implements Listener {
 	public void onFishing(final PlayerFishEvent e) {
 		if (!isUser(e.getPlayer())) return;
 		e.setCancelled(true);
+	}
+
+	@EventHandler(ignoreCancelled = true)
+	public void onBreak(final BlockBreakEvent e) {
+		final IUser user = DataHandler.getUser(e.getPlayer().getUniqueId());
+		if (user == null) return;
+		if (!user.getGame().getArena().getArenaCuboid().isIn(e.getBlock().getLocation())) {
+			e.setCancelled(true);
+			MessageUtils.sendMessage(e.getPlayer(),"you-can-not-break");
+		}
+	}
+	@EventHandler(ignoreCancelled = true)
+	public void onPlace(final BlockPlaceEvent e) {
+		final IUser user = DataHandler.getUser(e.getPlayer().getUniqueId());
+		if (user == null) return;
+		if (!user.getGame().getArena().getArenaCuboid().isIn(e.getBlock().getLocation())) {
+			e.setCancelled(true);
+			MessageUtils.sendMessage(e.getPlayer(),"you-can-not-place");
+		}
 	}
 
 	@EventHandler
