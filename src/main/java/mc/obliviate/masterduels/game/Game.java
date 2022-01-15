@@ -168,6 +168,7 @@ public class Game {
 	}
 
 	public void storeKits() {
+		if (kit == null) return; //no kit, no store
 		for (final Member member : getAllMembers()) {
 			if (!Kit.storeKits(member.getPlayer())) {
 				Logger.error(member.getPlayer().getName() + "'s inventory could not stored! Duel game cancelling for security.");
@@ -357,9 +358,7 @@ public class Game {
 			Logger.severe("Inventory could not restored: " + member.getPlayer());
 		}
 
-
 		showAll(member.getPlayer());
-
 
 		new PlayerReset().excludeExp().excludeLevel().excludeInventory().excludeGamemode().reset(member.getPlayer());
 		ScoreboardManager.defaultScoreboard(member.getPlayer());
