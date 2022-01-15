@@ -1,5 +1,9 @@
 package mc.obliviate.masterduels.gui.creator;
 
+import mc.obliviate.inventory.GUI;
+import mc.obliviate.inventory.Icon;
+import mc.obliviate.masterduels.MasterDuels;
+import mc.obliviate.masterduels.VaultUtil;
 import mc.obliviate.masterduels.game.Game;
 import mc.obliviate.masterduels.game.GameBuilder;
 import mc.obliviate.masterduels.game.bet.Bet;
@@ -8,8 +12,6 @@ import mc.obliviate.masterduels.setup.chatentry.ChatEntry;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
 import mc.obliviate.masterduels.utils.xmaterial.XMaterial;
-import mc.obliviate.inventory.GUI;
-import mc.obliviate.inventory.Icon;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 
@@ -98,8 +100,9 @@ public class DuelGameCreatorGUI extends GUI {
 			new ChatEntry(player.getUniqueId(), getPlugin()).onResponse(event -> {
 				try {
 					gameBuilder.getBet().setMoney(Integer.parseInt(event.getMessage()));
+					MessageUtils.sendMessage(player, "enter-bet-amount");
 				} catch (NumberFormatException exception) {
-					MessageUtils.sendMessage(event.getPlayer(), "invalid-number", new PlaceholderUtil().add("{entry}", event.getMessage()));
+					MessageUtils.sendMessage(player, "invalid-number", new PlaceholderUtil().add("{entry}", event.getMessage()));
 				} finally {
 					open();
 				}
@@ -108,11 +111,11 @@ public class DuelGameCreatorGUI extends GUI {
 	}
 
 	private Icon getKitIcon() {
-		final Icon kitIcon = new Icon(XMaterial.IRON_CHESTPLATE.parseItem()).setName(MessageUtils.parseColor("&aKit")).setLore(MessageUtils.parseColor("&bCurrently: &f" + (gameBuilder.getKit() == null ? "None" : gameBuilder.getKit().getKitName())), "", MessageUtils.parseColor("&eClick to change bet"));
+		final Icon kitIcon = new Icon(XMaterial.IRON_CHESTPLATE.parseItem()).setName(MessageUtils.parseColor("&aKit")).setLore(MessageUtils.parseColor("&bCurrently: &f" + (gameBuilder.getKit() == null ? "None" : gameBuilder.getKit().getKitName())), "", MessageUtils.parseColor("&eClick to select kit"));
 		return kitIcon.onClick(e -> {
 			new KitSelectionGUI(player, gameBuilder, kit -> {
 				open();
-			});
+			}).open();
 		});
 	}
 
