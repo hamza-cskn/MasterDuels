@@ -21,6 +21,7 @@ public class SerializerUtils {
 	public static final String DATA_SPLIT_CHARACTER = "|";
 
 	public static void serializeLocationYAML(final ConfigurationSection section, final Location location) {
+		if (location == null) return;
 		section.set("world", location.getWorld().getName());
 		section.set("x", location.getX());
 		section.set("y", location.getY());
