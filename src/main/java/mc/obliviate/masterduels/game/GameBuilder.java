@@ -9,7 +9,7 @@ import mc.obliviate.masterduels.game.gamerule.GameRule;
 import mc.obliviate.masterduels.invite.Invite;
 import mc.obliviate.masterduels.invite.InviteResponse;
 import mc.obliviate.masterduels.kit.Kit;
-import mc.obliviate.masterduels.user.User;
+import mc.obliviate.masterduels.user.IUser;
 import mc.obliviate.masterduels.user.team.Member;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
@@ -148,7 +148,7 @@ public class GameBuilder {
 			return;
 		}
 
-		final User invitedUser = DataHandler.getUser(invited.getUniqueId());
+		final IUser invitedUser = DataHandler.getUser(invited.getUniqueId());
 
 		if (invitedUser instanceof Member) {
 			MessageUtils.sendMessage(inviter, "target-already-in-duel", new PlaceholderUtil().add("{target}", inviter.getName()));
@@ -156,6 +156,7 @@ public class GameBuilder {
 		}
 
 		for (final GameBuilder builder : GAME_BUILDER_MAP.values()) {
+			if (builder.getOwner().equals(invited.getUniqueId())) break;
 			if (builder.getPlayers().contains(invited)) {
 				MessageUtils.sendMessage(inviter, "target-already-in-duel", new PlaceholderUtil().add("{target}", inviter.getName()));
 				return;
@@ -216,6 +217,10 @@ public class GameBuilder {
 	}
 
 	public void addPlayer(Player player) {
+		final GameBuilder playerGameBuilder = GAME_BUILDER_MAP.get(player.getUniqueId());
+		if (playerGameBuilder != null) {
+			playerGameBuilder.destroy();
+		}
 		for (final Invite invite : findInvites(player.getUniqueId())) {
 			invite.setResult(false);
 		}

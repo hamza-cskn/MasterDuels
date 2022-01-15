@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
  * <p>
  * Spectators who watching duel game, players who is in duel game...
  */
-public interface User {
+public interface IUser {
 
 	Game getGame();
 

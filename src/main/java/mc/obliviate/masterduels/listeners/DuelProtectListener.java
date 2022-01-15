@@ -2,7 +2,7 @@ package mc.obliviate.masterduels.listeners;
 
 import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.data.DataHandler;
-import mc.obliviate.masterduels.user.User;
+import mc.obliviate.masterduels.user.IUser;
 import mc.obliviate.masterduels.user.team.Member;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
@@ -26,7 +26,7 @@ public class DuelProtectListener implements Listener {
 	}
 
 	private boolean isUser(final Player player) {
-		final User user = DataHandler.getUser(player.getUniqueId());
+		final IUser user = DataHandler.getUser(player.getUniqueId());
 		return user != null;
 	}
 

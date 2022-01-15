@@ -11,12 +11,13 @@ import mc.obliviate.masterduels.bossbar.TABBossbarManager;
 import mc.obliviate.masterduels.game.bet.Bet;
 import mc.obliviate.masterduels.game.gamerule.GameRule;
 import mc.obliviate.masterduels.game.round.RoundData;
-import mc.obliviate.masterduels.game.spectator.SpectatorStorage;
+import mc.obliviate.masterduels.game.spectator.GameSpectatorManager;
+import mc.obliviate.masterduels.game.spectator.PureSpectatorStorage;
 import mc.obliviate.masterduels.history.GameHistoryLog;
 import mc.obliviate.masterduels.kit.InventoryStorer;
 import mc.obliviate.masterduels.kit.Kit;
-import mc.obliviate.masterduels.user.Spectator;
-import mc.obliviate.masterduels.user.User;
+import mc.obliviate.masterduels.user.spectator.Spectator;
+import mc.obliviate.masterduels.user.IUser;
 import mc.obliviate.masterduels.user.team.Member;
 import mc.obliviate.masterduels.user.team.Team;
 import mc.obliviate.masterduels.utils.Logger;
@@ -50,7 +51,7 @@ public class Game {
 	private final List<GameRule> gameRules;
 	private final Map<String, BukkitTask> tasks = new HashMap<>();
 	private final RoundData roundData = new RoundData();
-	private final SpectatorStorage spectatorData = new SpectatorStorage(this);
+	private final GameSpectatorManager spectatorManager = new GameSpectatorManager(this);
 	private final GameBuilder gameBuilder;
 	private final TABBossbarManager bossBarData = new TABBossbarManager(this);
 	private final GameHistoryLog gameHistoryLog = new GameHistoryLog();
@@ -97,7 +98,7 @@ public class Game {
 			bet.remove(member.getPlayer());
 		}
 
-		GameBuilder.getGameBuilderMap().remove(gameBuilder.getOwner());
+		GameBuilder.getGameBuilderMap().get(gameBuilder.getOwner()).destroy();
 	}
 
 	public void initBossBar() {
@@ -139,7 +140,7 @@ public class Game {
 		resetPlayers();
 		reloadKits();
 		lockTeams();
-		spectatorData.unSpectateMembers();
+		spectatorManager.getOmniSpectatorStorage().unSpectateMembers();
 
 		task("ROUNDTASK_on-round-start-timer", Bukkit.getScheduler().runTaskLater(plugin, () -> {
 			gameState = BATTLE;
@@ -199,17 +200,10 @@ public class Game {
 	}
 
 	public List<Player> getAllMembersAndSpectatorsAsPlayer() {
-		final List<Member> members = getAllMembers();
 		final List<Player> allPlayers = new ArrayList<>();
-		members.forEach(mem -> allPlayers.add(mem.getPlayer()));
+		getAllMembers().forEach(mem -> allPlayers.add(mem.getPlayer()));
 
-		for (final Player spectator : spectatorData.getSpectators()) {
-			for (final Player member : allPlayers) {
-				if (member.equals(spectator)) {
-					break;
-				}
-			}
-		}
+		allPlayers.addAll(spectatorManager.getPureSpectatorStorage().getSpectatorList());
 
 		return allPlayers;
 	}
@@ -300,13 +294,8 @@ public class Game {
 		setGameState(UNINSTALLING);
 		broadcastInGame("game-finished");
 
-		for (final Team team : teams.values()) {
-			for (final Member member : team.getMembers()) {
-				leave(member);
-			}
-		}
-		for (final Player spectator : spectatorData.getSpectators()) {
-			leave(getSpectatorData().getSpectator(spectator));
+		for (final Player p : getAllMembersAndSpectatorsAsPlayer()) {
+			leave(p);
 		}
 
 		cancelTasks(null);
@@ -333,7 +322,11 @@ public class Game {
 
 	}
 
-	public void leave(final User user) {
+	public void leave(final Player player) {
+		leave(DataHandler.getUser(player.getUniqueId()));
+	}
+
+	public void leave(final IUser user) {
 		if (user instanceof Member) {
 			leave((Member) user);
 		} else if (user instanceof Spectator) {
@@ -342,7 +335,7 @@ public class Game {
 	}
 
 	public void leave(final Spectator spectator) {
-		spectatorData.unspectate(spectator);
+		spectatorManager.unspectate(spectator.getPlayer());
 	}
 
 	public boolean isMember(Player player) {
@@ -401,7 +394,7 @@ public class Game {
 			}
 		}
 
-		for (final Player p : spectatorData.getSpectators()) {
+		for (final Player p : spectatorManager.getPureSpectatorStorage().getSpectatorList()) {
 			player.showPlayer(p);
 		}
 	}
@@ -429,7 +422,7 @@ public class Game {
 			broadcastInGame("player-dead.by-attacker", new PlaceholderUtil().add("{attacker}", attacker.getPlayer().getName()).add("{victim}", victim.getPlayer().getName()));
 		}
 
-		spectatorData.spectate(victim.getPlayer());
+		spectatorManager.spectate(victim);
 
 		if (checkTeamEliminated(victim.getTeam())) {
 
@@ -444,18 +437,18 @@ public class Game {
 
 	public void spectate(Player player) {
 		if (DataHandler.getUser(player.getUniqueId()) == null) {
-			getSpectatorData().spectate(player);
+			getSpectatorManager().spectate(player);
 		}
 	}
 
 	//todo test: start a game when players is spectating
 	public void unspectate(Player player) {
-		getSpectatorData().unspectate(player);
+		getSpectatorManager().unspectate(player);
 	}
 
 	public boolean checkTeamEliminated(final Team team) {
 		for (Member p : team.getMembers()) {
-			if (!spectatorData.getSpectators().contains(p.getPlayer())) {
+			if (!spectatorManager.getOmniSpectatorStorage().getSpectatorList().contains(p.getPlayer())) {
 				return false;
 			}
 		}
@@ -537,8 +530,8 @@ public class Game {
 		return roundData;
 	}
 
-	public SpectatorStorage getSpectatorData() {
-		return spectatorData;
+	public GameSpectatorManager getSpectatorManager() {
+		return spectatorManager;
 	}
 
 	public Arena getArena() {
@@ -560,7 +553,6 @@ public class Game {
 	public long getFinishTime() {
 		return finishTime;
 	}
-
 
 
 	public Map<String, BukkitTask> getTasks() {

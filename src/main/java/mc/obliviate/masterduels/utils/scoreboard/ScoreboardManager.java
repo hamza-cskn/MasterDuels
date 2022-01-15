@@ -75,7 +75,7 @@ public class ScoreboardManager {
 			if (line.equalsIgnoreCase("{+opponents}")) {
 				for (final Member m : game.getAllMembers()) {
 					if (!member.getTeam().equals(m.getTeam())) {
-						if (game.getSpectatorData().isSpectator(m.getPlayer())) {
+						if (game.getSpectatorManager().isSpectator(m.getPlayer())) {
 							api.setProcessedScoreboardValue(player, ++index, MessageUtils.parseColor(scoreboardFormatConfig.getDeadOpponentFormat().replace("{health}", "0").replace("{name}", m.getPlayer().getName() + "")));
 						} else {
 							api.setProcessedScoreboardValue(player, ++index, MessageUtils.parseColor(scoreboardFormatConfig.getLiveOpponentFormat().replace("{health}", "" + m.getPlayer().getHealthScale()).replace("{name}", m.getPlayer().getName() + "")));

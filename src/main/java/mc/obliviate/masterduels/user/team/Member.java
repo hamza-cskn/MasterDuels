@@ -2,10 +2,10 @@ package mc.obliviate.masterduels.user.team;
 
 import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.game.Game;
-import mc.obliviate.masterduels.user.User;
+import mc.obliviate.masterduels.user.IUser;
 import org.bukkit.entity.Player;
 
-public class Member implements User {
+public class Member implements IMember, IUser {
 
 	private final Team team;
 	private final Player player;

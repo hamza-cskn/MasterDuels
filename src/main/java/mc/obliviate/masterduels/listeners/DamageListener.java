@@ -2,9 +2,10 @@ package mc.obliviate.masterduels.listeners;
 
 import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.data.DataHandler;
-import mc.obliviate.masterduels.game.spectator.SpectatorStorage;
-import mc.obliviate.masterduels.user.Spectator;
-import mc.obliviate.masterduels.user.User;
+import mc.obliviate.masterduels.game.spectator.GameSpectatorManager;
+import mc.obliviate.masterduels.game.spectator.PureSpectatorStorage;
+import mc.obliviate.masterduels.user.spectator.Spectator;
+import mc.obliviate.masterduels.user.IUser;
 import mc.obliviate.masterduels.user.team.Member;
 import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.MessageUtils;
@@ -39,7 +40,7 @@ public class DamageListener implements Listener {
 
 		final Player victim = (Player) e.getEntity();
 
-		final User victimUser = DataHandler.getUser(victim.getUniqueId());
+		final IUser victimUser = DataHandler.getUser(victim.getUniqueId());
 		if (victimUser == null) return;
 
 		if (victimUser instanceof Member) {
@@ -62,7 +63,7 @@ public class DamageListener implements Listener {
 						//friendly protect
 						return;
 					}
-					final SpectatorStorage spectatorData = victimMember.getTeam().getGame().getSpectatorData();
+					final GameSpectatorManager spectatorData = victimMember.getTeam().getGame().getSpectatorManager();
 					if (spectatorData.isSpectator(victim) || spectatorData.isSpectator(attackerMember.getPlayer())) {
 						e.setCancelled(true);
 						//spectator protect

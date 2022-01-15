@@ -12,7 +12,7 @@ import mc.obliviate.masterduels.invite.Invite;
 import mc.obliviate.masterduels.invite.InviteResult;
 import mc.obliviate.masterduels.invite.Invites;
 import mc.obliviate.masterduels.statistics.DuelStatistic;
-import mc.obliviate.masterduels.user.User;
+import mc.obliviate.masterduels.user.IUser;
 import mc.obliviate.masterduels.user.team.Member;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
@@ -38,7 +38,7 @@ public class DuelCMD implements CommandExecutor {
 
 		final Player player = ((Player) sender).getPlayer();
 
-		final User user = DataHandler.getUser(player.getUniqueId());
+		final IUser user = DataHandler.getUser(player.getUniqueId());
 
 		if (args.length == 0) {
 			MessageUtils.sendMessage(player, "duel-command.usage");

@@ -10,6 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -122,6 +123,11 @@ public class DuelTeamManagerGUI extends GUI {
 
 		});
 
+	}
+
+	@Override
+	public void onClose(InventoryCloseEvent event) {
+		event.getPlayer().setItemOnCursor(null);
 	}
 
 	@Override

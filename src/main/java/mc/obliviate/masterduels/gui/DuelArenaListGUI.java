@@ -38,7 +38,7 @@ public class DuelArenaListGUI extends GUI {
 		final BasicArenaState state = Arena.getBasicArenaState(arena);
 		if (game != null) {
 			final int players = game.getGameBuilder().getPlayers().size();
-			final int spectators = game.getSpectatorData().getSpectators().size();
+			final int spectators = game.getSpectatorManager().getAllSpectators().size();
 			placeholderUtil.add("{players}", players + "");
 			placeholderUtil.add("{spectators}", spectators + "");
 			placeholderUtil.add("{playersandspectators}", (spectators + players) + "");

@@ -3,6 +3,7 @@ package mc.obliviate.masterduels.gui.creator;
 import mc.obliviate.masterduels.game.Game;
 import mc.obliviate.masterduels.game.GameBuilder;
 import mc.obliviate.masterduels.game.bet.Bet;
+import mc.obliviate.masterduels.gui.kit.KitSelectionGUI;
 import mc.obliviate.masterduels.setup.chatentry.ChatEntry;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
@@ -37,6 +38,7 @@ public class DuelGameCreatorGUI extends GUI {
 		addItem(13, getSettingsIcon());
 		addItem(14, getTeamManagerIcon());
 		addItem(15, getRoundAmountIcon());
+		addItem(17, getKitIcon());
 		if (Bet.betsEnabled) {
 			addItem(22, getBetIcon());
 		}
@@ -94,13 +96,22 @@ public class DuelGameCreatorGUI extends GUI {
 		});
 	}
 
+	private Icon getKitIcon() {
+		final Icon kitIcon = new Icon(XMaterial.IRON_CHESTPLATE.parseItem()).setName(MessageUtils.parseColor("&aKit")).setLore(MessageUtils.parseColor("&bCurrently: &f" + (gameBuilder.getKit() == null ? "None" : gameBuilder.getKit().getKitName())), "", MessageUtils.parseColor("&eClick to change bet"));
+		return kitIcon.onClick(e -> {
+			new KitSelectionGUI(player, gameBuilder, kit -> {
+				open();
+			});
+		});
+	}
+
 	private Icon getRoundAmountIcon() {
 		final Icon roundAmountIcon = new Icon(XMaterial.DIAMOND_HORSE_ARMOR.parseItem()).setName(MessageUtils.parseColor("&aRound Amount")).setLore(MessageUtils.parseColor("&bCurrently: &f" + gameBuilder.getTotalRounds() + " rounds"), "", MessageUtils.parseColor("&eLeft click to increase"), MessageUtils.parseColor("&eRight click to decrease"));
 		return roundAmountIcon.onClick(e -> {
 			if (e.isRightClick()) {
-				gameBuilder.setTotalRounds(Math.max(gameBuilder.getTotalRounds() - 1, 1));
+				gameBuilder.setTotalRounds(Math.max(gameBuilder.getTotalRounds() - 2, 1));
 			} else if (e.isLeftClick()) {
-				gameBuilder.setTotalRounds(Math.min(gameBuilder.getTotalRounds() + 1, 5));
+				gameBuilder.setTotalRounds(Math.min(gameBuilder.getTotalRounds() + 2, 5));
 			}
 			open();
 		});

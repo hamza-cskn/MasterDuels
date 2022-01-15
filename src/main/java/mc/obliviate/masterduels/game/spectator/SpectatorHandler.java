@@ -6,7 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public class SpectatorManager {
+public class SpectatorHandler {
 
 	private static PlayerInventoryFrame spectatorInventoryFrame;
 
@@ -33,6 +33,6 @@ public class SpectatorManager {
 	}
 
 	public static void setSpectatorInventoryFrame(PlayerInventoryFrame spectatorInventoryFrame) {
-		SpectatorManager.spectatorInventoryFrame = spectatorInventoryFrame;
+		SpectatorHandler.spectatorInventoryFrame = spectatorInventoryFrame;
 	}
 }

@@ -2,7 +2,7 @@ package mc.obliviate.masterduels.api.events.spectator;
 
 import mc.obliviate.masterduels.api.events.arena.GameEvent;
 import mc.obliviate.masterduels.game.Game;
-import mc.obliviate.masterduels.user.Spectator;
+import mc.obliviate.masterduels.user.spectator.Spectator;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
