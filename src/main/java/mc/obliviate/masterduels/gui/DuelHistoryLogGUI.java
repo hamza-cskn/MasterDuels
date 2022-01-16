@@ -46,21 +46,24 @@ public class DuelHistoryLogGUI extends GUI {
 	}
 
 	private Icon deserializeIcon(final ConfigurationSection section, GameHistoryLog log) { //todo make config storage class to store itemstacks in cache
-		if (section == null) return new Icon(XMaterial.BEDROCK.parseItem()).setName("Item could not deserialized. (Config Section is null)");
+		if (section == null)
+			return new Icon(XMaterial.BEDROCK.parseItem()).setName("Item could not deserialized. (Config Section is null)");
 		final Optional<XMaterial> xMaterial = XMaterial.matchXMaterial(section.getString("material-type"));
 
-		if (!xMaterial.isPresent()) return new Icon(XMaterial.BEDROCK.parseItem()).setName("Item could not deserialized.");
+		if (!xMaterial.isPresent())
+			return new Icon(XMaterial.BEDROCK.parseItem()).setName("Item could not deserialized.");
 		final Icon icon = new Icon(xMaterial.get().parseItem());
 		final List<String> description = section.getStringList("description");
 
 		final PlaceholderUtil placeholderUtil = new PlaceholderUtil().add("{time}", TimerUtils.getFormattedDifferentTime(log.getStartTime(), log.getEndTime()))
 				.add("{played-date}", new SimpleDateFormat("HH:mm dd/MM/yyyy").format(new Date(log.getStartTime())));
-		if (log.getLosers().size() == 1) {
+		if (log.getWinners().size() == 1) {
 			placeholderUtil.add("{winner}", Bukkit.getOfflinePlayer(log.getWinners().get(0)).getName());
+		}
+		if (log.getLosers().size() == 1) {
 			placeholderUtil.add("{loser}", Bukkit.getOfflinePlayer(log.getLosers().get(0)).getName());
 		}
-
-		for (final String line : description.subList(1,description.size())) {
+		for (final String line : description.subList(1, description.size())) {
 			if (line.equalsIgnoreCase("{+winners}")) {
 				for (final UUID uuid : log.getWinners()) {
 					icon.appendLore(MessageUtils.parseColor(MessageUtils.applyPlaceholders(section.getString("winners-format"), new PlaceholderUtil().add("{winner}", Bukkit.getOfflinePlayer(uuid).getName()))));

@@ -16,6 +16,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.InventoryHolder;
 
@@ -108,7 +109,6 @@ public class DuelProtectListener implements Listener {
 				MessageUtils.sendMessage(e.getPlayer(), "command-is-blocked", new PlaceholderUtil().add("{command}", e.getMessage()));
 			}
 		}
-
 	}
 
 	@EventHandler
@@ -155,8 +155,8 @@ public class DuelProtectListener implements Listener {
 	}
 
 	@EventHandler
-	public void onDamage(final EntityDamageByEntityEvent e) {
-		if (e.getEntity().getType().equals(EntityType.PLAYER) && e.getDamager().getType().equals(EntityType.PLAYER)) {
+	public void onDamage(final EntityDamageEvent e) {
+		if (e.getEntity().getType().equals(EntityType.PLAYER)) {
 			final IUser user = DataHandler.getUser(e.getEntity().getUniqueId());
 			if (user == null) return;
 
@@ -165,11 +165,15 @@ public class DuelProtectListener implements Listener {
 				return;
 			}
 
-			if (!isUser(e.getDamager())) {
-				//victim is in duel
-				//attacker isn't in duel
-				//cancel it.
-				e.setCancelled(true);
+			if (e instanceof EntityDamageByEntityEvent) {
+				if (((EntityDamageByEntityEvent) e).getDamager() instanceof Player) {
+					if (!isUser(((EntityDamageByEntityEvent) e).getDamager())) {
+						//victim is in duel
+						//attacker isn't in duel
+						//cancel it.
+						e.setCancelled(true);
+					}
+				}
 			}
 		}
 	}

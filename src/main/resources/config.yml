@@ -1,3 +1,10 @@
+#
+# Official wiki: https://mrobliviate.gitbook.io/masterduels-wiki-1/
+# Developer Contact: https://www.spigotmc.org/conversations/add?to=_Obliviate_
+#
+# MasterDuels coded by Mr_Obliviate
+#
+
 game-starting-lock-time: 3 #in seconds
 delay-end-duel-after-player-kill: 20 #in seconds
 invite-timeout: 120 #in seconds
@@ -194,4 +201,136 @@ duel-arenas-gui:
       - '&dArena: #{arena}' # first line is name of icon
       - ''
       - '&4Error'
+duel-creator:
+  gui:
+    title: 'Duel Creator {mode} &c&lBETA'
+    icons:
+      fill-icon:
+        material: BLACK_STAINED_GLASS_PANE
+        display-name: '&r'
+        amount: 1
+        slot: 36-44 #36,44
+      team-size:
+        material: PLAYER_HEAD
+        display-name: '&9Team Size'
+        amount: 1
+        slot: 10
+        lore:
+          - '&7'
+          - '&7Currently: &f{team-size}'
+          - '&7'
+          - '&7Member amount of a team.'
+          - '&7'
+          - '&c&lWARNING: &cChange of this'
+          - '&csetting, resets all teams.'
+          - '&7'
+          - '&eLeft click to increase'
+          - '&eRight click to decrease'
+      team-amount:
+        material: PLAYER_HEAD
+        display-name: '&9Team Amount'
+        amount: 1
+        slot: 11
+        lore:
+          - '&7'
+          - '&7Currently: &f{team-amount}'
+          - '&7'
+          - '&7Amount of teams in game.'
+          - '&7'
+          - '&c&lWARNING: &cChange of this'
+          - '&csetting, resets all teams.'
+          - '&7'
+          - '&eLeft click to increase'
+          - '&eRight click to decrease'
+      invites:
+        material: WRITABLE_BOOK
+        display-name: '&9Invited Players'
+        amount: 1
+        slot: 12
+        lore:
+          - '&7'
+          - '&7Pending Invites: {invited-players}'
+          - '&7Players: {total-players}'
+          - '&7'
+          - '&7Invite a player to challenge'
+          - '&7him.'
+          - '&7'
+          - '&eClick to open menu'
 
+      rules:
+        material: COMPARATOR
+        display-name: '&9Rules'
+        amount: 1
+        slot: 13
+        lore:
+          - '&7'
+          - '&7Game rules of game.'
+          - '&7'
+          - '&eClick to open gui'
+      round-amount:
+        material: STONE
+        display-name: '&9Round Amount'
+        amount: 1
+        slot: 14
+        lore:
+          - '&7'
+          - '&7Currently: &f{round-amount}'
+          - '&7'
+          - '&7How many rounds will the'
+          - '&7game last?'
+          - '&7'
+          - '&85 round needs 3 win.'
+          - '&7'
+          - '&eLeft click to increase'
+          - '&eRight click to decrease'
+      kit:
+        material: IRON_CHESTPLATE
+        display-name: '&9Kit'
+        amount: 1
+        slot: 15
+        lore:
+          - '&7'
+          - '&7Currently: &f{kit}'
+          - '&7'
+          - '&eClick to choose kit.'
+      bet:
+        material: EMERALD
+        display-name: '&9Bet'
+        amount: 1
+        slot: 16
+        lore:
+          - '&7'
+          - '&7Currently: &6{bet}'
+          - '&7'
+          - '&eClick to specify bet.'
+      game-time:
+        material: CLOCK
+        display-name: '&9Game Time'
+        amount: 1
+        slot: 17
+        lore:
+          - '&7'
+          - '&7Currently: &a{game-timer}'
+          - '&7'
+          - '&7Time out time of game.'
+          - '&7'
+          - '&eLeft click to increase'
+          - '&eRight click to decrease'
+      manage-teams:
+        material: PAINTING
+        display-name: '&9Manage Teams'
+        amount: 1
+        slot: 18
+        lore:
+          - '&7'
+          - '&7Manage members of teams.'
+          - '&7'
+          - '&eClick to increase'
+      start-game:
+        material: EMERALD_BLOCK
+        display-name: '&9Start Game!'
+        amount: 1
+        slot: 31
+        lore:
+          - '&7'
+          - '&eClick to start duel game.'

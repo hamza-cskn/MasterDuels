@@ -13,7 +13,22 @@ public class TimerUtils {
 		if (now > endTime) endTime = now;
 
 		final long diff = (endTime - now) / 1000;
+		return formatDifferentTimer(diff);
+	}
 
+	public static String formatTimeFormat(long endTime) {
+		return getFormattedDifferentTime(System.currentTimeMillis(), endTime);
+	}
+
+	public static String getFormattedDifferentTime(long start, long end) {
+		if (start > end) start = end;
+
+		final long diff = (end - start) / 1000;
+
+		return formatDifferentTime(diff);
+	}
+
+	public static String formatDifferentTimer(long diff) {
 		final long minute = Math.floorDiv(diff, 60);
 		final long second = Math.floorMod(diff, 60);
 
@@ -28,16 +43,10 @@ public class TimerUtils {
 		}
 
 		return min + ":" + sec;
+
 	}
 
-	public static String formatTimeFormat(long endTime) {
-		return getFormattedDifferentTime(System.currentTimeMillis(), endTime);
-	}
-
-	public static String getFormattedDifferentTime(long start, long end) {
-		if (start > end) start = end;
-
-		final long diff = (end - start) / 1000;
+	public static String formatDifferentTime(long diff) {
 
 		final long minute = Math.floorDiv(diff, 60);
 		final long second = Math.floorMod(diff, 60);
@@ -58,7 +67,7 @@ public class TimerUtils {
 
 			builder.append(second).append(" ");
 
-			if (minute == 1) {
+			if (second == 1) {
 				builder.append(SECOND);
 			} else {
 				builder.append(SECONDS);
@@ -66,6 +75,7 @@ public class TimerUtils {
 		}
 
 		return builder.toString();
+
 	}
 
 }

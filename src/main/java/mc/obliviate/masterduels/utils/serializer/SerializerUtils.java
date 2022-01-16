@@ -1,17 +1,22 @@
 package mc.obliviate.masterduels.utils.serializer;
 
+import mc.obliviate.inventory.Icon;
 import mc.obliviate.masterduels.history.GameHistoryLog;
 import mc.obliviate.masterduels.utils.Logger;
+import mc.obliviate.masterduels.utils.MessageUtils;
+import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
+import mc.obliviate.masterduels.utils.xmaterial.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class SerializerUtils {
 
@@ -71,6 +76,58 @@ public class SerializerUtils {
 		}
 
 		return list;
+	}
+
+	public static void serializeIcon(final ConfigurationSection serializedSection, final int slot, final Icon item) {
+		final ItemMeta meta = item.getItem().getItemMeta();
+
+		setSafe(serializedSection, "material", XMaterial.matchXMaterial(item.getItem()).parseMaterial().toString());
+		setSafe(serializedSection, "slot", slot);
+		if (meta != null) {
+			setSafe(serializedSection, "display-name", meta.getDisplayName().replace("§", "&"));
+			if (meta.getLore() != null && meta.getLore().size() > 0) {
+				final List<String> list = new ArrayList<>();
+				meta.getLore().forEach(line -> list.add(line.replace("§", "&")));
+				setSafe(serializedSection, "lore", list);
+			}
+			//setSafe(serializedSection, "custom-model-data", meta.getCustomModelData());
+			setSafe(serializedSection, "item-flags", Collections.singletonList(meta.getItemFlags()));
+		}
+		setSafe(serializedSection, "amount", item.getItem().getAmount());
+
+		for (final Map.Entry<Enchantment, Integer> enchant : item.getItem().getEnchantments().entrySet()) {
+			setSafe(serializedSection, "enchantments." + enchant.getKey(), enchant.getValue());
+		}
+	}
+
+	public static ItemStack deserializeItemStack(ConfigurationSection section, PlaceholderUtil placeholderUtil) {
+		final Optional<XMaterial> xmaterial = XMaterial.matchXMaterial(section.getString("material", "BEDROCK"));
+		if (!xmaterial.isPresent()) {
+			Logger.error("Material could not found: " + section.getString("material"));
+			return null;
+		}
+
+		final ItemStack item = xmaterial.get().parseItem();
+		if (item == null) {
+			Logger.error("Material could not parsed as itemstack: " + section.getString("material"));
+			return null;
+		}
+
+		final ItemMeta meta = item.getItemMeta();
+		meta.setDisplayName(MessageUtils.parseColor(MessageUtils.applyPlaceholders(section.getString("display-name"), placeholderUtil)));
+		meta.setLore(MessageUtils.parseColor(MessageUtils.applyPlaceholders(section.getStringList("lore"), placeholderUtil)));
+		item.setItemMeta(meta);
+		item.setAmount(section.getInt("amount", 1));
+		return item;
+	}
+
+	private static void setSafe(ConfigurationSection section, String key, Object value) {
+		if (value != null) {
+			if (value instanceof List && ((List) value).size() == 0) {
+				return;
+			}
+			section.set(key, value);
+		}
 	}
 
 	public static GameHistoryLog deserializeGameHistoryLog(ResultSet rs) throws SQLException {

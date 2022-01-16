@@ -73,11 +73,20 @@ public class MessageUtils {
 	}
 
 	public static String applyPlaceholders(String message, final PlaceholderUtil placeholderUtil) {
+		if (message == null) return null;
 		if (placeholderUtil == null) return message;
 		for (final InternalPlaceholder placeholder : placeholderUtil.getPlaceholders()) {
 			message = message.replace(placeholder.getPlaceholder(), placeholder.getValue());
 		}
 		return message;
+	}
+
+	public static List<String> applyPlaceholders(List<String> list, final PlaceholderUtil placeholderUtil) {
+		if (placeholderUtil == null) return list;
+		for (final InternalPlaceholder placeholder : placeholderUtil.getPlaceholders()) {
+			list = listReplace(list, placeholder.getPlaceholder(), placeholder.getValue());
+		}
+		return list;
 	}
 
 	public static String parseColor(final String string) {
