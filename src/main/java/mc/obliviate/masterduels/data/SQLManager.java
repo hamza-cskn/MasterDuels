@@ -37,6 +37,31 @@ public class SQLManager extends SQLHandler {
 				.addField("endTime", DataType.INTEGER);
 	}
 
+	public static DuelStatistic deserializeStatistic(ResultSet rs, boolean singleData) {
+		try {
+			if (singleData && !rs.next()) return null;
+			final UUID uuid = UUID.fromString(rs.getString("uuid"));
+			final int wins = rs.getInt("wins");
+			final int loses = rs.getInt("loses");
+			while (singleData && rs.next()) {
+				Logger.severe("Statistics duplication found: " + uuid);
+			}
+			return new DuelStatistic(uuid, wins, loses);
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public SQLTable getPlayerDataTable() {
+		return playerDataTable;
+	}
+
+	public SQLTable getHistoryTable() {
+		return historyTable;
+	}
+
 	public void init() {
 		connect("database");
 	}
@@ -116,21 +141,38 @@ public class SQLManager extends SQLHandler {
 	public DuelStatistic getStatistic(final UUID uuid) {
 		if (playerDataTable.exist(uuid.toString())) {
 			final ResultSet rs = playerDataTable.select(uuid.toString());
-			try {
-				if (rs.next()) {
-					final int wins = rs.getInt("wins");
-					final int loses = rs.getInt("loses");
-					while (rs.next()) {
-						Logger.severe("Statistics duplication found: " + uuid);
-					}
-					return new DuelStatistic(uuid, wins, loses);
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			return deserializeStatistic(rs, true);
 		}
 		return new DuelStatistic(uuid, 0, 0);
 	}
+
+	public LinkedList<DuelStatistic> getTopPlayers(String fieldName, int limit) {
+
+		final ResultSet rs = playerDataTable.getHighest(fieldName, limit);
+		final LinkedList<DuelStatistic> result = new LinkedList<>();
+		try {
+			while (rs.next()) {
+				final UUID uuid = UUID.fromString(rs.getString("uuid"));
+				final int wins = rs.getInt("wins");
+				final int loses = rs.getInt("loses");
+				result.add(new DuelStatistic(uuid, wins, loses));
+			}
+			return result;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public LinkedList<DuelStatistic> deserializeStatisticsList(ResultSet rs) throws SQLException {
+
+		final LinkedList<DuelStatistic> result = new LinkedList<>();
+		while (rs.next()) {
+			result.add(deserializeStatistic(rs, false));
+		}
+		return result;
+	}
+
 
 	public void addWin(final UUID uuid, int amount) {
 		increaseValue(uuid, amount, "wins");

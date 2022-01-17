@@ -74,6 +74,13 @@ duel-command:
       disable-usage: '&cCorrect usage: /dueladmin disablearena <arena name>'
       enable-usage: '&cCorrect usage: /dueladmin enablearena <arena name>'
 no-arena-found-with-this-name: '&cNo arenas with this name found.'
+top:
+  top-wins:
+    message: |-
+      [DISABLE_PREFIX]&6&lTOP WIN STATISTICS
+
+      &c&l1. &7{top-1-name} &f{top-1-wins} wins &c&lCHAMPION!
+      &e&l2. &7{top-2-name} &f{top-2-wins} wins
 invite:
   usage: '&cCorrect Usage:&7 /duel <player name>'
   toggle:

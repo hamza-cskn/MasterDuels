@@ -41,6 +41,10 @@ enable-bets: true
 # DISABLED - Send game end message to nobody
 game-end-broadcast-mode: 'SERVER_WIDE'
 
+top:
+  top-wins:
+    calculation-limit: 10
+
 executable-commands-by-player:
   BATTLE:
     #- this_command_is_executable_in_battle

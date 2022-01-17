@@ -2,6 +2,7 @@ package mc.obliviate.masterduels.commands;
 
 import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.data.DataHandler;
+import mc.obliviate.masterduels.data.SQLManager;
 import mc.obliviate.masterduels.game.Game;
 import mc.obliviate.masterduels.game.GameBuilder;
 import mc.obliviate.masterduels.gui.DuelArenaListGUI;
@@ -20,8 +21,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.UUID;
 
 public class DuelCMD implements CommandExecutor {
@@ -48,18 +55,19 @@ public class DuelCMD implements CommandExecutor {
 		if (args[0].equalsIgnoreCase("history")) {
 			new DuelHistoryLogGUI(player).open();
 			return true;
-		}
-
-		if (args[0].equalsIgnoreCase("leave")) {
+		} else if (args[0].equalsIgnoreCase("leave")) {
 			if (user == null) {
 				MessageUtils.sendMessage(player, "you-are-not-in-duel");
 				return false;
 			}
 			user.getGame().leave(user);
 			return true;
+		} else if (args[0].equalsIgnoreCase("top")) {
+			top(player, Arrays.asList(args));
+			return true;
 		}
 
-		//THESE COMMANDS BLOCKED FOR PLAYERS WHO IN DUEL
+		//COMMANDS BELOW ARE BLOCKED FOR PLAYERS WHO IN DUEL
 
 		if (user instanceof Member) {
 			MessageUtils.sendMessage(player, "you-are-in-duel");
@@ -74,12 +82,9 @@ public class DuelCMD implements CommandExecutor {
 				MessageUtils.sendMessage(player, "invite.toggle.turned-off");
 			}
 			return true;
-		}
-
-		if (args[0].equalsIgnoreCase("stats")) {
+		} else if (args[0].equalsIgnoreCase("stats")) {
 			stats(player, args);
 			return true;
-
 		} else if (args[0].equalsIgnoreCase("arenas")) {
 			new DuelArenaListGUI(player).open();
 			return true;
@@ -104,12 +109,51 @@ public class DuelCMD implements CommandExecutor {
 
 	}
 
+	private void top(final Player player, List<String> args) {
+		if (args.size() < 2) {
+			//todo wrong usage
+			return;
+		}
+		if (args.get(1).equalsIgnoreCase("wins")) {
+			final LinkedList<DuelStatistic> statistics;
+
+
+			final ConfigurationSection section = plugin.getDatabaseHandler().getConfig().getConfigurationSection("top.top-wins");
+			final String nobodyText = MessageUtils.parseColor(MessageUtils.getMessage("top.nobody"));
+			if (section == null) return;
+
+			final int limit = section.getInt("calculation-limit", 10);
+			statistics = plugin.getSqlManager().getTopPlayers("wins", Math.max(limit, 1));
+
+			final PlaceholderUtil placeholderUtil = new PlaceholderUtil();
+			for (int index = 1; index <= limit; index++) {
+
+				if (statistics.size() < index) {
+					placeholderUtil.add("{top-" + index + "-name}", nobodyText);
+					placeholderUtil.add("{top-" + index + "-wins}", 0 + "");
+					placeholderUtil.add("{top-" + index + "-losses}", 0 + "");
+					placeholderUtil.add("{top-" + index + "-gamesplayed}", 0 + "");
+				} else {
+					final DuelStatistic stat = statistics.get(index - 1);
+					placeholderUtil.add("{top-" + index + "-name}", Bukkit.getOfflinePlayer(stat.getPlayerUniqueId()).getName() + "");
+					placeholderUtil.add("{top-" + index + "-wins}", stat.getWins() + "");
+					placeholderUtil.add("{top-" + index + "-losses}", stat.getLosses() + "");
+					placeholderUtil.add("{top-" + index + "-gamesplayed}", (stat.getWins() + stat.getLosses()) + "");
+				}
+			}
+
+			MessageUtils.sendMessage(player, "top.top-wins.message", placeholderUtil);
+
+
+		}
+	}
+
 	private void stats(final Player player, final String[] args) {
 		final UUID target = args.length == 1 ? player.getUniqueId() : Bukkit.getOfflinePlayer(args[1]).getUniqueId();
 		final DuelStatistic statistic = plugin.getSqlManager().getStatistic(target);
 		MessageUtils.sendMessage(player, "statistics",
 				new PlaceholderUtil()
-						.add("{wins}", statistic.getWins() + "").add("{loses}", statistic.getLoses() + ""));
+						.add("{wins}", statistic.getWins() + "").add("{loses}", statistic.getLosses() + ""));
 
 	}
 

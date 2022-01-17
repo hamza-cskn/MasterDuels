@@ -6,16 +6,16 @@ public class DuelStatistic {
 
 	private final UUID player;
 	private final int wins;
-	private final int loses;
+	private final int losses;
 
-	public DuelStatistic(UUID player, int wins, int loses) {
+	public DuelStatistic(UUID player, int wins, int losses) {
 		this.player = player;
 		this.wins = wins;
-		this.loses = loses;
+		this.losses = losses;
 	}
 
-	public int getLoses() {
-		return loses;
+	public int getLosses() {
+		return losses;
 	}
 
 	public int getWins() {

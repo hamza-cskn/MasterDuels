@@ -2,6 +2,7 @@ package mc.obliviate.masterduels.utils.serializer;
 
 import mc.obliviate.inventory.Icon;
 import mc.obliviate.masterduels.history.GameHistoryLog;
+import mc.obliviate.masterduels.statistics.DuelStatistic;
 import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
@@ -11,6 +12,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -77,6 +79,8 @@ public class SerializerUtils {
 
 		return list;
 	}
+
+
 
 	public static void serializeIcon(final ConfigurationSection serializedSection, final int slot, final Icon item) {
 		final ItemMeta meta = item.getItem().getItemMeta();
