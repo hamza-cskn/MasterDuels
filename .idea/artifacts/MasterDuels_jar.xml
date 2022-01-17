@@ -6,9 +6,9 @@
         <element id="file-copy" path="$PROJECT_DIR$/src/main/java/META-INF/MANIFEST.MF" />
       </element>
       <element id="module-output" name="MasterDuels" />
-      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/github/Obliviated/BlokSQLiteAPI/1.0.6-d/BlokSQLiteAPI-1.0.6-d.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/github/Obliviated/ObliviateInvs/3.0.1/ObliviateInvs-3.0.1.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/github/hakan-krgn/hMessageAPI/bukkit/1.0.6/bukkit-1.0.6.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/github/Obliviated/BlokSQLiteAPI/1.0.7-b/BlokSQLiteAPI-1.0.7-b.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>
