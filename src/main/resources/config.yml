@@ -47,12 +47,12 @@ top:
 
 executable-commands-by-player:
   BATTLE:
-    #- this_command_is_executable_in_battle
+  #- this_command_is_executable_in_battle
   ROUND_STARTING:
-    #- this_command_is_executable_before_game_start
+  #- this_command_is_executable_before_game_start
   GAME_ENDING:
-    #- this_command_is_executable_after_victim_dead
-    #- this_command_is_executable_after_victim_dead_too
+  #- this_command_is_executable_after_victim_dead
+  #- this_command_is_executable_after_victim_dead_too
   #empty lists means all commands should be blocked.
 
 #{timer} = 13:59
@@ -153,61 +153,65 @@ duel-arenas-gui:
   enabled: true
   #You need 'masterduels.see-non-playing-games' permission to see 'disabled' and 'empty' arenas.
   title: 'Duel Arenas'
-  STARTING:
-    material: YELLOW_WOOL
-    description:
-      - '&dArena: #{arena}' # first line is name of icon
-      - ''
-      - '&7State: &eStarting...'
-      - '&7Players: &b{players}'
-      - '&7Mode: &b{mode}'
-      - ''
-      - '&eClick to spectate game!'
-  PLAYING:
-    material: RED_WOOL
-    description:
-      - '&dArena: #{arena}' # first line is name of icon
-      - ''
-      - '&7State: &cPlaying'
-      - '&7Players: &b{players}'
-      - '&7Mode: &b{mode}'
-      - ''
-      - '&eClick to spectate game!'
-  ENDING:
-    material: YELLOW_WOOL
-    description:
-      - '&dArena: #{arena}' # first line is name of icon
-      - ''
-      - '&7State: &eEnding'
-      - '&7Players: &b{players}'
-      - '&7Mode: &b{mode}'
-      - ''
-      - '&eClick to spectate game!'
-  EMPTY:
-    material: LIME_WOOL
-    description:
-      - '&dArena: #{arena}' # first line is name of icon
-      - ''
-      - '&7State: &aAvailable'
-      - '&7Map: &9{map}'
-      - ''
-  DISABLED:
-    material: REDSTONE_BLOCK
-    description:
-      - '&dArena: #{arena}' # first line is name of icon
-      - ''
-      - '&cThis arena currently'
-      - '&cdisabled by administrators.'
-      - ''
-  UNKNOWN:
-    material: BEDROCK
-    description:
-      - '&dArena: #{arena}' # first line is name of icon
-      - ''
-      - '&4Error'
+  size: 6
+  page-slots: 9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53
+  icons:
+    STARTING:
+      material: YELLOW_WOOL
+      display-name: '&dArena: #{arena}'
+      lore:
+        - ''
+        - '&7State: &eStarting...'
+        - '&7Players: &b{players}'
+        - '&7Mode: &b{mode}'
+        - ''
+        - '&eClick to spectate game!'
+    PLAYING:
+      material: RED_WOOL
+      display-name: '&dArena: #{arena}'
+      lore:
+        - ''
+        - '&7State: &cPlaying'
+        - '&7Players: &b{players}'
+        - '&7Mode: &b{mode}'
+        - ''
+        - '&eClick to spectate game!'
+    ENDING:
+      material: YELLOW_WOOL
+      display-name: '&dArena: #{arena}'
+      lore:
+        - ''
+        - '&7State: &eEnding'
+        - '&7Players: &b{players}'
+        - '&7Mode: &b{mode}'
+        - ''
+        - '&eClick to spectate game!'
+    EMPTY:
+      material: LIME_WOOL
+      display-name: '&dArena: #{arena}'
+      lore:
+        - ''
+        - '&7State: &aAvailable'
+        - '&7Map: &9{map}'
+        - ''
+    DISABLED:
+      material: REDSTONE_BLOCK
+      display-name: '&dArena: #{arena}'
+      lore:
+        - '&cThis arena currently'
+        - '&cdisabled by administrators.'
+        - ''
+    UNKNOWN:
+      material: BEDROCK
+      display-name: '&dArena: #{arena}'
+      lore:
+        - ''
+        - '&4Error'
+        - ''
 duel-creator:
   gui:
     title: 'Duel Creator {mode} &c&lBETA'
+    size: 5
     icons:
       fill-icon:
         material: BLACK_STAINED_GLASS_PANE
