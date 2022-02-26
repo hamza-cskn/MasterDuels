@@ -58,7 +58,7 @@
         <dependency>
             <groupId>com.github.hakan-krgn.hMessageAPI</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.0.6</version>
+            <version>1.0.9</version>
         </dependency>
         <!-- TAB -->
         <dependency>
