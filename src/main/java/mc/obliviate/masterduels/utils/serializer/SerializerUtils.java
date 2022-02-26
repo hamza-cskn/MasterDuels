@@ -80,30 +80,6 @@ public class SerializerUtils {
 		return list;
 	}
 
-
-
-	public static void serializeIcon(final ConfigurationSection serializedSection, final int slot, final Icon item) {
-		final ItemMeta meta = item.getItem().getItemMeta();
-
-		setSafe(serializedSection, "material", XMaterial.matchXMaterial(item.getItem()).parseMaterial().toString());
-		setSafe(serializedSection, "slot", slot);
-		if (meta != null) {
-			setSafe(serializedSection, "display-name", meta.getDisplayName().replace("§", "&"));
-			if (meta.getLore() != null && meta.getLore().size() > 0) {
-				final List<String> list = new ArrayList<>();
-				meta.getLore().forEach(line -> list.add(line.replace("§", "&")));
-				setSafe(serializedSection, "lore", list);
-			}
-			//setSafe(serializedSection, "custom-model-data", meta.getCustomModelData());
-			setSafe(serializedSection, "item-flags", Collections.singletonList(meta.getItemFlags()));
-		}
-		setSafe(serializedSection, "amount", item.getItem().getAmount());
-
-		for (final Map.Entry<Enchantment, Integer> enchant : item.getItem().getEnchantments().entrySet()) {
-			setSafe(serializedSection, "enchantments." + enchant.getKey(), enchant.getValue());
-		}
-	}
-
 	public static ItemStack deserializeItemStack(ConfigurationSection section, PlaceholderUtil placeholderUtil) {
 		final Optional<XMaterial> xmaterial = XMaterial.matchXMaterial(section.getString("material", "BEDROCK"));
 		if (!xmaterial.isPresent()) {
