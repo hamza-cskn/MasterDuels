@@ -91,23 +91,12 @@ public class YamlStorageHandler {
 	}
 
 	private void registerDuelListGUIConfig(final ConfigurationSection section) {
-		final Map<BasicArenaState, List<String>> description = new HashMap<>();
+		final Map<BasicArenaState, ItemStack> icons = new HashMap<>();
 		for (final BasicArenaState state : BasicArenaState.values()) {
-			description.put(state, section.getStringList(state + ".description"));
+			icons.put(state, SerializerUtils.deserializeItemStack(section.getConfigurationSection("icons." + state.name()),null));
 		}
 
-		final Map<BasicArenaState, ItemStack> gamestateMaterials = new HashMap<>();
-		for (final BasicArenaState state : BasicArenaState.values()) {
-			final String materialName = section.getString(state.name() + ".material", "STONE");
-			final Optional<XMaterial> xm = XMaterial.matchXMaterial(materialName);
-			if (xm.isPresent()) {
-				gamestateMaterials.put(state, xm.get().parseItem());
-			} else {
-				Logger.error("Material could not found: " + materialName);
-			}
-		}
-
-		DuelArenaListGUI.guiConfig = new DuelArenaListGUI.DuelArenaListGUIConfig(gamestateMaterials, description, section.getString("title", "Duel Arenas"));
+		DuelArenaListGUI.guiConfig = new DuelArenaListGUI.DuelArenaListGUIConfig(icons, section.getString("title", "Duel Arenas"));
 	}
 
 	private void registerHistoryGui() {

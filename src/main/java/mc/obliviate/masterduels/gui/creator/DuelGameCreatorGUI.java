@@ -7,6 +7,7 @@ import mc.obliviate.masterduels.VaultUtil;
 import mc.obliviate.masterduels.game.Game;
 import mc.obliviate.masterduels.game.GameBuilder;
 import mc.obliviate.masterduels.game.bet.Bet;
+import mc.obliviate.masterduels.gui.GUISerializerUtils;
 import mc.obliviate.masterduels.gui.kit.KitSelectionGUI;
 import mc.obliviate.masterduels.setup.chatentry.ChatEntry;
 import mc.obliviate.masterduels.utils.MessageUtils;
@@ -44,79 +45,60 @@ public class DuelGameCreatorGUI extends GUI {
 
 	@Override
 	public void open() {
-		setTitle(MessageUtils.parseColor(MessageUtils.applyPlaceholders(plugin.getDatabaseHandler().getConfig().getString("duel-creator.gui.title"),
+		setTitle(MessageUtils.parseColor(MessageUtils.applyPlaceholders(plugin.getDatabaseHandler().getConfig().getString(getGuiSectionPath() + ".title"),
 				new PlaceholderUtil().add("{mode}", MessageUtils.convertMode(gameBuilder.getTeamSize(), gameBuilder.getTeamAmount())))));
+		setSize(plugin.getDatabaseHandler().getConfig().getInt(getGuiSectionPath() + ".size", 5) * 9);
 		super.open();
 	}
 
-	private void putDysfunctionalIcons() {
-		final ConfigurationSection configurationSection = plugin.getDatabaseHandler().getConfig().getConfigurationSection("duel-creator.gui.icons");
-		for (String sectionName : configurationSection.getKeys(false)) {
-			final ConfigurationSection section = configurationSection.getConfigurationSection(sectionName);
+	private String getSectionPath() {
+		return "duel-creator";
+	}
 
-			int slotNo = section.getInt("slot", -1);
-			if (slotNo != -1) {
-				addItem(slotNo, getConfigItem(sectionName));
-				return;
-			}
+	private String getGuiSectionPath() {
+		return getSectionPath() + ".gui";
+	}
 
+	private String getIconsSectionPath() {
+		return getSectionPath() + "." + getGuiSectionPath() + ".icons";
+	}
 
-			final String slotString = section.getString("slot", "");
-			if (slotString.contains("-")) {
-				final String[] slots = slotString.split("-");
-				if (slots.length != 2) continue;
-				int from, to;
-				try {
-					from = Integer.parseInt(slots[0]);
-					to = Integer.parseInt(slots[1]);
-				} catch (NumberFormatException e) {
-					continue;
-				}
-				if (from > to) continue;
-				for (; from <= to; from++) {
-					addItem(from, getConfigItem(sectionName));
-				}
-				return;
-			}
-			if (slotString.contains(",")) {
-				final String[] slots = slotString.split(",");
-				if (slots.length < 2) continue;
+	private ConfigurationSection getConfigSection(String sectionName) {
+		return plugin.getDatabaseHandler().getConfig().getConfigurationSection(sectionName);
+	}
 
-				for (final String slotText : slots) {
-					try {
-						addItem(Integer.parseInt(slotText), getConfigItem(sectionName));
-					} catch (NumberFormatException ignore) {
-					}
-				}
-			}
-		}
+	private int getSlot(String sectionName) {
+		return GUISerializerUtils.getConfigSlot(getConfigSection(getIconsSectionPath() + sectionName));
+	}
+
+	private ItemStack getConfigItem(String sectionName) {
+		return GUISerializerUtils.getConfigItem(getConfigSection(getIconsSectionPath() + sectionName));
 	}
 
 	@Override
 	public void onOpen(InventoryOpenEvent event) {
-
-		putDysfunctionalIcons();
+		GUISerializerUtils.putDysfunctionalIcons(this, getConfigSection(getIconsSectionPath()));
 
 		if (VaultUtil.checkPermission(player, "masterduels.duelcreator.set.teamsize"))
-			addItem(getConfigSlot("team-size"), getTeamSizeIcon());
+			addItem(getSlot("team-size"), getTeamSizeIcon());
 		if (VaultUtil.checkPermission(player, "masterduels.duelcreator.set.invite"))
-			addItem(getConfigSlot("invites"), getInvitesIcon());
+			addItem(getSlot("invites"), getInvitesIcon());
 		if (VaultUtil.checkPermission(player, "masterduels.duelcreator.set.rules"))
-			addItem(getConfigSlot("rules"), getRulesIcon());
+			addItem(getSlot("rules"), getRulesIcon());
 		if (VaultUtil.checkPermission(player, "masterduels.duelcreator.set.teamamount"))
-			addItem(getConfigSlot("team-amount"), getTeamAmountIcon());
+			addItem(getSlot("team-amount"), getTeamAmountIcon());
 		if (VaultUtil.checkPermission(player, "masterduels.duelcreator.set.teammanager"))
-			addItem(getConfigSlot("manage-teams"), getTeamManagerIcon());
+			addItem(getSlot("manage-teams"), getTeamManagerIcon());
 		if (VaultUtil.checkPermission(player, "masterduels.duelcreator.set.roundamount"))
-			addItem(getConfigSlot("round-amount"), getRoundAmountIcon());
+			addItem(getSlot("round-amount"), getRoundAmountIcon());
 		if (VaultUtil.checkPermission(player, "masterduels.duelcreator.set.kit"))
-			addItem(getConfigSlot("kit"), getKitIcon());
+			addItem(getSlot("kit"), getKitIcon());
 		if (Bet.betsEnabled) {
-			addItem(getConfigSlot("bet"), getBetIcon());
+			addItem(getSlot("bet"), getBetIcon());
 		}
 		if (VaultUtil.checkPermission(player, "masterduels.duelcreator.set.finishtime"))
-			addItem(getConfigSlot("game-time"), getFinishTimeIcon());
-		addItem(getConfigSlot("start-game"), getStartGameIcon());
+			addItem(getSlot("game-time"), getFinishTimeIcon());
+		addItem(getSlot("start-game"), getStartGameIcon());
 	}
 
 	private Icon getStartGameIcon() {
@@ -225,18 +207,6 @@ public class DuelGameCreatorGUI extends GUI {
 			}
 			open();
 		});
-	}
-
-	private ItemStack getConfigItem(String itemName) {
-		return getConfigItem(itemName, placeholderUtil);
-	}
-
-	private ItemStack getConfigItem(String itemName, PlaceholderUtil placeholderUtil) {
-		return SerializerUtils.deserializeItemStack(plugin.getDatabaseHandler().getConfig().getConfigurationSection("duel-creator.gui.icons." + itemName), placeholderUtil);
-	}
-
-	private int getConfigSlot(String itemName) {
-		return plugin.getDatabaseHandler().getConfig().getConfigurationSection("duel-creator.gui.icons." + itemName).getInt("slot");
 	}
 
 

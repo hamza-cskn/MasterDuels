@@ -85,6 +85,16 @@ public class MasterDuels extends JavaPlugin {
 
 	}
 
+	private void setupArenaClearHandler() {
+		final String mode = yamlStorageHandler.getConfig().getString("arena-regeneration.mode", "SMART");
+		//SMART
+		if (!("ROLLBACKCORE".equals(mode) || "SLIMEWORLD".equals(mode) || "DISABLED".equals(mode))) {
+			arenaClearHandler = new SmartArenaClearHandler(this);
+			Bukkit.getPluginManager().registerEvents(new ArenaClearListener(this), this);
+			arenaClearHandler.init();
+		}
+	}
+
 	private void setupVaultUtils() {
 		if (getServer().getPluginManager().getPlugin("Vault") != null) {
 			vaultEnabled = true;

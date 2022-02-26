@@ -1,18 +1,18 @@
 package mc.obliviate.masterduels.gui;
 
+import mc.obliviate.inventory.GUI;
+import mc.obliviate.inventory.Icon;
 import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.arena.BasicArenaState;
 import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.game.Game;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
+import mc.obliviate.masterduels.utils.serializer.SerializerUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryOpenEvent;
-import mc.obliviate.inventory.GUI;
-import mc.obliviate.inventory.Icon;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.List;
 import java.util.Map;
 
 public class DuelArenaListGUI extends GUI {
@@ -45,12 +45,7 @@ public class DuelArenaListGUI extends GUI {
 			placeholderUtil.add("{kit}", game.getKit() == null ? "" : game.getKit().getKitName());
 			placeholderUtil.add("{mode}", MessageUtils.convertMode(game.getGameBuilder().getTeamSize(), game.getGameBuilder().getTeamAmount()));
 		}
-		final Icon icon = new Icon(guiConfig.gameStateMaterial.get(state).clone());
-		icon.setName(MessageUtils.parseColor(MessageUtils.applyPlaceholders(guiConfig.gameIconDescription.get(state).get(0), placeholderUtil)));
-
-		for (final String line : guiConfig.gameIconDescription.get(state).subList(1, guiConfig.gameIconDescription.size() - 1)) {
-			icon.appendLore(MessageUtils.parseColor(MessageUtils.applyPlaceholders(line, placeholderUtil)));
-		}
+		final Icon icon = new Icon(guiConfig.getIcon(state, placeholderUtil));
 		icon.onClick(e -> {
 			final Game g = DataHandler.getArenas().get(arena);
 			if (g != null) {
@@ -65,15 +60,19 @@ public class DuelArenaListGUI extends GUI {
 	 * gui configuration datas.
 	 */
 	public static class DuelArenaListGUIConfig {
-		protected final Map<BasicArenaState, ItemStack> gameStateMaterial;
-		protected final Map<BasicArenaState, List<String>> gameIconDescription;
+
+		protected final Map<BasicArenaState, ItemStack> icons;
 		protected final String guiTitle;
 
-		public DuelArenaListGUIConfig(Map<BasicArenaState, ItemStack> gameStateMaterial, Map<BasicArenaState, List<String>> gameIconDescription, String guiTitle) {
-			this.gameStateMaterial = gameStateMaterial;
-			this.gameIconDescription = gameIconDescription;
+		public DuelArenaListGUIConfig(final Map<BasicArenaState, ItemStack> icons, final String guiTitle) {
+			this.icons = icons;
 			this.guiTitle = guiTitle;
 		}
 
+		protected ItemStack getIcon(final BasicArenaState state, final PlaceholderUtil placeholderUtil) {
+			return SerializerUtils.applyPlaceholdersOnItemStack(icons.get(state).clone(), placeholderUtil);
+		}
 	}
+
+
 }

@@ -101,6 +101,14 @@ public class SerializerUtils {
 		return item;
 	}
 
+	public static ItemStack applyPlaceholdersOnItemStack(ItemStack item, PlaceholderUtil placeholderUtil) {
+		final ItemMeta meta = item.getItemMeta();
+		meta.setDisplayName(MessageUtils.parseColor(MessageUtils.applyPlaceholders(meta.getDisplayName(), placeholderUtil)));
+		meta.setLore(MessageUtils.parseColor(MessageUtils.applyPlaceholders(meta.getLore(), placeholderUtil)));
+		item.setItemMeta(meta);
+		return item;
+	}
+
 	private static void setSafe(ConfigurationSection section, String key, Object value) {
 		if (value != null) {
 			if (value instanceof List && ((List) value).size() == 0) {
