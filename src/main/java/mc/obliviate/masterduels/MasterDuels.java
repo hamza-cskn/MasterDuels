@@ -49,6 +49,8 @@ public class MasterDuels extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
+		Logger.debug("Master Duels v" + getDescription().getVersion() + " loading process initializing...");
+		Logger.debug("Obfuscate: " + checkObfuscated());
 		setupHandlers();
 		registerListeners();
 		registerCommands();
@@ -57,19 +59,23 @@ public class MasterDuels extends JavaPlugin {
 		shutdownMode = false;
 	}
 
+	private boolean checkObfuscated() {
+		try {
+			String pack = "mc";
+			pack = pack + ".obliviate";
+			pack = pack + ".masterduels";
+			pack = pack + ".VaultUtil";
+			Class.forName(pack);
+			return false;
+		} catch (ClassNotFoundException e) {
+			return true;
+		}
+	}
+
 	private void setupHandlers() {
 		yamlStorageHandler.init();
 		inventoryAPI.init();
-		switch (yamlStorageHandler.getConfig().getString("arena-regeneration.mode", "SMART")) {
-			case "ROLLBACKCORE":
-			case "SLIMEWORLD":
-			case "DISABLED":
-				break;
-			default: //SMART
-				arenaClearHandler = new SmartArenaClearHandler(this);
-			Bukkit.getPluginManager().registerEvents(new ArenaClearListener(this), this);
-			arenaClearHandler.init();
-		}
+		setupArenaClearHandler();
 		scoreboardManager = new ScoreboardManager(this);
 		messageAPI = MessageAPI.getInstance(this);
 		new TABManager(this);
