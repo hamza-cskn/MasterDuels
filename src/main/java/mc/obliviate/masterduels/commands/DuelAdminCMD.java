@@ -45,6 +45,7 @@ public class DuelAdminCMD implements CommandExecutor {
 			player.sendMessage(" §7/" + s + " kit save §8- §9saves your current inventory as new kit");
 			player.sendMessage(" §7/" + s + " kit editor §8- §9opens kit editor gui");
 			player.sendMessage(" §7/" + s + " setlobby §8- §9sets lobby location to teleport players after duel game");
+			player.sendMessage(" §7/" + s + " teststart <player 1> <player 2>§8- §9instantly starts a duel game between two players without invite.");
 			player.sendMessage("");
 			player.sendMessage("§nMasterDuels v" + plugin.getDescription().getVersion());
 			return false;
@@ -94,17 +95,17 @@ public class DuelAdminCMD implements CommandExecutor {
 				toggleArena(player, Arrays.asList(args), true);
 			}
 			return true;
-		} else if (args[0].equalsIgnoreCase("forcestart")) {
-			forceStart(player, Arrays.asList(args));
+		} else if (args[0].equalsIgnoreCase("teststart")) {
+			testStart(player, Arrays.asList(args));
 			return true;
 		}
 
 		return true;
 	}
 
-	private void forceStart(Player player, List<String> args) {
+	private void testStart(Player player, List<String> args) {
 		if (args.size() != 3) {
-			player.sendMessage("§cWrong usage! §7/dueladmin forcestart <player 1> <player 2>");
+			player.sendMessage("§cWrong usage! §7/dueladmin teststart <player 1> <player 2>");
 			return;
 		}
 
