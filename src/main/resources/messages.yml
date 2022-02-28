@@ -64,8 +64,11 @@ duel-command:
     &7 /duel toggle &8- &9toggles invite receive state of you
     &7 /duel history &8- &9opens duel history gui
     &7 /duel stats [player name] &8- &9shows statistics of player
-    &7 /duel arenas &8- &9lists arena list.
-    &7 /duel creator &c&l[BETA] &8- &9opens game builder gui
+    &7 /duel arenas &8- &9opens arena list menu.
+    &7 /duel queue menu &8- &9opens duel queues menu
+    &7 /duel queue join <queue name>&8- &9joins a duel queue
+    &7 /duel queue leave &8- &9leaves from duel queue
+    &7 /duel creator &c&l[BETA] &8- &9opens game builder menu
   admin:
     arena:
       usage: '&cCorrect usage: /dueladmin arena <disable/enable/list>'
@@ -74,6 +77,13 @@ duel-command:
       disable-usage: '&cCorrect usage: /dueladmin disablearena <arena name>'
       enable-usage: '&cCorrect usage: /dueladmin enablearena <arena name>'
 no-arena-found-with-this-name: '&cNo arenas with this name found.'
+queue:
+  join: '&7You joined duel queue: &b{queue-name}'
+  leave: '&7You left duel queue: &b{queue-name}'
+  created: '&7Successfully created new queue template: &b{queue-name}'
+  delete: '&7Successfully delete new queue template: &b{queue-name}'
+  queue-not-found: '&cNo queue exist with this name.'
+  you-are-not-in-queue: '&cYou are not in queue.'
 top:
   nobody: '&8Nobody'
   top-wins:

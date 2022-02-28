@@ -1,11 +1,13 @@
 package mc.obliviate.masterduels.commands;
 
+import mc.obliviate.inventory.Icon;
 import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.game.GameBuilder;
 import mc.obliviate.masterduels.gui.kit.KitListEditorGUI;
 import mc.obliviate.masterduels.kit.Kit;
+import mc.obliviate.masterduels.queue.DuelQueueTemplate;
 import mc.obliviate.masterduels.setup.ArenaSetup;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
@@ -98,12 +100,30 @@ public class DuelAdminCMD implements CommandExecutor {
 		} else if (args[0].equalsIgnoreCase("teststart")) {
 			testStart(player, Arrays.asList(args));
 			return true;
+		} else if (args[0].equalsIgnoreCase("queue")) {
+			if (args.length == 1) {
+				//todo wrong usage
+				return false;
+			}
+			if (args[1].equalsIgnoreCase("create")) {
+				queueCreate(player, Arrays.asList(args));
+			} else if (args[1].equalsIgnoreCase("delete")) {
+				queueDelete(player, Arrays.asList(args));
+			}
+			return true;
 		}
-
 		return true;
 	}
 
-	private void testStart(Player player, List<String> args) {
+	public void queueDelete(final Player player, final List<String> args) {
+		DuelQueueTemplate.removeQueue(args.get(2));
+	}
+
+	public void queueCreate(final Player player, final List<String> args) {
+		new DuelQueueTemplate(args.get(2), null, Kit.getKits().get(args.get(3)));
+	}
+
+	private void testStart(final Player player, final List<String> args) {
 		if (args.size() != 3) {
 			player.sendMessage("§cWrong usage! §7/dueladmin teststart <player 1> <player 2>");
 			return;

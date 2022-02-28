@@ -224,8 +224,27 @@ public class GameBuilder {
 		for (final Invite invite : findInvites(player.getUniqueId())) {
 			invite.setResult(false);
 		}
+
+		if (!player.isOnline()) {
+			return false;
+		}
+
+		final IUser invitedUser = DataHandler.getUser(player.getUniqueId());
+
+		if (invitedUser instanceof Member) {
+			return false;
+		}
+
+		for (final GameBuilder builder : GAME_BUILDER_MAP.values()) {
+			if (builder.getOwner().equals(player.getUniqueId())) break;
+			if (builder.getPlayers().contains(player)) {
+				return false;
+			}
+		}
+
 		players.add(player);
 		createRandomizedTeams();
+		return true;
 	}
 
 	public List<Invite> findInvites(final UUID player) {
