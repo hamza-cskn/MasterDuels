@@ -123,6 +123,7 @@ bossbars: #Requires TAB plugin
   in-battle: 'Remaining Time: {time}' #also, you can use {timer} placeholder
   arena-closing: 'Arena Closing in: {time}'
 game-history:
+  enabled: true
   max-amount-of-histories-in-storage: 50
   cache-refresh: 1200 #in ticks
   gui:

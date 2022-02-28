@@ -12,6 +12,7 @@ import java.util.UUID;
 
 public class GameHistoryLog implements HistoryLog {
 
+	public static boolean gameHistoryLogEnabled = true;
 	public static final LinkedList<GameHistoryLog> historyCache = new LinkedList<>();
 	private final UUID uuid;
 	private long startTime = 0L;
@@ -99,6 +100,7 @@ public class GameHistoryLog implements HistoryLog {
 	}
 
 	public void save(final MasterDuels plugin) {
+		if (!GameHistoryLog.gameHistoryLogEnabled) return; //object works but don't writes changes.
 		plugin.getSqlManager().appendDuelHistory(this);
 	}
 }

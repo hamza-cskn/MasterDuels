@@ -10,6 +10,7 @@ import mc.obliviate.masterduels.bossbar.TABBossbarManager;
 import mc.obliviate.masterduels.game.bet.Bet;
 import mc.obliviate.masterduels.gui.DuelArenaListGUI;
 import mc.obliviate.masterduels.gui.DuelHistoryLogGUI;
+import mc.obliviate.masterduels.history.GameHistoryLog;
 import mc.obliviate.masterduels.kit.Kit;
 import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.MessageUtils;
@@ -58,6 +59,7 @@ public class YamlStorageHandler {
 		registerHistoryGui();
 		registerDuelListGUIConfig(config.getConfigurationSection("duel-arenas-gui"));
 
+		GameHistoryLog.gameHistoryLogEnabled = config.getBoolean("game-history.enabled", true);
 		Bet.betsEnabled = config.getBoolean("enable-bets", true);
 		DataHandler.LOCK_TIME_IN_SECONDS = config.getInt("game-starting-lock-time", 3);
 		Kit.USE_PLAYER_INVENTORIES = config.getBoolean("use-player-inventories", false);
