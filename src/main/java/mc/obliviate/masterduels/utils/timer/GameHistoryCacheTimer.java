@@ -6,7 +6,7 @@ import org.bukkit.Bukkit;
 
 import java.sql.SQLException;
 
-public class SQLCacheTimer implements Timer {
+public class GameHistoryCacheTimer implements Timer {
 
 
 	@Override

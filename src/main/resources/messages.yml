@@ -104,6 +104,7 @@ invite:
     turned-off: '&7You have disabled duel requests!'
     you-can-not-invite: '&c{target} disabled duel requests.'
   you-dont-have-invite: '&cYou don''t have any duel invite :('
+  you-cannot-invite-yourself: '&cYou cannot invite yourself.'
   already-invited: '&cYou already invited this player.'
   invite-expired-inviter: '&7Duel invite that is sent by &f{target}&7 to you, has expired.'
   invite-expired-target: '&7Invite that is came from &f{inviter}&7, has expired.'

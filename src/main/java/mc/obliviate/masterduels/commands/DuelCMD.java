@@ -2,16 +2,19 @@ package mc.obliviate.masterduels.commands;
 
 import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.data.DataHandler;
-import mc.obliviate.masterduels.data.SQLManager;
 import mc.obliviate.masterduels.game.Game;
 import mc.obliviate.masterduels.game.GameBuilder;
 import mc.obliviate.masterduels.gui.DuelArenaListGUI;
-import mc.obliviate.masterduels.gui.creator.DuelGameCreatorGUI;
 import mc.obliviate.masterduels.gui.DuelHistoryLogGUI;
+import mc.obliviate.masterduels.gui.DuelQueueListGUI;
+import mc.obliviate.masterduels.gui.creator.DuelGameCreatorGUI;
 import mc.obliviate.masterduels.gui.kit.KitSelectionGUI;
+import mc.obliviate.masterduels.history.GameHistoryLog;
 import mc.obliviate.masterduels.invite.Invite;
 import mc.obliviate.masterduels.invite.InviteResult;
 import mc.obliviate.masterduels.invite.Invites;
+import mc.obliviate.masterduels.queue.DuelQueue;
+import mc.obliviate.masterduels.queue.DuelQueueTemplate;
 import mc.obliviate.masterduels.statistics.DuelStatistic;
 import mc.obliviate.masterduels.user.IUser;
 import mc.obliviate.masterduels.user.team.Member;
@@ -24,8 +27,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -85,7 +86,7 @@ public class DuelCMD implements CommandExecutor {
 		} else if (args[0].equalsIgnoreCase("stats")) {
 			stats(player, args);
 			return true;
-		} else if (args[0].equalsIgnoreCase("arenas")) {
+		} else if (plugin.getDatabaseHandler().getConfig().getBoolean("duel-arenas-gui.enabled") && args[0].equalsIgnoreCase("arenas")) {
 			new DuelArenaListGUI(player).open();
 			return true;
 		} else if (args[0].equalsIgnoreCase("accept")) {
@@ -96,6 +97,8 @@ public class DuelCMD implements CommandExecutor {
 			return true;
 		} else if (args[0].equalsIgnoreCase("spectate")) {
 			spectate(player, args);
+		} else if (args[0].equalsIgnoreCase("queue")) {
+			queue(player, Arrays.asList(args));
 		} else if (args[0].equalsIgnoreCase("creator")) {
 			GameBuilder gameBuilder = GameBuilder.getGameBuilderMap().get(player.getUniqueId());
 			if (gameBuilder == null) gameBuilder = new GameBuilder(plugin, player.getUniqueId());
@@ -103,49 +106,60 @@ public class DuelCMD implements CommandExecutor {
 		} else if (args.length == 1 || args[0].equalsIgnoreCase("invite")) {
 			invite(player, args);
 		}
-
-
 		return true;
+	}
 
+	private void queue(final Player player, List<String> args) {
+		if (args.get(1).equalsIgnoreCase("menu") || args.get(1).equalsIgnoreCase("gui")) {
+			new DuelQueueListGUI(player).open();
+		} else if (args.get(1).equalsIgnoreCase("join")) {
+			final DuelQueue queue = DuelQueue.getAvailableQueues().get(DuelQueueTemplate.getQueueFromName(args.get(2)));
+			if (queue == null) {
+				MessageUtils.sendMessage(player, "queue.queue-not-found");
+				return;
+			}
+			queue.addPlayer(player);
+			MessageUtils.sendMessage(player, "queue.joined", new PlaceholderUtil().add("{queue-name}", queue.getName()));
+		} else if (args.get(1).equalsIgnoreCase("leave")) {
+			final DuelQueue queue = DuelQueue.findQueueOfPlayer(player);
+			if (queue == null) {
+				MessageUtils.sendMessage(player, "queue.you-are-not-in-queue");
+				return;
+			}
+			queue.removePlayer(player);
+			MessageUtils.sendMessage(player, "queue.leave", new PlaceholderUtil().add("{queue-name}", queue.getName()));
+		}
 	}
 
 	private void top(final Player player, List<String> args) {
-		if (args.size() < 2) {
-			//todo wrong usage
-			return;
-		}
-		if (args.get(1).equalsIgnoreCase("wins")) {
-			final LinkedList<DuelStatistic> statistics;
+		final LinkedList<DuelStatistic> statistics;
 
 
-			final ConfigurationSection section = plugin.getDatabaseHandler().getConfig().getConfigurationSection("top.top-wins");
-			final String nobodyText = MessageUtils.parseColor(MessageUtils.getMessage("top.nobody"));
-			if (section == null) return;
+		final ConfigurationSection section = plugin.getDatabaseHandler().getConfig().getConfigurationSection("top.top-wins");
+		final String nobodyText = MessageUtils.parseColor(MessageUtils.getMessage("top.nobody"));
+		if (section == null) return;
 
-			final int limit = section.getInt("calculation-limit", 10);
-			statistics = plugin.getSqlManager().getTopPlayers("wins", Math.max(limit, 1));
+		final int limit = section.getInt("calculation-limit", 10);
+		statistics = plugin.getSqlManager().getTopPlayers("wins", Math.max(limit, 1));
 
-			final PlaceholderUtil placeholderUtil = new PlaceholderUtil();
-			for (int index = 1; index <= limit; index++) {
+		final PlaceholderUtil placeholderUtil = new PlaceholderUtil();
+		for (int index = 1; index <= limit; index++) {
 
-				if (statistics.size() < index) {
-					placeholderUtil.add("{top-" + index + "-name}", nobodyText);
-					placeholderUtil.add("{top-" + index + "-wins}", 0 + "");
-					placeholderUtil.add("{top-" + index + "-losses}", 0 + "");
-					placeholderUtil.add("{top-" + index + "-gamesplayed}", 0 + "");
-				} else {
-					final DuelStatistic stat = statistics.get(index - 1);
-					placeholderUtil.add("{top-" + index + "-name}", Bukkit.getOfflinePlayer(stat.getPlayerUniqueId()).getName() + "");
-					placeholderUtil.add("{top-" + index + "-wins}", stat.getWins() + "");
-					placeholderUtil.add("{top-" + index + "-losses}", stat.getLosses() + "");
-					placeholderUtil.add("{top-" + index + "-gamesplayed}", (stat.getWins() + stat.getLosses()) + "");
-				}
+			if (statistics.size() < index) {
+				placeholderUtil.add("{top-" + index + "-name}", nobodyText);
+				placeholderUtil.add("{top-" + index + "-wins}", 0 + "");
+				placeholderUtil.add("{top-" + index + "-losses}", 0 + "");
+				placeholderUtil.add("{top-" + index + "-gamesplayed}", 0 + "");
+			} else {
+				final DuelStatistic stat = statistics.get(index - 1);
+				placeholderUtil.add("{top-" + index + "-name}", Bukkit.getOfflinePlayer(stat.getPlayerUniqueId()).getName() + "");
+				placeholderUtil.add("{top-" + index + "-wins}", stat.getWins() + "");
+				placeholderUtil.add("{top-" + index + "-losses}", stat.getLosses() + "");
+				placeholderUtil.add("{top-" + index + "-gamesplayed}", (stat.getWins() + stat.getLosses()) + "");
 			}
-
-			MessageUtils.sendMessage(player, "top.top-wins.message", placeholderUtil);
-
-
 		}
+
+		MessageUtils.sendMessage(player, "top.top-wins.message", placeholderUtil);
 	}
 
 	private void stats(final Player player, final String[] args) {
@@ -213,6 +227,11 @@ public class DuelCMD implements CommandExecutor {
 
 		if (target == null) {
 			MessageUtils.sendMessage(player, "target-is-not-online");
+			return;
+		}
+
+		if (player.equals(target)) {
+			MessageUtils.sendMessage(player, "invite.you-cannot-invite-yourself");
 			return;
 		}
 

@@ -35,17 +35,25 @@ import static mc.obliviate.masterduels.VaultUtil.vaultEnabled;
 public class MasterDuels extends JavaPlugin {
 
 	private static boolean shutdownMode = false;
-	private final SQLManager sqlManager = new SQLManager(this);
-	private final InventoryAPI inventoryAPI = new InventoryAPI(this);
-	private IArenaClearHandler arenaClearHandler;
-	private final YamlStorageHandler yamlStorageHandler = new YamlStorageHandler(this);
-	private MessageAPI messageAPI;
-	private ScoreboardManager scoreboardManager;
 	private static Economy economy;
 	private static Permission permissions;
+	private final SQLManager sqlManager = new SQLManager(this);
+	private final InventoryAPI inventoryAPI = new InventoryAPI(this);
+	private final YamlStorageHandler yamlStorageHandler = new YamlStorageHandler(this);
+	private IArenaClearHandler arenaClearHandler;
+	private MessageAPI messageAPI;
+	private ScoreboardManager scoreboardManager;
 
 	public static boolean isInShutdownMode() {
 		return shutdownMode;
+	}
+
+	protected static Economy getEconomy() {
+		return economy;
+	}
+
+	protected static Permission getPermissions() {
+		return permissions;
 	}
 
 	@Override
@@ -110,7 +118,9 @@ public class MasterDuels extends JavaPlugin {
 	}
 
 	private void setupTimers() {
-		new SQLCacheTimer().init(this);
+		if (GameHistoryLog.gameHistoryLogEnabled) {
+			new GameHistoryCacheTimer().init(this);
+		}
 	}
 
 	private void registerCommands() {
@@ -148,6 +158,7 @@ public class MasterDuels extends JavaPlugin {
 		}
 		getSqlManager().disconnect();
 	}
+
 	private boolean setupEconomy() {
 		final RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
 		if (rsp == null) {
@@ -156,12 +167,12 @@ public class MasterDuels extends JavaPlugin {
 		economy = rsp.getProvider();
 		return economy != null;
 	}
+
 	private boolean setupPermissions() {
 		final RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
 		permissions = rsp.getProvider();
 		return permissions != null;
 	}
-
 
 	public YamlStorageHandler getDatabaseHandler() {
 		return yamlStorageHandler;
@@ -185,13 +196,5 @@ public class MasterDuels extends JavaPlugin {
 
 	public IArenaClearHandler getArenaClearHandler() {
 		return arenaClearHandler;
-	}
-
-	protected static Economy getEconomy() {
-		return economy;
-	}
-
-	protected static Permission getPermissions() {
-		return permissions;
 	}
 }

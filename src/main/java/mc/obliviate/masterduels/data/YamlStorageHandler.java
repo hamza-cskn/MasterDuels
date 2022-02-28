@@ -4,9 +4,9 @@ import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.arena.BasicArenaState;
 import mc.obliviate.masterduels.arenaclear.modes.smart.SmartArenaClear;
+import mc.obliviate.masterduels.bossbar.TABBossbarManager;
 import mc.obliviate.masterduels.game.Game;
 import mc.obliviate.masterduels.game.GameState;
-import mc.obliviate.masterduels.bossbar.TABBossbarManager;
 import mc.obliviate.masterduels.game.bet.Bet;
 import mc.obliviate.masterduels.gui.DuelArenaListGUI;
 import mc.obliviate.masterduels.gui.DuelHistoryLogGUI;
@@ -19,7 +19,6 @@ import mc.obliviate.masterduels.utils.scoreboard.ScoreboardManager;
 import mc.obliviate.masterduels.utils.serializer.SerializerUtils;
 import mc.obliviate.masterduels.utils.timer.TimerUtils;
 import mc.obliviate.masterduels.utils.title.TitleHandler;
-import mc.obliviate.masterduels.utils.xmaterial.XMaterial;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -27,7 +26,9 @@ import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class YamlStorageHandler {
 

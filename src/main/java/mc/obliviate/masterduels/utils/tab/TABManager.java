@@ -21,9 +21,6 @@ public class TABManager {
 				Logger.error("TAB plugin enabled but TAB library could not found.");
 			}
 		}
-
-
-
 	}
 
 	public static boolean isEnabled() {

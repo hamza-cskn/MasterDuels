@@ -216,7 +216,7 @@ public class GameBuilder {
 		return players;
 	}
 
-	public void addPlayer(Player player) {
+	public boolean addPlayer(final Player player) {
 		final GameBuilder playerGameBuilder = GAME_BUILDER_MAP.get(player.getUniqueId());
 		if (playerGameBuilder != null) {
 			playerGameBuilder.destroy();

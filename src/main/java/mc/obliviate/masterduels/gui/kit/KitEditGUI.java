@@ -36,7 +36,7 @@ public class KitEditGUI extends GUI {
 			kit.setIcon(e.getInventory().getItem(4));
 		});
 
-		//todo search why barriers are invisible in 1.17
+		//todo search why barriers are invisible in 1.17, 1.18
 		addAdvancedHytem(45, new Icon(XMaterial.BARRIER.parseItem()).setName(MessageUtils.parseColor("&cChange helmet of kit")).setLore("", MessageUtils.parseColor("&7Put an Itemstack to set helmet"), MessageUtils.parseColor("&7of this kit."), "", MessageUtils.parseColor("&fCurrent: &e" + getMaterialName(kit.getArmorContents()[3]))));
 		addAdvancedHytem(46, new Icon(XMaterial.BARRIER.parseItem()).setName(MessageUtils.parseColor("&cChange chestplate of kit")).setLore("", MessageUtils.parseColor("&7Put an Itemstack to set chestplate"), MessageUtils.parseColor("&7of this kit."), "", MessageUtils.parseColor("&fCurrent: &e" + getMaterialName(kit.getArmorContents()[2]))));
 		addAdvancedHytem(47, new Icon(XMaterial.BARRIER.parseItem()).setName(MessageUtils.parseColor("&cChange leggings of kit")).setLore("", MessageUtils.parseColor("&7Put an Itemstack to set leggings"), MessageUtils.parseColor("&7of this kit."), "", MessageUtils.parseColor("&fCurrent: &e" + getMaterialName(kit.getArmorContents()[1]))));

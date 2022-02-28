@@ -22,6 +22,7 @@ import mc.obliviate.masterduels.user.team.Member;
 import mc.obliviate.masterduels.user.team.Team;
 import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.MessageUtils;
+import mc.obliviate.masterduels.utils.Utils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
 import mc.obliviate.masterduels.utils.playerreset.PlayerReset;
 import mc.obliviate.masterduels.utils.scoreboard.ScoreboardManager;
@@ -269,15 +270,15 @@ public class Game {
 		if (gameHistoryLog.getWinners().size() == 1) {
 			for (final Player player : receivers) {
 				final Player winner = Bukkit.getPlayer(gameHistoryLog.getWinners().get(0));
-				final String loserName = gameHistoryLog.getLosers().size() == 0 ? "" : Bukkit.getOfflinePlayer(gameHistoryLog.getLosers().get(0)).getName();
-				MessageUtils.sendMessage(player, "game-end-broadcast.solo", new PlaceholderUtil().add("{winner}", winner.getName()).add("{loser}", loserName).add("{winner-health}", "" + winner.getHealthScale()));
+				final String loserName = gameHistoryLog.getLosers().size() == 0 ? "" : Utils.getDisplayName(Bukkit.getOfflinePlayer(gameHistoryLog.getLosers().get(0)));
+				MessageUtils.sendMessage(player, "game-end-broadcast.solo", new PlaceholderUtil().add("{winner}", Utils.getDisplayName(winner)).add("{loser}", loserName).add("{winner-health}", "" + winner.getHealthScale()));
 			}
 		} else {
 			for (final Player player : receivers) {
 				final Player winner = Bukkit.getPlayer(gameHistoryLog.getWinners().get(0));
-				final String loserName = Bukkit.getOfflinePlayer(gameHistoryLog.getLosers().get(0)).getName();
+				final String loserName = Utils.getDisplayName(Bukkit.getOfflinePlayer(gameHistoryLog.getLosers().get(0)));
 
-				MessageUtils.sendMessage(player, "game-end-broadcast.non-solo", new PlaceholderUtil().add("{winner}", winner.getName()).add("{loser}", loserName));
+				MessageUtils.sendMessage(player, "game-end-broadcast.non-solo", new PlaceholderUtil().add("{winner}", Utils.getDisplayName(winner)).add("{loser}", loserName));
 			}
 		}
 	}
@@ -429,9 +430,9 @@ public class Game {
 		Bukkit.getPluginManager().callEvent(duelGameMemberDeathEvent);
 
 		if (attacker == null) {
-			broadcastInGame("player-dead.without-attacker", new PlaceholderUtil().add("{victim}", victim.getPlayer().getName()));
+			broadcastInGame("player-dead.without-attacker", new PlaceholderUtil().add("{victim}", Utils.getDisplayName(victim.getPlayer())));
 		} else {
-			broadcastInGame("player-dead.by-attacker", new PlaceholderUtil().add("{attacker}", attacker.getPlayer().getName()).add("{victim}", victim.getPlayer().getName()));
+			broadcastInGame("player-dead.by-attacker", new PlaceholderUtil().add("{attacker}", Utils.getDisplayName(attacker.getPlayer())).add("{victim}", Utils.getDisplayName(victim.getPlayer())));
 		}
 
 		spectatorManager.spectate(victim);
@@ -441,7 +442,7 @@ public class Game {
 			new DuelGameTeamEleminateEvent(victim.getTeam(), duelGameMemberDeathEvent);
 
 			if (victim.getTeam().getMembers().size() > 1) {
-				broadcastInGame("duel-team-eliminated", new PlaceholderUtil().add("{victim}", victim.getPlayer().getName()));
+				broadcastInGame("duel-team-eliminated", new PlaceholderUtil().add("{victim}", Utils.getDisplayName(victim.getPlayer())));
 			}
 			nextRound();
 		}
@@ -453,7 +454,7 @@ public class Game {
 		}
 	}
 
-	//todo test: start a game when players is spectating
+	//todo test: start a game when player is spectating
 	public void unspectate(Player player) {
 		getSpectatorManager().unspectate(player);
 	}

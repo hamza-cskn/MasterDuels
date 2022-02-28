@@ -1,6 +1,8 @@
 package mc.obliviate.masterduels.utils;
 
 import mc.obliviate.masterduels.utils.xmaterial.XMaterial;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
@@ -26,6 +28,15 @@ public class Utils {
 		} catch (NumberFormatException e) {
 			return 0;
 		}
+	}
+
+	public static String getDisplayName(OfflinePlayer player)  {
+		if (player instanceof Player) return getDisplayName(player.getPlayer());
+		return player.getName();
+	}
+
+	public static String getDisplayName(Player player)  {
+		return player.getDisplayName();
 	}
 
 }
