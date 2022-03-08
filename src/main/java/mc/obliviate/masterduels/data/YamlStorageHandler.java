@@ -104,6 +104,7 @@ public class YamlStorageHandler {
 
 	private void registerHistoryGui() {
 		DuelHistoryLogGUI.guiSection = config.getConfigurationSection("game-history.gui");
+		DuelHistoryLogGUI.guiConfig = new DuelHistoryLogGUI.DuelHistoryLogGUIConfig(DuelHistoryLogGUI.guiSection);
 	}
 
 	private void registerArenas() {
