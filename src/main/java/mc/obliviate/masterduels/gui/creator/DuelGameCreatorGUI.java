@@ -12,7 +12,6 @@ import mc.obliviate.masterduels.gui.kit.KitSelectionGUI;
 import mc.obliviate.masterduels.setup.chatentry.ChatEntry;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
-import mc.obliviate.masterduels.utils.serializer.SerializerUtils;
 import mc.obliviate.masterduels.utils.timer.TimerUtils;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -60,19 +59,23 @@ public class DuelGameCreatorGUI extends GUI {
 	}
 
 	private String getIconsSectionPath() {
-		return getSectionPath() + "." + getGuiSectionPath() + ".icons";
+		return getGuiSectionPath() + ".icons";
 	}
 
 	private ConfigurationSection getConfigSection(String sectionName) {
 		return plugin.getDatabaseHandler().getConfig().getConfigurationSection(sectionName);
 	}
 
-	private int getSlot(String sectionName) {
-		return GUISerializerUtils.getConfigSlot(getConfigSection(getIconsSectionPath() + sectionName));
+	private int getConfigSlot(String sectionName) {
+		return GUISerializerUtils.getConfigSlot(getConfigSection(getIconsSectionPath() + "." + sectionName));
 	}
 
 	private ItemStack getConfigItem(String sectionName) {
-		return GUISerializerUtils.getConfigItem(getConfigSection(getIconsSectionPath() + sectionName));
+		return GUISerializerUtils.getConfigItem(getConfigSection(getIconsSectionPath() + "." + sectionName));
+	}
+
+	private ItemStack getConfigItem(String sectionName, PlaceholderUtil placeholderUtil) {
+		return GUISerializerUtils.getConfigItem(getConfigSection(getIconsSectionPath() + "." + sectionName), placeholderUtil);
 	}
 
 	@Override
@@ -80,25 +83,25 @@ public class DuelGameCreatorGUI extends GUI {
 		GUISerializerUtils.putDysfunctionalIcons(this, getConfigSection(getIconsSectionPath()));
 
 		if (VaultUtil.checkPermission(player, "masterduels.duelcreator.set.teamsize"))
-			addItem(getSlot("team-size"), getTeamSizeIcon());
+			addItem(getConfigSlot("team-size"), getTeamSizeIcon());
 		if (VaultUtil.checkPermission(player, "masterduels.duelcreator.set.invite"))
-			addItem(getSlot("invites"), getInvitesIcon());
+			addItem(getConfigSlot("invites"), getInvitesIcon());
 		if (VaultUtil.checkPermission(player, "masterduels.duelcreator.set.rules"))
-			addItem(getSlot("rules"), getRulesIcon());
+			addItem(getConfigSlot("rules"), getRulesIcon());
 		if (VaultUtil.checkPermission(player, "masterduels.duelcreator.set.teamamount"))
-			addItem(getSlot("team-amount"), getTeamAmountIcon());
+			addItem(getConfigSlot("team-amount"), getTeamAmountIcon());
 		if (VaultUtil.checkPermission(player, "masterduels.duelcreator.set.teammanager"))
-			addItem(getSlot("manage-teams"), getTeamManagerIcon());
+			addItem(getConfigSlot("manage-teams"), getTeamManagerIcon());
 		if (VaultUtil.checkPermission(player, "masterduels.duelcreator.set.roundamount"))
-			addItem(getSlot("round-amount"), getRoundAmountIcon());
+			addItem(getConfigSlot("round-amount"), getRoundAmountIcon());
 		if (VaultUtil.checkPermission(player, "masterduels.duelcreator.set.kit"))
-			addItem(getSlot("kit"), getKitIcon());
+			addItem(getConfigSlot("kit"), getKitIcon());
 		if (Bet.betsEnabled) {
-			addItem(getSlot("bet"), getBetIcon());
+			addItem(getConfigSlot("bet"), getBetIcon());
 		}
 		if (VaultUtil.checkPermission(player, "masterduels.duelcreator.set.finishtime"))
-			addItem(getSlot("game-time"), getFinishTimeIcon());
-		addItem(getSlot("start-game"), getStartGameIcon());
+			addItem(getConfigSlot("game-time"), getFinishTimeIcon());
+		addItem(getConfigSlot("start-game"), getStartGameIcon());
 	}
 
 	private Icon getStartGameIcon() {
@@ -130,13 +133,13 @@ public class DuelGameCreatorGUI extends GUI {
 	}
 
 	private Icon getInvitesIcon() {
-		return new Icon(getConfigItem("invites")).onClick(e -> {
+		return new Icon(getConfigItem("invites", new PlaceholderUtil().add("{invited-players}", gameBuilder.getInvites().size() + "").add("{total-players}", gameBuilder.getPlayers().size() + ""))).onClick(e -> {
 			new DuelInvitesGUI(player, gameBuilder).open();
 		});
 	}
 
 	private Icon getBetIcon() {
-		final Icon betIcon = new Icon(getConfigItem("bet"));
+		final Icon betIcon = new Icon(getConfigItem("bet", new PlaceholderUtil().add("{bet}", gameBuilder.getBet().getMoney() + "")));
 		return betIcon.onClick(e -> {
 			player.closeInventory();
 			new ChatEntry(player.getUniqueId(), getPlugin()).onResponse(event -> {
@@ -153,7 +156,7 @@ public class DuelGameCreatorGUI extends GUI {
 	}
 
 	private Icon getKitIcon() {
-		final Icon kitIcon = new Icon(getConfigItem("kit"));
+		final Icon kitIcon = new Icon(getConfigItem("kit", new PlaceholderUtil().add("{kit}", gameBuilder.getKit() != null ? gameBuilder.getKit().getKitName() : MessageUtils.parseColor(MessageUtils.getMessage("game-creator.none-kit-name")))));
 		return kitIcon.onClick(e -> {
 			new KitSelectionGUI(player, gameBuilder, kit -> {
 				open();
@@ -162,7 +165,7 @@ public class DuelGameCreatorGUI extends GUI {
 	}
 
 	private Icon getRoundAmountIcon() {
-		final Icon roundAmountIcon = new Icon(getConfigItem("round-amount"));
+		final Icon roundAmountIcon = new Icon(getConfigItem("round-amount", new PlaceholderUtil().add("{round-amount}", gameBuilder.getTotalRounds() + "")));
 		return roundAmountIcon.onClick(e -> {
 			if (e.isRightClick()) {
 				gameBuilder.setTotalRounds(Math.max(gameBuilder.getTotalRounds() - 2, 1));
@@ -174,7 +177,10 @@ public class DuelGameCreatorGUI extends GUI {
 	}
 
 	private Icon getFinishTimeIcon() {
-		final Icon finishTimeIcon = new Icon(getConfigItem("game-time"));
+		final Icon finishTimeIcon = new Icon(getConfigItem("game-time", new PlaceholderUtil()
+				.add("{game-timer}", TimerUtils.formatTimeAsTimer(gameBuilder.getFinishTime()))
+				.add("{game-time}", TimerUtils.formatTimeAsTime(gameBuilder.getFinishTime()))
+		));
 		return finishTimeIcon.onClick(e -> {
 			if (e.isRightClick()) {
 				gameBuilder.setFinishTime(Math.max(gameBuilder.getFinishTime() - 30, 60));
@@ -186,7 +192,7 @@ public class DuelGameCreatorGUI extends GUI {
 	}
 
 	private Icon getTeamAmountIcon() {
-		final Icon teamAmountIcon = new Icon(getConfigItem("team-amount"));
+		final Icon teamAmountIcon = new Icon(getConfigItem("team-amount", new PlaceholderUtil().add("{team-amount}", gameBuilder.getTeamAmount() + "")));
 		return teamAmountIcon.onClick(e -> {
 			if (e.isRightClick()) {
 				gameBuilder.setTeamAmount(Math.max(gameBuilder.getTeamAmount() - 1, 2));
@@ -198,7 +204,7 @@ public class DuelGameCreatorGUI extends GUI {
 	}
 
 	private Icon getTeamSizeIcon() {
-		final Icon teamAmountIcon = new Icon(getConfigItem("team-size"));
+		final Icon teamAmountIcon = new Icon(getConfigItem("team-size", new PlaceholderUtil().add("{team-size}", gameBuilder.getTeamSize() + "")));
 		return teamAmountIcon.onClick(e -> {
 			if (e.isRightClick()) {
 				gameBuilder.setTeamSize(Math.max(gameBuilder.getTeamSize() - 1, 1));
