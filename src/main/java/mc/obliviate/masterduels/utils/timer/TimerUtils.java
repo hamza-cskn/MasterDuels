@@ -7,28 +7,62 @@ public class TimerUtils {
 	public static String SECOND = " seconds";
 	public static String SECONDS = " second";
 
-	public static String formatTimerFormat(long endTime) {
+
+	/**
+	 *
+	 * @param endTime give time out time.
+	 * @return formatted TIMER text.
+	 */
+	public static String formatTimeUntilThenAsTimer(long endTime) {
 		final long now = System.currentTimeMillis();
 
 		if (now > endTime) endTime = now;
 
 		final long diff = (endTime - now) / 1000;
-		return formatDifferentTimer(diff);
+		return formatTimeAsTimer(diff);
 	}
 
-	public static String formatTimeFormat(long endTime) {
-		return getFormattedDifferentTime(System.currentTimeMillis(), endTime);
+	/**
+	 *
+	 * @param endTime give time out time
+	 * @return formatted TIME text.
+	 */
+	public static String formatTimeUntilThenAsTime(long endTime) {
+		return formatTimeDifferenceAsTime(System.currentTimeMillis(), endTime);
 	}
 
-	public static String getFormattedDifferentTime(long start, long end) {
+	/**
+	 * @param start start time
+	 * @param end end time
+	 * method will get difference of these.
+	 * @return formatted TIME text
+	 */
+	public static String formatTimeDifferenceAsTime(long start, long end) {
 		if (start > end) start = end;
 
 		final long diff = (end - start) / 1000;
 
-		return formatDifferentTime(diff);
+		return formatTimeAsTime(diff);
+	}
+	/**
+	 * @param start start time
+	 * @param end end time
+	 * method will get difference of these.
+	 * @return formatted TIMER text
+	 */
+	public static String formatTimeDifferenceAsTimer(long start, long end) {
+		if (start > end) start = end;
+
+		final long diff = (end - start) / 1000;
+
+		return formatTimeAsTimer(diff);
 	}
 
-	public static String formatDifferentTimer(long diff) {
+	/**
+	 * @param diff difference between start time and end time
+	 * @return formatted TIMER text
+	 */
+	public static String formatTimeAsTimer(long diff) {
 		final long minute = Math.floorDiv(diff, 60);
 		final long second = Math.floorMod(diff, 60);
 
@@ -45,8 +79,11 @@ public class TimerUtils {
 		return min + ":" + sec;
 
 	}
-
-	public static String formatDifferentTime(long diff) {
+	/**
+	 * @param diff difference between start time and end time
+	 * @return formatted TIME text
+	 */
+	public static String formatTimeAsTime(long diff) {
 
 		final long minute = Math.floorDiv(diff, 60);
 		final long second = Math.floorMod(diff, 60);
