@@ -12,7 +12,6 @@ import mc.obliviate.masterduels.game.bet.Bet;
 import mc.obliviate.masterduels.game.gamerule.GameRule;
 import mc.obliviate.masterduels.game.round.RoundData;
 import mc.obliviate.masterduels.game.spectator.GameSpectatorManager;
-import mc.obliviate.masterduels.game.spectator.PureSpectatorStorage;
 import mc.obliviate.masterduels.history.GameHistoryLog;
 import mc.obliviate.masterduels.kit.InventoryStorer;
 import mc.obliviate.masterduels.kit.Kit;
@@ -479,8 +478,8 @@ public class Game {
 					for (Member member : getAllMembers()) {
 						plugin.getMessageAPI().sendTitle(member.getPlayer(), TitleHandler.getTitle(TitleHandler.TitleType.ROUND_STARTING,
 								new PlaceholderUtil().add("{round}", roundData.getCurrentRound() + "")
-										.add("{remaining-time-timer}", TimerUtils.formatTimerFormat(timer + 100))
-										.add("{remaining-time-time}", TimerUtils.formatTimeFormat(timer + 100))));
+										.add("{remaining-time-timer}", TimerUtils.formatTimeUntilThenAsTimer(timer + 100))
+										.add("{remaining-time-time}", TimerUtils.formatTimeUntilThenAsTime(timer + 100))));
 					}
 				}, i * 2L));
 			}

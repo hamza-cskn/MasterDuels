@@ -37,8 +37,8 @@ public class DuelGameCreatorGUI extends GUI {
 				.add("{round-amount}", gameBuilder.getTotalRounds() + "")
 				.add("{kit}", gameBuilder.getKit() == null ? "" : gameBuilder.getKit().getKitName())
 				.add("{bet}", gameBuilder.getBet().getMoney() + "")
-				.add("{game-time}", TimerUtils.formatDifferentTime(gameBuilder.getFinishTime()))
-				.add("{game-timer}", TimerUtils.formatDifferentTimer(gameBuilder.getFinishTime()))
+				.add("{game-time}", TimerUtils.formatTimeAsTime(gameBuilder.getFinishTime()))
+				.add("{game-timer}", TimerUtils.formatTimeAsTimer(gameBuilder.getFinishTime()))
 				.add("{invited-players}", gameBuilder.getInvites().size() + "")
 				.add("{total-players}", gameBuilder.getPlayers().size() + "");
 	}
