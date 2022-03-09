@@ -9,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 public class GUISerializerUtils {
 
 	public static void putDysfunctionalIcons(GUI gui, ConfigurationSection iconsSection) {
+		if (iconsSection == null) throw new IllegalArgumentException("null configuration section given!");
 		for (String sectionName : iconsSection.getKeys(false)) {
 			final ConfigurationSection section = iconsSection.getConfigurationSection(sectionName);
 
