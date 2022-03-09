@@ -69,7 +69,7 @@ public class DuelHistoryLogGUI extends GUI {
 			final Icon icon = new Icon(historyIconItemStacks.get(type));
 			final List<String> description = icon.getItem().getItemMeta().getLore();
 
-			final PlaceholderUtil placeholderUtil = new PlaceholderUtil().add("{time}", TimerUtils.getFormattedDifferentTime(log.getStartTime(), log.getEndTime()))
+			final PlaceholderUtil placeholderUtil = new PlaceholderUtil().add("{time}", TimerUtils.formatTimeDifferenceAsTime(log.getStartTime(), log.getEndTime()))
 					.add("{played-date}", new SimpleDateFormat("HH:mm dd/MM/yyyy").format(new Date(log.getStartTime())));
 			if (log.getWinners().size() == 1) {
 				placeholderUtil.add("{winner}", Bukkit.getOfflinePlayer(log.getWinners().get(0)).getName());

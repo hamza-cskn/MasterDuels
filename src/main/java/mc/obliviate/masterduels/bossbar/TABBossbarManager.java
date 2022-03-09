@@ -44,10 +44,10 @@ public class TABBossbarManager implements BossBarManager {
 		game.task("BOSSBAR", Bukkit.getScheduler().runTaskTimer(game.getPlugin(), () -> {
 			if (game.getGameState().equals(GameState.GAME_ENDING)) {
 				bar.setProgress((Utils.getPercentage(Game.getEndDelay() * 1000, (game.getTimer() - System.currentTimeMillis()))));
-				bar.setTitle(CLOSING_TEXT_FORMAT.replace("{time}", TimerUtils.formatTimerFormat(game.getTimer())).replace("{timer}", TimerUtils.formatTimerFormat(game.getTimer())));
+				bar.setTitle(CLOSING_TEXT_FORMAT.replace("{time}", TimerUtils.formatTimeUntilThenAsTimer(game.getTimer())).replace("{timer}", TimerUtils.formatTimeUntilThenAsTimer(game.getTimer())));
 			} else {
 				bar.setProgress((Utils.getPercentage(game.getFinishTime() * 1000, (game.getTimer() - System.currentTimeMillis()))));
-				bar.setTitle(NORMAL_TEXT_FORMAT.replace("{time}", TimerUtils.formatTimerFormat(game.getTimer())).replace("{timer}", TimerUtils.formatTimerFormat(game.getTimer())));
+				bar.setTitle(NORMAL_TEXT_FORMAT.replace("{time}", TimerUtils.formatTimeUntilThenAsTimer(game.getTimer())).replace("{timer}", TimerUtils.formatTimeUntilThenAsTimer(game.getTimer())));
 			}
 		}, 0, 20));
 	}
