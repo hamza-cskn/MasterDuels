@@ -6,7 +6,6 @@ import mc.obliviate.masterduels.user.spectator.Spectator;
 import mc.obliviate.masterduels.user.IUser;
 import mc.obliviate.masterduels.user.team.Member;
 import mc.obliviate.masterduels.user.team.Team;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
 import java.util.HashMap;

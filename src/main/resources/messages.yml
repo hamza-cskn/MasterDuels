@@ -78,12 +78,20 @@ duel-command:
       enable-usage: '&cCorrect usage: /dueladmin enablearena <arena name>'
 no-arena-found-with-this-name: '&cNo arenas with this name found.'
 queue:
-  join: '&7You joined duel queue: &b{queue-name}'
-  leave: '&7You left duel queue: &b{queue-name}'
-  created: '&7Successfully created new queue template: &b{queue-name}'
-  delete: '&7Successfully delete new queue template: &b{queue-name}'
-  queue-not-found: '&cNo queue exist with this name.'
+  joined: '&7You joined &b{queue-name} &7duel queue &8[&f{player-amount}&8/&f{max-player-amount}&8]'
+  left: '&7You left duel queue: &b{queue-name}'
+  created: '&7Successfully &acreated&7 new queue template: &b{queue-name}'
+  deleted: '&7Successfully &cdeleted&7 new queue template: &b{queue-name}'
+  player-could-not-added: '&cAn error occurred during joining a queue.'
+  queue-not-found: '&cNo queue found that is named &4''{entry}''&c.'
+  no-queue-name: '&cPlease enter a queue name to join.'
+  usage: |-
+    [DISABLE_PREFIX]&7 /duel queue menu &8- &9opens duel queues menu
+    &7 /duel queue join <queue name> &8- &9joins a duel queue
+    &7 /duel queue leave &8- &9leaves a duel queue
   you-are-not-in-queue: '&cYou are not in queue.'
+game-creator:
+  none-kit-name: '&cNone'
 top:
   nobody: '&8Nobody'
   top-wins:

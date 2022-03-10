@@ -2,6 +2,8 @@ package mc.obliviate.masterduels.queue;
 
 import mc.obliviate.masterduels.game.Game;
 import mc.obliviate.masterduels.game.GameBuilder;
+import mc.obliviate.masterduels.utils.MessageUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -16,6 +18,11 @@ public class DuelQueue {
 	public DuelQueue(final DuelQueueTemplate template, final GameBuilder builder) {
 		this.builder = builder;
 		this.template = template;
+		final DuelQueue queue = availableQueues.get(template);
+		if (queue != null) {
+			queue.lock();
+			Bukkit.broadcastMessage("double queue creation found in same template.");
+		}
 		availableQueues.put(template, this);
 	}
 
@@ -23,12 +30,13 @@ public class DuelQueue {
 		return availableQueues;
 	}
 
-	private GameBuilder getBuilder() {
+	public GameBuilder getBuilder() {
 		return builder;
 	}
 
 	public void addPlayer(final Player player) {
-		if (builder.addPlayer(player) && builder.getPlayers().size() == builder.getTeamSize() * builder.getTeamAmount()) {
+		if (!builder.addPlayer(player)) MessageUtils.sendMessage(player,"queue.player-could-not-added");
+		if (builder.getPlayers().size() == builder.getTeamSize() * builder.getTeamAmount()) {
 			start();
 		}
 	}
@@ -38,10 +46,21 @@ public class DuelQueue {
 	}
 
 	public void start() {
-		availableQueues.remove(template);
-		final Game game = builder.getGame();
+		final Game game = builder.build();
 		if (game == null) return;
+		lock();
 		game.startGame();
+		Bukkit.broadcastMessage("game started");
+		//todo announce and explain players why game is not started.
+	}
+
+	/**
+	 * when a queue locked, any player cannot join/leave the queue.
+	 * queue leaves from available duel queue list.
+	 */
+	public void lock() {
+		availableQueues.remove(template);
+		template.createNewQueue();
 	}
 
 	public String getName() {

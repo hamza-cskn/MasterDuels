@@ -80,8 +80,8 @@ public class Game {
 		Game.endDelay = endDelay;
 	}
 
-	public static GameBuilder create(MasterDuels plugin, UUID owner) {
-		return new GameBuilder(plugin, owner);
+	public static GameBuilder create(MasterDuels plugin) {
+		return new GameBuilder(plugin);
 	}
 
 	protected void registerTeam(Team team) {
@@ -99,7 +99,7 @@ public class Game {
 			showAll(member.getPlayer());
 		}
 
-		GameBuilder.getGameBuilderMap().get(gameBuilder.getOwner()).destroy();
+		GameBuilder.getGameBuilderMap().get(gameBuilder.getId()).destroy();
 	}
 
 	public void initBossBar() {

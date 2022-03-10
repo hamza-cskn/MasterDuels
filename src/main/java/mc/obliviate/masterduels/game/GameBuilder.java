@@ -23,36 +23,26 @@ public class GameBuilder {
 	private static final Map<UUID, GameBuilder> GAME_BUILDER_MAP = new HashMap<>();
 	private final MasterDuels plugin;
 	private final Map<UUID, Invite> invites = new HashMap<>();
-	private final List<TeamBuilder> teamBuilders = new ArrayList<>();
-	private final UUID owner;
+	private final TeamBuilderManager teamBuilderManager = new TeamBuilderManager(this);
+	private final UUID id;
 	private final List<Player> players = new ArrayList<>();
 	private final List<GameRule> gameRules = new ArrayList<>();
 	private final Bet bet = new Bet();
-	private int teamAmount = -1;
-	private int teamSize = -1;
+	private int teamAmount = 2;
+	private int teamSize = 1;
 	private int totalRounds = 1;
 	private int finishTime = 60;
 	private Kit kit = null;
 	private Game game = null;
 
-	public GameBuilder(final MasterDuels plugin, UUID owner) {
-		final GameBuilder builder = GAME_BUILDER_MAP.get(owner);
-		if (builder != null) {
-			builder.destroy();
-		}
+	public GameBuilder(final MasterDuels plugin) {
+
 		this.plugin = plugin;
-		this.owner = owner;
+		this.id = UUID.randomUUID();
 
-		final Player player = Bukkit.getPlayer(owner);
-		if (player == null) {
-			destroy();
-			return;
-		}
+		createRandomizedTeams();
 
-		GAME_BUILDER_MAP.put(owner, this);
-		players.add(player);
-		setTeamSize(1);
-		setTeamAmount(2);
+		GAME_BUILDER_MAP.put(id, this);
 
 	}
 
@@ -65,10 +55,7 @@ public class GameBuilder {
 	}
 
 	public void createTeam(List<Player> players) {
-		if (teamBuilders.size() > teamAmount) {
-			throw new IllegalStateException("Team amount limit is " + teamAmount + ". All teams has created already. Team amount is " + teamBuilders.size());
-		}
-		teamBuilders.add(new TeamBuilder(teamBuilders.size() + 1, teamSize, players));
+		teamBuilderManager.registerNewTeam(players);
 	}
 
 	public Game build() {
@@ -85,20 +72,18 @@ public class GameBuilder {
 
 		final Game game = new Game(plugin, this, arena);
 
-		for (final TeamBuilder builder : teamBuilders) {
-			game.registerTeam(builder.build(game));
-		}
+		teamBuilderManager.registerTeamsIntoGame(game);
 
 		this.game = game;
 		return game;
 	}
 
-	public List<TeamBuilder> getTeamBuilders() {
-		return teamBuilders;
+	public Map<Integer, TeamBuilder> getTeamBuilders() {
+		return teamBuilderManager.getTeams();
 	}
 
 	public TeamBuilder getTeamBuilder(Player player) {
-		for (final TeamBuilder teamBuilder : teamBuilders) {
+		for (final TeamBuilder teamBuilder : getTeamBuilders().values()) {
 			if (teamBuilder.getMembers().contains(player)) return teamBuilder;
 		}
 		return null;
@@ -130,7 +115,7 @@ public class GameBuilder {
 	}
 
 	public void createRandomizedTeams() {
-		teamBuilders.clear();
+		teamBuilderManager.getTeams().clear();
 		for (int i = 1; i <= teamAmount; i++) {
 			final List<Player> playerList = players.subList(Math.min(players.size(), (i - 1) * teamSize), Math.min(players.size(), i * teamSize));
 			createTeam(playerList);
@@ -156,7 +141,7 @@ public class GameBuilder {
 		}
 
 		for (final GameBuilder builder : GAME_BUILDER_MAP.values()) {
-			if (builder.getOwner().equals(invited.getUniqueId())) break;
+			if (builder.getId().equals(invited.getUniqueId())) break;
 			if (builder.getPlayers().contains(invited)) {
 				MessageUtils.sendMessage(inviter, "target-already-in-duel", new PlaceholderUtil().add("{target}", inviter.getName()));
 				return;
@@ -185,6 +170,10 @@ public class GameBuilder {
 		return totalRounds;
 	}
 
+	public void setTotalRounds(int totalRounds) {
+		this.totalRounds = totalRounds;
+	}
+
 	public GameBuilder totalRounds(int totalRounds) {
 		this.totalRounds = totalRounds;
 		return this;
@@ -192,6 +181,10 @@ public class GameBuilder {
 
 	public int getFinishTime() {
 		return finishTime;
+	}
+
+	public void setFinishTime(int finishTime) {
+		this.finishTime = finishTime;
 	}
 
 	public GameBuilder finishTime(int finishTime) {
@@ -236,16 +229,27 @@ public class GameBuilder {
 		}
 
 		for (final GameBuilder builder : GAME_BUILDER_MAP.values()) {
-			if (builder.getOwner().equals(player.getUniqueId())) break;
+			//todo try to join a game builder when you have a game creator.
 			if (builder.getPlayers().contains(player)) {
 				return false;
 			}
 		}
 
+		final TeamBuilder team = getAvailableTeam();
+		if (team == null) return false;
 		players.add(player);
-		createRandomizedTeams();
+		team.add(player);
+
 		return true;
 	}
+
+	public TeamBuilder getAvailableTeam() {
+		for (TeamBuilder teamBuilder : teamBuilderManager.getTeams().values()) {
+			if (teamBuilder.getMembers().size() < teamBuilder.getSize()) return teamBuilder;
+		}
+		return null;
+	}
+
 
 	public List<Invite> findInvites(final UUID player) {
 		final List<Invite> invites = new ArrayList<>();
@@ -267,22 +271,14 @@ public class GameBuilder {
 		for (final Invite invite : invites.values()) {
 			invite.onExpire();
 		}
-		GAME_BUILDER_MAP.remove(owner);
+		GAME_BUILDER_MAP.remove(id);
 	}
 
 	public Bet getBet() {
 		return bet;
 	}
 
-	public UUID getOwner() {
-		return owner;
-	}
-
-	public void setTotalRounds(int totalRounds) {
-		this.totalRounds = totalRounds;
-	}
-
-	public void setFinishTime(int finishTime) {
-		this.finishTime = finishTime;
+	public UUID getId() {
+		return id;
 	}
 }

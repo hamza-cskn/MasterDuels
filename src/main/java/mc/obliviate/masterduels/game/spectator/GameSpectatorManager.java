@@ -2,7 +2,6 @@ package mc.obliviate.masterduels.game.spectator;
 
 import mc.obliviate.masterduels.game.Game;
 import mc.obliviate.masterduels.user.spectator.ISpectator;
-import mc.obliviate.masterduels.user.spectator.Spectator;
 import mc.obliviate.masterduels.user.team.Member;
 import org.bukkit.entity.Player;
 

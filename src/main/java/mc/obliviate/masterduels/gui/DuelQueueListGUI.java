@@ -19,7 +19,7 @@ public class DuelQueueListGUI extends GUI {
 
 		int i = 9;
 		for (final DuelQueueTemplate template : DuelQueueTemplate.getQueueTemplates()) {
-			addItem(i++, new Icon(template.getIcon()).onClick(e -> {
+			addItem(i++, new Icon(template.getIcon()).setName(template.getName()).onClick(e -> {
 				player.performCommand("duel queue join " + template.getName());
 				player.closeInventory();
 			}));

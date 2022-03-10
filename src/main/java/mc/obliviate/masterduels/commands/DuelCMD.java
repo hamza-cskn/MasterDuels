@@ -1,9 +1,11 @@
 package mc.obliviate.masterduels.commands;
 
+import com.avaje.ebeaninternal.server.core.Message;
 import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.game.Game;
 import mc.obliviate.masterduels.game.GameBuilder;
+import mc.obliviate.masterduels.game.GameCreator;
 import mc.obliviate.masterduels.gui.DuelArenaListGUI;
 import mc.obliviate.masterduels.gui.DuelHistoryLogGUI;
 import mc.obliviate.masterduels.gui.DuelQueueListGUI;
@@ -100,9 +102,9 @@ public class DuelCMD implements CommandExecutor {
 		} else if (args[0].equalsIgnoreCase("queue")) {
 			queue(player, Arrays.asList(args));
 		} else if (args[0].equalsIgnoreCase("creator")) {
-			GameBuilder gameBuilder = GameBuilder.getGameBuilderMap().get(player.getUniqueId());
-			if (gameBuilder == null) gameBuilder = new GameBuilder(plugin, player.getUniqueId());
-			new DuelGameCreatorGUI(player, gameBuilder).open();
+			GameCreator gameCreator = GameCreator.getGameCreatorMap().get(player.getUniqueId());
+			if (gameCreator == null) gameCreator = new GameCreator(plugin, player.getUniqueId());
+			new DuelGameCreatorGUI(player, gameCreator).open();
 		} else if (args.length == 1 || args[0].equalsIgnoreCase("invite")) {
 			invite(player, args);
 		}
@@ -110,16 +112,29 @@ public class DuelCMD implements CommandExecutor {
 	}
 
 	private void queue(final Player player, List<String> args) {
+		if (args.size() == 1) {
+			MessageUtils.sendMessage(player, "queue.usage");
+			return;
+		}
 		if (args.get(1).equalsIgnoreCase("menu") || args.get(1).equalsIgnoreCase("gui")) {
 			new DuelQueueListGUI(player).open();
 		} else if (args.get(1).equalsIgnoreCase("join")) {
-			final DuelQueue queue = DuelQueue.getAvailableQueues().get(DuelQueueTemplate.getQueueFromName(args.get(2)));
+			if (args.size() == 2) {
+				MessageUtils.sendMessage(player, "queue.no-queue-name");
+				return;
+			}
+			final DuelQueue queue = DuelQueue.getAvailableQueues().get(DuelQueueTemplate.getQueueTemplateFromName(args.get(2)));
 			if (queue == null) {
-				MessageUtils.sendMessage(player, "queue.queue-not-found");
+				MessageUtils.sendMessage(player, "queue.queue-not-found", new PlaceholderUtil().add("{entry}", args.get(2)));
 				return;
 			}
 			queue.addPlayer(player);
-			MessageUtils.sendMessage(player, "queue.joined", new PlaceholderUtil().add("{queue-name}", queue.getName()));
+			MessageUtils.sendMessage(player, "queue.joined",
+					new PlaceholderUtil()
+							.add("{queue-name}", queue.getName())
+							.add("{player-amount}", queue.getBuilder().getPlayers().size() + "")
+							.add("{max-player-amount}",queue.getBuilder().getTeamAmount() * queue.getBuilder().getTeamSize() + "")
+			);
 		} else if (args.get(1).equalsIgnoreCase("leave")) {
 			final DuelQueue queue = DuelQueue.findQueueOfPlayer(player);
 			if (queue == null) {
@@ -127,7 +142,7 @@ public class DuelCMD implements CommandExecutor {
 				return;
 			}
 			queue.removePlayer(player);
-			MessageUtils.sendMessage(player, "queue.leave", new PlaceholderUtil().add("{queue-name}", queue.getName()));
+			MessageUtils.sendMessage(player, "queue.left", new PlaceholderUtil().add("{queue-name}", queue.getName()));
 		}
 	}
 
@@ -241,7 +256,7 @@ public class DuelCMD implements CommandExecutor {
 		}
 
 		//1v1
-		final GameBuilder gameBuilder = Game.create(plugin, player.getUniqueId()).setTeamAmount(2).setTeamSize(1).finishTime(60).totalRounds(1);
+		final GameBuilder gameBuilder = Game.create(plugin).setTeamAmount(2).setTeamSize(1).finishTime(60).totalRounds(1);
 
 		new KitSelectionGUI(player, gameBuilder, selectedKit -> {
 			gameBuilder.sendInvite(player, target, result -> {

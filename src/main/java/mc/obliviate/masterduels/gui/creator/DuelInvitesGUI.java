@@ -1,6 +1,7 @@
 package mc.obliviate.masterduels.gui.creator;
 
 import mc.obliviate.masterduels.game.GameBuilder;
+import mc.obliviate.masterduels.game.GameCreator;
 import mc.obliviate.masterduels.invite.Invite;
 import mc.obliviate.masterduels.setup.chatentry.ChatEntry;
 import mc.obliviate.masterduels.utils.MessageUtils;
@@ -14,17 +15,19 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 public class DuelInvitesGUI extends GUI {
 
 	private final GameBuilder gameBuilder;
+	private final GameCreator gameCreator;
 
-	public DuelInvitesGUI(Player player, GameBuilder gameBuilder) {
+	public DuelInvitesGUI(Player player, GameCreator gameCreator) {
 		super(player, "duel-invites-gui", "Duel Invites", 6);
-		this.gameBuilder = gameBuilder;
+		this.gameBuilder = gameCreator.getBuilder();
+		this.gameCreator = gameCreator;
 	}
 
 	@Override
 	public void onOpen(InventoryOpenEvent event) {
 		fillRow(new Icon(XMaterial.BLACK_STAINED_GLASS_PANE.parseItem()), 0);
 		addItem(0, new Icon(XMaterial.ARROW.parseItem()).onClick(e -> {
-			new DuelGameCreatorGUI(player, gameBuilder).open();
+			new DuelGameCreatorGUI(player, gameCreator).open();
 		}));
 		addItem(4, new Icon(XMaterial.WRITABLE_BOOK.parseItem()).setName(MessageUtils.parseColor("&aInvite a player")).setLore(MessageUtils.parseColor("&7Players: " + gameBuilder.getPlayers().size())).onClick(e -> {
 			player.closeInventory();

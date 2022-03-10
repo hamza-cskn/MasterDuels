@@ -9,18 +9,18 @@ import java.util.List;
 public class TeamBuilder {
 
 	private final int teamId;
-	private final int size;
+	private final TeamBuilderManager teamBuilderManager;
 	private final List<Player> members = new ArrayList<>();
 
-	public TeamBuilder(final int teamId, final int size, final List<Player> members) {
+	protected TeamBuilder(final TeamBuilderManager teamBuilderManager, final List<Player> members, int teamId) {
+		this.teamBuilderManager = teamBuilderManager;
 		this.teamId = teamId;
-		this.size = size;
 		if (members != null)
 			this.members.addAll(members);
 	}
 
 	public int getSize() {
-		return size;
+		return teamBuilderManager.getTeamSize();
 	}
 
 	public List<Player> getMembers() {
@@ -38,8 +38,9 @@ public class TeamBuilder {
 	public void remove(Player p) {
 		members.remove(p);
 	}
+
 	public Team build(Game game) {
-		return new Team(teamId, size, members, game);
+		return new Team(teamId, getSize(), members, game);
 	}
 
 }

@@ -74,7 +74,7 @@ public class Kit {
 
 	public ItemStack getIcon() {
 		if (icon == null || icon.getType().equals(Material.AIR)) return new ItemStack(Material.DIAMOND_CHESTPLATE);
-		return icon;
+		return icon.clone();
 	}
 
 	public void setIcon(ItemStack icon) {

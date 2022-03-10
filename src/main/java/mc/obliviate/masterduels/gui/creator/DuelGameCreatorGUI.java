@@ -6,6 +6,7 @@ import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.VaultUtil;
 import mc.obliviate.masterduels.game.Game;
 import mc.obliviate.masterduels.game.GameBuilder;
+import mc.obliviate.masterduels.game.GameCreator;
 import mc.obliviate.masterduels.game.bet.Bet;
 import mc.obliviate.masterduels.gui.GUISerializerUtils;
 import mc.obliviate.masterduels.gui.kit.KitSelectionGUI;
@@ -21,13 +22,15 @@ import org.bukkit.inventory.ItemStack;
 public class DuelGameCreatorGUI extends GUI {
 
 	private final GameBuilder gameBuilder;
+	private final GameCreator gameCreator;
 	private final MasterDuels plugin;
 	private final PlaceholderUtil placeholderUtil;
 
 	//todo open team manager gui to non-owners
-	public DuelGameCreatorGUI(Player player, GameBuilder gameBuilder) {
+	public DuelGameCreatorGUI(Player player, GameCreator gameCreator) {
 		super(player, "duel-game-creator-gui", "Loading...", 5);
-		this.gameBuilder = gameBuilder;
+		this.gameBuilder = gameCreator.getBuilder();
+		this.gameCreator = gameCreator;
 		plugin = (MasterDuels) getPlugin();
 
 		placeholderUtil = new PlaceholderUtil()
@@ -122,19 +125,19 @@ public class DuelGameCreatorGUI extends GUI {
 
 	public Icon getTeamManagerIcon() {
 		return new Icon(getConfigItem("manage-teams")).onClick(e -> {
-			new DuelTeamManagerGUI(player, gameBuilder).open();
+			new DuelTeamManagerGUI(player, gameCreator).open();
 		});
 	}
 
 	private Icon getRulesIcon() {
 		return new Icon(getConfigItem("rules")).onClick(e -> {
-			new DuelSettingsGUI(player, gameBuilder).open();
+			new DuelSettingsGUI(player, gameCreator).open();
 		});
 	}
 
 	private Icon getInvitesIcon() {
 		return new Icon(getConfigItem("invites", new PlaceholderUtil().add("{invited-players}", gameBuilder.getInvites().size() + "").add("{total-players}", gameBuilder.getPlayers().size() + ""))).onClick(e -> {
-			new DuelInvitesGUI(player, gameBuilder).open();
+			new DuelInvitesGUI(player, gameCreator).open();
 		});
 	}
 
@@ -142,10 +145,10 @@ public class DuelGameCreatorGUI extends GUI {
 		final Icon betIcon = new Icon(getConfigItem("bet", new PlaceholderUtil().add("{bet}", gameBuilder.getBet().getMoney() + "")));
 		return betIcon.onClick(e -> {
 			player.closeInventory();
+			MessageUtils.sendMessage(player, "enter-bet-amount");
 			new ChatEntry(player.getUniqueId(), getPlugin()).onResponse(event -> {
 				try {
 					gameBuilder.getBet().setMoney(Integer.parseInt(event.getMessage()));
-					MessageUtils.sendMessage(player, "enter-bet-amount");
 				} catch (NumberFormatException exception) {
 					MessageUtils.sendMessage(player, "invalid-number", new PlaceholderUtil().add("{entry}", event.getMessage()));
 				} finally {

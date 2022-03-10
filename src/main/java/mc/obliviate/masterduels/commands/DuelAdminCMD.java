@@ -1,6 +1,5 @@
 package mc.obliviate.masterduels.commands;
 
-import mc.obliviate.inventory.Icon;
 import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.data.DataHandler;
@@ -116,11 +115,17 @@ public class DuelAdminCMD implements CommandExecutor {
 	}
 
 	public void queueDelete(final Player player, final List<String> args) {
-		DuelQueueTemplate.removeQueue(args.get(2));
+		final boolean result = DuelQueueTemplate.removeQueueTemplate(args.get(2));
+		if (result) {
+			MessageUtils.sendMessage(player, "queue.deleted", new PlaceholderUtil().add("{queue-name}",args.get(2)));
+		} else {
+			MessageUtils.sendMessage(player, "queue.queue-not-found");
+		}
 	}
 
 	public void queueCreate(final Player player, final List<String> args) {
-		new DuelQueueTemplate(args.get(2), null, Kit.getKits().get(args.get(3)));
+		new DuelQueueTemplate(plugin, args.get(2), null, Kit.getKits().get(args.get(3)));
+		MessageUtils.sendMessage(player, "queue.created", new PlaceholderUtil().add("{queue-name}", args.get(2)));
 	}
 
 	private void testStart(final Player player, final List<String> args) {
@@ -136,7 +141,7 @@ public class DuelAdminCMD implements CommandExecutor {
 			return;
 		}
 
-		final GameBuilder gameBuilder = new GameBuilder(plugin, p1.getUniqueId());
+		final GameBuilder gameBuilder = new GameBuilder(plugin);
 		gameBuilder.addPlayer(p2);
 		gameBuilder.setFinishTime(1440);
 		gameBuilder.build().startGame();
@@ -165,7 +170,7 @@ public class DuelAdminCMD implements CommandExecutor {
 			MessageUtils.sendMessage(player, "kit.editor-usage");
 			return;
 		}
-		args = args.subList(1, args.size());
+		args = args.subList(2, args.size());
 		final String name = String.join(" ", args);
 
 		final Kit kit = new Kit(name, player.getInventory().getContents(), player.getInventory().getArmorContents());
