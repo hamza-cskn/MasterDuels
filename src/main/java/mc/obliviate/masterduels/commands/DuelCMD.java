@@ -257,12 +257,13 @@ public class DuelCMD implements CommandExecutor {
 
 		//1v1
 		final GameBuilder gameBuilder = Game.create(plugin).setTeamAmount(2).setTeamSize(1).finishTime(60).totalRounds(1);
+		gameBuilder.addPlayer(player);
 
 		new KitSelectionGUI(player, gameBuilder, selectedKit -> {
-			gameBuilder.sendInvite(player, target, result -> {
+			new Invite(plugin, player, target, null).onResponse(result -> {
 				if (result.equals(InviteResult.ACCEPT)) {
 					gameBuilder.addPlayer(target);
-					final Game game = gameBuilder.build();
+					Game game = gameBuilder.build();
 					if (game == null) {
 						MessageUtils.sendMessage(player, "no-arena-found");
 						return;
@@ -270,6 +271,7 @@ public class DuelCMD implements CommandExecutor {
 					game.startGame();
 				}
 			});
+
 		}).open();
 
 
