@@ -267,16 +267,15 @@ public class Game {
 		if (gameHistoryLog.getWinners().isEmpty()) return;
 
 		if (gameHistoryLog.getWinners().size() == 1) {
+			final Player winner = Bukkit.getPlayer(gameHistoryLog.getWinners().get(0));
+			final String loserName = gameHistoryLog.getLosers().size() == 0 ? "" : Utils.getDisplayName(Bukkit.getOfflinePlayer(gameHistoryLog.getLosers().get(0)));
 			for (final Player player : receivers) {
-				final Player winner = Bukkit.getPlayer(gameHistoryLog.getWinners().get(0));
-				final String loserName = gameHistoryLog.getLosers().size() == 0 ? "" : Utils.getDisplayName(Bukkit.getOfflinePlayer(gameHistoryLog.getLosers().get(0)));
 				MessageUtils.sendMessage(player, "game-end-broadcast.solo", new PlaceholderUtil().add("{winner}", Utils.getDisplayName(winner)).add("{loser}", loserName).add("{winner-health}", "" + winner.getHealthScale()));
 			}
 		} else {
+			final Player winner = Bukkit.getPlayer(gameHistoryLog.getWinners().get(0));
+			final String loserName = Utils.getDisplayName(Bukkit.getOfflinePlayer(gameHistoryLog.getLosers().get(0)));
 			for (final Player player : receivers) {
-				final Player winner = Bukkit.getPlayer(gameHistoryLog.getWinners().get(0));
-				final String loserName = Utils.getDisplayName(Bukkit.getOfflinePlayer(gameHistoryLog.getLosers().get(0)));
-
 				MessageUtils.sendMessage(player, "game-end-broadcast.non-solo", new PlaceholderUtil().add("{winner}", Utils.getDisplayName(winner)).add("{loser}", loserName));
 			}
 		}
