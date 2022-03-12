@@ -64,6 +64,7 @@ duel-command:
     &7 /duel toggle &8- &9toggles invite receive state of you
     &7 /duel history &8- &9opens duel history gui
     &7 /duel stats [player name] &8- &9shows statistics of player
+    &7 /duel top &8- &9shows most won player list.
     &7 /duel arenas &8- &9opens arena list menu.
     &7 /duel queue menu &8- &9opens duel queues menu
     &7 /duel queue join <queue name>&8- &9joins a duel queue
@@ -97,7 +98,7 @@ top:
   top-wins:
     message: |-
       [DISABLE_PREFIX]&r
-      &r                &6&lTOP WIN STATISTICS
+      &r                   &6&lTOP WIN STATISTICS
       &r
       &c&l          1. &7{top-1-name} &f{top-1-wins} wins &c&lCHAMPION!
       &6&l          2. &7{top-2-name} &f{top-2-wins} wins
@@ -108,8 +109,8 @@ top:
 invite:
   usage: '&cCorrect Usage:&7 /duel <player name>'
   toggle:
-    turned-on: '&7You have enabled duel requests!'
-    turned-off: '&7You have disabled duel requests!'
+    turned-on: '&7You have &aenabled&7 duel requests!'
+    turned-off: '&7You have &cdisabled&7 duel requests!'
     you-can-not-invite: '&c{target} disabled duel requests.'
   you-dont-have-invite: '&cYou don''t have any duel invite :('
   you-cannot-invite-yourself: '&cYou cannot invite yourself.'

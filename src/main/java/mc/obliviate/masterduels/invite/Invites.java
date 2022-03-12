@@ -1,8 +1,8 @@
 package mc.obliviate.masterduels.invite;
 
-import mc.obliviate.masterduels.game.GameBuilder;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public class Invites {
 
@@ -11,15 +11,6 @@ public class Invites {
 
 	public Invites(final UUID uuid) {
 		this.playerUniqueId = uuid;
-	}
-
-	public Invite getInvite(final GameBuilder gameBuilder) {
-		for (Invite invite : invites) {
-			if (invite.getGameBuilder().equals(gameBuilder)) {
-				return invite;
-			}
-		}
-		return null;
 	}
 
 	public void add(final Invite invite) {

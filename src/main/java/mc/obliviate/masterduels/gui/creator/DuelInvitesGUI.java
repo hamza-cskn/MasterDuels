@@ -32,7 +32,7 @@ public class DuelInvitesGUI extends GUI {
 		addItem(4, new Icon(XMaterial.WRITABLE_BOOK.parseItem()).setName(MessageUtils.parseColor("&aInvite a player")).setLore(MessageUtils.parseColor("&7Players: " + gameBuilder.getPlayers().size())).onClick(e -> {
 			player.closeInventory();
 			new ChatEntry(player.getUniqueId(), getPlugin()).onResponse(chatEvent -> {
-				gameBuilder.sendInvite(player, Bukkit.getPlayer(chatEvent.getMessage()), response -> {
+				gameCreator.sendInvite(player, Bukkit.getPlayer(chatEvent.getMessage()), response -> {
 					gameBuilder.addPlayer(Bukkit.getPlayer(chatEvent.getMessage()));
 				});
 				open();
@@ -40,7 +40,7 @@ public class DuelInvitesGUI extends GUI {
 			MessageUtils.sendMessage(player, "enter-player-name-to-invite");
 		}));
 		int i = 9;
-		for (Invite invite : gameBuilder.getInvites().values()) {
+		for (Invite invite : gameCreator.getInvites().values()) {
 			addItem(i++, new Icon(XMaterial.MAP.parseItem()).setName(invite.getTarget().getName()).onClick(e -> {
 				invite.setResult(true);
 			}));

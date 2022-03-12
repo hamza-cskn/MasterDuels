@@ -16,6 +16,7 @@ import mc.obliviate.masterduels.game.gamerule.GameRuleListener;
 import mc.obliviate.masterduels.history.GameHistoryLog;
 import mc.obliviate.masterduels.kit.serializer.KitSerializer;
 import mc.obliviate.masterduels.listeners.*;
+import mc.obliviate.masterduels.queue.DuelQueueHandler;
 import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.scoreboard.ScoreboardManager;
 import mc.obliviate.masterduels.utils.tab.TABManager;
@@ -43,6 +44,7 @@ public class MasterDuels extends JavaPlugin {
 	private IArenaClearHandler arenaClearHandler;
 	private MessageAPI messageAPI;
 	private ScoreboardManager scoreboardManager;
+	private final DuelQueueHandler duelQueueHandler = new DuelQueueHandler(this);
 
 	public static boolean isInShutdownMode() {
 		return shutdownMode;
@@ -88,8 +90,9 @@ public class MasterDuels extends JavaPlugin {
 		scoreboardManager = new ScoreboardManager(this);
 		messageAPI = MessageAPI.getInstance(this);
 		new TABManager(this);
-		sqlManager.init();
+		duelQueueHandler.initialize();
 
+		sqlManager.init();
 		setupVaultUtils();
 
 	}

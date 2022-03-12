@@ -99,7 +99,6 @@ public class Game {
 			showAll(member.getPlayer());
 		}
 
-		GameBuilder.getGameBuilderMap().get(gameBuilder.getId()).destroy();
 	}
 
 	public void initBossBar() {
@@ -342,31 +341,10 @@ public class Game {
 		teleportToLobby(spectator.getPlayer());
 	}
 
-	public boolean isMember(Player player) {
-		for (Member member : getAllMembers()) {
-			if (member.getPlayer().equals(player)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private void teleportToLobby(final Player player) {
-		if (DataHandler.getLobbyLocation() != null) {
-			if (DataHandler.getLobbyLocation().getWorld() != null) {
-				if (!player.teleport(DataHandler.getLobbyLocation())) {
-					if (!MasterDuels.isInShutdownMode()) {
-						player.kickPlayer("You could not teleported to lobby.\n" + DataHandler.getLobbyLocation());
-						Logger.error("Player " + player.getName() + " could not teleported to lobby. MasterDuels kicked him.");
-					}
-				}
-			}
-		}
-
-	}
-
 	public void leave(final Member member) {
 		if (!member.getTeam().getMembers().contains(member)) return;
+		if (!member.getTeam().getGame().equals(this))
+			throw new IllegalStateException("Member " + member.getPlayer().getName() + " called leave method of another game object.");
 
 		DataHandler.getUsers().remove(member.getPlayer().getUniqueId());
 		member.getTeam().removeMember(member);
@@ -398,15 +376,34 @@ public class Game {
 		}
 	}
 
-	private void showAll(Player player) {
-		for (final Team team : teams.values()) {
-			for (final Member m : team.getMembers()) {
-				player.showPlayer(m.getPlayer());
+	public boolean isMember(Player player) {
+		for (Member member : getAllMembers()) {
+			if (member.getPlayer().equals(player)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private void teleportToLobby(final Player player) {
+		if (DataHandler.getLobbyLocation() != null) {
+			if (DataHandler.getLobbyLocation().getWorld() != null) {
+				if (!player.teleport(DataHandler.getLobbyLocation())) {
+					if (!MasterDuels.isInShutdownMode()) {
+						player.kickPlayer("You could not teleported to lobby.\n" + DataHandler.getLobbyLocation());
+						Logger.error("Player " + player.getName() + " could not teleported to lobby. MasterDuels kicked him.");
+					}
+				}
 			}
 		}
 
-		for (final Player p : spectatorManager.getPureSpectatorStorage().getSpectatorList()) {
+	}
+
+	//todo search vanish plugin compatibility
+	private void showAll(Player player) {
+		for (final Player p : getAllMembersAndSpectatorsAsPlayer()) {
 			player.showPlayer(p);
+
 		}
 	}
 

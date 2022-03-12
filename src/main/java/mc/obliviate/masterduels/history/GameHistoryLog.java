@@ -15,10 +15,10 @@ public class GameHistoryLog implements HistoryLog {
 	public static boolean gameHistoryLogEnabled = true;
 	public static final LinkedList<GameHistoryLog> historyCache = new LinkedList<>();
 	private final UUID uuid;
-	private long startTime = 0L;
-	private long endTime = 0L;
-	private List<UUID> losers = null;
-	private List<UUID> winners = null;
+	private long startTime;
+	private long endTime;
+	private List<UUID> losers;
+	private List<UUID> winners;
 
 	public GameHistoryLog(final UUID uuid, long startTime, long endTime, List<UUID> losers, List<UUID> winners) {
 		this.startTime = startTime;

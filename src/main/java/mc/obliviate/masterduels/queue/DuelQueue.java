@@ -1,5 +1,7 @@
 package mc.obliviate.masterduels.queue;
 
+import mc.obliviate.masterduels.api.events.queue.DuelQueueJoinEvent;
+import mc.obliviate.masterduels.api.events.queue.DuelQueueLeaveEvent;
 import mc.obliviate.masterduels.game.Game;
 import mc.obliviate.masterduels.game.GameBuilder;
 import mc.obliviate.masterduels.utils.MessageUtils;
@@ -30,18 +32,29 @@ public class DuelQueue {
 		return availableQueues;
 	}
 
+	public static DuelQueue findQueueOfPlayer(Player player) {
+		for (DuelQueue queue : availableQueues.values()) {
+			if (queue.builder.getPlayers().contains(player)) return queue;
+		}
+		return null;
+	}
+
 	public GameBuilder getBuilder() {
 		return builder;
 	}
 
 	public void addPlayer(final Player player) {
-		if (!builder.addPlayer(player)) MessageUtils.sendMessage(player,"queue.player-could-not-added");
+		final DuelQueueJoinEvent event = new DuelQueueJoinEvent(this, player);
+		Bukkit.getPluginManager().callEvent(event);
+		if (event.isCancelled()) return; //api cancel
+		if (!builder.addPlayer(player)) MessageUtils.sendMessage(player, "queue.player-could-not-added");
 		if (builder.getPlayers().size() == builder.getTeamSize() * builder.getTeamAmount()) {
 			start();
 		}
 	}
 
 	public void removePlayer(final Player player) {
+		Bukkit.getPluginManager().callEvent(new DuelQueueLeaveEvent(this, player));
 		builder.removePlayer(player);
 	}
 
@@ -65,12 +78,5 @@ public class DuelQueue {
 
 	public String getName() {
 		return template.getName();
-	}
-
-	public static DuelQueue findQueueOfPlayer(Player player) {
-		for (DuelQueue queue : availableQueues.values()) {
-			if (queue.builder.getPlayers().contains(player)) return queue;
-		}
-		return null;
 	}
 }

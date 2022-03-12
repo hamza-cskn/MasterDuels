@@ -1,7 +1,11 @@
 package mc.obliviate.masterduels.invite;
 
 import mc.obliviate.masterduels.MasterDuels;
+import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.game.GameBuilder;
+import mc.obliviate.masterduels.game.GameCreator;
+import mc.obliviate.masterduels.user.IUser;
+import mc.obliviate.masterduels.user.team.Member;
 import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
@@ -16,10 +20,13 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
+import static mc.obliviate.masterduels.game.GameBuilder.GAME_BUILDER_MAP;
+import static mc.obliviate.masterduels.game.GameCreator.GAME_CREATOR_MAP;
+
 public class Invite {
 
 	private static final Map<UUID, Invites> INVITES_MAP = new HashMap<>();
-	private final GameBuilder gameBuilder;
+	private final GameCreator gameCreator;
 	private final Player target;
 	private final Player inviter;
 	private final int expireTime;
@@ -28,40 +35,47 @@ public class Invite {
 	private Boolean answer = null;
 	private InviteResponse response;
 
-	public Invite(MasterDuels plugin, Player inviter, Player invited, GameBuilder gameBuilder) {
-		this(plugin, inviter, invited, gameBuilder, plugin.getDatabaseHandler().getConfig().getInt("invite-timeout"));
+	public Invite(MasterDuels plugin, Player inviter, Player invited, GameCreator gameCreator) {
+		this(plugin, inviter, invited, gameCreator, plugin.getDatabaseHandler().getConfig().getInt("invite-timeout"));
 	}
 
-	public Invite(MasterDuels plugin, Player inviter, Player invited, GameBuilder gameBuilder, int expireTime) {
-		this.gameBuilder = gameBuilder;
+	public Invite(MasterDuels plugin, Player inviter, Player invited, GameCreator gameCreator, int expireTime) {
+		this.gameCreator = gameCreator;
 		this.expireTime = expireTime;
 		this.target = invited;
 		this.inviter = inviter;
 		this.invitedTime = System.currentTimeMillis();
 
+		//check: inviter is not null
 		if (inviter == null) {
 			onExpire();
 			Logger.error("An invite sent by null player!");
 			return;
 		}
 
+		//check: invited is not null
 		if (invited == null) {
 			MessageUtils.sendMessage(inviter, "target-is-not-online");
 			onExpire();
 			return;
 		}
 
-		if (gameBuilder.getInvites().containsKey(invited.getUniqueId())) {
-			MessageUtils.sendMessage(inviter, "invite.already-invited", new PlaceholderUtil().add("{target}", invited.getName()));
-			onExpire();
-			return;
-		}
-
+		//check: inviter is online definitely
 		if (!invited.isOnline()) {
 			MessageUtils.sendMessage(inviter, "target-is-not-online");
 			onExpire();
 			return;
 		}
+
+		//check: invited is not in a duel game
+		final IUser invitedUser = DataHandler.getUser(invited.getUniqueId());
+
+		if (invitedUser instanceof Member) {
+			MessageUtils.sendMessage(inviter, "target-already-in-duel", new PlaceholderUtil().add("{target}", inviter.getName()));
+			return;
+		}
+
+		//todo remove player from game builder, game creator when player accept an invite
 
 		//todo cache invite receives
 		if (!plugin.getSqlManager().getReceivesInvites(invited.getUniqueId())) {
@@ -96,18 +110,6 @@ public class Invite {
 		return INVITES_MAP.get(player.getUniqueId());
 	}
 
-	public static List<Invite> findInvites(final GameBuilder builder) {
-		final List<Invite> inviteList = new ArrayList<>();
-		for (Invites invites : INVITES_MAP.values()) {
-			for (Invite invite : invites.getInvites()) {
-				if (invite.getGameBuilder().equals(builder)) {
-					inviteList.add(invite);
-				}
-			}
-		}
-		return inviteList;
-	}
-
 	private static void addInvite(final UUID uuid, final Invite invite) {
 		Invites invites = INVITES_MAP.get(uuid);
 		if (invites == null) {
@@ -123,24 +125,19 @@ public class Invite {
 
 	public void onExpire() {
 		expired = true;
-		gameBuilder.removeInvite(target.getUniqueId());
+		if (gameCreator != null) gameCreator.removeInvite(target.getUniqueId());
 	}
 
 	public String getFormattedExpireTimeLeft() {
-		long time = (invitedTime + (1000L * getExpireTime()) - System.currentTimeMillis()) / 1000;
-		long minute;
-		minute = TimeUnit.MINUTES.toHours(time);
-		time -= (minute * 60);
-
-		return minute + TimerUtils.MINUTE + time + TimerUtils.SECONDS;
+		return TimerUtils.formatTimeAsTime((invitedTime + (1000L * expireTime) - System.currentTimeMillis()));
 	}
 
 	public boolean isExpired() {
 		return expired;
 	}
 
-	public GameBuilder getGameBuilder() {
-		return gameBuilder;
+	public GameCreator getGameCreator() {
+		return gameCreator;
 	}
 
 	public Player getInviter() {
@@ -156,7 +153,6 @@ public class Invite {
 		if (invites.removeInvite(this)) {
 			INVITES_MAP.remove(invites.getPlayerUniqueId());
 		}
-		expired = true;
 		onExpire();
 		this.answer = answer;
 

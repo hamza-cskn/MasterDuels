@@ -4,6 +4,8 @@ import org.bukkit.entity.Player;
 
 public class Bet {
 
+	//todo players can bet for unlimited money. (even they doesn't have)
+	//bets are dysfunctional
 	public static boolean betsEnabled = true;
 
 	int money = 0;

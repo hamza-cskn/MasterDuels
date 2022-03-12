@@ -41,7 +41,7 @@ public class DuelGameCreatorGUI extends GUI {
 				.add("{bet}", gameBuilder.getBet().getMoney() + "")
 				.add("{game-time}", TimerUtils.formatTimeAsTime(gameBuilder.getFinishTime()))
 				.add("{game-timer}", TimerUtils.formatTimeAsTimer(gameBuilder.getFinishTime()))
-				.add("{invited-players}", gameBuilder.getInvites().size() + "")
+				.add("{invited-players}", gameCreator.getInvites().size() + "")
 				.add("{total-players}", gameBuilder.getPlayers().size() + "");
 	}
 
@@ -87,8 +87,8 @@ public class DuelGameCreatorGUI extends GUI {
 
 		if (VaultUtil.checkPermission(player, "masterduels.duelcreator.set.teamsize"))
 			addItem(getConfigSlot("team-size"), getTeamSizeIcon());
-		if (VaultUtil.checkPermission(player, "masterduels.duelcreator.set.invite"))
-			addItem(getConfigSlot("invites"), getInvitesIcon());
+		//game creator is dysfunctional if owner can't invite anyone.
+		addItem(getConfigSlot("invites"), getInvitesIcon());
 		if (VaultUtil.checkPermission(player, "masterduels.duelcreator.set.rules"))
 			addItem(getConfigSlot("rules"), getRulesIcon());
 		if (VaultUtil.checkPermission(player, "masterduels.duelcreator.set.teamamount"))
@@ -99,7 +99,7 @@ public class DuelGameCreatorGUI extends GUI {
 			addItem(getConfigSlot("round-amount"), getRoundAmountIcon());
 		if (VaultUtil.checkPermission(player, "masterduels.duelcreator.set.kit"))
 			addItem(getConfigSlot("kit"), getKitIcon());
-		if (Bet.betsEnabled) {
+		if (VaultUtil.checkPermission(player, "masterduels.duelcreator.set.bet") && Bet.betsEnabled) {
 			addItem(getConfigSlot("bet"), getBetIcon());
 		}
 		if (VaultUtil.checkPermission(player, "masterduels.duelcreator.set.finishtime"))
@@ -114,7 +114,7 @@ public class DuelGameCreatorGUI extends GUI {
 				return;
 			}
 
-			final Game game = gameBuilder.build();
+			final Game game = gameCreator.create();
 			if (game == null) {
 				MessageUtils.sendMessage(player, "no-arena-found");
 				return;
@@ -136,7 +136,7 @@ public class DuelGameCreatorGUI extends GUI {
 	}
 
 	private Icon getInvitesIcon() {
-		return new Icon(getConfigItem("invites", new PlaceholderUtil().add("{invited-players}", gameBuilder.getInvites().size() + "").add("{total-players}", gameBuilder.getPlayers().size() + ""))).onClick(e -> {
+		return new Icon(getConfigItem("invites", new PlaceholderUtil().add("{invited-players}", gameCreator.getInvites().size() + "").add("{total-players}", gameBuilder.getPlayers().size() + ""))).onClick(e -> {
 			new DuelInvitesGUI(player, gameCreator).open();
 		});
 	}

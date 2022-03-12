@@ -1,6 +1,5 @@
 package mc.obliviate.masterduels.commands;
 
-import com.avaje.ebeaninternal.server.core.Message;
 import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.game.Game;
@@ -8,7 +7,7 @@ import mc.obliviate.masterduels.game.GameBuilder;
 import mc.obliviate.masterduels.game.GameCreator;
 import mc.obliviate.masterduels.gui.DuelArenaListGUI;
 import mc.obliviate.masterduels.gui.DuelHistoryLogGUI;
-import mc.obliviate.masterduels.gui.DuelQueueListGUI;
+import mc.obliviate.masterduels.queue.gui.DuelQueueListGUI;
 import mc.obliviate.masterduels.gui.creator.DuelGameCreatorGUI;
 import mc.obliviate.masterduels.gui.kit.KitSelectionGUI;
 import mc.obliviate.masterduels.history.GameHistoryLog;
