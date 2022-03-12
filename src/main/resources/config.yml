@@ -129,9 +129,9 @@ game-history:
   gui:
     title: 'Duel History'
     solo-games-icon:
-      material-type: PAPER
-      description:
-        - '&dGame Duration: &7{time}' # name of icon
+      material: PAPER
+      display-name: '&dGame Duration: &7{time}'
+      lore:
         - ''
         - '&a{winner} &8⚔ &c{loser}'
         - ''
@@ -139,9 +139,9 @@ game-history:
     non-solo-games-icon:
       winners-format: ' &a{winner}!'
       losers-format: ' &c{loser}'
-      material-type: PAPER
-      description:
-        - '&dGame Duration: &7{time}' # name of icon
+      material: PAPER
+      display-name: '&dGame Duration: &7{time}'
+      lore:
         - ''
         - '&aWinners:'
         - ' {+winners}'

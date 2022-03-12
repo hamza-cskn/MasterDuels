@@ -144,7 +144,7 @@ public class Game {
 		spectatorManager.getOmniSpectatorStorage().unSpectateMembers();
 
 		task("ROUNDTASK_on-round-start-timer", Bukkit.getScheduler().runTaskLater(plugin, () -> {
-			gameState = BATTLE;
+			setGameState(BATTLE);
 			onRoundStart(roundData.getCurrentRound());
 		}, LOCK_TIME_IN_SECONDS * 20L + 1));
 	}

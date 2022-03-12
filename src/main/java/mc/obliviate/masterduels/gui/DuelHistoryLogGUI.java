@@ -66,9 +66,12 @@ public class DuelHistoryLogGUI extends GUI {
 
 		protected Icon deserializeIcon(final HistoryIconType type, GameHistoryLog log) {
 
-			final Icon icon = new Icon(historyIconItemStacks.get(type));
-			final List<String> description = icon.getItem().getItemMeta().getLore();
+			final Icon icon = new Icon(historyIconItemStacks.get(type).clone());
+			List<String> description = icon.getItem().getItemMeta().getLore(); //raw-placeholder lore
+			if (description == null) description = new ArrayList<>();
+			icon.setLore(new ArrayList<>());
 
+			//todo why this date format is in-build
 			final PlaceholderUtil placeholderUtil = new PlaceholderUtil().add("{time}", TimerUtils.formatTimeDifferenceAsTime(log.getStartTime(), log.getEndTime()))
 					.add("{played-date}", new SimpleDateFormat("HH:mm dd/MM/yyyy").format(new Date(log.getStartTime())));
 			if (log.getWinners().size() == 1) {
@@ -77,7 +80,7 @@ public class DuelHistoryLogGUI extends GUI {
 			if (log.getLosers().size() == 1) {
 				placeholderUtil.add("{loser}", Bukkit.getOfflinePlayer(log.getLosers().get(0)).getName());
 			}
-			for (final String line : description.subList(1, description.size())) {
+			for (final String line : description) {
 				if (line.equalsIgnoreCase("{+winners}")) {
 					for (final UUID uuid : log.getWinners()) {
 						icon.appendLore(MessageUtils.parseColor(MessageUtils.applyPlaceholders(winnersFormat, new PlaceholderUtil().add("{winner}", Bukkit.getOfflinePlayer(uuid).getName()))));
@@ -92,7 +95,7 @@ public class DuelHistoryLogGUI extends GUI {
 				icon.appendLore(MessageUtils.parseColor(MessageUtils.applyPlaceholders(line, placeholderUtil)));
 			}
 
-			icon.setName(MessageUtils.parseColor(MessageUtils.applyPlaceholders(description.get(0), placeholderUtil)));
+			icon.setName(MessageUtils.parseColor(MessageUtils.applyPlaceholders(icon.getItem().getItemMeta().getDisplayName(), placeholderUtil)));
 
 			return icon;
 		}
