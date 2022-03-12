@@ -73,26 +73,10 @@ public class Invite {
 		addInvite(invited.getUniqueId(), this);
 		MessageUtils.sendMessage(inviter, "invite.target-has-invited", new PlaceholderUtil().add("{target}", target.getName()).add("{expire-time}", expireTime + ""));
 
-		for (String inviteText : MessageUtils.getMessageConfig().getStringList("invite.you-invited")) {
-			inviteText = inviteText + " ";
-			inviteText = MessageUtils.applyPlaceholders(inviteText, new PlaceholderUtil().add("{inviter}", inviter.getName()).add("{expire-time}", expireTime + ""));
-			inviteText = MessageUtils.parseColor(inviteText);
-
-			if (inviteText.contains("{accept-button}") && inviteText.contains("{decline-button}")) {
-				final TextComponent acceptButton = new TextComponent(MessageUtils.parseColor(MessageUtils.getMessage("invite.button.accept-button.text")));
-				acceptButton.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(MessageUtils.parseColor(MessageUtils.getMessage("invite.button.accept-button.hover"))).create()));
-				acceptButton.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/duel accept"));
-
-				final TextComponent declineButton = new TextComponent(MessageUtils.parseColor(MessageUtils.getMessage("invite.button.decline-button.text")));
-				declineButton.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(MessageUtils.parseColor(MessageUtils.getMessage("invite.button.decline-button.hover"))).create()));
-				declineButton.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/duel decline"));
-
-				final String[] strings = inviteText.split("\\{accept-button}|\\{decline-button}");
-
-				target.spigot().sendMessage(new TextComponent(strings[0]), acceptButton, new TextComponent(strings[1]), declineButton, new TextComponent(strings[2]));
-			} else {
-				target.spigot().sendMessage(new TextComponent(inviteText));
-			}
+		if (gameCreator == null) {
+			InviteUtils.sendInviteMessage(target, inviter, expireTime, MessageUtils.getMessageConfig().getStringList("invite.normal-invite-text"));
+		} else {
+			InviteUtils.sendInviteMessage(target, inviter, expireTime, MessageUtils.getMessageConfig().getStringList("invite.game-creator-invite-text"));
 		}
 		new BukkitRunnable() {
 			public void run() {
