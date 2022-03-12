@@ -55,6 +55,7 @@ public class RollbackListener implements Listener {
 			case STATIONARY_WATER:
 			case LAVA:
 			case STATIONARY_LAVA:
+			case WEB:
 				break;
 			default:
 				e.setCancelled(true);
