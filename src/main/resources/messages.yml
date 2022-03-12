@@ -118,7 +118,7 @@ invite:
   invite-expired-target: '&7Invite that is came from &f{inviter}&7, has expired.'
   target-has-invited: '&7You sent a duel invite to &f{target}&7. The invite will be expired after &f{expire-time} seconds&7.'
   target-declined-the-invite: '&7{target}, &cdeclined&7 your duel invite.'
-  successfully-declined: '&7You &cdeclined &f{target}&7''s duel invite.'
+  successfully-declined: '&7You &cdeclined &f{inviter}&7''s duel invite.'
   target-accepted-the-invite: '&f{target} &7accepted your duel invite.'
   successfully-accepted: '&7You have accepted &f{inviter}&7''s invite.'
   button:
