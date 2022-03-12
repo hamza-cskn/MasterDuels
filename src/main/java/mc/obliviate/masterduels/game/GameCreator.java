@@ -1,12 +1,20 @@
 package mc.obliviate.masterduels.game;
 
 import mc.obliviate.masterduels.MasterDuels;
+import mc.obliviate.masterduels.data.DataHandler;
+import mc.obliviate.masterduels.invite.Invite;
+import mc.obliviate.masterduels.invite.InviteResponse;
+import mc.obliviate.masterduels.user.IUser;
+import mc.obliviate.masterduels.user.team.Member;
+import mc.obliviate.masterduels.utils.MessageUtils;
+import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+
+import static mc.obliviate.masterduels.game.GameBuilder.GAME_BUILDER_MAP;
+import static mc.obliviate.masterduels.game.GameBuilder.getGameBuilderMap;
 
 /**
  * Game Creator classes are player based game builders.
@@ -15,7 +23,9 @@ import java.util.UUID;
 public class GameCreator {
 
 	//player uuid, game creator
-	private static final Map<UUID, GameCreator> gameCreatorMap = new HashMap<>();
+	public static final Map<UUID, GameCreator> GAME_CREATOR_MAP = new HashMap<>();
+
+	private final Map<UUID, Invite> invites = new HashMap<>();
 	private final UUID ownerPlayer;
 	private final GameBuilder builder;
 	private final MasterDuels plugin;
@@ -29,7 +39,7 @@ public class GameCreator {
 		if (ownerPlayer == null) destroy();
 
 		//check: is game creator already exist
-		final GameCreator gameCreator = gameCreatorMap.get(ownerPlayer);
+		final GameCreator gameCreator = GAME_CREATOR_MAP.get(ownerPlayer);
 		if (gameCreator != null) {
 			gameCreator.destroy();
 		}
@@ -43,11 +53,54 @@ public class GameCreator {
 
 		builder.addPlayer(player);
 
-		gameCreatorMap.put(ownerPlayer, this);
+		GAME_CREATOR_MAP.put(ownerPlayer, this);
 	}
 
 	public static Map<UUID, GameCreator> getGameCreatorMap() {
-		return gameCreatorMap;
+		return GAME_CREATOR_MAP;
+	}
+
+	public Map<UUID, Invite> getInvites() {
+		return invites;
+	}
+
+	public void addPlayer(final Player player) {
+		for (final Invite invite : findInvites(player.getUniqueId())) {
+			invite.setResult(false);
+		}
+	}
+
+	public void sendInvite(final Player inviter, final Player invited, final InviteResponse response) {
+		if (invited == null) {
+			MessageUtils.sendMessage(inviter, "target-is-not-online");
+			return;
+		}
+
+		//check: is it invite spam
+		if (getInvites().containsKey(invited.getUniqueId())) {
+			MessageUtils.sendMessage(inviter, "invite.already-invited", new PlaceholderUtil().add("{target}", invited.getName()));
+			return;
+		}
+
+		final Invite invite = new Invite(plugin, inviter, invited, this);
+		invites.put(invited.getUniqueId(), invite);
+		invite.onResponse(response);
+	}
+
+	public void removeInvite(final UUID uuid) {
+		invites.remove(uuid);
+	}
+
+	public List<Invite> findInvites(final UUID player) {
+		final List<Invite> invites = new ArrayList<>();
+		for (final GameCreator creator : GAME_CREATOR_MAP.values()) {
+			for (final UUID uuid : creator.getInvites().keySet()) {
+				if (uuid.equals(player)) {
+					invites.add(creator.getInvites().get(uuid));
+				}
+			}
+		}
+		return invites;
 	}
 
 	public GameBuilder getBuilder() {
@@ -59,6 +112,14 @@ public class GameCreator {
 	}
 
 	public void destroy() {
-		gameCreatorMap.remove(ownerPlayer);
+		GAME_CREATOR_MAP.remove(ownerPlayer);
+		for (final Invite invite : invites.values()) {
+			invite.onExpire();
+		}
+	}
+
+	public Game create() {
+		destroy();
+		return builder.build();
 	}
 }

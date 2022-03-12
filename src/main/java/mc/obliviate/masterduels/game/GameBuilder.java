@@ -6,23 +6,17 @@ import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.game.bet.Bet;
 import mc.obliviate.masterduels.game.gamerule.GameRule;
-import mc.obliviate.masterduels.invite.Invite;
-import mc.obliviate.masterduels.invite.InviteResponse;
 import mc.obliviate.masterduels.kit.Kit;
 import mc.obliviate.masterduels.user.IUser;
 import mc.obliviate.masterduels.user.team.Member;
-import mc.obliviate.masterduels.utils.MessageUtils;
-import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.*;
 
 public class GameBuilder {
 
-	private static final Map<UUID, GameBuilder> GAME_BUILDER_MAP = new HashMap<>();
+	public static final Map<UUID, GameBuilder> GAME_BUILDER_MAP = new HashMap<>();
 	private final MasterDuels plugin;
-	private final Map<UUID, Invite> invites = new HashMap<>();
 	private final TeamBuilderManager teamBuilderManager = new TeamBuilderManager(this);
 	private final UUID id;
 	private final List<Player> players = new ArrayList<>();
@@ -75,6 +69,7 @@ public class GameBuilder {
 		teamBuilderManager.registerTeamsIntoGame(game);
 
 		this.game = game;
+		destroy();
 		return game;
 	}
 
@@ -121,40 +116,6 @@ public class GameBuilder {
 			createTeam(playerList);
 		}
 
-	}
-
-	public Map<UUID, Invite> getInvites() {
-		return invites;
-	}
-
-	public void sendInvite(final Player inviter, final Player invited, final InviteResponse response) {
-		if (invited == null) {
-			MessageUtils.sendMessage(inviter, "target-is-not-online");
-			return;
-		}
-
-		final IUser invitedUser = DataHandler.getUser(invited.getUniqueId());
-
-		if (invitedUser instanceof Member) {
-			MessageUtils.sendMessage(inviter, "target-already-in-duel", new PlaceholderUtil().add("{target}", inviter.getName()));
-			return;
-		}
-
-		for (final GameBuilder builder : GAME_BUILDER_MAP.values()) {
-			if (builder.getId().equals(invited.getUniqueId())) break;
-			if (builder.getPlayers().contains(invited)) {
-				MessageUtils.sendMessage(inviter, "target-already-in-duel", new PlaceholderUtil().add("{target}", inviter.getName()));
-				return;
-			}
-		}
-
-		final Invite invite = new Invite(plugin, inviter, invited, this);
-		invites.put(invited.getUniqueId(), invite);
-		invite.onResponse(response);
-	}
-
-	public void removeInvite(final UUID uuid) {
-		invites.remove(uuid);
 	}
 
 	public Kit getKit() {
@@ -214,9 +175,7 @@ public class GameBuilder {
 		if (playerGameBuilder != null) {
 			playerGameBuilder.destroy();
 		}
-		for (final Invite invite : findInvites(player.getUniqueId())) {
-			invite.setResult(false);
-		}
+
 
 		if (!player.isOnline()) {
 			return false;
@@ -251,26 +210,12 @@ public class GameBuilder {
 	}
 
 
-	public List<Invite> findInvites(final UUID player) {
-		final List<Invite> invites = new ArrayList<>();
-		for (final GameBuilder builder : GAME_BUILDER_MAP.values()) {
-			for (final UUID uuid : builder.getInvites().keySet()) {
-				if (uuid.equals(player)) {
-					invites.add(builder.getInvites().get(uuid));
-				}
-			}
-		}
-		return invites;
-	}
-
 	public void removePlayer(Player player) {
 		players.remove(player);
 	}
 
 	public void destroy() {
-		for (final Invite invite : invites.values()) {
-			invite.onExpire();
-		}
+		//unregister game builder
 		GAME_BUILDER_MAP.remove(id);
 	}
 
