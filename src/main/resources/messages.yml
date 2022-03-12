@@ -128,12 +128,19 @@ invite:
     decline-button:
       hover: '&cClick to decline duel request!'
       text: '&c&l[DECLINE]'
-  you-invited:
+  normal-invite-text:
     - '    &5&m                 &r       &d&lDUEL REQUEST       &5&m                 &r    '
     - '            &f{inviter}&7 is challenging to you in a duel game!'
     - '                  &7Do you want accept the invite?'
     - '&f'
     - '                    {accept-button}    &r{decline-button}'
+  game-creator-invite-text:
+    - '    &5&m                 &r       &5&lDUEL ROOM INVITE       &5&m                 &r    '
+    - '               &f{inviter}&7 invited you to joining their duel room!'
+    - '       &7if you accept it, {inviter} can start a duel game that is managed by him.'
+    - '&f'
+    - '                    {accept-button}    &r{decline-button}'
+
 statistics: |-
   [DISABLE_PREFIX]&6&lDuel Statistics
   &r
