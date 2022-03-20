@@ -4,21 +4,16 @@ import mc.obliviate.masterduels.api.events.spectator.DuelGamePreSpectatorJoinEve
 import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.user.team.Member;
 import mc.obliviate.masterduels.utils.xmaterial.XMaterial;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.EntityCombustEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
-import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.potion.Potion;
 
 public class GameRuleListener implements Listener {
 

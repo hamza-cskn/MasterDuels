@@ -1,20 +1,14 @@
 package mc.obliviate.masterduels.game;
 
 import mc.obliviate.masterduels.MasterDuels;
-import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.invite.Invite;
 import mc.obliviate.masterduels.invite.InviteResponse;
-import mc.obliviate.masterduels.user.IUser;
-import mc.obliviate.masterduels.user.team.Member;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.*;
-
-import static mc.obliviate.masterduels.game.GameBuilder.GAME_BUILDER_MAP;
-import static mc.obliviate.masterduels.game.GameBuilder.getGameBuilderMap;
 
 /**
  * Game Creator classes are player based game builders.

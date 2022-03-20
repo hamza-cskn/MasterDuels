@@ -1,16 +1,16 @@
 package mc.obliviate.masterduels.setup.gui;
 
+import mc.obliviate.inventory.GUI;
+import mc.obliviate.inventory.Icon;
 import mc.obliviate.masterduels.arena.elements.ArenaCuboid;
 import mc.obliviate.masterduels.setup.ArenaSetup;
 import mc.obliviate.masterduels.setup.PositionSelection;
 import mc.obliviate.masterduels.setup.chatentry.ChatEntry;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.xmaterial.XMaterial;
-import mc.obliviate.inventory.Icon;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryOpenEvent;
-import mc.obliviate.inventory.GUI;
 
 public class ArenaSetupGUI extends GUI {
 

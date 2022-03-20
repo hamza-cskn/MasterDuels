@@ -1,8 +1,8 @@
 package mc.obliviate.masterduels.listeners;
 
 import mc.obliviate.masterduels.data.DataHandler;
-import mc.obliviate.masterduels.user.spectator.Spectator;
 import mc.obliviate.masterduels.user.IUser;
+import mc.obliviate.masterduels.user.spectator.Spectator;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

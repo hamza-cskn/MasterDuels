@@ -1,12 +1,13 @@
 package mc.obliviate.masterduels;
 
 import com.hakan.messageapi.bukkit.MessageAPI;
+import mc.obliviate.inventory.InventoryAPI;
 import mc.obliviate.masterduels.arenaclear.ArenaClearListener;
 import mc.obliviate.masterduels.arenaclear.IArenaClearHandler;
 import mc.obliviate.masterduels.arenaclear.modes.smart.SmartArenaClearHandler;
 import mc.obliviate.masterduels.commands.DeveloperCMD;
-import mc.obliviate.masterduels.commands.DuelCMD;
 import mc.obliviate.masterduels.commands.DuelAdminCMD;
+import mc.obliviate.masterduels.commands.DuelCMD;
 import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.data.SQLManager;
 import mc.obliviate.masterduels.data.YamlStorageHandler;
@@ -21,7 +22,6 @@ import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.scoreboard.ScoreboardManager;
 import mc.obliviate.masterduels.utils.tab.TABManager;
 import mc.obliviate.masterduels.utils.timer.GameHistoryCacheTimer;
-import mc.obliviate.inventory.InventoryAPI;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
@@ -141,6 +141,7 @@ public class MasterDuels extends JavaPlugin {
 		Bukkit.getPluginManager().registerEvents(new SpectatorListener(), this);
 		Bukkit.getPluginManager().registerEvents(new GameRuleListener(), this);
 		Bukkit.getPluginManager().registerEvents(new DeveloperCMD(this), this);
+		Bukkit.getPluginManager().registerEvents(new CMDExecutorListener(this), this);
 	}
 
 	private void loadKits() {

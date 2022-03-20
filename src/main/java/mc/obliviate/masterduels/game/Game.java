@@ -6,8 +6,8 @@ import mc.obliviate.masterduels.api.events.DuelGameTeamEleminateEvent;
 import mc.obliviate.masterduels.api.events.arena.*;
 import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.arena.elements.Positions;
-import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.bossbar.TABBossbarManager;
+import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.game.bet.Bet;
 import mc.obliviate.masterduels.game.gamerule.GameRule;
 import mc.obliviate.masterduels.game.round.RoundData;
@@ -15,8 +15,8 @@ import mc.obliviate.masterduels.game.spectator.GameSpectatorManager;
 import mc.obliviate.masterduels.history.GameHistoryLog;
 import mc.obliviate.masterduels.kit.InventoryStorer;
 import mc.obliviate.masterduels.kit.Kit;
-import mc.obliviate.masterduels.user.spectator.Spectator;
 import mc.obliviate.masterduels.user.IUser;
+import mc.obliviate.masterduels.user.spectator.Spectator;
 import mc.obliviate.masterduels.user.team.Member;
 import mc.obliviate.masterduels.user.team.Team;
 import mc.obliviate.masterduels.utils.Logger;
@@ -34,7 +34,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static mc.obliviate.masterduels.data.DataHandler.LOCK_TIME_IN_SECONDS;
 import static mc.obliviate.masterduels.game.GameState.*;
@@ -145,6 +148,7 @@ public class Game {
 		task("ROUNDTASK_on-round-start-timer", Bukkit.getScheduler().runTaskLater(plugin, () -> {
 			setGameState(BATTLE);
 			onRoundStart(roundData.getCurrentRound());
+
 		}, LOCK_TIME_IN_SECONDS * 20L + 1));
 	}
 
@@ -154,6 +158,10 @@ public class Game {
 		setFinishTimer();
 		if (round == 1) {
 			initBossBar();
+		}
+
+		for (final Member member : getAllMembers()) {
+			plugin.getMessageAPI().sendTitle(member.getPlayer(), TitleHandler.getTitle(TitleHandler.TitleType.ROUND_STARTED));
 		}
 
 		Bukkit.getPluginManager().callEvent(new DuelGameRoundStartEvent(this));
@@ -474,6 +482,7 @@ public class Game {
 					for (Member member : getAllMembers()) {
 						plugin.getMessageAPI().sendTitle(member.getPlayer(), TitleHandler.getTitle(TitleHandler.TitleType.ROUND_STARTING,
 								new PlaceholderUtil().add("{round}", roundData.getCurrentRound() + "")
+										.add("{remaining-time-second}", ((int) (timer+100 - System.currentTimeMillis())/1000) + "")
 										.add("{remaining-time-timer}", TimerUtils.formatTimeUntilThenAsTimer(timer + 100))
 										.add("{remaining-time-time}", TimerUtils.formatTimeUntilThenAsTime(timer + 100))));
 					}

@@ -1,10 +1,10 @@
-package mc.obliviate.masterduels.gui.kit;
+package mc.obliviate.masterduels.kit.gui;
 
+import mc.obliviate.inventory.GUI;
+import mc.obliviate.inventory.Icon;
 import mc.obliviate.masterduels.kit.Kit;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.xmaterial.XMaterial;
-import mc.obliviate.inventory.GUI;
-import mc.obliviate.inventory.Icon;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 
@@ -27,13 +27,6 @@ public class KitListEditorGUI extends GUI {
 			final Icon icon = new Icon(kit.getIcon().clone());
 
 			final List<String> lore = new ArrayList<>();
-			if (icon.getItem().getItemMeta() != null) {
-				if (icon.getItem().getItemMeta().getLore() != null) {
-					lore.addAll(icon.getItem().getItemMeta().getLore());
-				}
-				icon.setLore(icon.getItem().getItemMeta().getDisplayName(), "");
-			}
-			icon.appendLore(lore);
 			icon.appendLore("", MessageUtils.parseColor("&eClick to edit this kit!"));
 			icon.setName(MessageUtils.parseColor("&d&l" + kit.getKitName()));
 

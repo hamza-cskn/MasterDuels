@@ -1,14 +1,14 @@
 package mc.obliviate.masterduels.data;
 
+import mc.obliviate.bloksqliteapi.SQLHandler;
+import mc.obliviate.bloksqliteapi.sqlutils.DataType;
+import mc.obliviate.bloksqliteapi.sqlutils.SQLTable;
+import mc.obliviate.bloksqliteapi.sqlutils.SQLUpdateColumn;
 import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.history.GameHistoryLog;
 import mc.obliviate.masterduels.statistics.DuelStatistic;
 import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.serializer.SerializerUtils;
-import mc.obliviate.bloksqliteapi.SQLHandler;
-import mc.obliviate.bloksqliteapi.sqlutils.DataType;
-import mc.obliviate.bloksqliteapi.sqlutils.SQLTable;
-import mc.obliviate.bloksqliteapi.sqlutils.SQLUpdateColumn;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

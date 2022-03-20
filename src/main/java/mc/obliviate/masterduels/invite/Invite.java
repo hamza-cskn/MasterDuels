@@ -2,7 +2,6 @@ package mc.obliviate.masterduels.invite;
 
 import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.data.DataHandler;
-import mc.obliviate.masterduels.game.GameBuilder;
 import mc.obliviate.masterduels.game.GameCreator;
 import mc.obliviate.masterduels.user.IUser;
 import mc.obliviate.masterduels.user.team.Member;
@@ -10,18 +9,12 @@ import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
 import mc.obliviate.masterduels.utils.timer.TimerUtils;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.*;
-import java.util.concurrent.TimeUnit;
-
-import static mc.obliviate.masterduels.game.GameBuilder.GAME_BUILDER_MAP;
-import static mc.obliviate.masterduels.game.GameCreator.GAME_CREATOR_MAP;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class Invite {
 

@@ -1,9 +1,9 @@
-package mc.obliviate.masterduels.gui.kit;
+package mc.obliviate.masterduels.kit.gui;
 
-import mc.obliviate.masterduels.game.GameBuilder;
-import mc.obliviate.masterduels.kit.Kit;
 import mc.obliviate.inventory.GUI;
 import mc.obliviate.inventory.Icon;
+import mc.obliviate.masterduels.game.GameBuilder;
+import mc.obliviate.masterduels.kit.Kit;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryOpenEvent;

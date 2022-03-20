@@ -44,6 +44,10 @@ game-end-broadcast-mode: 'SERVER_WIDE'
 top:
   top-wins:
     calculation-limit: 10
+execute-console-commands:
+  when-duel-ended:
+    #- this_command_will_be_executed_by_console_when_a_duel_game_ended
+#no placeholder supported yet.
 
 executable-commands-by-player:
   BATTLE:
@@ -71,7 +75,7 @@ scoreboards: #Requires TitleManager plugin
       - '&fRemaining Time:'
       - ' &a{timer}'
       - ''
-      - '{+opponents}' # placeholder that is starts with '+', will clone as line for each opponent of player
+      - '{+opponents}' # placeholders that is starts with '+', will clone as line for each opponent of player
       - ''
       - '&ewww.yourserver.net'
   ROUND_STARTING:
@@ -101,8 +105,14 @@ scoreboards: #Requires TitleManager plugin
       - '&ewww.yourserver.net'
 titles:
   ROUND_STARTING:
-    title: '&c&lGAME STARTING' # also, you can use {round} and {remaining-time-timer} placeholders
-    subtitle: '&e{remaining-time-time}'
+    title: '&c&l{remaining-time-second}' # also, you can use {round} and {remaining-time-timer} placeholders
+    subtitle: '&r'
+    fadein: 5 #in ticks
+    stay: 20 #in ticks
+    fadeout: 3 #in ticks
+  ROUND_STARTED:
+    title: ''
+    subtitle: '&6&lREADY!'
     fadein: 5 #in ticks
     stay: 20 #in ticks
     fadeout: 3 #in ticks

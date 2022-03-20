@@ -2,8 +2,8 @@ package mc.obliviate.masterduels.data;
 
 import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.game.Game;
-import mc.obliviate.masterduels.user.spectator.Spectator;
 import mc.obliviate.masterduels.user.IUser;
+import mc.obliviate.masterduels.user.spectator.Spectator;
 import mc.obliviate.masterduels.user.team.Member;
 import mc.obliviate.masterduels.user.team.Team;
 import org.bukkit.Location;

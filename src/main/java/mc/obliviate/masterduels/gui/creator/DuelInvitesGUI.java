@@ -1,13 +1,13 @@
 package mc.obliviate.masterduels.gui.creator;
 
+import mc.obliviate.inventory.GUI;
+import mc.obliviate.inventory.Icon;
 import mc.obliviate.masterduels.game.GameBuilder;
 import mc.obliviate.masterduels.game.GameCreator;
 import mc.obliviate.masterduels.invite.Invite;
 import mc.obliviate.masterduels.setup.chatentry.ChatEntry;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.xmaterial.XMaterial;
-import mc.obliviate.inventory.GUI;
-import mc.obliviate.inventory.Icon;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryOpenEvent;

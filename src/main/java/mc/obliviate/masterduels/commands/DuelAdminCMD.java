@@ -4,7 +4,7 @@ import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.game.GameBuilder;
-import mc.obliviate.masterduels.gui.kit.KitListEditorGUI;
+import mc.obliviate.masterduels.kit.gui.KitListEditorGUI;
 import mc.obliviate.masterduels.kit.Kit;
 import mc.obliviate.masterduels.queue.DuelQueueTemplate;
 import mc.obliviate.masterduels.setup.ArenaSetup;

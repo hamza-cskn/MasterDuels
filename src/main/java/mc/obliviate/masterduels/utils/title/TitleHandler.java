@@ -38,6 +38,7 @@ public class TitleHandler {
 
 	public enum TitleType {
 		ROUND_STARTING,
+		ROUND_STARTED,
 		SPECTATOR_JOIN,
 		SPECTATOR_LEAVE,
 	}
