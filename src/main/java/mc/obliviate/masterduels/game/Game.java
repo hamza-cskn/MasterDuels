@@ -95,7 +95,6 @@ public class Game {
 		nextRound();
 
 		for (final Member member : getAllMembers()) {
-			bet.remove(member.getPlayer());
 			showAll(member.getPlayer());
 		}
 
