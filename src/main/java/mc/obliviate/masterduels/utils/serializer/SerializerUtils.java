@@ -80,6 +80,7 @@ public class SerializerUtils {
 	}
 
 	public static ItemStack deserializeItemStack(ConfigurationSection section, PlaceholderUtil placeholderUtil) {
+		if (section == null) throw new IllegalArgumentException("ItemStack section cannot be null!");
 		final Optional<XMaterial> xmaterial = XMaterial.matchXMaterial(section.getString("material", "BEDROCK"));
 		if (!xmaterial.isPresent()) {
 			Logger.error("Material could not found: " + section.getString("material"));

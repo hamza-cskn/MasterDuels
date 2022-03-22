@@ -118,7 +118,7 @@ public class DuelAdminCMD implements CommandExecutor {
 	public void queueDelete(final Player player, final List<String> args) {
 		final boolean result = DuelQueueTemplate.removeQueueTemplate(args.get(2));
 		if (result) {
-			MessageUtils.sendMessage(player, "queue.deleted", new PlaceholderUtil().add("{queue-name}",args.get(2)));
+			MessageUtils.sendMessage(player, "queue.deleted", new PlaceholderUtil().add("{queue-name}", args.get(2)));
 		} else {
 			MessageUtils.sendMessage(player, "queue.queue-not-found");
 		}

@@ -65,7 +65,6 @@ public class DuelHistoryLogGUI extends GUI {
 		}
 
 		protected Icon deserializeIcon(final HistoryIconType type, GameHistoryLog log) {
-
 			final Icon icon = new Icon(historyIconItemStacks.get(type).clone());
 			List<String> description = icon.getItem().getItemMeta().getLore(); //raw-placeholder lore
 			if (description == null) description = new ArrayList<>();

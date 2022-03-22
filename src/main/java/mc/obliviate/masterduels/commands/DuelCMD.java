@@ -255,7 +255,7 @@ public class DuelCMD implements CommandExecutor {
 		}
 
 		//1v1
-		final GameBuilder gameBuilder = Game.create(plugin).setTeamAmount(2).setTeamSize(1).finishTime(60).totalRounds(1);
+		final GameBuilder gameBuilder = Game.create(plugin).setTeamAmount(2).setTeamSize(1).setFinishTime(60).setTotalRounds(1);
 		gameBuilder.addPlayer(player);
 
 		new KitSelectionGUI(player, gameBuilder, selectedKit -> {

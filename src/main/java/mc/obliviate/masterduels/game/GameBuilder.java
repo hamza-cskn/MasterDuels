@@ -46,7 +46,7 @@ public class GameBuilder {
 	}
 
 	public Game build() {
-		final Arena arena = Arena.findArena(teamSize, teamAmount);
+		final Arena arena = Arena.findArena(getTeamSize(), getTeamAmount());
 
 		if (arena == null) {
 			//arena could not found
@@ -83,80 +83,72 @@ public class GameBuilder {
 	}
 
 	public int getTeamSize() {
-		return teamSize;
+		return gameDataStorage.getTeamSize();
 	}
 
 	public GameBuilder setTeamSize(int teamSize) {
-		this.teamSize = teamSize;
+		gameDataStorage.setTeamSize(teamSize);
 		createRandomizedTeams();
 		return this;
 	}
 
 	public int getTeamAmount() {
-		return teamAmount;
+		return gameDataStorage.getTeamAmount();
 	}
 
 	public GameBuilder setTeamAmount(int teamAmount) {
-		this.teamAmount = teamAmount;
+		gameDataStorage.setTeamAmount(teamAmount);
 		createRandomizedTeams();
 		return this;
 	}
 
 	public void createRandomizedTeams() {
 		teamBuilderManager.getTeams().clear();
-		for (int i = 1; i <= teamAmount; i++) {
-			final List<Player> playerList = players.subList(Math.min(players.size(), (i - 1) * teamSize), Math.min(players.size(), i * teamSize));
+		for (int i = 1; i <= getTeamAmount(); i++) {
+			final List<Player> playerList = players.subList(Math.min(players.size(), (i - 1) * getTeamSize()), Math.min(players.size(), i * getTeamSize()));
 			createTeam(playerList);
 		}
 
 	}
 
 	public Kit getKit() {
-		return kit;
+		return gameDataStorage.getKit();
 	}
 
 	public GameBuilder setKit(Kit kit) {
-		this.kit = kit;
+		gameDataStorage.setKit(kit);
 		return this;
 	}
 
 	public int getTotalRounds() {
-		return totalRounds;
+		return gameDataStorage.getTotalRounds();
 	}
 
-	public void setTotalRounds(int totalRounds) {
-		this.totalRounds = totalRounds;
-	}
-
-	public GameBuilder totalRounds(int totalRounds) {
-		this.totalRounds = totalRounds;
+	public GameBuilder setTotalRounds(int totalRounds) {
+		gameDataStorage.setTotalRounds(totalRounds);
 		return this;
 	}
 
 	public int getFinishTime() {
-		return finishTime;
+		return gameDataStorage.getFinishTime();
 	}
 
-	public void setFinishTime(int finishTime) {
-		this.finishTime = finishTime;
-	}
-
-	public GameBuilder finishTime(int finishTime) {
-		this.finishTime = finishTime;
+	public GameBuilder setFinishTime(int finishTime) {
+		gameDataStorage.setFinishTime(finishTime);
 		return this;
 	}
 
 	public List<GameRule> getGameRules() {
-		return gameRules;
+		return gameDataStorage.getGameRules();
 	}
 
 	public void addGameRule(GameRule rule) {
-		if (gameRules.contains(rule)) return;
-		gameRules.add(rule);
+		if (getGameRules().contains(rule)) return;
+		getGameRules().add(rule);
 	}
 
 	public void removeGameRule(GameRule rule) {
-		gameRules.remove(rule);
+		getGameRules().remove(rule);
 	}
 
 	public List<Player> getPlayers() {
