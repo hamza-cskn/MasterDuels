@@ -21,6 +21,7 @@ import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.scoreboard.ScoreboardManager;
 import mc.obliviate.masterduels.utils.tab.TABManager;
 import mc.obliviate.masterduels.utils.timer.GameHistoryCacheTimer;
+import mc.obliviate.masterduels.utils.versioncontroller.ServerVersionController;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
@@ -61,6 +62,7 @@ public class MasterDuels extends JavaPlugin {
 	public void onEnable() {
 		Logger.debug("Master Duels v" + getDescription().getVersion() + " loading process initializing...");
 		Logger.debug("Obfuscate: " + checkObfuscated());
+		Bukkit.getLogger().info("running on " + ServerVersionController.getServerVersion() + " as build " + getDescription().getVersion());
 		setupHandlers();
 		registerListeners();
 		registerCommands();
