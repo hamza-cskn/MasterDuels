@@ -7,7 +7,6 @@ import mc.obliviate.masterduels.VaultUtil;
 import mc.obliviate.masterduels.game.Game;
 import mc.obliviate.masterduels.game.GameBuilder;
 import mc.obliviate.masterduels.game.GameCreator;
-import mc.obliviate.masterduels.game.bet.Bet;
 import mc.obliviate.masterduels.gui.GUISerializerUtils;
 import mc.obliviate.masterduels.kit.gui.KitSelectionGUI;
 import mc.obliviate.masterduels.setup.chatentry.ChatEntry;
@@ -38,7 +37,6 @@ public class DuelGameCreatorGUI extends GUI {
 				.add("{team-size}", gameBuilder.getTeamSize() + "")
 				.add("{round-amount}", gameBuilder.getTotalRounds() + "")
 				.add("{kit}", gameBuilder.getKit() == null ? "" : gameBuilder.getKit().getKitName())
-				.add("{bet}", gameBuilder.getBet().getMoney() + "")
 				.add("{game-time}", TimerUtils.formatTimeAsTime(gameBuilder.getFinishTime()))
 				.add("{game-timer}", TimerUtils.formatTimeAsTimer(gameBuilder.getFinishTime()))
 				.add("{invited-players}", gameCreator.getInvites().size() + "")
@@ -99,9 +97,6 @@ public class DuelGameCreatorGUI extends GUI {
 			addItem(getConfigSlot("round-amount"), getRoundAmountIcon());
 		if (VaultUtil.checkPermission(player, "masterduels.duelcreator.set.kit"))
 			addItem(getConfigSlot("kit"), getKitIcon());
-		if (VaultUtil.checkPermission(player, "masterduels.duelcreator.set.bet") && Bet.betsEnabled) {
-			addItem(getConfigSlot("bet"), getBetIcon());
-		}
 		if (VaultUtil.checkPermission(player, "masterduels.duelcreator.set.finishtime"))
 			addItem(getConfigSlot("game-time"), getFinishTimeIcon());
 		addItem(getConfigSlot("start-game"), getStartGameIcon());
@@ -138,23 +133,6 @@ public class DuelGameCreatorGUI extends GUI {
 	private Icon getInvitesIcon() {
 		return new Icon(getConfigItem("invites", new PlaceholderUtil().add("{invited-players}", gameCreator.getInvites().size() + "").add("{total-players}", gameBuilder.getPlayers().size() + ""))).onClick(e -> {
 			new DuelInvitesGUI(player, gameCreator).open();
-		});
-	}
-
-	private Icon getBetIcon() {
-		final Icon betIcon = new Icon(getConfigItem("bet", new PlaceholderUtil().add("{bet}", gameBuilder.getBet().getMoney() + "")));
-		return betIcon.onClick(e -> {
-			player.closeInventory();
-			MessageUtils.sendMessage(player, "enter-bet-amount");
-			new ChatEntry(player.getUniqueId(), getPlugin()).onResponse(event -> {
-				try {
-					gameBuilder.getBet().setMoney(Integer.parseInt(event.getMessage()));
-				} catch (NumberFormatException exception) {
-					MessageUtils.sendMessage(player, "invalid-number", new PlaceholderUtil().add("{entry}", event.getMessage()));
-				} finally {
-					open();
-				}
-			});
 		});
 	}
 

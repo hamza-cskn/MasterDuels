@@ -4,7 +4,6 @@ import com.sun.istack.internal.Nullable;
 import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.data.DataHandler;
-import mc.obliviate.masterduels.game.bet.Bet;
 import mc.obliviate.masterduels.game.gamerule.GameRule;
 import mc.obliviate.masterduels.kit.Kit;
 import mc.obliviate.masterduels.user.IUser;
@@ -217,10 +216,6 @@ public class GameBuilder {
 	public void destroy() {
 		//unregister game builder
 		GAME_BUILDER_MAP.remove(id);
-	}
-
-	public Bet getBet() {
-		return bet;
 	}
 
 	public UUID getId() {

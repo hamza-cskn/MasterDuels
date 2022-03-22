@@ -12,7 +12,6 @@ import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.data.SQLManager;
 import mc.obliviate.masterduels.data.YamlStorageHandler;
 import mc.obliviate.masterduels.game.Game;
-import mc.obliviate.masterduels.game.bet.Bet;
 import mc.obliviate.masterduels.game.gamerule.GameRuleListener;
 import mc.obliviate.masterduels.history.GameHistoryLog;
 import mc.obliviate.masterduels.kit.serializer.KitSerializer;
@@ -115,7 +114,6 @@ public class MasterDuels extends JavaPlugin {
 			Logger.warn("MasterDuels could not find Vault plugin. All permissions will be checked as OP permission.");
 		}
 		if (!setupEconomy()) {
-			Bet.betsEnabled = false; //disable bets
 			Logger.warn("MasterDuels could not find Vault plugin. All players will authorized for economy activities.");
 		}
 	}
