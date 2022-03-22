@@ -19,13 +19,7 @@ public class GameBuilder {
 	private final TeamBuilderManager teamBuilderManager = new TeamBuilderManager(this);
 	private final UUID id;
 	private final List<Player> players = new ArrayList<>();
-	private final List<GameRule> gameRules = new ArrayList<>();
-	private final Bet bet = new Bet();
-	private int teamAmount = 2;
-	private int teamSize = 1;
-	private int totalRounds = 1;
-	private int finishTime = 60;
-	private Kit kit = null;
+	private final GameDataStorage gameDataStorage = new GameDataStorage();
 	private Game game = null;
 
 	public GameBuilder(final MasterDuels plugin) {

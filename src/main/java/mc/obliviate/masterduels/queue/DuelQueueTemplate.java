@@ -12,15 +12,13 @@ public class DuelQueueTemplate {
 
 	private static final List<DuelQueueTemplate> queueTemplates = new LinkedList<>();
 	private final String queueTemplateName;
-	private final Kit kit;
-	private ItemStack icon;
 	private final MasterDuels plugin;
+	private final GameDataStorage gameDataStorage;
 
 	public DuelQueueTemplate(final MasterDuels plugin, final String queueTemplateName, ItemStack icon, final Kit kit) {
 		this.queueTemplateName = queueTemplateName;
-		this.icon = icon;
-		this.kit = kit;
 		this.plugin = plugin;
+		this.gameDataStorage = gameDataStorage;
 		queueTemplates.add(this);
 		createNewQueue();
 	}
@@ -48,20 +46,9 @@ public class DuelQueueTemplate {
 		new DuelQueue(this, new GameBuilder(plugin));
 	}
 
-	public Kit getKit() {
-		return kit;
-	}
-
 	public String getName() {
 		return queueTemplateName;
 	}
 
-	public ItemStack getIcon() {
-		if (icon == null) return kit.getIcon();
-		return icon;
-	}
 
-	public void setIcon(ItemStack icon) {
-		this.icon = icon;
-	}
 }

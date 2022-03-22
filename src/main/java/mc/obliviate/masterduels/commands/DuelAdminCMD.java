@@ -4,6 +4,7 @@ import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.game.GameBuilder;
+import mc.obliviate.masterduels.game.GameDataStorage;
 import mc.obliviate.masterduels.kit.gui.KitListEditorGUI;
 import mc.obliviate.masterduels.kit.Kit;
 import mc.obliviate.masterduels.queue.DuelQueueTemplate;
@@ -124,7 +125,7 @@ public class DuelAdminCMD implements CommandExecutor {
 	}
 
 	public void queueCreate(final Player player, final List<String> args) {
-		new DuelQueueTemplate(plugin, args.get(2), null, Kit.getKits().get(args.get(3)));
+		new DuelQueueTemplate(plugin, args.get(2), new GameDataStorage());
 		MessageUtils.sendMessage(player, "queue.created", new PlaceholderUtil().add("{queue-name}", args.get(2)));
 	}
 
