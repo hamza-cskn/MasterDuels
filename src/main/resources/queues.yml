@@ -1,0 +1,38 @@
+queues:
+  uhc:
+    kit: UltraHardCoreKit
+    team-amount: 2
+    team-size: 1
+    game-duration: 300 #seconds
+    rounds: 1
+  archer:
+    kit: ArcherKit
+    team-amount: 2
+    team-size: 1
+    game-duration: 500 #seconds
+    rounds: 5
+
+
+queues-gui:
+  icons:
+    default:
+      material: GOLDEN_BLOCK
+        display-name: '&c{queue-name}'
+        lore:
+          - '&7Players: &e{players}&8/&e{max-players}'
+          - ''
+          - '&e&oClick to join queue!'
+    uhc:
+      material: DIAMOND
+      # display-name and lore will be came from 'default' section.
+      # because these datas are not specified.
+    archer:
+      material: BOW
+      lore:
+        - '&7Players: &e{players}&8/&e{max-players}'
+        - ''
+        - '&c&lNOTE: &cThere is no sword in'
+        - '&cthis kit!'
+        - ''
+        - '&e&oClick to join queue!'
+      # only display-name will be came from 'default' section.

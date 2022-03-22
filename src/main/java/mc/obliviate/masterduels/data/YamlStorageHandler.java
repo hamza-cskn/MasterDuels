@@ -7,11 +7,11 @@ import mc.obliviate.masterduels.arenaclear.modes.smart.SmartArenaClear;
 import mc.obliviate.masterduels.bossbar.TABBossbarManager;
 import mc.obliviate.masterduels.game.Game;
 import mc.obliviate.masterduels.game.GameState;
-import mc.obliviate.masterduels.game.bet.Bet;
 import mc.obliviate.masterduels.gui.DuelArenaListGUI;
 import mc.obliviate.masterduels.gui.DuelHistoryLogGUI;
 import mc.obliviate.masterduels.history.GameHistoryLog;
 import mc.obliviate.masterduels.kit.Kit;
+import mc.obliviate.masterduels.queue.gui.DuelQueueListGUI;
 import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.scoreboard.ScoreboardFormatConfig;
@@ -35,9 +35,11 @@ public class YamlStorageHandler {
 	private static final String DATA_FILE_NAME = "arenas.yml";
 	private static final String CONFIG_FILE_NAME = "config.yml";
 	private static final String MESSAGES_FILE_NAME = "messages.yml";
+	private static final String QUEUES_FILE_NAME = "queues.yml";
 	private static File dataFile;
 	private final MasterDuels plugin;
 	private YamlConfiguration data;
+	private YamlConfiguration queues;
 	private YamlConfiguration config;
 
 	public YamlStorageHandler(final MasterDuels plugin) {
@@ -48,6 +50,7 @@ public class YamlStorageHandler {
 		loadDataFile(new File(plugin.getDataFolder() + File.separator + DATA_FILE_NAME));
 		loadMessagesFile(new File(plugin.getDataFolder() + File.separator + MESSAGES_FILE_NAME));
 		loadConfigFile(new File(plugin.getDataFolder() + File.separator + CONFIG_FILE_NAME));
+		loadQueuesFile(new File(plugin.getDataFolder() + File.separator + QUEUES_FILE_NAME));
 
 		registerArenas();
 		optimizeWorlds();
@@ -59,9 +62,9 @@ public class YamlStorageHandler {
 		registerTimerFormats();
 		registerHistoryGui();
 		registerDuelListGUIConfig(config.getConfigurationSection("duel-arenas-gui"));
+		registerDuelQueueGUIConfig(queues.getConfigurationSection("queues-gui"));
 
 		GameHistoryLog.gameHistoryLogEnabled = config.getBoolean("game-history.enabled", true);
-		Bet.betsEnabled = config.getBoolean("enable-bets", true);
 		DataHandler.LOCK_TIME_IN_SECONDS = config.getInt("game-starting-lock-time", 3);
 		Kit.USE_PLAYER_INVENTORIES = config.getBoolean("use-player-inventories", false);
 		SmartArenaClear.removeEntities = plugin.getDatabaseHandler().getConfig().getBoolean("arena-regeneration.remove-entities", true);
@@ -93,10 +96,59 @@ public class YamlStorageHandler {
 		}
 	}
 
+	private void loadQueuesFile(File queueFile) {
+		queues = YamlConfiguration.loadConfiguration(queueFile);
+		if (queues.getKeys(false).isEmpty()) {
+			plugin.saveResource(QUEUES_FILE_NAME, true);
+			queues = YamlConfiguration.loadConfiguration(queueFile);
+		}
+	}
+
+	private void registerDuelQueueGUIConfig(final ConfigurationSection section) {
+		final Map<String, ItemStack> iconItemStacks = new HashMap<>();
+
+		//firstly, deserialize default icon.
+		final ItemStack defaultIcon = SerializerUtils.deserializeItemStack(section.getConfigurationSection("icons.default"), null);
+		iconItemStacks.put("default", defaultIcon);
+
+		final ConfigurationSection iconsSection = section.getConfigurationSection("icons");
+
+		for (final String key : iconsSection.getKeys(false)) {
+			if (key.equalsIgnoreCase("default")) continue;
+
+			final ItemStack item = SerializerUtils.deserializeItemStack(iconsSection.getConfigurationSection(key), null);
+
+			if (item == null) {
+				iconItemStacks.put(key, defaultIcon);
+
+			} else {
+
+				if (item.getItemMeta() != null) {
+					if (item.getItemMeta().getLore() == null) {
+						item.getItemMeta().setLore(defaultIcon.getItemMeta().getLore());
+					}
+					if (item.getItemMeta().getDisplayName() == null) {
+						item.getItemMeta().setDisplayName(defaultIcon.getItemMeta().getDisplayName());
+					}
+				} else {
+					Logger.error("Queue icon cannot deserialized normally. (" + key + ")");
+				}
+
+				iconItemStacks.put(key, item);
+
+			}
+
+
+		}
+
+		DuelQueueListGUI.guiConfig = new DuelQueueListGUI.DuelQueueListGUIConfig(iconItemStacks);
+
+	}
+
 	private void registerDuelListGUIConfig(final ConfigurationSection section) {
 		final Map<BasicArenaState, ItemStack> icons = new HashMap<>();
 		for (final BasicArenaState state : BasicArenaState.values()) {
-			icons.put(state, SerializerUtils.deserializeItemStack(section.getConfigurationSection("icons." + state.name()),null));
+			icons.put(state, SerializerUtils.deserializeItemStack(section.getConfigurationSection("icons." + state.name()), null));
 		}
 
 		DuelArenaListGUI.guiConfig = new DuelArenaListGUI.DuelArenaListGUIConfig(icons, section.getString("title", "Duel Arenas"));
