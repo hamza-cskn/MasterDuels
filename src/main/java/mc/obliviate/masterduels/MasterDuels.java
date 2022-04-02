@@ -70,6 +70,12 @@ public class MasterDuels extends JavaPlugin {
 		setupTimers();
 		loadKits();
 		shutdownMode = false;
+		startMetrics();
+
+	}
+
+	private void startMetrics() {
+		new Metrics(this, 14587);
 	}
 
 	private boolean checkObfuscated() {
