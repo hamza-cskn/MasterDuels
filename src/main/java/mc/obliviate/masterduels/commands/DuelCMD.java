@@ -14,6 +14,7 @@ import mc.obliviate.masterduels.invite.Invite;
 import mc.obliviate.masterduels.invite.InviteResult;
 import mc.obliviate.masterduels.invite.Invites;
 import mc.obliviate.masterduels.queue.DuelQueue;
+import mc.obliviate.masterduels.queue.DuelQueueHandler;
 import mc.obliviate.masterduels.queue.DuelQueueTemplate;
 import mc.obliviate.masterduels.queue.gui.DuelQueueListGUI;
 import mc.obliviate.masterduels.statistics.DuelStatistic;
@@ -98,7 +99,7 @@ public class DuelCMD implements CommandExecutor {
 			return true;
 		} else if (args[0].equalsIgnoreCase("spectate")) {
 			spectate(player, args);
-		} else if (args[0].equalsIgnoreCase("queue")) {
+		} else if (args[0].equalsIgnoreCase("queue") && DuelQueueHandler.enabled) {
 			queue(player, Arrays.asList(args));
 		} else if (args[0].equalsIgnoreCase("creator")) {
 			GameCreator gameCreator = GameCreator.getGameCreatorMap().get(player.getUniqueId());

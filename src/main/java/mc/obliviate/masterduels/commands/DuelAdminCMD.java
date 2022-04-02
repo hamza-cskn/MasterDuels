@@ -100,33 +100,8 @@ public class DuelAdminCMD implements CommandExecutor {
 		} else if (args[0].equalsIgnoreCase("teststart")) {
 			testStart(player, Arrays.asList(args));
 			return true;
-		} else if (args[0].equalsIgnoreCase("queue")) {
-			if (args.length == 1) {
-				//todo wrong usage
-				return false;
-			}
-			if (args[1].equalsIgnoreCase("create")) {
-				queueCreate(player, Arrays.asList(args));
-			} else if (args[1].equalsIgnoreCase("delete")) {
-				queueDelete(player, Arrays.asList(args));
-			}
-			return true;
 		}
 		return true;
-	}
-
-	public void queueDelete(final Player player, final List<String> args) {
-		final boolean result = DuelQueueTemplate.removeQueueTemplate(args.get(2));
-		if (result) {
-			MessageUtils.sendMessage(player, "queue.deleted", new PlaceholderUtil().add("{queue-name}", args.get(2)));
-		} else {
-			MessageUtils.sendMessage(player, "queue.queue-not-found");
-		}
-	}
-
-	public void queueCreate(final Player player, final List<String> args) {
-		new DuelQueueTemplate(plugin, args.get(2), new GameDataStorage());
-		MessageUtils.sendMessage(player, "queue.created", new PlaceholderUtil().add("{queue-name}", args.get(2)));
 	}
 
 	private void testStart(final Player player, final List<String> args) {

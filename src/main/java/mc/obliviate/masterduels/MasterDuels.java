@@ -18,6 +18,7 @@ import mc.obliviate.masterduels.kit.serializer.KitSerializer;
 import mc.obliviate.masterduels.listeners.*;
 import mc.obliviate.masterduels.queue.DuelQueueHandler;
 import mc.obliviate.masterduels.utils.Logger;
+import mc.obliviate.masterduels.utils.metrics.Metrics;
 import mc.obliviate.masterduels.utils.scoreboard.ScoreboardManager;
 import mc.obliviate.masterduels.utils.tab.TABManager;
 import mc.obliviate.masterduels.utils.timer.GameHistoryCacheTimer;
@@ -41,10 +42,10 @@ public class MasterDuels extends JavaPlugin {
 	private final SQLManager sqlManager = new SQLManager(this);
 	private final InventoryAPI inventoryAPI = new InventoryAPI(this);
 	private final YamlStorageHandler yamlStorageHandler = new YamlStorageHandler(this);
+	private final DuelQueueHandler duelQueueHandler = new DuelQueueHandler(this);
 	private IArenaClearHandler arenaClearHandler;
 	private MessageAPI messageAPI;
 	private ScoreboardManager scoreboardManager;
-	private final DuelQueueHandler duelQueueHandler = new DuelQueueHandler(this);
 
 	public static boolean isInShutdownMode() {
 		return shutdownMode;
@@ -62,7 +63,7 @@ public class MasterDuels extends JavaPlugin {
 	public void onEnable() {
 		Logger.debug("Master Duels v" + getDescription().getVersion() + " loading process initializing...");
 		Logger.debug("Obfuscate: " + checkObfuscated());
-		Bukkit.getLogger().info("running on " + ServerVersionController.getServerVersion() + " as build " + getDescription().getVersion());
+		Bukkit.getLogger().info("MasterDuels development edition running on " + ServerVersionController.getServerVersion() + " as build " + getDescription().getVersion());
 		setupHandlers();
 		registerListeners();
 		registerCommands();

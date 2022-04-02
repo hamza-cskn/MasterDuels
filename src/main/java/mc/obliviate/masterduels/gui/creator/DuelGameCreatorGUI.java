@@ -140,7 +140,7 @@ public class DuelGameCreatorGUI extends GUI {
 		return kitIcon.onClick(e -> {
 			new KitSelectionGUI(player, gameBuilder, kit -> {
 				open();
-			}).open();
+			}, GameCreator.ALLOWED_KITS).open();
 		});
 	}
 
@@ -148,9 +148,9 @@ public class DuelGameCreatorGUI extends GUI {
 		final Icon roundAmountIcon = new Icon(getConfigItem("round-amount", new PlaceholderUtil().add("{round-amount}", gameBuilder.getTotalRounds() + "")));
 		return roundAmountIcon.onClick(e -> {
 			if (e.isRightClick()) {
-				gameBuilder.setTotalRounds(Math.max(gameBuilder.getTotalRounds() - 2, 1));
+				gameBuilder.setTotalRounds(Math.max(gameBuilder.getTotalRounds() - 2, GameCreator.MIN_ROUNDS));
 			} else if (e.isLeftClick()) {
-				gameBuilder.setTotalRounds(Math.min(gameBuilder.getTotalRounds() + 2, 5));
+				gameBuilder.setTotalRounds(Math.min(gameBuilder.getTotalRounds() + 2, GameCreator.MAX_ROUNDS));
 			}
 			open();
 		});
@@ -163,9 +163,9 @@ public class DuelGameCreatorGUI extends GUI {
 		));
 		return finishTimeIcon.onClick(e -> {
 			if (e.isRightClick()) {
-				gameBuilder.setFinishTime(Math.max(gameBuilder.getFinishTime() - 30, 60));
+				gameBuilder.setFinishTime(Math.max(gameBuilder.getFinishTime() - 30, GameCreator.MIN_GAME_TIME));
 			} else if (e.isLeftClick()) {
-				gameBuilder.setFinishTime(Math.min(gameBuilder.getFinishTime() + 30, 600));
+				gameBuilder.setFinishTime(Math.min(gameBuilder.getFinishTime() + 30, GameCreator.MAX_GAME_TIME));
 			}
 			open();
 		});
@@ -175,9 +175,9 @@ public class DuelGameCreatorGUI extends GUI {
 		final Icon teamAmountIcon = new Icon(getConfigItem("team-amount", new PlaceholderUtil().add("{team-amount}", gameBuilder.getTeamAmount() + "")));
 		return teamAmountIcon.onClick(e -> {
 			if (e.isRightClick()) {
-				gameBuilder.setTeamAmount(Math.max(gameBuilder.getTeamAmount() - 1, 2));
+				gameBuilder.setTeamAmount(Math.max(gameBuilder.getTeamAmount() - 1, GameCreator.MAX_TEAM_AMOUNT));
 			} else if (e.isLeftClick()) {
-				gameBuilder.setTeamAmount(Math.min(gameBuilder.getTeamAmount() + 1, 10));
+				gameBuilder.setTeamAmount(Math.min(gameBuilder.getTeamAmount() + 1, GameCreator.MIN_TEAM_AMOUNT));
 			}
 			open();
 		});
@@ -187,9 +187,9 @@ public class DuelGameCreatorGUI extends GUI {
 		final Icon teamAmountIcon = new Icon(getConfigItem("team-size", new PlaceholderUtil().add("{team-size}", gameBuilder.getTeamSize() + "")));
 		return teamAmountIcon.onClick(e -> {
 			if (e.isRightClick()) {
-				gameBuilder.setTeamSize(Math.max(gameBuilder.getTeamSize() - 1, 1));
+				gameBuilder.setTeamSize(Math.max(gameBuilder.getTeamSize() - 1, GameCreator.MIN_TEAM_SIZE));
 			} else if (e.isLeftClick()) {
-				gameBuilder.setTeamSize(Math.min(gameBuilder.getTeamSize() + 1, 8));
+				gameBuilder.setTeamSize(Math.min(gameBuilder.getTeamSize() + 1, GameCreator.MAX_TEAM_SIZE));
 			}
 			open();
 		});

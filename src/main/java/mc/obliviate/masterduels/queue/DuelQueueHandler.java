@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 public class DuelQueueHandler {
 
 	private final MasterDuels plugin;
+	public static boolean enabled;
 
 	public DuelQueueHandler(MasterDuels plugin) {
 		this.plugin = plugin;

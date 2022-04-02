@@ -6,11 +6,15 @@ import mc.obliviate.masterduels.arena.BasicArenaState;
 import mc.obliviate.masterduels.arenaclear.modes.smart.SmartArenaClear;
 import mc.obliviate.masterduels.bossbar.TABBossbarManager;
 import mc.obliviate.masterduels.game.Game;
+import mc.obliviate.masterduels.game.GameCreator;
 import mc.obliviate.masterduels.game.GameState;
+import mc.obliviate.masterduels.game.gamerule.GameRule;
 import mc.obliviate.masterduels.gui.DuelArenaListGUI;
 import mc.obliviate.masterduels.gui.DuelHistoryLogGUI;
 import mc.obliviate.masterduels.history.GameHistoryLog;
 import mc.obliviate.masterduels.kit.Kit;
+import mc.obliviate.masterduels.queue.DuelQueueHandler;
+import mc.obliviate.masterduels.queue.DuelQueueTemplate;
 import mc.obliviate.masterduels.queue.gui.DuelQueueListGUI;
 import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.MessageUtils;
@@ -19,16 +23,16 @@ import mc.obliviate.masterduels.utils.scoreboard.ScoreboardManager;
 import mc.obliviate.masterduels.utils.serializer.SerializerUtils;
 import mc.obliviate.masterduels.utils.timer.TimerUtils;
 import mc.obliviate.masterduels.utils.title.TitleHandler;
+import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class YamlStorageHandler {
 
@@ -50,25 +54,35 @@ public class YamlStorageHandler {
 		loadDataFile(new File(plugin.getDataFolder() + File.separator + DATA_FILE_NAME));
 		loadMessagesFile(new File(plugin.getDataFolder() + File.separator + MESSAGES_FILE_NAME));
 		loadConfigFile(new File(plugin.getDataFolder() + File.separator + CONFIG_FILE_NAME));
-		loadQueuesFile(new File(plugin.getDataFolder() + File.separator + QUEUES_FILE_NAME));
+
 
 		registerArenas();
-		optimizeWorlds();
+		optimizeWorlds(); //todo it is not mission of this class
 		registerLobbyLocation();
 		registerDelayEndDuelAfterPlayerKill();
 		registerScoreboards();
 		registerTitles();
 		registerBossbars();
 		registerTimerFormats();
+		registerGameCreatorLimits(config.getConfigurationSection("duel-creator.data-limits"));
 		registerHistoryGui();
 		registerDuelListGUIConfig(config.getConfigurationSection("duel-arenas-gui"));
-		registerDuelQueueGUIConfig(queues.getConfigurationSection("queues-gui"));
+
+		initQueues();
 
 		GameHistoryLog.gameHistoryLogEnabled = config.getBoolean("game-history.enabled", true);
 		DataHandler.LOCK_TIME_IN_SECONDS = config.getInt("game-starting-lock-time", 3);
 		Kit.USE_PLAYER_INVENTORIES = config.getBoolean("use-player-inventories", false);
 		SmartArenaClear.removeEntities = plugin.getDatabaseHandler().getConfig().getBoolean("arena-regeneration.remove-entities", true);
 
+	}
+
+
+	private void initQueues() {
+		DuelQueueHandler.enabled = true;
+		loadQueuesFile(new File(plugin.getDataFolder() + File.separator + QUEUES_FILE_NAME));
+		registerQueues(queues.getConfigurationSection("queues"));
+		registerDuelQueueGUIConfig(queues.getConfigurationSection("queues-gui"));
 	}
 
 	private void loadDataFile(File dataFile) {
@@ -104,44 +118,97 @@ public class YamlStorageHandler {
 		}
 	}
 
+	private void registerGameCreatorLimits(ConfigurationSection section) {
+		if (section == null) throw new IllegalArgumentException("section cannot null!");
+		GameCreator.MAX_GAME_TIME = section.getInt("max-game-time", 600);
+		GameCreator.MIN_GAME_TIME = section.getInt("min-game-time", 60);
+
+		GameCreator.MAX_TEAM_SIZE = section.getInt("max-team-size", 8);
+		GameCreator.MIN_TEAM_SIZE = section.getInt("min-team-size", 1);
+
+		GameCreator.MAX_TEAM_AMOUNT = section.getInt("max-team-amount", 10);
+		GameCreator.MIN_TEAM_AMOUNT = section.getInt("min-team-amount", 2);
+
+		GameCreator.MAX_ROUNDS = section.getInt("max-rounds", 5);
+		GameCreator.MIN_ROUNDS = section.getInt("min-rounds", 1);
+
+		final List<String> gameRules = section.getStringList("allowed-game-rules");
+		boolean allOfThem = gameRules.contains("*");
+		for (GameRule rule : GameRule.values()) {
+			if (allOfThem || gameRules.contains(rule.name())) {
+				GameCreator.ALLOWED_GAME_RULES.add(rule);
+			}
+		}
+
+		final List<String> gameKits = section.getStringList("allowed-kits");
+		allOfThem = gameKits.contains("*");
+		for (Kit kit : Kit.getKits().values()) {
+			if (allOfThem || gameKits.contains(kit.getKitName())) {
+				GameCreator.ALLOWED_KITS.add(kit);
+			}
+		}
+
+		Bukkit.broadcastMessage(section.getStringList("allowed-kits").toString());
+		Bukkit.broadcastMessage(allOfThem + "");
+		Bukkit.broadcastMessage(GameCreator.ALLOWED_KITS.toString());
+	}
+
+	private void registerQueues(final ConfigurationSection section) {
+		if (section != null && !section.getKeys(false).isEmpty()) {
+			for (final String key : section.getKeys(false)) {
+				DuelQueueTemplate.deserialize(plugin, section.getConfigurationSection(key));
+			}
+		}
+	}
+
 	private void registerDuelQueueGUIConfig(final ConfigurationSection section) {
 		final Map<String, ItemStack> iconItemStacks = new HashMap<>();
 
 		//firstly, deserialize default icon.
-		final ItemStack defaultIcon = SerializerUtils.deserializeItemStack(section.getConfigurationSection("icons.default"), null);
+		final ItemStack defaultIcon = SerializerUtils.deserializeItemStack(section.getConfigurationSection("icons.functional-icons.queue-icons.default"), null);
 		iconItemStacks.put("default", defaultIcon);
 
-		final ConfigurationSection iconsSection = section.getConfigurationSection("icons");
+		final ConfigurationSection iconsSection = section.getConfigurationSection("icons.functional-icons.queue-icons");
 
-		for (final String key : iconsSection.getKeys(false)) {
+		for (final DuelQueueTemplate template : DuelQueueTemplate.getQueueTemplates()) {
+			final String key = template.getName();
 			if (key.equalsIgnoreCase("default")) continue;
 
+			if (!iconsSection.isSet(key)) {
+				iconItemStacks.put(key, defaultIcon);
+				continue;
+			}
+
 			final ItemStack item = SerializerUtils.deserializeItemStack(iconsSection.getConfigurationSection(key), null);
+
 
 			if (item == null) {
 				iconItemStacks.put(key, defaultIcon);
 
 			} else {
-
 				if (item.getItemMeta() != null) {
 					if (item.getItemMeta().getLore() == null) {
-						item.getItemMeta().setLore(defaultIcon.getItemMeta().getLore());
+						final ItemMeta meta = item.getItemMeta();
+						meta.setLore(defaultIcon.getItemMeta().getLore());
+						item.setItemMeta(meta);
 					}
 					if (item.getItemMeta().getDisplayName() == null) {
-						item.getItemMeta().setDisplayName(defaultIcon.getItemMeta().getDisplayName());
+						final ItemMeta meta = item.getItemMeta();
+						meta.setDisplayName(defaultIcon.getItemMeta().getDisplayName());
+						item.setItemMeta(meta);
 					}
 				} else {
-					Logger.error("Queue icon cannot deserialized normally. (" + key + ")");
+					Logger.error("Queue icon could not deserialized normally. (" + key + ")");
 				}
 
 				iconItemStacks.put(key, item);
 
 			}
-
-
 		}
 
-		DuelQueueListGUI.guiConfig = new DuelQueueListGUI.DuelQueueListGUIConfig(iconItemStacks);
+		final int zeroAmount = section.getBoolean("use-zero-amount", false) ? 0 : 1;
+
+		DuelQueueListGUI.guiConfig = new DuelQueueListGUI.DuelQueueListGUIConfig(zeroAmount, section.getInt("size", 6), section.getString("title", "Queues"), iconItemStacks, section.getConfigurationSection("icons"));
 
 	}
 
@@ -230,7 +297,6 @@ public class YamlStorageHandler {
 		TimerUtils.MINUTE = MessageUtils.getMessageConfig().getString("time-format.minute");
 		TimerUtils.SECONDS = MessageUtils.getMessageConfig().getString("time-format.seconds");
 		TimerUtils.SECOND = MessageUtils.getMessageConfig().getString("time-format.second");
-
 	}
 
 	public YamlConfiguration getData() {

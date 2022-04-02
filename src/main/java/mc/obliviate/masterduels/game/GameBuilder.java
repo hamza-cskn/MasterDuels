@@ -1,6 +1,5 @@
 package mc.obliviate.masterduels.game;
 
-import com.sun.istack.internal.Nullable;
 import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.data.DataHandler;
@@ -77,7 +76,6 @@ public class GameBuilder {
 		return null;
 	}
 
-	@Nullable
 	public Game getGame() {
 		return game;
 	}

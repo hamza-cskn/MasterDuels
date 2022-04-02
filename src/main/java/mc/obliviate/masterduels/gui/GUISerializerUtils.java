@@ -3,6 +3,7 @@ package mc.obliviate.masterduels.gui;
 import mc.obliviate.inventory.GUI;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
 import mc.obliviate.masterduels.utils.serializer.SerializerUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 
@@ -13,6 +14,7 @@ public class GUISerializerUtils {
 		for (String sectionName : iconsSection.getKeys(false)) {
 			final ConfigurationSection section = iconsSection.getConfigurationSection(sectionName);
 
+			if (!section.isSet("slot")) continue;
 			final int slotNo = section.getInt("slot", -1);
 			if (slotNo != -1) {
 				gui.addItem(slotNo, getConfigItem(iconsSection.getConfigurationSection(sectionName)));
@@ -35,8 +37,7 @@ public class GUISerializerUtils {
 					gui.addItem(from, getConfigItem(iconsSection.getConfigurationSection(sectionName)));
 				}
 				return;
-			}
-			if (slotString.contains(",")) {
+			} else if (slotString.contains(",")) {
 				final String[] slots = slotString.split(",");
 				if (slots.length < 2) continue;
 

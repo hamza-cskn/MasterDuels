@@ -44,6 +44,6 @@ public enum ServerVersionController {
 
 	private static ServerVersionController calculateServerVersion() {
 		final String bukkitVersion = Bukkit.getBukkitVersion().split("-")[0].split("\\.")[1];
-		return ServerVersionController.valueOf("v1_" + bukkitVersion);
+		return ServerVersionController.valueOf("V1_" + bukkitVersion);
 	}
 }

@@ -3,11 +3,13 @@ package mc.obliviate.masterduels.queue.gui;
 import mc.obliviate.inventory.GUI;
 import mc.obliviate.inventory.Icon;
 import mc.obliviate.masterduels.game.GameBuilder;
+import mc.obliviate.masterduels.gui.GUISerializerUtils;
 import mc.obliviate.masterduels.queue.DuelQueue;
 import mc.obliviate.masterduels.queue.DuelQueueTemplate;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
 import mc.obliviate.masterduels.utils.serializer.SerializerUtils;
 import mc.obliviate.masterduels.utils.xmaterial.XMaterial;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -24,21 +26,29 @@ public class DuelQueueListGUI extends GUI implements Listener {
 	public static DuelQueueListGUIConfig guiConfig;
 
 	public DuelQueueListGUI(Player player) {
-		super(player, "duel-queue-list-gui", "Queues", 6);
+		super(player, "duel-queue-list-gui", guiConfig.title, guiConfig.size);
 		getPagination().addSlotsBetween(9, 27);
 		OPENED_DUEL_QUEUE_LIST_GUI_LIST.add(this);
 	}
 
 	@Override
 	public void onOpen(InventoryOpenEvent event) {
+		GUISerializerUtils.putDysfunctionalIcons(this, guiConfig.iconsSection.getConfigurationSection("dysfunctional-icons"));
 
-		int i = 9;
-		for (final DuelQueueTemplate template : DuelQueueTemplate.getQueueTemplates()) {
-			addItem(i++, new Icon(guiConfig.getIconOfTemplate(template.getName(), DuelQueue.getAvailableQueues().get(template).getBuilder()))
-					.onClick(e -> {
-						player.performCommand("duel queue join " + template.getName());
-						player.closeInventory();
-					}));
+		if (DuelQueueTemplate.getQueueTemplates().isEmpty()) {
+
+			addItem(GUISerializerUtils.getConfigSlot(guiConfig.iconsSection.getConfigurationSection("functional-icons.other.no-queue-found")),
+					GUISerializerUtils.getConfigItem(guiConfig.iconsSection.getConfigurationSection("functional-icons.other.no-queue-found")));
+
+		} else {
+			int i = 9;
+			for (final DuelQueueTemplate template : DuelQueueTemplate.getQueueTemplates()) {
+				addItem(i++, new Icon(guiConfig.getIconOfTemplate(template.getName(), DuelQueue.getAvailableQueues().get(template).getBuilder()))
+						.onClick(e -> {
+							player.performCommand("duel queue join " + template.getName());
+							player.closeInventory();
+						}));
+			}
 		}
 	}
 
@@ -49,10 +59,18 @@ public class DuelQueueListGUI extends GUI implements Listener {
 
 	public static class DuelQueueListGUIConfig {
 
+		private final int zeroAmount;
+		private final int size;
+		private final String title;
 		public final Map<String, ItemStack> iconItemStacks;
+		private final ConfigurationSection iconsSection;
 
-		public DuelQueueListGUIConfig(Map<String, ItemStack> iconItemStacks) {
+		public DuelQueueListGUIConfig(int zeroAmount, int size, String title, Map<String, ItemStack> iconItemStacks, ConfigurationSection iconsSection) {
+			this.zeroAmount = zeroAmount;
+			this.size = size;
+			this.title = title;
 			this.iconItemStacks = iconItemStacks;
+			this.iconsSection = iconsSection;
 		}
 
 		protected ItemStack getIconOfTemplate(String templateName, GameBuilder builder) {
@@ -66,7 +84,7 @@ public class DuelQueueListGUI extends GUI implements Listener {
 					.add("{max-players}", (builder.getTeamSize() * builder.getTeamAmount()) + "")
 					.add("{queue-name}", templateName));
 
-			item.setAmount(Math.max(1, players));
+			item.setAmount(Math.max(zeroAmount, players));
 
 			return item;
 

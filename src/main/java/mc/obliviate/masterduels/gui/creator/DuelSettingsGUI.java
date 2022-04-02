@@ -29,7 +29,7 @@ public class DuelSettingsGUI extends GUI {
 		}));
 
 		int i = 9;
-		for (final GameRule rule : GameRule.values()) {
+		for (final GameRule rule : GameCreator.ALLOWED_GAME_RULES) {
 
 			Icon icon;
 			if (gameBuilder.getGameRules().contains(rule)) {
