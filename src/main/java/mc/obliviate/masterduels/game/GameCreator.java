@@ -1,8 +1,10 @@
 package mc.obliviate.masterduels.game;
 
 import mc.obliviate.masterduels.MasterDuels;
+import mc.obliviate.masterduels.game.gamerule.GameRule;
 import mc.obliviate.masterduels.invite.Invite;
 import mc.obliviate.masterduels.invite.InviteResponse;
+import mc.obliviate.masterduels.kit.Kit;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
 import org.bukkit.Bukkit;
@@ -18,7 +20,16 @@ public class GameCreator {
 
 	//player uuid, game creator
 	public static final Map<UUID, GameCreator> GAME_CREATOR_MAP = new HashMap<>();
-
+	public static final List<Kit> ALLOWED_KITS = new ArrayList<>();
+	public static final List<GameRule> ALLOWED_GAME_RULES = new ArrayList<>();
+	public static int MAX_TEAM_AMOUNT;
+	public static int MIN_TEAM_AMOUNT;
+	public static int MAX_TEAM_SIZE;
+	public static int MIN_TEAM_SIZE;
+	public static int MAX_GAME_TIME;
+	public static int MIN_GAME_TIME;
+	public static int MAX_ROUNDS;
+	public static int MIN_ROUNDS;
 	private final Map<UUID, Invite> invites = new HashMap<>();
 	private final UUID ownerPlayer;
 	private final GameBuilder builder;
