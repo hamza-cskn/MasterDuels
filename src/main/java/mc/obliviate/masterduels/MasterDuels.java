@@ -128,7 +128,7 @@ public class MasterDuels extends JavaPlugin {
 	}
 
 	private void setupTimers() {
-		if (GameHistoryLog.gameHistoryLogEnabled) {
+		if (GameHistoryLog.GAME_HISTORY_LOG_ENABLED) {
 			new GameHistoryCacheTimer().init(this);
 		}
 	}

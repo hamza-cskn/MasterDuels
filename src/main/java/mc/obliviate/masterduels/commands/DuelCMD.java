@@ -55,7 +55,7 @@ public class DuelCMD implements CommandExecutor {
 			return false;
 		}
 
-		if (GameHistoryLog.gameHistoryLogEnabled && args[0].equalsIgnoreCase("history")) {
+		if (GameHistoryLog.GAME_HISTORY_LOG_ENABLED && args[0].equalsIgnoreCase("history")) {
 			new DuelHistoryLogGUI(player).open();
 			return true;
 		} else if (args[0].equalsIgnoreCase("leave")) {

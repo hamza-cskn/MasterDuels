@@ -15,7 +15,7 @@ import java.util.UUID;
 
 public class SmartArenaClear implements IArenaClear {
 
-	public static boolean removeEntities = true;
+	public static boolean REMOVE_ENTITIES = true;
 	private final WorkLoadThread thread;
 	private final Arena arena;
 
@@ -34,7 +34,7 @@ public class SmartArenaClear implements IArenaClear {
 
 	public void clear() {
 		thread.run();
-		if (removeEntities) {
+		if (REMOVE_ENTITIES) {
 			clearEntities();
 		}
 	}
