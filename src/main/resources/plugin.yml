@@ -2,7 +2,7 @@ name: MasterDuels
 main: mc.obliviate.masterduels.MasterDuels
 author: Mr_Obliviate
 description: Professional duel game plugin for professional servers.
-version: 2.2
+version: ${project.artifactId}-${project.version}.${buildNumber}
 api-version: 1.13
 softdepend:
   - Multiverse-Core
@@ -10,6 +10,5 @@ softdepend:
   - TAB
   - Vault
 commands:
-  duelarenas:
   duel:
   dueladmin:

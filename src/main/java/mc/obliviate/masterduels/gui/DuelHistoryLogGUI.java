@@ -72,7 +72,7 @@ public class DuelHistoryLogGUI extends GUI {
 
 			//todo why this date format is in-build
 			final PlaceholderUtil placeholderUtil = new PlaceholderUtil().add("{time}", TimerUtils.formatTimeDifferenceAsTime(log.getStartTime(), log.getEndTime()))
-					.add("{played-date}", new SimpleDateFormat("HH:mm dd/MM/yyyy").format(new Date(log.getStartTime())));
+					.add("{played-date}", TimerUtils.formatDate(log.getStartTime()));
 			if (log.getWinners().size() == 1) {
 				placeholderUtil.add("{winner}", Bukkit.getOfflinePlayer(log.getWinners().get(0)).getName());
 			}

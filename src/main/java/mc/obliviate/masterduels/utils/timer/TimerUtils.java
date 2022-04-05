@@ -1,15 +1,21 @@
 package mc.obliviate.masterduels.utils.timer;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class TimerUtils {
 
 	public static String MINUTE = " minute";
 	public static String MINUTES = " minutes";
 	public static String SECOND = " seconds";
 	public static String SECONDS = " second";
+	public static SimpleDateFormat DATE_FORMAT;
 
+	public static String formatDate(long time) {
+		return DATE_FORMAT.format(new Date(time));
+	}
 
 	/**
-	 *
 	 * @param endTime give time out time.
 	 * @return formatted TIMER text.
 	 */
@@ -23,7 +29,6 @@ public class TimerUtils {
 	}
 
 	/**
-	 *
 	 * @param endTime give time out time
 	 * @return formatted TIME text.
 	 */
@@ -33,8 +38,8 @@ public class TimerUtils {
 
 	/**
 	 * @param start start time
-	 * @param end end time
-	 * method will get difference of these.
+	 * @param end   end time
+	 *              method will get difference of these.
 	 * @return formatted TIME text
 	 */
 	public static String formatTimeDifferenceAsTime(long start, long end) {
@@ -44,10 +49,11 @@ public class TimerUtils {
 
 		return formatTimeAsTime(diff);
 	}
+
 	/**
 	 * @param start start time
-	 * @param end end time
-	 * method will get difference of these.
+	 * @param end   end time
+	 *              method will get difference of these.
 	 * @return formatted TIMER text
 	 */
 	public static String formatTimeDifferenceAsTimer(long start, long end) {
@@ -79,6 +85,7 @@ public class TimerUtils {
 		return min + ":" + sec;
 
 	}
+
 	/**
 	 * @param diff difference between start time and end time
 	 * @return formatted TIME text

@@ -152,3 +152,4 @@ time-format:
   seconds: 'seconds'
   minute: 'minute'
   minutes: 'minutes'
+  date-format: 'HH:mm dd/MM/yyyy'
