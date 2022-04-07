@@ -43,7 +43,10 @@ player-dead:
   by-attacker: '&c{victim}&7 has killed by &c{attacker}&7.'
   without-attacker: '&c{victim}&7 has been died.'
 kit:
-  editor-usage: '&cCorrect usage: /dueladmin kitsave <kit name>'
+  usage: |-
+    [DISABLE_PREFIX]&7 /dueladmin kit save <kit name> &8- &9saves your current inventory as new kit
+    &7 /dueladmin kit editor &8- &9opens kit editor gui
+  editor-usage: '&cCorrect usage: /dueladmin kit save <kit name>'
   has-saved: '&7Kit saved: &f{kit}&7'
 game-end-broadcast:
   solo: '&a{winner}&7 has won duel with &c{winner-health} health&7! (&a{winner}&7 vs &c{loser}&7)'
@@ -72,7 +75,9 @@ duel-command:
     &7 /duel creator &c&l[BETA] &8- &9opens game builder menu
   admin:
     arena:
-      usage: '&cCorrect usage: /dueladmin arena <disable/enable/list>'
+      usage: |-
+        [DISABLE_PREFIX]&7 /dueladmin arena disable <arena name>&8- &9disables arena
+        &7 /dueladmin arena enable <arena name> &8- &9enables arena
       disabled: '&7Arena &f{arena} &7successfully &cdisabled.'
       enabled: '&7Arena &f{arena} &7successfully &aenabled.'
       disable-usage: '&cCorrect usage: /dueladmin disablearena <arena name>'
@@ -85,6 +90,7 @@ queue:
   deleted: '&7Successfully &cdeleted&7 new queue template: &b{queue-name}'
   player-could-not-added: '&cAn error occurred during joining a queue.'
   queue-not-found: '&cNo queue found that is named &4''{entry}''&c.'
+  queue-could-not-started: '&cAn error occurred! Queue game couldn''t started.'
   no-queue-name: '&cPlease enter a queue name to join.'
   usage: |-
     [DISABLE_PREFIX]&7 /duel queue menu &8- &9opens duel queues menu

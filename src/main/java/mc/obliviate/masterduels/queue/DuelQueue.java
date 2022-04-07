@@ -60,7 +60,12 @@ public class DuelQueue {
 
 	public void start() {
 		final Game game = builder.build();
-		if (game == null) return;
+		if (game == null) {
+			for (final Player player : builder.getPlayers()) {
+				MessageUtils.sendMessage(player, "queue.queue-could-not-started");
+			}
+			return;
+		}
 		lock();
 		game.startGame();
 		Bukkit.broadcastMessage("game started");

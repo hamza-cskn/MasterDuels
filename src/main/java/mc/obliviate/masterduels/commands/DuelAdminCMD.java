@@ -78,7 +78,7 @@ public class DuelAdminCMD implements CommandExecutor {
 			player.sendMessage("§aLobby set successfully!");
 		} else if (args[0].equalsIgnoreCase("kit")) {
 			if (args.length == 1) {
-				//todo wrong usage
+				MessageUtils.sendMessage(player, "kit.usage");
 				return false;
 			}
 			if (args[1].equalsIgnoreCase("editor")) {
@@ -88,7 +88,7 @@ public class DuelAdminCMD implements CommandExecutor {
 			}
 		} else if (args[0].equalsIgnoreCase("arena")) {
 			if (args.length == 1) {
-				//todo wrong usage
+				MessageUtils.sendMessage(player, "duel-command.arena.usage");
 				return false;
 			}
 			if (args[1].equalsIgnoreCase("disable")) {
