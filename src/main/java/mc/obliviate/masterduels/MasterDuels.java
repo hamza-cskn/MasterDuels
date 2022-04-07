@@ -103,6 +103,7 @@ public class MasterDuels extends JavaPlugin {
 		sqlManager.init();
 		setupVaultUtils();
 
+		Logger.setDebugModeEnabled(yamlStorageHandler.getConfig().getBoolean("debug", false));
 	}
 
 	private void setupArenaClearHandler() {

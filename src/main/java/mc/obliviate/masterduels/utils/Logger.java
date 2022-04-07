@@ -4,7 +4,7 @@ import org.bukkit.Bukkit;
 
 public class Logger {
 
-	private static final boolean debugModeEnabled = true;
+	private static boolean debugModeEnabled = false;
 
 	public static void debug(String message) {
 		if (!debugModeEnabled) return;
@@ -30,4 +30,11 @@ public class Logger {
 		return string;
 	}
 
+	public static void setDebugModeEnabled(boolean debugModeEnabled) {
+		Logger.debugModeEnabled = debugModeEnabled;
+	}
+
+	public static boolean isDebugModeEnabled() {
+		return debugModeEnabled;
+	}
 }
