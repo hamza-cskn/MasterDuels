@@ -44,6 +44,7 @@ import static mc.obliviate.masterduels.kit.Kit.USE_PLAYER_INVENTORIES;
 
 public class Game {
 
+	private static final PlayerReset RESET_WHEN_PLAYER_LEFT = new PlayerReset().excludeExp().excludeLevel().excludeInventory().excludeAllowFlight().excludeGamemode();
 	private static int endDelay = 20;
 	private final MasterDuels plugin;
 	private final Arena arena;
@@ -336,7 +337,7 @@ public class Game {
 
 	public void leave(final Spectator spectator) {
 		spectatorManager.unspectate(spectator.getPlayer());
-		new PlayerReset().excludeExp().excludeLevel().excludeInventory().excludeGamemode().reset(spectator.getPlayer());
+		RESET_WHEN_PLAYER_LEFT.reset(spectator.getPlayer());
 		MessageUtils.sendMessage(spectator.getPlayer(), "you-left-from-duel");
 		teleportToLobby(spectator.getPlayer());
 	}
@@ -355,7 +356,7 @@ public class Game {
 
 		showAll(member.getPlayer());
 
-		new PlayerReset().excludeExp().excludeLevel().excludeInventory().excludeGamemode().reset(member.getPlayer());
+		RESET_WHEN_PLAYER_LEFT.reset(member.getPlayer());
 		ScoreboardManager.defaultScoreboard(member.getPlayer());
 
 
