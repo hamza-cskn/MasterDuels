@@ -7,8 +7,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-//executes console commands which is given in config.yml
-public class CMDExecutorListener implements Listener {
+/**
+ * Purpose of this class,
+ * executes console commands which is given in config.yml
+**/
+ public class CMDExecutorListener implements Listener {
 
 	private final MasterDuels plugin;
 
