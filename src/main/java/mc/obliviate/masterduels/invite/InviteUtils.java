@@ -1,5 +1,6 @@
 package mc.obliviate.masterduels.invite;
 
+import mc.obliviate.masterduels.kit.Kit;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -12,10 +13,15 @@ import java.util.List;
 
 public class InviteUtils {
 
-	public static void sendInviteMessage(final Player target, final Player inviter, final int expireTime, final List<String> inviteTextList) {
+	public static void sendInviteMessage(final Invite invite, final List<String> inviteTextList) {
+		final Player inviter = invite.getInviter();
+		final Player target = invite.getTarget();
+
+		final Kit kit = invite.getGameCreator().getBuilder().getKit();
+
 		for (String inviteText : inviteTextList) {
 			inviteText = inviteText + " ";
-			inviteText = MessageUtils.applyPlaceholders(inviteText, new PlaceholderUtil().add("{inviter}", inviter.getName()).add("{expire-time}", expireTime + ""));
+			inviteText = MessageUtils.applyPlaceholders(inviteText, new PlaceholderUtil().add("{kit}", kit != null ? kit.getKitName() : MessageUtils.parseColor(MessageUtils.getMessage("game-creator.none-kit-name"))).add("{inviter}", inviter.getName()).add("{expire-time}", invite.getExpireTime() + ""));
 			inviteText = MessageUtils.parseColor(inviteText);
 
 			if (inviteText.contains("{accept-button}") && inviteText.contains("{decline-button}")) {

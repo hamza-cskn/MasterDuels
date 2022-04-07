@@ -79,9 +79,9 @@ public class Invite {
 		MessageUtils.sendMessage(inviter, "invite.target-has-invited", new PlaceholderUtil().add("{target}", target.getName()).add("{expire-time}", expireTime + ""));
 
 		if (gameCreator == null) {
-			InviteUtils.sendInviteMessage(target, inviter, expireTime, MessageUtils.getMessageConfig().getStringList("invite.normal-invite-text"));
+			InviteUtils.sendInviteMessage(this, MessageUtils.getMessageConfig().getStringList("invite.normal-invite-text"));
 		} else {
-			InviteUtils.sendInviteMessage(target, inviter, expireTime, MessageUtils.getMessageConfig().getStringList("invite.game-creator-invite-text"));
+			InviteUtils.sendInviteMessage(this, MessageUtils.getMessageConfig().getStringList("invite.game-creator-invite-text"));
 		}
 		new BukkitRunnable() {
 			public void run() {
