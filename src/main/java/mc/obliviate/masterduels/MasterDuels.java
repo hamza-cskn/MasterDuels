@@ -19,6 +19,7 @@ import mc.obliviate.masterduels.listeners.*;
 import mc.obliviate.masterduels.queue.DuelQueueHandler;
 import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.metrics.Metrics;
+import mc.obliviate.masterduels.utils.optimization.ArenaWorldOptimizerHandler;
 import mc.obliviate.masterduels.utils.scoreboard.ScoreboardManager;
 import mc.obliviate.masterduels.utils.tab.TABManager;
 import mc.obliviate.masterduels.utils.timer.GameHistoryCacheTimer;
