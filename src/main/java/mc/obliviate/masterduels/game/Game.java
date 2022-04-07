@@ -397,7 +397,6 @@ public class Game {
 				}
 			}
 		}
-
 	}
 
 	//todo search vanish plugin compatibility

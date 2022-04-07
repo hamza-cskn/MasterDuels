@@ -27,28 +27,49 @@ public class DuelQueueListGUI extends GUI implements Listener {
 
 	public DuelQueueListGUI(Player player) {
 		super(player, "duel-queue-list-gui", guiConfig.title, guiConfig.size);
-		getPagination().addSlotsBetween(9, 27);
-		OPENED_DUEL_QUEUE_LIST_GUI_LIST.add(this);
+		calculateIcons();
+		for (final int slot : guiConfig.slots) {
+			getPagination().getSlots().add(slot);
+		}
+		getPagination().firstPage();
+
 	}
+
 
 	@Override
 	public void onOpen(InventoryOpenEvent event) {
+		OPENED_DUEL_QUEUE_LIST_GUI_LIST.add(this);
+
 		GUISerializerUtils.putDysfunctionalIcons(this, guiConfig.iconsSection.getConfigurationSection("dysfunctional-icons"));
 
 		if (DuelQueueTemplate.getQueueTemplates().isEmpty()) {
-
 			addItem(GUISerializerUtils.getConfigSlot(guiConfig.iconsSection.getConfigurationSection("functional-icons.other.no-queue-found")),
 					GUISerializerUtils.getConfigItem(guiConfig.iconsSection.getConfigurationSection("functional-icons.other.no-queue-found")));
-
 		} else {
-			int i = 9;
-			for (final DuelQueueTemplate template : DuelQueueTemplate.getQueueTemplates()) {
-				addItem(i++, new Icon(guiConfig.getIconOfTemplate(template.getName(), DuelQueue.getAvailableQueues().get(template).getBuilder()))
-						.onClick(e -> {
-							player.performCommand("duel queue join " + template.getName());
-							player.closeInventory();
-						}));
-			}
+			getPagination().update();
+		}
+
+		if (getPagination().getLastPage() != getPagination().getPage()) {
+			addItem(8, new Icon(XMaterial.ARROW.parseItem()).onClick(e -> {
+				getPagination().nextPage();
+				getPagination().update();
+			}));
+		}
+		if (getPagination().getPage() != 0) {
+			addItem(0, new Icon(XMaterial.ARROW.parseItem()).onClick(e -> {
+				getPagination().previousPage();
+				getPagination().update();
+			}));
+		}
+	}
+
+	private void calculateIcons() {
+		for (final DuelQueueTemplate template : DuelQueueTemplate.getQueueTemplates()) {
+			getPagination().addHytem(new Icon(guiConfig.getIconOfTemplate(template.getName(), DuelQueue.getAvailableQueues().get(template).getBuilder()))
+					.onClick(e -> {
+						player.performCommand("duel queue join " + template.getName());
+						player.closeInventory();
+					}));
 		}
 	}
 
@@ -59,10 +80,11 @@ public class DuelQueueListGUI extends GUI implements Listener {
 
 	public static class DuelQueueListGUIConfig {
 
+		public final Map<String, ItemStack> iconItemStacks;
 		private final int zeroAmount;
+		private final List<Integer> slots = new ArrayList<>();
 		private final int size;
 		private final String title;
-		public final Map<String, ItemStack> iconItemStacks;
 		private final ConfigurationSection iconsSection;
 
 		public DuelQueueListGUIConfig(int zeroAmount, int size, String title, Map<String, ItemStack> iconItemStacks, ConfigurationSection iconsSection) {
