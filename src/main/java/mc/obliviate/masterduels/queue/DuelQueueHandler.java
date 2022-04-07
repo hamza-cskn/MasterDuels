@@ -13,7 +13,7 @@ public class DuelQueueHandler {
 		this.plugin = plugin;
 	}
 
-	public void initialize() {
+	public void init() {
 		Bukkit.getPluginManager().registerEvents(new DuelQueueListGUIUpdaterListener(plugin), plugin);
 	}
 

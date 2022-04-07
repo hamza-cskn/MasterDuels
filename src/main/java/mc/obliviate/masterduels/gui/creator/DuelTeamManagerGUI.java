@@ -145,7 +145,6 @@ public class DuelTeamManagerGUI extends GUI {
 
 	@Override
 	public void onClick(InventoryClickEvent e) {
-		//fixme: renamed skulls can be inserted on gui
 		if (e.getSlot() != e.getRawSlot()) e.setCancelled(true);
 		switch (e.getAction()) {
 			case PICKUP_ALL:

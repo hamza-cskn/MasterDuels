@@ -70,7 +70,6 @@ public class DuelHistoryLogGUI extends GUI {
 			if (description == null) description = new ArrayList<>();
 			icon.setLore(new ArrayList<>());
 
-			//todo why this date format is in-build
 			final PlaceholderUtil placeholderUtil = new PlaceholderUtil().add("{time}", TimerUtils.formatTimeDifferenceAsTime(log.getStartTime(), log.getEndTime()))
 					.add("{played-date}", TimerUtils.formatDate(log.getStartTime()));
 			if (log.getWinners().size() == 1) {

@@ -68,8 +68,6 @@ public class DuelQueue {
 		}
 		lock();
 		game.startGame();
-		Bukkit.broadcastMessage("game started");
-		//todo announce and explain players why game is not started.
 	}
 
 	/**

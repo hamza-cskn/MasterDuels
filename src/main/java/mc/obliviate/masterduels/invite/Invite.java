@@ -68,8 +68,6 @@ public class Invite {
 			return;
 		}
 
-		//todo remove player from game builder, game creator when player accept an invite
-
 		//todo cache invite receives
 		if (!plugin.getSqlManager().getReceivesInvites(invited.getUniqueId())) {
 			MessageUtils.sendMessage(inviter, "invite.toggle.you-can-not-invite", new PlaceholderUtil().add("{target}", invited.getName()));

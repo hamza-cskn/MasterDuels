@@ -40,6 +40,7 @@ public class MasterDuels extends JavaPlugin {
 	private static boolean shutdownMode = false;
 	private static Economy economy;
 	private static Permission permissions;
+	private final ArenaWorldOptimizerHandler worldOptimizerHandler = new ArenaWorldOptimizerHandler();
 	private final SQLManager sqlManager = new SQLManager(this);
 	private final InventoryAPI inventoryAPI = new InventoryAPI(this);
 	private final YamlStorageHandler yamlStorageHandler = new YamlStorageHandler(this);
@@ -99,8 +100,10 @@ public class MasterDuels extends JavaPlugin {
 		scoreboardManager = new ScoreboardManager(this);
 		messageAPI = MessageAPI.getInstance(this);
 		new TABManager(this);
-		duelQueueHandler.initialize();
-
+		duelQueueHandler.init();
+		if (yamlStorageHandler.getConfig().getBoolean("optimize-duel-worlds", false)) {
+			worldOptimizerHandler.init();
+		}
 		sqlManager.init();
 		setupVaultUtils();
 

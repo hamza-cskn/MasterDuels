@@ -58,7 +58,6 @@ public class YamlStorageHandler {
 
 
 		registerArenas();
-		optimizeWorlds(); //todo it is not mission of this class
 		registerLobbyLocation();
 		registerDelayEndDuelAfterPlayerKill();
 		registerScoreboards();
@@ -232,27 +231,6 @@ public class YamlStorageHandler {
 		for (final String arenaName : data.getKeys(false)) {
 			final Arena arena = Arena.deserialize(data.getConfigurationSection(arenaName));
 			DataHandler.registerArena(arena);
-		}
-	}
-
-	private void optimizeWorlds() {
-		if (config.getBoolean("optimize-duel-worlds", false)) {
-			for (final Arena arena : DataHandler.getArenas().keySet()) {
-				final World world = arena.getArenaCuboid().getPoint1().getWorld();
-				world.setMonsterSpawnLimit(0);
-				world.setAnimalSpawnLimit(0);
-				world.setAmbientSpawnLimit(0);
-				world.setWaterAnimalSpawnLimit(0);
-				world.setThundering(false);
-				world.setStorm(false);
-				world.setGameRuleValue("doFireTick", "false");
-				world.setGameRuleValue("doDaylightCycle", "false");
-				world.setGameRuleValue("randomTickSpeed", "0");
-				world.setGameRuleValue("doMobSpawning", "false");
-				if (!world.getPVP()) {
-					Logger.warn("PVP is disabled at " + world.getName() + " world! Then why i am here :(");
-				}
-			}
 		}
 	}
 
