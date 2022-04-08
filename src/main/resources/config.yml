@@ -10,35 +10,31 @@ delay-end-duel-after-player-kill: 20 #in seconds
 invite-timeout: 120 #in seconds
 
 arena-regeneration:
-  # SMART - removes only placed blocks, liquids and formed blocks(blocks creating when lava touched to water)
-  # ROLLBACKCORE (COMING SOON) - regenerates all blocks in arena region (https://www.spigotmc.org/resources/rollbackcore-1-4-7-1-17-1.18517/)
-  # SLIMEWORLD (COMING SOON) - regenerates world completely (https://www.spigotmc.org/resources/advanced-slimeworldmanager.87209/)
+  # SMART - removes only placed blocks, liquids, and formed blocks(blocks created when lava touched water)
+  # ROLLBACKCORE (COMING SOON) - regenerates all blocks in the arena region (https://www.spigotmc.org/resources/rollbackcore-1-4-7-1-17-1.18517/)
+  # SLIMEWORLD (COMING SOON) - regenerates the world completely (https://www.spigotmc.org/resources/advanced-slimeworldmanager.87209/)
   regenerate-mode: SMART
-  remove-entities: true #removes DROPPED ITEMS and PROJECTILES that are in arena region.
+  remove-entities: true #removes DROPPED ITEMS and PROJECTILES that are in the arena region.
 
 # if set true, players can break only placed blocks by a player (and formed blocks).
 prevent-break-non-placed-blocks: true
 
-# if set true, teleports player to arena area(1. team's 1. position) when they break/place block
+# if set true, teleports the player to arena area(1. team's 1. position) when they break/place block
 # to out of arena cuboid. Do not set it true if you didn't set arena cuboids correctly.
 teleport-back-when-arena-cuboid-violated: false
 
-# if set true, MasterDuels will changes Bukkit world configurations of all
-# worlds of arenas. Thats includes game rules of the worlds. We recommend this,
-# if your duel arenas are in different world from another worlds you're using for another thing.
+# if set true, MasterDuels will change Bukkit world configurations of all worlds of arenas. This includes
+# the game rules of the world. We recommend this if your duel arenas are in a different world
+# from other worlds you're using for another thing.
 optimize-duel-worlds: false
 
-# if set true, MasterDuels will not reset and backup inventory. (so this is means disabling kits)
-# also, when a player die in duel, their items will drops. Do not change this option during server working.
+# if set true, MasterDuels will not reset and backup inventory. (so this is means you're disabling kits)
+# also, when a player dies in a duel, their items will drop. Do not change this option during server work.
 use-player-inventories: false
 
-#if set true, players can bet for their duel games.
-#needs Vault
-enable-bets: true
-
-# SERVER_WIDE - Send game end message to all players in the server
-# SPECTATORS_AND_MEMBERS - Send game end message to all players in duel game
-# DISABLED - Send game end message to nobody
+# SERVER_WIDE - sends game end message to all players on the server
+# SPECTATORS_AND_MEMBERS - sends game end message to all players in the duel game
+# DISABLED - no message send
 game-end-broadcast-mode: 'SERVER_WIDE'
 
 top:
@@ -47,7 +43,7 @@ top:
 execute-console-commands:
   when-duel-ended:
     #- this_command_will_be_executed_by_console_when_a_duel_game_ended
-#no placeholder supported yet.
+# placeholders is unsupported yet.
 
 executable-commands-by-player:
   BATTLE:
