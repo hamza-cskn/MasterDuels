@@ -3,7 +3,7 @@ package mc.obliviate.masterduels.gui;
 import mc.obliviate.inventory.GUI;
 import mc.obliviate.inventory.Icon;
 import mc.obliviate.masterduels.history.GameHistoryLog;
-import mc.obliviate.masterduels.utils.MessageUtils;
+import mc.obliviate.masterduels.utils.StringUtils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
 import mc.obliviate.masterduels.utils.timer.TimerUtils;
 import mc.obliviate.masterduels.utils.xmaterial.XMaterial;
@@ -13,7 +13,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class DuelHistoryLogGUI extends GUI {
@@ -81,19 +80,19 @@ public class DuelHistoryLogGUI extends GUI {
 			for (final String line : description) {
 				if (line.equalsIgnoreCase("{+winners}")) {
 					for (final UUID uuid : log.getWinners()) {
-						icon.appendLore(MessageUtils.parseColor(MessageUtils.applyPlaceholders(winnersFormat, new PlaceholderUtil().add("{winner}", Bukkit.getOfflinePlayer(uuid).getName()))));
+						icon.appendLore(StringUtils.parseColor(StringUtils.applyPlaceholders(winnersFormat, new PlaceholderUtil().add("{winner}", Bukkit.getOfflinePlayer(uuid).getName()))));
 					}
 					continue;
 				} else if (line.equalsIgnoreCase("{+losers}")) {
 					for (final UUID uuid : log.getLosers()) {
-						icon.appendLore(MessageUtils.parseColor(MessageUtils.applyPlaceholders(losersFormat, new PlaceholderUtil().add("{loser}", Bukkit.getOfflinePlayer(uuid).getName()))));
+						icon.appendLore(StringUtils.parseColor(StringUtils.applyPlaceholders(losersFormat, new PlaceholderUtil().add("{loser}", Bukkit.getOfflinePlayer(uuid).getName()))));
 					}
 					continue;
 				}
-				icon.appendLore(MessageUtils.parseColor(MessageUtils.applyPlaceholders(line, placeholderUtil)));
+				icon.appendLore(StringUtils.parseColor(StringUtils.applyPlaceholders(line, placeholderUtil)));
 			}
 
-			icon.setName(MessageUtils.parseColor(MessageUtils.applyPlaceholders(icon.getItem().getItemMeta().getDisplayName(), placeholderUtil)));
+			icon.setName(StringUtils.parseColor(StringUtils.applyPlaceholders(icon.getItem().getItemMeta().getDisplayName(), placeholderUtil)));
 
 			return icon;
 		}

@@ -6,7 +6,7 @@ import mc.obliviate.masterduels.game.GameBuilder;
 import mc.obliviate.masterduels.game.GameCreator;
 import mc.obliviate.masterduels.invite.Invite;
 import mc.obliviate.masterduels.setup.chatentry.ChatEntry;
-import mc.obliviate.masterduels.utils.MessageUtils;
+import mc.obliviate.masterduels.utils.StringUtils;
 import mc.obliviate.masterduels.utils.xmaterial.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -29,7 +29,7 @@ public class DuelInvitesGUI extends GUI {
 		addItem(0, new Icon(XMaterial.ARROW.parseItem()).onClick(e -> {
 			new DuelGameCreatorGUI(player, gameCreator).open();
 		}));
-		addItem(4, new Icon(XMaterial.WRITABLE_BOOK.parseItem()).setName(MessageUtils.parseColor("&aInvite a player")).setLore(MessageUtils.parseColor("&7Players: " + gameBuilder.getPlayers().size())).onClick(e -> {
+		addItem(4, new Icon(XMaterial.WRITABLE_BOOK.parseItem()).setName(StringUtils.parseColor("&aInvite a player")).setLore(StringUtils.parseColor("&7Players: " + gameBuilder.getPlayers().size())).onClick(e -> {
 			player.closeInventory();
 			new ChatEntry(player.getUniqueId(), getPlugin()).onResponse(chatEvent -> {
 				gameCreator.sendInvite(player, Bukkit.getPlayer(chatEvent.getMessage()), response -> {
@@ -37,7 +37,7 @@ public class DuelInvitesGUI extends GUI {
 				});
 				open();
 			});
-			MessageUtils.sendMessage(player, "enter-player-name-to-invite");
+			StringUtils.sendMessage(player, "enter-player-name-to-invite");
 		}));
 		int i = 9;
 		for (Invite invite : gameCreator.getInvites().values()) {

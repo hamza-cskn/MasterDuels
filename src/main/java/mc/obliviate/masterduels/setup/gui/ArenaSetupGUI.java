@@ -6,7 +6,7 @@ import mc.obliviate.masterduels.arena.elements.ArenaCuboid;
 import mc.obliviate.masterduels.setup.ArenaSetup;
 import mc.obliviate.masterduels.setup.PositionSelection;
 import mc.obliviate.masterduels.setup.chatentry.ChatEntry;
-import mc.obliviate.masterduels.utils.MessageUtils;
+import mc.obliviate.masterduels.utils.StringUtils;
 import mc.obliviate.masterduels.utils.xmaterial.XMaterial;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.entity.Player;
@@ -223,7 +223,7 @@ public class ArenaSetupGUI extends GUI {
 
 		addItem(49, new Icon(XMaterial.BOOKSHELF.parseItem())
 				.setName(ChatColor.GOLD + "State of arena setup")
-				.setLore(ChatColor.GRAY + "Mode: §b" + MessageUtils.convertMode(arenaSetup.getTeamSize(), arenaSetup.getTeamAmount()),
+				.setLore(ChatColor.GRAY + "Mode: §b" + StringUtils.convertMode(arenaSetup.getTeamSize(), arenaSetup.getTeamAmount()),
 						ChatColor.GRAY + "Positions: §b" + size + "/" + (arenaSetup.getTeamSize() * arenaSetup.getTeamAmount()),
 						ChatColor.GRAY + "Map: §b" + arenaSetup.getMapName(),
 						ChatColor.GRAY + "Arena Name: §b" + arenaSetup.getArenaName()

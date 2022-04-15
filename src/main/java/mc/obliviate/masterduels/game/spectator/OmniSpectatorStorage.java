@@ -3,7 +3,7 @@ package mc.obliviate.masterduels.game.spectator;
 import com.hakan.messageapi.bukkit.MessageAPI;
 import mc.obliviate.masterduels.game.Game;
 import mc.obliviate.masterduels.user.team.Member;
-import mc.obliviate.masterduels.utils.MessageUtils;
+import mc.obliviate.masterduels.utils.StringUtils;
 import mc.obliviate.masterduels.utils.playerreset.PlayerReset;
 import mc.obliviate.masterduels.utils.title.TitleHandler;
 import org.bukkit.Bukkit;
@@ -74,7 +74,7 @@ public class OmniSpectatorStorage implements ISpectatorStorage {
 		player.setAllowFlight(true);
 		player.setFlying(true);
 
-		MessageUtils.sendMessage(player, "you-are-a-spectator");
+		StringUtils.sendMessage(player, "you-are-a-spectator");
 
 		MessageAPI.getInstance(game.getPlugin()).sendTitle(player, TitleHandler.getTitle(TitleHandler.TitleType.SPECTATOR_JOIN));
 	}

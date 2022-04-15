@@ -4,7 +4,7 @@ import mc.obliviate.inventory.GUI;
 import mc.obliviate.inventory.Icon;
 import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.kit.Kit;
-import mc.obliviate.masterduels.utils.MessageUtils;
+import mc.obliviate.masterduels.utils.StringUtils;
 import mc.obliviate.masterduels.utils.xmaterial.XMaterial;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -42,7 +42,7 @@ public class KitEditGUI extends GUI {
 			}));
 		}
 
-		addItem(0, new Icon(XMaterial.ARROW.parseItem()).setName(MessageUtils.parseColor("&cGo Back")).onClick(e -> {
+		addItem(0, new Icon(XMaterial.ARROW.parseItem()).setName(StringUtils.parseColor("&cGo Back")).onClick(e -> {
 			new KitListEditorGUI(player).open();
 		}));
 	}
@@ -112,8 +112,8 @@ public class KitEditGUI extends GUI {
 			}
 		}
 
-		showItem.setName(MessageUtils.parseColor(name));
-		showItem.appendLore("", MessageUtils.parseColor(loreLine));
+		showItem.setName(StringUtils.parseColor(name));
+		showItem.appendLore("", StringUtils.parseColor(loreLine));
 
 		return showItem;
 	}

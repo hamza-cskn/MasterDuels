@@ -6,7 +6,7 @@ import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.arena.BasicArenaState;
 import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.game.Game;
-import mc.obliviate.masterduels.utils.MessageUtils;
+import mc.obliviate.masterduels.utils.StringUtils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
 import mc.obliviate.masterduels.utils.serializer.SerializerUtils;
 import org.bukkit.entity.Player;
@@ -43,7 +43,7 @@ public class DuelArenaListGUI extends GUI {
 			placeholderUtil.add("{spectators}", spectators + "");
 			placeholderUtil.add("{playersandspectators}", (spectators + players) + "");
 			placeholderUtil.add("{kit}", game.getKit() == null ? "" : game.getKit().getKitName());
-			placeholderUtil.add("{mode}", MessageUtils.convertMode(game.getGameBuilder().getTeamSize(), game.getGameBuilder().getTeamAmount()));
+			placeholderUtil.add("{mode}", StringUtils.convertMode(game.getGameBuilder().getTeamSize(), game.getGameBuilder().getTeamAmount()));
 		}
 		final Icon icon = new Icon(guiConfig.getIcon(state, placeholderUtil));
 		icon.onClick(e -> {

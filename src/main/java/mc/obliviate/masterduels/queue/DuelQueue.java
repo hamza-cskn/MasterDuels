@@ -4,7 +4,7 @@ import mc.obliviate.masterduels.api.events.queue.DuelQueueJoinEvent;
 import mc.obliviate.masterduels.api.events.queue.DuelQueueLeaveEvent;
 import mc.obliviate.masterduels.game.Game;
 import mc.obliviate.masterduels.game.GameBuilder;
-import mc.obliviate.masterduels.utils.MessageUtils;
+import mc.obliviate.masterduels.utils.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -47,7 +47,7 @@ public class DuelQueue {
 		final DuelQueueJoinEvent event = new DuelQueueJoinEvent(this, player);
 		Bukkit.getPluginManager().callEvent(event);
 		if (event.isCancelled()) return; //api cancel
-		if (!builder.addPlayer(player)) MessageUtils.sendMessage(player, "queue.player-could-not-added");
+		if (!builder.addPlayer(player)) StringUtils.sendMessage(player, "queue.player-could-not-added");
 		if (builder.getPlayers().size() == builder.getTeamSize() * builder.getTeamAmount()) {
 			start();
 		}
@@ -62,7 +62,7 @@ public class DuelQueue {
 		final Game game = builder.build();
 		if (game == null) {
 			for (final Player player : builder.getPlayers()) {
-				MessageUtils.sendMessage(player, "queue.queue-could-not-started");
+				StringUtils.sendMessage(player, "queue.queue-could-not-started");
 			}
 			return;
 		}

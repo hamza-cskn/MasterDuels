@@ -19,7 +19,7 @@ import mc.obliviate.masterduels.user.spectator.Spectator;
 import mc.obliviate.masterduels.user.team.Member;
 import mc.obliviate.masterduels.user.team.Team;
 import mc.obliviate.masterduels.utils.Logger;
-import mc.obliviate.masterduels.utils.MessageUtils;
+import mc.obliviate.masterduels.utils.StringUtils;
 import mc.obliviate.masterduels.utils.Utils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
 import mc.obliviate.masterduels.utils.playerreset.PlayerReset;
@@ -216,7 +216,7 @@ public class Game {
 
 	private void broadcastInGame(final String node, final PlaceholderUtil placeholderUtil) {
 		for (final Member member : getAllMembers()) {
-			MessageUtils.sendMessage(member.getPlayer(), node, placeholderUtil);
+			StringUtils.sendMessage(member.getPlayer(), node, placeholderUtil);
 		}
 	}
 
@@ -270,13 +270,13 @@ public class Game {
 			final Player winner = Bukkit.getPlayer(gameHistoryLog.getWinners().get(0));
 			final String loserName = gameHistoryLog.getLosers().size() == 0 ? "" : Utils.getDisplayName(Bukkit.getOfflinePlayer(gameHistoryLog.getLosers().get(0)));
 			for (final Player player : receivers) {
-				MessageUtils.sendMessage(player, "game-end-broadcast.solo", new PlaceholderUtil().add("{winner}", Utils.getDisplayName(winner)).add("{loser}", loserName).add("{winner-health}", "" + winner.getHealthScale()));
+				StringUtils.sendMessage(player, "game-end-broadcast.solo", new PlaceholderUtil().add("{winner}", Utils.getDisplayName(winner)).add("{loser}", loserName).add("{winner-health}", "" + winner.getHealthScale()));
 			}
 		} else {
 			final Player winner = Bukkit.getPlayer(gameHistoryLog.getWinners().get(0));
 			final String loserName = Utils.getDisplayName(Bukkit.getOfflinePlayer(gameHistoryLog.getLosers().get(0)));
 			for (final Player player : receivers) {
-				MessageUtils.sendMessage(player, "game-end-broadcast.non-solo", new PlaceholderUtil().add("{winner}", Utils.getDisplayName(winner)).add("{loser}", loserName));
+				StringUtils.sendMessage(player, "game-end-broadcast.non-solo", new PlaceholderUtil().add("{winner}", Utils.getDisplayName(winner)).add("{loser}", loserName));
 			}
 		}
 	}
@@ -338,7 +338,7 @@ public class Game {
 	public void leave(final Spectator spectator) {
 		spectatorManager.unspectate(spectator.getPlayer());
 		RESET_WHEN_PLAYER_LEFT.reset(spectator.getPlayer());
-		MessageUtils.sendMessage(spectator.getPlayer(), "you-left-from-duel");
+		StringUtils.sendMessage(spectator.getPlayer(), "you-left-from-duel");
 		teleportToLobby(spectator.getPlayer());
 	}
 
@@ -362,7 +362,7 @@ public class Game {
 
 		teleportToLobby(member.getPlayer());
 
-		MessageUtils.sendMessage(member.getPlayer(), "you-left-from-duel");
+		StringUtils.sendMessage(member.getPlayer(), "you-left-from-duel");
 		bossBarData.hide(member);
 
 		if (member.getTeam().getMembers().size() == 0) {

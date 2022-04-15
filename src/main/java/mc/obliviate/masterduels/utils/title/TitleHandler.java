@@ -1,7 +1,7 @@
 package mc.obliviate.masterduels.utils.title;
 
 import com.hakan.messageapi.bukkit.title.Title;
-import mc.obliviate.masterduels.utils.MessageUtils;
+import mc.obliviate.masterduels.utils.StringUtils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -31,8 +31,8 @@ public class TitleHandler {
 	}
 
 	public static Title format(final Title title, final PlaceholderUtil placeholderUtil) {
-		title.setTitle(MessageUtils.parseColor(MessageUtils.applyPlaceholders(title.getTitle(), placeholderUtil)));
-		title.setSubtitle(MessageUtils.parseColor(MessageUtils.applyPlaceholders(title.getSubtitle(), placeholderUtil)));
+		title.setTitle(StringUtils.parseColor(StringUtils.applyPlaceholders(title.getTitle(), placeholderUtil)));
+		title.setSubtitle(StringUtils.parseColor(StringUtils.applyPlaceholders(title.getSubtitle(), placeholderUtil)));
 		return title;
 	}
 

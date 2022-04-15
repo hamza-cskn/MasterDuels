@@ -4,7 +4,7 @@ import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.user.team.Member;
-import mc.obliviate.masterduels.utils.MessageUtils;
+import mc.obliviate.masterduels.utils.StringUtils;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.EventHandler;
@@ -93,7 +93,7 @@ public class RollbackListener implements Listener {
 			if (member == null) return;
 			if (e.getBlock().getMetadata("placedByPlayer").isEmpty()) {
 				e.setCancelled(true);
-				MessageUtils.sendMessage(e.getPlayer(), "you-can-not-break");
+				StringUtils.sendMessage(e.getPlayer(), "you-can-not-break");
 			}
 		}
 	}

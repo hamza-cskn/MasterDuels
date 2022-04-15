@@ -7,7 +7,7 @@ import mc.obliviate.masterduels.user.IUser;
 import mc.obliviate.masterduels.user.spectator.Spectator;
 import mc.obliviate.masterduels.user.team.Member;
 import mc.obliviate.masterduels.utils.Logger;
-import mc.obliviate.masterduels.utils.MessageUtils;
+import mc.obliviate.masterduels.utils.StringUtils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -94,8 +94,8 @@ public class DamageListener implements Listener {
 				final Player attacker = (Player) ((Projectile) e.getDamager()).getShooter();
 				final Member member = DataHandler.getMember(attacker.getUniqueId());
 				if (member == null) return;
-				final double distance = MessageUtils.getFirstDigits(e.getEntity().getLocation().toVector().distance(attacker.getLocation().toVector()), 2);
-				MessageUtils.sendMessage(attacker, "arrow-hit-notify.message",
+				final double distance = StringUtils.getFirstDigits(e.getEntity().getLocation().toVector().distance(attacker.getLocation().toVector()), 2);
+				StringUtils.sendMessage(attacker, "arrow-hit-notify.message",
 						new PlaceholderUtil()
 								.add("{health}", ((Player) e.getEntity()).getHealthScale() + "")
 								.add("{damage}", e.getFinalDamage() + "")
@@ -103,9 +103,9 @@ public class DamageListener implements Listener {
 								.add("{distance}", distance + "")
 				);
 				plugin.getMessageAPI().sendActionBar(attacker,
-						MessageUtils.parseColor(
-								MessageUtils.applyPlaceholders(
-										MessageUtils.getMessage("arrow-hit-notify.action-bar"),
+						StringUtils.parseColor(
+								StringUtils.applyPlaceholders(
+										StringUtils.getMessage("arrow-hit-notify.action-bar"),
 										new PlaceholderUtil()
 												.add("{health}", ((Player) e.getEntity()).getHealthScale() + "")
 												.add("{damage}", e.getFinalDamage() + "")

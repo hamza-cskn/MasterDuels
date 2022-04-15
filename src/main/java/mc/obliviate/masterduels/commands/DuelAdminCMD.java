@@ -4,12 +4,10 @@ import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.game.GameBuilder;
-import mc.obliviate.masterduels.game.GameDataStorage;
 import mc.obliviate.masterduels.kit.gui.KitListEditorGUI;
 import mc.obliviate.masterduels.kit.Kit;
-import mc.obliviate.masterduels.queue.DuelQueueTemplate;
 import mc.obliviate.masterduels.setup.ArenaSetup;
-import mc.obliviate.masterduels.utils.MessageUtils;
+import mc.obliviate.masterduels.utils.StringUtils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
 import mc.obliviate.masterduels.utils.serializer.SerializerUtils;
 import org.bukkit.Bukkit;
@@ -78,7 +76,7 @@ public class DuelAdminCMD implements CommandExecutor {
 			player.sendMessage("§aLobby set successfully!");
 		} else if (args[0].equalsIgnoreCase("kit")) {
 			if (args.length == 1) {
-				MessageUtils.sendMessage(player, "kit.usage");
+				StringUtils.sendMessage(player, "kit.usage");
 				return false;
 			}
 			if (args[1].equalsIgnoreCase("editor")) {
@@ -88,7 +86,7 @@ public class DuelAdminCMD implements CommandExecutor {
 			}
 		} else if (args[0].equalsIgnoreCase("arena")) {
 			if (args.length == 1) {
-				MessageUtils.sendMessage(player, "duel-command.arena.usage");
+				StringUtils.sendMessage(player, "duel-command.arena.usage");
 				return false;
 			}
 			if (args[1].equalsIgnoreCase("disable")) {
@@ -126,24 +124,24 @@ public class DuelAdminCMD implements CommandExecutor {
 
 	private void toggleArena(Player player, List<String> args, boolean toggleState) {
 		if (args.size() < 3) {
-			MessageUtils.sendMessage(player, "duel-command.arena-toggle." + (toggleState ? "enable" : "disable") + "-usage");
+			StringUtils.sendMessage(player, "duel-command.arena-toggle." + (toggleState ? "enable" : "disable") + "-usage");
 			return;
 		}
 
 		final Arena arena = DataHandler.getArenaFromName(args.get(2));
 		if (arena == null) {
-			MessageUtils.sendMessage(player, "duel-command.no-arena-found-with-this-name");
+			StringUtils.sendMessage(player, "duel-command.no-arena-found-with-this-name");
 			return;
 		}
 
 		arena.setEnabled(toggleState);
-		MessageUtils.sendMessage(player, "duel-command.arena-toggle." + (toggleState ? "enabled" : "disabled"));
+		StringUtils.sendMessage(player, "duel-command.arena-toggle." + (toggleState ? "enabled" : "disabled"));
 
 	}
 
 	private void kitSave(Player player, List<String> args) {
 		if (args.size() < 2) {
-			MessageUtils.sendMessage(player, "kit.editor-usage");
+			StringUtils.sendMessage(player, "kit.editor-usage");
 			return;
 		}
 		args = args.subList(2, args.size());
@@ -151,7 +149,7 @@ public class DuelAdminCMD implements CommandExecutor {
 
 		final Kit kit = new Kit(name, player.getInventory().getContents(), player.getInventory().getArmorContents());
 
-		MessageUtils.sendMessage(player, "kit.has-saved", new PlaceholderUtil().add("{kit}", name));
+		StringUtils.sendMessage(player, "kit.has-saved", new PlaceholderUtil().add("{kit}", name));
 
 		Kit.save(plugin, kit);
 	}
