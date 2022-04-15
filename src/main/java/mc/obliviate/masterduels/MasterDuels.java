@@ -27,6 +27,8 @@ import mc.obliviate.masterduels.utils.versioncontroller.ServerVersionController;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -65,7 +67,7 @@ public class MasterDuels extends JavaPlugin {
 	public void onEnable() {
 		Logger.debug("Master Duels v" + getDescription().getVersion() + " loading process initializing...");
 		Logger.debug("Obfuscate: " + checkObfuscated());
-		Bukkit.getLogger().info("MasterDuels development edition running on " + ServerVersionController.getServerVersion() + " as build " + getDescription().getVersion());
+		Bukkit.getLogger().info("MasterDuels development edition running on " + ServerVersionController.getServerVersion() + " - build " + getDescription().getVersion());
 		setupHandlers();
 		registerListeners();
 		registerCommands();
@@ -139,8 +141,16 @@ public class MasterDuels extends JavaPlugin {
 	}
 
 	private void registerCommands() {
-		getCommand("duel").setExecutor(new DuelCMD(this));
-		getCommand("dueladmin").setExecutor(new DuelAdminCMD(this));
+		safeRegisterCommand("duel", new DuelCMD(this));
+		safeRegisterCommand("dueladmin", new DuelAdminCMD(this));
+	}
+
+	private void safeRegisterCommand(String commandName, CommandExecutor executor) {
+		final PluginCommand command = getCommand(commandName);
+		if (command == null) {
+			return;
+		}
+		command.setExecutor(executor);
 	}
 
 	private void registerListeners() {
