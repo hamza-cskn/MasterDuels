@@ -149,9 +149,6 @@ public class YamlStorageHandler {
 			}
 		}
 
-		Bukkit.broadcastMessage(section.getStringList("allowed-kits").toString());
-		Bukkit.broadcastMessage(allOfThem + "");
-		Bukkit.broadcastMessage(GameCreator.ALLOWED_KITS.toString());
 	}
 
 	private void registerQueues(final ConfigurationSection section) {
