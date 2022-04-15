@@ -43,7 +43,7 @@ top:
 execute-console-commands:
   when-duel-ended:
   #- this_command_will_be_executed_by_console_when_a_duel_game_ended
-# placeholders is unsupported yet.
+# placeholders are unsupported yet.
 
 executable-commands-by-player:
   BATTLE:
