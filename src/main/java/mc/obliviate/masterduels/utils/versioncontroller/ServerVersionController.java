@@ -2,6 +2,8 @@ package mc.obliviate.masterduels.utils.versioncontroller;
 
 import org.bukkit.Bukkit;
 
+import java.util.Locale;
+
 public enum ServerVersionController {
 	UNKNOWN,
 	OUTDATED,
@@ -13,11 +15,13 @@ public enum ServerVersionController {
 	V1_13,
 	V1_14,
 	V1_15,
-	v1_16,
-	v1_17,
-	v1_18,
+	V1_16,
+	V1_17,
+	V1_18,
 	NEWER;
 
+
+	private static ServerVersionController serverVersion;
 
 	public static boolean isServerVersionAbove(ServerVersionController version) {
 		return getServerVersion().ordinal() > version.ordinal();
@@ -35,8 +39,6 @@ public enum ServerVersionController {
 		return getServerVersion().ordinal() < version.ordinal();
 	}
 
-	private static ServerVersionController serverVersion;
-
 	public static ServerVersionController getServerVersion() {
 		if (serverVersion == null) serverVersion = calculateServerVersion();
 		return serverVersion;
@@ -44,6 +46,15 @@ public enum ServerVersionController {
 
 	private static ServerVersionController calculateServerVersion() {
 		final String bukkitVersion = Bukkit.getBukkitVersion().split("-")[0].split("\\.")[1];
-		return ServerVersionController.valueOf("V1_" + bukkitVersion);
+		try {
+			return ServerVersionController.valueOf("V1_" + bukkitVersion);
+		} catch (Exception e) {
+			return UNKNOWN;
+		}
+	}
+
+	@Override
+	public String toString() {
+		return name().toLowerCase();
 	}
 }
