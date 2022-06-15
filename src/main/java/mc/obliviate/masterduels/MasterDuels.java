@@ -1,6 +1,6 @@
 package mc.obliviate.masterduels;
 
-import com.hakan.messageapi.bukkit.MessageAPI;
+import com.hakan.core.HCore;
 import mc.obliviate.inventory.InventoryAPI;
 import mc.obliviate.masterduels.arenaclear.ArenaClearListener;
 import mc.obliviate.masterduels.arenaclear.IArenaClearHandler;
@@ -48,7 +48,6 @@ public class MasterDuels extends JavaPlugin {
 	private final YamlStorageHandler yamlStorageHandler = new YamlStorageHandler(this);
 	private final DuelQueueHandler duelQueueHandler = new DuelQueueHandler(this);
 	private IArenaClearHandler arenaClearHandler;
-	private MessageAPI messageAPI;
 	private ScoreboardManager scoreboardManager;
 
 	public static boolean isInShutdownMode() {
@@ -100,7 +99,7 @@ public class MasterDuels extends JavaPlugin {
 		inventoryAPI.init();
 		setupArenaClearHandler();
 		scoreboardManager = new ScoreboardManager(this);
-		messageAPI = MessageAPI.getInstance(this);
+		HCore.initialize(this);
 		new TABManager(this);
 		duelQueueHandler.init();
 		if (yamlStorageHandler.getConfig().getBoolean("optimize-duel-worlds", false)) {
@@ -212,9 +211,6 @@ public class MasterDuels extends JavaPlugin {
 		return scoreboardManager;
 	}
 
-	public MessageAPI getMessageAPI() {
-		return messageAPI;
-	}
 
 	public SQLManager getSqlManager() {
 		return sqlManager;

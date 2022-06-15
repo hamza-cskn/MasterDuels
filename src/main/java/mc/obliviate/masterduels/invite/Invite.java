@@ -6,7 +6,7 @@ import mc.obliviate.masterduels.game.GameCreator;
 import mc.obliviate.masterduels.user.IUser;
 import mc.obliviate.masterduels.user.team.Member;
 import mc.obliviate.masterduels.utils.Logger;
-import mc.obliviate.masterduels.utils.StringUtils;
+import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
 import mc.obliviate.masterduels.utils.timer.TimerUtils;
 import org.bukkit.entity.Player;
@@ -48,14 +48,14 @@ public class Invite {
 
 		//check: invited is not null
 		if (invited == null) {
-			StringUtils.sendMessage(inviter, "target-is-not-online");
+			MessageUtils.sendMessage(inviter, "target-is-not-online");
 			onExpire();
 			return;
 		}
 
 		//check: inviter is online definitely
 		if (!invited.isOnline()) {
-			StringUtils.sendMessage(inviter, "target-is-not-online");
+			MessageUtils.sendMessage(inviter, "target-is-not-online");
 			onExpire();
 			return;
 		}
@@ -64,31 +64,31 @@ public class Invite {
 		final IUser invitedUser = DataHandler.getUser(invited.getUniqueId());
 
 		if (invitedUser instanceof Member) {
-			StringUtils.sendMessage(inviter, "target-already-in-duel", new PlaceholderUtil().add("{target}", inviter.getName()));
+			MessageUtils.sendMessage(inviter, "target-already-in-duel", new PlaceholderUtil().add("{target}", inviter.getName()));
 			return;
 		}
 
 		//todo cache invite receives
 		if (!plugin.getSqlManager().getReceivesInvites(invited.getUniqueId())) {
-			StringUtils.sendMessage(inviter, "invite.toggle.you-can-not-invite", new PlaceholderUtil().add("{target}", invited.getName()));
+			MessageUtils.sendMessage(inviter, "invite.toggle.you-can-not-invite", new PlaceholderUtil().add("{target}", invited.getName()));
 			onExpire();
 			return;
 		}
 
 		addInvite(invited.getUniqueId(), this);
-		StringUtils.sendMessage(inviter, "invite.target-has-invited", new PlaceholderUtil().add("{target}", target.getName()).add("{expire-time}", expireTime + ""));
+		MessageUtils.sendMessage(inviter, "invite.target-has-invited", new PlaceholderUtil().add("{target}", target.getName()).add("{expire-time}", expireTime + ""));
 
 		if (gameCreator == null) {
-			InviteUtils.sendInviteMessage(this, StringUtils.getMessageConfig().getStringList("invite.normal-invite-text"));
+			InviteUtils.sendInviteMessage(this, MessageUtils.getMessageConfig().getStringList("invite.normal-invite-text"));
 		} else {
-			InviteUtils.sendInviteMessage(this, StringUtils.getMessageConfig().getStringList("invite.game-creator-invite-text"));
+			InviteUtils.sendInviteMessage(this, MessageUtils.getMessageConfig().getStringList("invite.game-creator-invite-text"));
 		}
 		new BukkitRunnable() {
 			public void run() {
 				if (!expired && answer == null) {
 					onExpire();
-					StringUtils.sendMessage(target, "invite.invite-expired-target", new PlaceholderUtil().add("{inviter}", inviter.getName()));
-					StringUtils.sendMessage(inviter, "invite.invite-expired-inviter", new PlaceholderUtil().add("{target}", target.getName()));
+					MessageUtils.sendMessage(target, "invite.invite-expired-target", new PlaceholderUtil().add("{inviter}", inviter.getName()));
+					MessageUtils.sendMessage(inviter, "invite.invite-expired-inviter", new PlaceholderUtil().add("{target}", target.getName()));
 					response.onResponse(InviteResult.EXPIRE);
 				}
 			}
@@ -149,16 +149,16 @@ public class Invite {
 
 		//ACCEPT
 		if (answer) {
-			StringUtils.sendMessage(getInviter(), "invite.target-accepted-the-invite", new PlaceholderUtil().add("{target}", target.getName()));
+			MessageUtils.sendMessage(getInviter(), "invite.target-accepted-the-invite", new PlaceholderUtil().add("{target}", target.getName()));
 			final Player player = getTarget();
-			StringUtils.sendMessage(player, "invite.successfully-accepted", new PlaceholderUtil().add("{inviter}", target.getName()));
+			MessageUtils.sendMessage(player, "invite.successfully-accepted", new PlaceholderUtil().add("{inviter}", target.getName()));
 			response.onResponse(InviteResult.ACCEPT);
 		}
 		//DECLINE
 		else {
 			response.onResponse(InviteResult.DECLINE);
-			StringUtils.sendMessage(getInviter(), "invite.target-declined-the-invite", new PlaceholderUtil().add("{target}", target.getName()));
-			StringUtils.sendMessage(getTarget(), "invite.successfully-declined", new PlaceholderUtil().add("{inviter}", inviter.getName()));
+			MessageUtils.sendMessage(getInviter(), "invite.target-declined-the-invite", new PlaceholderUtil().add("{target}", target.getName()));
+			MessageUtils.sendMessage(getTarget(), "invite.successfully-declined", new PlaceholderUtil().add("{inviter}", inviter.getName()));
 
 		}
 

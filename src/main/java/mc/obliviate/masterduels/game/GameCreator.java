@@ -5,7 +5,7 @@ import mc.obliviate.masterduels.game.gamerule.GameRule;
 import mc.obliviate.masterduels.invite.Invite;
 import mc.obliviate.masterduels.invite.InviteResponse;
 import mc.obliviate.masterduels.kit.Kit;
-import mc.obliviate.masterduels.utils.StringUtils;
+import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -77,13 +77,13 @@ public class GameCreator {
 
 	public void sendInvite(final Player inviter, final Player invited, final InviteResponse response) {
 		if (invited == null) {
-			StringUtils.sendMessage(inviter, "target-is-not-online");
+			MessageUtils.sendMessage(inviter, "target-is-not-online");
 			return;
 		}
 
 		//check: is it invite spam
 		if (getInvites().containsKey(invited.getUniqueId())) {
-			StringUtils.sendMessage(inviter, "invite.already-invited", new PlaceholderUtil().add("{target}", invited.getName()));
+			MessageUtils.sendMessage(inviter, "invite.already-invited", new PlaceholderUtil().add("{target}", invited.getName()));
 			return;
 		}
 

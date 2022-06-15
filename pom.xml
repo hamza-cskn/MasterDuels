@@ -18,23 +18,26 @@
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
+
         <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
+
         <repository>
             <id>puha-repo</id>
             <url>https://repo.puha.io/repo/</url>
         </repository>
+
         <repository>
             <id>bungeecord-repo</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </repository>
+
         <repository>
             <id>krypton</id>
             <url>https://repo.kryptonmc.org/releases</url>
         </repository>
-
     </repositories>
 
 
@@ -48,19 +51,13 @@
         <dependency>
             <groupId>com.github.Obliviated</groupId>
             <artifactId>ObliviateInvs</artifactId>
-            <version>3.0.1</version>
+            <version>3.2.0</version>
         </dependency>
         <dependency>
             <groupId>io.puharesource.mc</groupId>
             <artifactId>TitleManager</artifactId>
             <version>2.2.0</version>
         </dependency>
-        <dependency>
-            <groupId>com.github.hakan-krgn.hMessageAPI</groupId>
-            <artifactId>bukkit</artifactId>
-            <version>1.0.9</version>
-        </dependency>
-        <!-- TAB -->
         <dependency>
             <groupId>me.neznamy</groupId>
             <artifactId>tab-api</artifactId>
@@ -77,36 +74,17 @@
             <version>1.7</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com.github.hakan-krgn.hCore</groupId>
+            <artifactId>bukkit</artifactId>
+            <version>0.1.2</version>
+        </dependency>
 
     </dependencies>
 
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>buildnumber-maven-plugin</artifactId>
-                <version>1.4</version>
-                <executions>
-                    <execution>
-                        <id>buildnumber</id>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>create</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <format>{0,number}</format>
-                    <items>
-                        <item>buildNumber</item>
-                    </items>
-                    <doCheck>false</doCheck>
-                    <doUpdate>false</doUpdate>
-                    <revisionOnScmFailure>unknownbuild</revisionOnScmFailure>
-                </configuration>
-            </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

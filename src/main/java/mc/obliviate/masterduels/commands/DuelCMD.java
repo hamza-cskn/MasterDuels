@@ -20,7 +20,7 @@ import mc.obliviate.masterduels.queue.gui.DuelQueueListGUI;
 import mc.obliviate.masterduels.statistics.DuelStatistic;
 import mc.obliviate.masterduels.user.IUser;
 import mc.obliviate.masterduels.user.team.Member;
-import mc.obliviate.masterduels.utils.StringUtils;
+import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -51,7 +51,7 @@ public class DuelCMD implements CommandExecutor {
 		final IUser user = DataHandler.getUser(player.getUniqueId());
 
 		if (args.length == 0) {
-			StringUtils.sendMessage(player, "duel-command.usage");
+			MessageUtils.sendMessage(player, "duel-command.usage");
 			return false;
 		}
 
@@ -60,7 +60,7 @@ public class DuelCMD implements CommandExecutor {
 			return true;
 		} else if (args[0].equalsIgnoreCase("leave")) {
 			if (user == null) {
-				StringUtils.sendMessage(player, "you-are-not-in-duel");
+				MessageUtils.sendMessage(player, "you-are-not-in-duel");
 				return false;
 			}
 			user.getGame().leave(user);
@@ -73,16 +73,16 @@ public class DuelCMD implements CommandExecutor {
 		//COMMANDS BELOW ARE BLOCKED FOR PLAYERS WHO IN DUEL
 
 		if (user instanceof Member) {
-			StringUtils.sendMessage(player, "you-are-in-duel");
+			MessageUtils.sendMessage(player, "you-are-in-duel");
 			return false;
 		}
 
 		if (args[0].equalsIgnoreCase("toggle")) {
 			final boolean state = plugin.getSqlManager().toggleReceivesInvites(player.getUniqueId());
 			if (state) {
-				StringUtils.sendMessage(player, "invite.toggle.turned-on");
+				MessageUtils.sendMessage(player, "invite.toggle.turned-on");
 			} else {
-				StringUtils.sendMessage(player, "invite.toggle.turned-off");
+				MessageUtils.sendMessage(player, "invite.toggle.turned-off");
 			}
 			return true;
 		} else if (args[0].equalsIgnoreCase("stats")) {
@@ -113,23 +113,23 @@ public class DuelCMD implements CommandExecutor {
 
 	private void queue(final Player player, List<String> args) {
 		if (args.size() == 1) {
-			StringUtils.sendMessage(player, "queue.usage");
+			MessageUtils.sendMessage(player, "queue.usage");
 			return;
 		}
 		if (args.get(1).equalsIgnoreCase("menu") || args.get(1).equalsIgnoreCase("gui")) {
 			new DuelQueueListGUI(player).open();
 		} else if (args.get(1).equalsIgnoreCase("join")) {
 			if (args.size() == 2) {
-				StringUtils.sendMessage(player, "queue.no-queue-name");
+				MessageUtils.sendMessage(player, "queue.no-queue-name");
 				return;
 			}
 			final DuelQueue queue = DuelQueue.getAvailableQueues().get(DuelQueueTemplate.getQueueTemplateFromName(args.get(2)));
 			if (queue == null) {
-				StringUtils.sendMessage(player, "queue.queue-not-found", new PlaceholderUtil().add("{entry}", args.get(2)));
+				MessageUtils.sendMessage(player, "queue.queue-not-found", new PlaceholderUtil().add("{entry}", args.get(2)));
 				return;
 			}
 			queue.addPlayer(player);
-			StringUtils.sendMessage(player, "queue.joined",
+			MessageUtils.sendMessage(player, "queue.joined",
 					new PlaceholderUtil()
 							.add("{queue-name}", queue.getName())
 							.add("{player-amount}", queue.getBuilder().getPlayers().size() + "")
@@ -138,11 +138,11 @@ public class DuelCMD implements CommandExecutor {
 		} else if (args.get(1).equalsIgnoreCase("leave")) {
 			final DuelQueue queue = DuelQueue.findQueueOfPlayer(player);
 			if (queue == null) {
-				StringUtils.sendMessage(player, "queue.you-are-not-in-queue");
+				MessageUtils.sendMessage(player, "queue.you-are-not-in-queue");
 				return;
 			}
 			queue.removePlayer(player);
-			StringUtils.sendMessage(player, "queue.left", new PlaceholderUtil().add("{queue-name}", queue.getName()));
+			MessageUtils.sendMessage(player, "queue.left", new PlaceholderUtil().add("{queue-name}", queue.getName()));
 		}
 	}
 
@@ -151,7 +151,7 @@ public class DuelCMD implements CommandExecutor {
 
 
 		final ConfigurationSection section = plugin.getDatabaseHandler().getConfig().getConfigurationSection("top.top-wins");
-		final String nobodyText = StringUtils.parseColor(StringUtils.getMessage("top.nobody"));
+		final String nobodyText = MessageUtils.parseColor(MessageUtils.getMessage("top.nobody"));
 		if (section == null) return;
 
 		final int limit = section.getInt("calculation-limit", 10);
@@ -174,13 +174,13 @@ public class DuelCMD implements CommandExecutor {
 			}
 		}
 
-		StringUtils.sendMessage(player, "top.top-wins.message", placeholderUtil);
+		MessageUtils.sendMessage(player, "top.top-wins.message", placeholderUtil);
 	}
 
 	private void stats(final Player player, final String[] args) {
 		final UUID target = args.length == 1 ? player.getUniqueId() : Bukkit.getOfflinePlayer(args[1]).getUniqueId();
 		final DuelStatistic statistic = plugin.getSqlManager().getStatistic(target);
-		StringUtils.sendMessage(player, "statistics",
+		MessageUtils.sendMessage(player, "statistics",
 				new PlaceholderUtil()
 						.add("{wins}", statistic.getWins() + "").add("{loses}", statistic.getLosses() + ""));
 
@@ -189,7 +189,7 @@ public class DuelCMD implements CommandExecutor {
 	private void answerInvite(final Player player, final boolean answer, final String[] args) {
 		final Invites invites = Invite.findInvites(player);
 		if (invites == null || invites.size() == 0) {
-			StringUtils.sendMessage(player, "invite.you-dont-have-invite");
+			MessageUtils.sendMessage(player, "invite.you-dont-have-invite");
 			return;
 		}
 		if (invites.size() == 1) {
@@ -199,7 +199,7 @@ public class DuelCMD implements CommandExecutor {
 		if (args.length == 1) {
 			int index = 0;
 			for (final Invite invite : invites.getInvites()) {
-				player.sendMessage(StringUtils.parseColor("&8- &f/duel " + args[0] + " &7" + ++index + " -> " + invite.getInviter().getName()) + " (" + invite.getFormattedExpireTimeLeft() + ")");
+				player.sendMessage(MessageUtils.parseColor("&8- &f/duel " + args[0] + " &7" + ++index + " -> " + invite.getInviter().getName()) + " (" + invite.getFormattedExpireTimeLeft() + ")");
 			}
 		} else {
 			try {
@@ -208,7 +208,7 @@ public class DuelCMD implements CommandExecutor {
 				invite.setResult(answer);
 
 			} catch (NumberFormatException ex) {
-				StringUtils.sendMessage(player, "this-is-not-valid-number");
+				MessageUtils.sendMessage(player, "this-is-not-valid-number");
 			}
 		}
 	}
@@ -241,17 +241,17 @@ public class DuelCMD implements CommandExecutor {
 		final Player target = Bukkit.getPlayerExact(targetName);
 
 		if (target == null) {
-			StringUtils.sendMessage(player, "target-is-not-online");
+			MessageUtils.sendMessage(player, "target-is-not-online");
 			return;
 		}
 
 		if (player.equals(target)) {
-			StringUtils.sendMessage(player, "invite.you-cannot-invite-yourself");
+			MessageUtils.sendMessage(player, "invite.you-cannot-invite-yourself");
 			return;
 		}
 
 		if (DataHandler.getMember(target.getUniqueId()) != null) {
-			StringUtils.sendMessage(player, "target-already-in-duel");
+			MessageUtils.sendMessage(player, "target-already-in-duel");
 			return;
 		}
 
@@ -265,7 +265,7 @@ public class DuelCMD implements CommandExecutor {
 					gameBuilder.addPlayer(target);
 					Game game = gameBuilder.build();
 					if (game == null) {
-						StringUtils.sendMessage(player, "no-arena-found");
+						MessageUtils.sendMessage(player, "no-arena-found");
 						return;
 					}
 					game.startGame();

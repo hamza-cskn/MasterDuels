@@ -4,7 +4,7 @@ import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.user.IUser;
 import mc.obliviate.masterduels.user.team.Member;
-import mc.obliviate.masterduels.utils.StringUtils;
+import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -107,7 +107,7 @@ public class DuelProtectListener implements Listener {
 		if (e.getMessage().startsWith("/")) {
 			if (!plugin.getDatabaseHandler().getConfig().getStringList("executable-commands-by-player." + member.getTeam().getGame().getGameState().name()).contains(e.getMessage())) {
 				e.setCancelled(true);
-				StringUtils.sendMessage(e.getPlayer(), "command-is-blocked", new PlaceholderUtil().add("{command}", e.getMessage()));
+				MessageUtils.sendMessage(e.getPlayer(), "command-is-blocked", new PlaceholderUtil().add("{command}", e.getMessage()));
 			}
 		}
 	}
@@ -126,14 +126,14 @@ public class DuelProtectListener implements Listener {
 		if (!user.getGame().getSpectatorManager().isSpectator(e.getPlayer())) {
 			if (!user.getGame().getArena().getArenaCuboid().isIn(e.getBlock().getLocation())) {
 				e.setCancelled(true);
-				StringUtils.sendMessage(e.getPlayer(), "you-can-not-break");
+				MessageUtils.sendMessage(e.getPlayer(), "you-can-not-break");
 				if (teleportBackWhenLimitViolate) {
 					e.getPlayer().teleport(user.getGame().getArena().getPositions().get("spawn-team-1").getLocation(1));
 				}
 			}
 		} else {
 			e.setCancelled(true);
-			StringUtils.sendMessage(e.getPlayer(), "you-can-not-break");
+			MessageUtils.sendMessage(e.getPlayer(), "you-can-not-break");
 		}
 	}
 
@@ -144,14 +144,14 @@ public class DuelProtectListener implements Listener {
 		if (!user.getGame().getSpectatorManager().isSpectator(e.getPlayer())) {
 			if (!user.getGame().getArena().getArenaCuboid().isIn(e.getBlock().getLocation())) {
 				e.setCancelled(true);
-				StringUtils.sendMessage(e.getPlayer(), "you-can-not-place");
+				MessageUtils.sendMessage(e.getPlayer(), "you-can-not-place");
 				if (teleportBackWhenLimitViolate) {
 					e.getPlayer().teleport(user.getGame().getArena().getPositions().get("spawn-team-1").getLocation(1));
 				}
 			}
 		} else {
 			e.setCancelled(true);
-			StringUtils.sendMessage(e.getPlayer(), "you-can-not-break");
+			MessageUtils.sendMessage(e.getPlayer(), "you-can-not-break");
 		}
 	}
 

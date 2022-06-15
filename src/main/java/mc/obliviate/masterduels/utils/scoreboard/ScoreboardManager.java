@@ -6,7 +6,7 @@ import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.game.Game;
 import mc.obliviate.masterduels.game.GameState;
 import mc.obliviate.masterduels.user.team.Member;
-import mc.obliviate.masterduels.utils.StringUtils;
+import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.timer.TimerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -76,14 +76,14 @@ public class ScoreboardManager {
 				for (final Member m : game.getAllMembers()) {
 					if (!member.getTeam().equals(m.getTeam())) {
 						if (game.getSpectatorManager().isSpectator(m.getPlayer())) {
-							api.setProcessedScoreboardValue(player, ++index, StringUtils.parseColor(scoreboardFormatConfig.getDeadOpponentFormat().replace("{health}", "0").replace("{name}", m.getPlayer().getName() + "")));
+							api.setProcessedScoreboardValue(player, ++index, MessageUtils.parseColor(scoreboardFormatConfig.getDeadOpponentFormat().replace("{health}", "0").replace("{name}", m.getPlayer().getName() + "")));
 						} else {
-							api.setProcessedScoreboardValue(player, ++index, StringUtils.parseColor(scoreboardFormatConfig.getLiveOpponentFormat().replace("{health}", "" + m.getPlayer().getHealthScale()).replace("{name}", m.getPlayer().getName() + "")));
+							api.setProcessedScoreboardValue(player, ++index, MessageUtils.parseColor(scoreboardFormatConfig.getLiveOpponentFormat().replace("{health}", "" + m.getPlayer().getHealthScale()).replace("{name}", m.getPlayer().getName() + "")));
 						}
 					}
 				}
 			} else {
-				api.setProcessedScoreboardValue(player, ++index, StringUtils.parseColor(line
+				api.setProcessedScoreboardValue(player, ++index, MessageUtils.parseColor(line
 						.replace("{round}", "" + game.getRoundData().getCurrentRound())
 						.replace("{map}", game.getArena().getMapName() + "")
 						.replace("{timer}", TimerUtils.formatTimeUntilThenAsTimer(game.getTimer()))

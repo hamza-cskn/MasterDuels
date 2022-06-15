@@ -5,7 +5,7 @@ import mc.obliviate.inventory.Icon;
 import mc.obliviate.masterduels.game.GameBuilder;
 import mc.obliviate.masterduels.game.GameCreator;
 import mc.obliviate.masterduels.game.gamerule.GameRule;
-import mc.obliviate.masterduels.utils.StringUtils;
+import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.xmaterial.XMaterial;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryOpenEvent;
@@ -33,13 +33,13 @@ public class DuelSettingsGUI extends GUI {
 
 			Icon icon;
 			if (gameBuilder.getGameRules().contains(rule)) {
-				icon = new Icon(XMaterial.LIME_DYE.parseItem()).setName(StringUtils.parseColor("&a" + rule.name()));
+				icon = new Icon(XMaterial.LIME_DYE.parseItem()).setName(MessageUtils.parseColor("&a" + rule.name()));
 				icon.onClick(e -> {
 					gameBuilder.removeGameRule(rule);
 					open();
 				});
 			} else {
-				icon = new Icon(XMaterial.GRAY_DYE.parseItem()).setName(StringUtils.parseColor("&c" + rule.name()));
+				icon = new Icon(XMaterial.GRAY_DYE.parseItem()).setName(MessageUtils.parseColor("&c" + rule.name()));
 				icon.onClick(e -> {
 					gameBuilder.addGameRule(rule);
 					open();

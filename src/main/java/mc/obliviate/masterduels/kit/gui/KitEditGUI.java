@@ -2,9 +2,10 @@ package mc.obliviate.masterduels.kit.gui;
 
 import mc.obliviate.inventory.GUI;
 import mc.obliviate.inventory.Icon;
+import mc.obliviate.inventory.advancedslot.AdvancedSlot;
 import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.kit.Kit;
-import mc.obliviate.masterduels.utils.StringUtils;
+import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.xmaterial.XMaterial;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -42,7 +43,7 @@ public class KitEditGUI extends GUI {
 			}));
 		}
 
-		addItem(0, new Icon(XMaterial.ARROW.parseItem()).setName(StringUtils.parseColor("&cGo Back")).onClick(e -> {
+		addItem(0, new Icon(XMaterial.ARROW.parseItem()).setName(MessageUtils.parseColor("&cGo Back")).onClick(e -> {
 			new KitListEditorGUI(player).open();
 		}));
 	}
@@ -55,19 +56,29 @@ public class KitEditGUI extends GUI {
 		final Icon leggingsIcon = getScaledItemLoreAndName(armors[1], "&cLeggings slot", "&7Put item to change leggings");
 		final Icon bootsIcon = getScaledItemLoreAndName(armors[0], "&cBoots slot", "&7Put item to change boots");
 
-		addAdvancedHytem(helmetSlot, helmetIcon).onPut(e -> {
+		addAdvancedIcon(helmetSlot, helmetIcon).onPut(e -> {
 			armors[3] = e.getCurrentItem();
 		});
-		addAdvancedHytem(chestplateSlot, chestplateIcon).onPut(e -> {
+		addAdvancedIcon(chestplateSlot, chestplateIcon).onPut(e -> {
 			armors[2] = e.getCurrentItem();
 		});
-		addAdvancedHytem(leggingsSlot, leggingsIcon).onPut(e -> {
+		addAdvancedIcon(leggingsSlot, leggingsIcon).onPut(e -> {
 			armors[1] = e.getCurrentItem();
 		});
-		addAdvancedHytem(bootsSlot, bootsIcon).onPut(e -> {
+		addAdvancedIcon(bootsSlot, bootsIcon).onPut(e -> {
 			armors[0] = e.getCurrentItem();
 		});
+	}
 
+	private void putArmorIcon(Icon icon, int armorPieceIndex, int slot) {
+
+		final AdvancedSlot advancedSlot = addAdvancedIcon(slot, icon).onPut(e -> {
+			armors[armorPieceIndex] = e.getCurrentItem();
+		});
+
+		if (armors[armorPieceIndex] != null) return;
+
+		getAdvancedSlotManager().putIcon(advancedSlot, armors[armorPieceIndex], null);
 
 	}
 
@@ -90,7 +101,7 @@ public class KitEditGUI extends GUI {
 	public void putKitIcon(int slot) {
 		final Icon icon = getScaledItemLoreAndName(kit.getIcon(), "&cDisplay icon of kit", "&7Put item to change icon of kit");
 
-		addAdvancedHytem(slot, icon).onPut(e -> {
+		addAdvancedIcon(slot, icon).onPut(e -> {
 			kit.setIcon(e.getCurrentItem());
 		});
 
@@ -112,8 +123,8 @@ public class KitEditGUI extends GUI {
 			}
 		}
 
-		showItem.setName(StringUtils.parseColor(name));
-		showItem.appendLore("", StringUtils.parseColor(loreLine));
+		showItem.setName(MessageUtils.parseColor(name));
+		showItem.appendLore("", MessageUtils.parseColor(loreLine));
 
 		return showItem;
 	}

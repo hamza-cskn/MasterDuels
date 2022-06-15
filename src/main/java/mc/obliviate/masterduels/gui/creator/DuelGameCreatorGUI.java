@@ -9,7 +9,7 @@ import mc.obliviate.masterduels.game.GameBuilder;
 import mc.obliviate.masterduels.game.GameCreator;
 import mc.obliviate.masterduels.gui.GUISerializerUtils;
 import mc.obliviate.masterduels.kit.gui.KitSelectionGUI;
-import mc.obliviate.masterduels.utils.StringUtils;
+import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
 import mc.obliviate.masterduels.utils.timer.TimerUtils;
 import org.bukkit.configuration.ConfigurationSection;
@@ -44,8 +44,8 @@ public class DuelGameCreatorGUI extends GUI {
 
 	@Override
 	public void open() {
-		setTitle(StringUtils.parseColor(StringUtils.applyPlaceholders(plugin.getDatabaseHandler().getConfig().getString(getGuiSectionPath() + ".title"),
-				new PlaceholderUtil().add("{mode}", StringUtils.convertMode(gameBuilder.getTeamSize(), gameBuilder.getTeamAmount())))));
+		setTitle(MessageUtils.parseColor(MessageUtils.applyPlaceholders(plugin.getDatabaseHandler().getConfig().getString(getGuiSectionPath() + ".title"),
+				new PlaceholderUtil().add("{mode}", MessageUtils.convertMode(gameBuilder.getTeamSize(), gameBuilder.getTeamAmount())))));
 		setSize(plugin.getDatabaseHandler().getConfig().getInt(getGuiSectionPath() + ".size", 5) * 9);
 		super.open();
 	}
@@ -104,13 +104,13 @@ public class DuelGameCreatorGUI extends GUI {
 	private Icon getStartGameIcon() {
 		return new Icon(getConfigItem("start-game")).onClick(e -> {
 			if (gameBuilder.getTeamSize() * gameBuilder.getTeamAmount() != gameBuilder.getPlayers().size()) {
-				StringUtils.sendMessage(player, "game-builder.wrong-player-amount", new PlaceholderUtil().add("{expected}", (gameBuilder.getTeamSize() * gameBuilder.getTeamAmount()) + "").add("{found}", gameBuilder.getPlayers().size() + ""));
+				MessageUtils.sendMessage(player, "game-builder.wrong-player-amount", new PlaceholderUtil().add("{expected}", (gameBuilder.getTeamSize() * gameBuilder.getTeamAmount()) + "").add("{found}", gameBuilder.getPlayers().size() + ""));
 				return;
 			}
 
 			final Game game = gameCreator.create();
 			if (game == null) {
-				StringUtils.sendMessage(player, "no-arena-found");
+				MessageUtils.sendMessage(player, "no-arena-found");
 				return;
 			}
 			game.startGame();
@@ -136,7 +136,7 @@ public class DuelGameCreatorGUI extends GUI {
 	}
 
 	private Icon getKitIcon() {
-		final Icon kitIcon = new Icon(getConfigItem("kit", new PlaceholderUtil().add("{kit}", gameBuilder.getKit() != null ? gameBuilder.getKit().getKitName() : StringUtils.parseColor(StringUtils.getMessage("game-creator.none-kit-name")))));
+		final Icon kitIcon = new Icon(getConfigItem("kit", new PlaceholderUtil().add("{kit}", gameBuilder.getKit() != null ? gameBuilder.getKit().getKitName() : MessageUtils.parseColor(MessageUtils.getMessage("game-creator.none-kit-name")))));
 		return kitIcon.onClick(e -> {
 			new KitSelectionGUI(player, gameBuilder, kit -> {
 				open();

@@ -1,7 +1,7 @@
 package mc.obliviate.masterduels.invite;
 
 import mc.obliviate.masterduels.kit.Kit;
-import mc.obliviate.masterduels.utils.StringUtils;
+import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -21,16 +21,16 @@ public class InviteUtils {
 
 		for (String inviteText : inviteTextList) {
 			inviteText = inviteText + " ";
-			inviteText = StringUtils.applyPlaceholders(inviteText, new PlaceholderUtil().add("{kit}", kit != null ? kit.getKitName() : StringUtils.parseColor(StringUtils.getMessage("game-creator.none-kit-name"))).add("{inviter}", inviter.getName()).add("{expire-time}", invite.getExpireTime() + ""));
-			inviteText = StringUtils.parseColor(inviteText);
+			inviteText = MessageUtils.applyPlaceholders(inviteText, new PlaceholderUtil().add("{kit}", kit != null ? kit.getKitName() : MessageUtils.parseColor(MessageUtils.getMessage("game-creator.none-kit-name"))).add("{inviter}", inviter.getName()).add("{expire-time}", invite.getExpireTime() + ""));
+			inviteText = MessageUtils.parseColor(inviteText);
 
 			if (inviteText.contains("{accept-button}") && inviteText.contains("{decline-button}")) {
-				final TextComponent acceptButton = new TextComponent(StringUtils.parseColor(StringUtils.getMessage("invite.button.accept-button.text")));
-				acceptButton.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(StringUtils.parseColor(StringUtils.getMessage("invite.button.accept-button.hover"))).create()));
+				final TextComponent acceptButton = new TextComponent(MessageUtils.parseColor(MessageUtils.getMessage("invite.button.accept-button.text")));
+				acceptButton.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(MessageUtils.parseColor(MessageUtils.getMessage("invite.button.accept-button.hover"))).create()));
 				acceptButton.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/duel accept"));
 
-				final TextComponent declineButton = new TextComponent(StringUtils.parseColor(StringUtils.getMessage("invite.button.decline-button.text")));
-				declineButton.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(StringUtils.parseColor(StringUtils.getMessage("invite.button.decline-button.hover"))).create()));
+				final TextComponent declineButton = new TextComponent(MessageUtils.parseColor(MessageUtils.getMessage("invite.button.decline-button.text")));
+				declineButton.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(MessageUtils.parseColor(MessageUtils.getMessage("invite.button.decline-button.hover"))).create()));
 				declineButton.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/duel decline"));
 
 				final String[] strings = inviteText.split("\\{accept-button}|\\{decline-button}");

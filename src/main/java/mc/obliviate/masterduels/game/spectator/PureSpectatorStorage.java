@@ -9,7 +9,7 @@ import mc.obliviate.masterduels.kit.InventoryStorer;
 import mc.obliviate.masterduels.user.spectator.Spectator;
 import mc.obliviate.masterduels.user.team.Member;
 import mc.obliviate.masterduels.user.team.Team;
-import mc.obliviate.masterduels.utils.StringUtils;
+import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.playerreset.PlayerReset;
 import mc.obliviate.masterduels.utils.title.TitleHandler;
 import org.bukkit.Bukkit;
@@ -91,7 +91,7 @@ public class PureSpectatorStorage implements ISpectatorStorage {
 		player.setAllowFlight(true);
 		player.setFlying(true);
 
-		StringUtils.sendMessage(player, "you-are-a-spectator");
+		MessageUtils.sendMessage(player, "you-are-a-spectator");
 
 		player.teleport(game.getArena().getSpectatorLocation());
 		MessageAPI.getInstance(game.getPlugin()).sendTitle(player, TitleHandler.getTitle(TitleHandler.TitleType.SPECTATOR_JOIN));

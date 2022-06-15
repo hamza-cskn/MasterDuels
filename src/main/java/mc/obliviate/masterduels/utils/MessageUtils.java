@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StringUtils {
+public class MessageUtils {
 
 	private static YamlConfiguration messageConfig;
 	private static String prefix;
@@ -20,8 +20,8 @@ public class StringUtils {
 	}
 
 	public static void setMessageConfig(final YamlConfiguration messageConfig) {
-		StringUtils.messageConfig = messageConfig;
-		StringUtils.prefix = parseColor(messageConfig.getString("prefix"));
+		MessageUtils.messageConfig = messageConfig;
+		MessageUtils.prefix = parseColor(messageConfig.getString("prefix"));
 	}
 
 	public static String getMessage(final String node) {

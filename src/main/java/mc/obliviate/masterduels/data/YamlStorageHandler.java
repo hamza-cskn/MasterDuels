@@ -17,7 +17,7 @@ import mc.obliviate.masterduels.queue.DuelQueueHandler;
 import mc.obliviate.masterduels.queue.DuelQueueTemplate;
 import mc.obliviate.masterduels.queue.gui.DuelQueueListGUI;
 import mc.obliviate.masterduels.utils.Logger;
-import mc.obliviate.masterduels.utils.StringUtils;
+import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.scoreboard.ScoreboardFormatConfig;
 import mc.obliviate.masterduels.utils.scoreboard.ScoreboardManager;
 import mc.obliviate.masterduels.utils.serializer.SerializerUtils;
@@ -68,7 +68,7 @@ public class YamlStorageHandler {
 
 		initQueues();
 
-		TimerUtils.DATE_FORMAT = new SimpleDateFormat(StringUtils.getMessageConfig().getString("time-format.date-format"));
+		TimerUtils.DATE_FORMAT = new SimpleDateFormat(MessageUtils.getMessageConfig().getString("time-format.date-format"));
 		GameHistoryLog.GAME_HISTORY_LOG_ENABLED = config.getBoolean("game-history.enabled", true);
 		DataHandler.LOCK_TIME_IN_SECONDS = config.getInt("game-starting-lock-time", 3);
 		Kit.USE_PLAYER_INVENTORIES = config.getBoolean("use-player-inventories", false);
@@ -97,7 +97,7 @@ public class YamlStorageHandler {
 			messages = YamlConfiguration.loadConfiguration(messagesFile);
 		}
 
-		StringUtils.setMessageConfig(messages);
+		MessageUtils.setMessageConfig(messages);
 	}
 
 
@@ -244,9 +244,9 @@ public class YamlStorageHandler {
 			final ConfigurationSection section = config.getConfigurationSection("scoreboards." + gameState.name());
 			ScoreboardFormatConfig scoreboardFormatConfig;
 			if (section == null) {
-				scoreboardFormatConfig = new ScoreboardFormatConfig(StringUtils.parseColor("{name} &c{health}HP"), StringUtils.parseColor("{name} &cDEAD"), StringUtils.parseColor("&e&lDuels"), StringUtils.parseColor(Arrays.asList("{+opponents}", "", "&4&lERROR: &8" + gameState, "&cNo Lines Found")));
+				scoreboardFormatConfig = new ScoreboardFormatConfig(MessageUtils.parseColor("{name} &c{health}HP"), MessageUtils.parseColor("{name} &cDEAD"), MessageUtils.parseColor("&e&lDuels"), MessageUtils.parseColor(Arrays.asList("{+opponents}", "", "&4&lERROR: &8" + gameState, "&cNo Lines Found")));
 			} else {
-				scoreboardFormatConfig = new ScoreboardFormatConfig(StringUtils.parseColor(section.getString("live-opponent-format")), StringUtils.parseColor(section.getString("dead-opponent-format")), StringUtils.parseColor(section.getString("title")), StringUtils.parseColor(section.getStringList("lines")));
+				scoreboardFormatConfig = new ScoreboardFormatConfig(MessageUtils.parseColor(section.getString("live-opponent-format")), MessageUtils.parseColor(section.getString("dead-opponent-format")), MessageUtils.parseColor(section.getString("title")), MessageUtils.parseColor(section.getStringList("lines")));
 			}
 			ScoreboardManager.getScoreboardLines().put(gameState, scoreboardFormatConfig);
 		}
@@ -268,10 +268,10 @@ public class YamlStorageHandler {
 	}
 
 	private void registerTimerFormats() {
-		TimerUtils.MINUTES = StringUtils.getMessageConfig().getString("time-format.minutes");
-		TimerUtils.MINUTE = StringUtils.getMessageConfig().getString("time-format.minute");
-		TimerUtils.SECONDS = StringUtils.getMessageConfig().getString("time-format.seconds");
-		TimerUtils.SECOND = StringUtils.getMessageConfig().getString("time-format.second");
+		TimerUtils.MINUTES = MessageUtils.getMessageConfig().getString("time-format.minutes");
+		TimerUtils.MINUTE = MessageUtils.getMessageConfig().getString("time-format.minute");
+		TimerUtils.SECONDS = MessageUtils.getMessageConfig().getString("time-format.seconds");
+		TimerUtils.SECOND = MessageUtils.getMessageConfig().getString("time-format.second");
 	}
 
 	public YamlConfiguration getData() {

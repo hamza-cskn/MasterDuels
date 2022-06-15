@@ -2,7 +2,7 @@ package mc.obliviate.masterduels.utils.serializer;
 
 import mc.obliviate.masterduels.history.GameHistoryLog;
 import mc.obliviate.masterduels.utils.Logger;
-import mc.obliviate.masterduels.utils.StringUtils;
+import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
 import mc.obliviate.masterduels.utils.xmaterial.XMaterial;
 import org.bukkit.Bukkit;
@@ -40,7 +40,7 @@ public class SerializerUtils {
 		if (section == null) return null;
 		final World world = Bukkit.getWorld(section.getString("world"));
 		if (world == null) {
-			Bukkit.getLogger().severe("World couldn't found: " + section.getString("world"));
+			Logger.error("world could not found (yaml loc deserializing): " + section.getString("world"));
 			return null;
 		}
 
@@ -94,8 +94,8 @@ public class SerializerUtils {
 		}
 
 		final ItemMeta meta = item.getItemMeta();
-		meta.setDisplayName(StringUtils.parseColor(StringUtils.applyPlaceholders(section.getString("display-name"), placeholderUtil)));
-		meta.setLore(StringUtils.parseColor(StringUtils.applyPlaceholders(section.getStringList("lore"), placeholderUtil)));
+		meta.setDisplayName(MessageUtils.parseColor(MessageUtils.applyPlaceholders(section.getString("display-name"), placeholderUtil)));
+		meta.setLore(MessageUtils.parseColor(MessageUtils.applyPlaceholders(section.getStringList("lore"), placeholderUtil)));
 		item.setItemMeta(meta);
 		item.setAmount(section.getInt("amount", 1));
 		return item;
@@ -103,8 +103,8 @@ public class SerializerUtils {
 
 	public static ItemStack applyPlaceholdersOnItemStack(ItemStack item, PlaceholderUtil placeholderUtil) {
 		final ItemMeta meta = item.getItemMeta();
-		meta.setDisplayName(StringUtils.parseColor(StringUtils.applyPlaceholders(meta.getDisplayName(), placeholderUtil)));
-		meta.setLore(StringUtils.parseColor(StringUtils.applyPlaceholders(meta.getLore(), placeholderUtil)));
+		meta.setDisplayName(MessageUtils.parseColor(MessageUtils.applyPlaceholders(meta.getDisplayName(), placeholderUtil)));
+		meta.setLore(MessageUtils.parseColor(MessageUtils.applyPlaceholders(meta.getLore(), placeholderUtil)));
 		item.setItemMeta(meta);
 		return item;
 	}
