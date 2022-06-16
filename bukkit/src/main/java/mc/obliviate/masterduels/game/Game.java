@@ -2,10 +2,11 @@ package mc.obliviate.masterduels.game;
 
 import com.hakan.core.HCore;
 import mc.obliviate.masterduels.MasterDuels;
-import mc.obliviate.masterduels.api.events.DuelGameMemberDeathEvent;
-import mc.obliviate.masterduels.api.events.DuelGameTeamEliminateEvent;
+import mc.obliviate.masterduels.api.arena.GameRule;
 import mc.obliviate.masterduels.api.arena.GameState;
 import mc.obliviate.masterduels.api.arena.IGame;
+import mc.obliviate.masterduels.api.events.DuelGameMemberDeathEvent;
+import mc.obliviate.masterduels.api.events.DuelGameTeamEliminateEvent;
 import mc.obliviate.masterduels.api.events.arena.*;
 import mc.obliviate.masterduels.api.kit.IKit;
 import mc.obliviate.masterduels.api.user.IMember;
@@ -16,7 +17,6 @@ import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.arena.elements.Positions;
 import mc.obliviate.masterduels.bossbar.TABBossbarManager;
 import mc.obliviate.masterduels.data.DataHandler;
-import mc.obliviate.masterduels.api.arena.GameRule;
 import mc.obliviate.masterduels.game.round.RoundData;
 import mc.obliviate.masterduels.game.spectator.GameSpectatorManager;
 import mc.obliviate.masterduels.history.GameHistoryLog;
@@ -130,7 +130,7 @@ public class Game implements IGame {
 
 	@Override
 	public void nextRound() {
-
+		Logger.debug(Logger.DebugPart.GAME, "round start - process started");
 		if (roundData.getCurrentRound() != 0) {
 			Bukkit.getPluginManager().callEvent(new DuelGameRoundEndEvent(this));
 		} else {
@@ -171,6 +171,8 @@ public class Game implements IGame {
 		}
 
 		Bukkit.getPluginManager().callEvent(new DuelGameRoundStartEvent(this));
+		Logger.debug(Logger.DebugPart.GAME, "round start - process finished");
+
 	}
 
 	private void setFinishTimer() {
@@ -239,6 +241,8 @@ public class Game implements IGame {
 	 */
 	@Override
 	public void finishGame() {
+		Logger.debug(Logger.DebugPart.GAME, "finish game - process started");
+
 		if (gameState.equals(GameState.GAME_ENDING)) {
 			Logger.severe("Finish Game method called twice.");
 			return;
@@ -260,6 +264,8 @@ public class Game implements IGame {
 		cancelTasks("REMAINING_TIME");
 		timer = endDelay * 1000L + System.currentTimeMillis();
 		Bukkit.getScheduler().runTaskLater(plugin, this::uninstallGame, endDelay * 20L);
+		Logger.debug(Logger.DebugPart.GAME, "finish game - process finished");
+
 	}
 
 	private void broadcastGameEnd() {
@@ -301,6 +307,7 @@ public class Game implements IGame {
 	 */
 	@Override
 	public void uninstallGame() {
+		Logger.debug(Logger.DebugPart.GAME, "uninstall game - process started");
 		if (gameState.equals(GameState.UNINSTALLING)) {
 			Logger.severe("Uninstall Game method called twice.");
 			return;
@@ -317,10 +324,12 @@ public class Game implements IGame {
 
 		cancelTasks(null);
 		DataHandler.registerArena(arena);
+		Logger.debug(Logger.DebugPart.GAME, "uninstall game - process finished");
 	}
 
 	@Override
 	public void dropItems(final Player player) {
+		Logger.debug(Logger.DebugPart.GAME, "drop items - process started");
 		if (!gameRules.contains(GameRule.NO_DEAD_DROP)) return;
 		if (!MasterDuels.isInShutdownMode()) {
 			final Location loc = player.getLocation();
@@ -336,6 +345,7 @@ public class Game implements IGame {
 			}
 			player.getInventory().clear();
 		}
+		Logger.debug(Logger.DebugPart.GAME, "drop items - process finished");
 
 	}
 
