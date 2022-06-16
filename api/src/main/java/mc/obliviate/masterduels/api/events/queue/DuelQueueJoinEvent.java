@@ -1,6 +1,6 @@
 package mc.obliviate.masterduels.api.events.queue;
 
-import mc.obliviate.masterduels.queue.DuelQueue;
+import mc.obliviate.masterduels.api.queue.IDuelQueue;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
@@ -11,15 +11,15 @@ public class DuelQueueJoinEvent extends Event implements Cancellable {
 	private static final HandlerList handlers = new HandlerList();
 
 	private boolean cancelled = false;
-	private final DuelQueue queue;
+	private final IDuelQueue queue;
 	private final Player player;
 
-	public DuelQueueJoinEvent(final DuelQueue queue, Player player) {
+	public DuelQueueJoinEvent(final IDuelQueue queue, Player player) {
 		this.queue = queue;
 		this.player = player;
 	}
 
-	public DuelQueue getQueue() {
+	public IDuelQueue getQueue() {
 		return queue;
 	}
 

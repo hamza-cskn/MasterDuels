@@ -1,6 +1,6 @@
 package mc.obliviate.masterduels.api.events.arena;
 
-import mc.obliviate.masterduels.game.Game;
+import mc.obliviate.masterduels.api.arena.IGame;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
@@ -8,9 +8,9 @@ public class DuelGamePreStartEvent extends Event implements GameEvent {
 
 	private static final HandlerList handlers = new HandlerList();
 
-	private final Game game;
+	private final IGame game;
 
-	public DuelGamePreStartEvent(Game game) {
+	public DuelGamePreStartEvent(IGame game) {
 		this.game = game;
 	}
 
@@ -18,7 +18,7 @@ public class DuelGamePreStartEvent extends Event implements GameEvent {
 		return handlers;
 	}
 
-	public Game getGame() {
+	public IGame getGame() {
 		return game;
 	}
 
