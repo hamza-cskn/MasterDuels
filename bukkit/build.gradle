@@ -47,6 +47,8 @@ version = '1.0-SNAPSHOT'
 description = 'MasterDuels'
 java.sourceCompatibility = JavaVersion.VERSION_11
 
+project.setLibsDirName('../../../../Local Servers & Setups/LOCAL 1.8/plugins')
+
 shadowJar {
     relocate 'mc.obliviate.inventory', 'mc.obliviate.masterduels.lib.inventory'
     relocate 'mc.obliviate.bloksqlite', 'mc.obliviate.masterduels.lib.sqlite'
