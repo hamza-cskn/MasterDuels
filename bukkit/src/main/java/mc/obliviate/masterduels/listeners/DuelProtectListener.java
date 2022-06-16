@@ -1,6 +1,9 @@
 package mc.obliviate.masterduels.listeners;
 
 import mc.obliviate.masterduels.MasterDuels;
+import mc.obliviate.masterduels.api.user.IMember;
+import mc.obliviate.masterduels.api.user.IUser;
+import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.user.team.Member;
 import mc.obliviate.masterduels.utils.MessageUtils;
@@ -101,7 +104,7 @@ public class DuelProtectListener implements Listener {
 
 	@EventHandler
 	public void onCommand(final PlayerCommandPreprocessEvent e) {
-		final Member member = DataHandler.getMember(e.getPlayer().getUniqueId());
+		final IMember member = DataHandler.getMember(e.getPlayer().getUniqueId());
 		if (member == null || e.getPlayer().isOp()) return;
 		if (e.getMessage().startsWith("/")) {
 			if (!plugin.getDatabaseHandler().getConfig().getStringList("executable-commands-by-player." + member.getTeam().getGame().getGameState().name()).contains(e.getMessage())) {
@@ -122,12 +125,14 @@ public class DuelProtectListener implements Listener {
 		final IUser user = DataHandler.getUser(e.getPlayer().getUniqueId());
 		if (user == null) return;
 
+		final Arena arena = (Arena) user.getGame().getArena();
+
 		if (!user.getGame().getSpectatorManager().isSpectator(e.getPlayer())) {
-			if (!user.getGame().getArena().getArenaCuboid().isIn(e.getBlock().getLocation())) {
+			if (!arena.getArenaCuboid().isIn(e.getBlock().getLocation())) {
 				e.setCancelled(true);
 				MessageUtils.sendMessage(e.getPlayer(), "you-can-not-break");
 				if (teleportBackWhenLimitViolate) {
-					e.getPlayer().teleport(user.getGame().getArena().getPositions().get("spawn-team-1").getLocation(1));
+					e.getPlayer().teleport(arena.getPositions().get("spawn-team-1").getLocation(1));
 				}
 			}
 		} else {
@@ -140,12 +145,15 @@ public class DuelProtectListener implements Listener {
 	public void onPlace(final BlockPlaceEvent e) {
 		final IUser user = DataHandler.getUser(e.getPlayer().getUniqueId());
 		if (user == null) return;
+
+		final Arena arena = (Arena) user.getGame().getArena();
+
 		if (!user.getGame().getSpectatorManager().isSpectator(e.getPlayer())) {
-			if (!user.getGame().getArena().getArenaCuboid().isIn(e.getBlock().getLocation())) {
+			if (!arena.getArenaCuboid().isIn(e.getBlock().getLocation())) {
 				e.setCancelled(true);
 				MessageUtils.sendMessage(e.getPlayer(), "you-can-not-place");
 				if (teleportBackWhenLimitViolate) {
-					e.getPlayer().teleport(user.getGame().getArena().getPositions().get("spawn-team-1").getLocation(1));
+					e.getPlayer().teleport(arena.getPositions().get("spawn-team-1").getLocation(1));
 				}
 			}
 		} else {

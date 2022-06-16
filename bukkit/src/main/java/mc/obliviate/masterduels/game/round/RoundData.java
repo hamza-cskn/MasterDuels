@@ -1,6 +1,7 @@
 package mc.obliviate.masterduels.game.round;
 
 import mc.obliviate.masterduels.api.arena.IRoundData;
+import mc.obliviate.masterduels.api.user.ITeam;
 import mc.obliviate.masterduels.user.team.Team;
 
 import java.util.HashMap;
@@ -8,11 +9,12 @@ import java.util.Map;
 
 public class RoundData implements IRoundData {
 
-	private final Map<Team, Integer> teamWins = new HashMap<>();
+	private final Map<ITeam, Integer> teamWins = new HashMap<>();
 	private int round = 0;
 	private int totalRounds;
 
-	public void addWin(final Team team) {
+	@Override
+	public void addWin(final ITeam team) {
 		final int wins = teamWins.getOrDefault(team, 0);
 		teamWins.put(team, wins + 1);
 	}
@@ -26,7 +28,7 @@ public class RoundData implements IRoundData {
 	 * returns false when last round is finished.
 	 */
 	public boolean addRound() {
-		for (final Map.Entry<Team, Integer> entry : teamWins.entrySet()) {
+		for (final Map.Entry<ITeam, Integer> entry : teamWins.entrySet()) {
 			//3 rounds, 2 win means no third round.
 			if (entry.getValue() > totalRounds/2) {
 				return false;
@@ -49,11 +51,11 @@ public class RoundData implements IRoundData {
 		this.totalRounds = totalRounds;
 	}
 
-	public int getWins(final Team team) {
+	public int getWins(final ITeam team) {
 		return teamWins.getOrDefault(team,0);
 	}
 
-	public Map<Team, Integer> getTeamWins() {
+	public Map<ITeam, Integer> getTeamWins() {
 		return teamWins;
 	}
 }

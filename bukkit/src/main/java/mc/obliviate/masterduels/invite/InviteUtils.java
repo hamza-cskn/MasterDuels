@@ -1,5 +1,6 @@
 package mc.obliviate.masterduels.invite;
 
+import mc.obliviate.masterduels.api.kit.IKit;
 import mc.obliviate.masterduels.kit.Kit;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
@@ -17,7 +18,7 @@ public class InviteUtils {
 		final Player inviter = invite.getInviter();
 		final Player target = invite.getTarget();
 
-		final Kit kit = invite.getGameCreator().getBuilder().getKit();
+		final IKit kit = invite.getGameCreator().getBuilder().getKit();
 
 		for (String inviteText : inviteTextList) {
 			inviteText = inviteText + " ";

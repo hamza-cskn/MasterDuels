@@ -1,6 +1,9 @@
 package mc.obliviate.masterduels.commands;
 
 import mc.obliviate.masterduels.MasterDuels;
+import mc.obliviate.masterduels.api.invite.InviteResult;
+import mc.obliviate.masterduels.api.user.IMember;
+import mc.obliviate.masterduels.api.user.IUser;
 import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.game.Game;
 import mc.obliviate.masterduels.game.GameBuilder;
@@ -221,7 +224,7 @@ public class DuelCMD implements CommandExecutor {
 				return;
 			}
 
-			final Member member = DataHandler.getMember(target.getUniqueId());
+			final IMember member = DataHandler.getMember(target.getUniqueId());
 			if (member == null) {
 				player.sendMessage("§cThis player is not in a duel.");
 				return;

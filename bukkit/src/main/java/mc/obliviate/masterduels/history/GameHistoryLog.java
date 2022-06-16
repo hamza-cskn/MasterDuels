@@ -1,6 +1,8 @@
 package mc.obliviate.masterduels.history;
 
 import mc.obliviate.masterduels.MasterDuels;
+import mc.obliviate.masterduels.api.user.IMember;
+import mc.obliviate.masterduels.api.user.ITeam;
 import mc.obliviate.masterduels.game.Game;
 import mc.obliviate.masterduels.user.team.Member;
 import mc.obliviate.masterduels.user.team.Team;
@@ -38,13 +40,13 @@ public class GameHistoryLog implements HistoryLog {
 
 		final List<UUID> losers = new ArrayList<>();
 		final List<UUID> winners = new ArrayList<>();
-		for (final Team team : game.getTeams().values()) {
+		for (final ITeam team : game.getTeams().values()) {
 			final List<UUID> list;
 
 			if (game.checkTeamEliminated(team)) list = losers;
 			else list = winners;
 
-			for (final Member member : team.getMembers()) {
+			for (final IMember member : team.getMembers()) {
 				list.add(member.getPlayer().getUniqueId());
 			}
 		}

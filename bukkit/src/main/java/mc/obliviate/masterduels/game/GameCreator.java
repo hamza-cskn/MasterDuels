@@ -2,6 +2,7 @@ package mc.obliviate.masterduels.game;
 
 import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.api.arena.GameRule;
+import mc.obliviate.masterduels.api.invite.InviteResult;
 import mc.obliviate.masterduels.invite.Invite;
 import mc.obliviate.masterduels.kit.Kit;
 import mc.obliviate.masterduels.utils.MessageUtils;
@@ -10,6 +11,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 /**
  * Game Creator classes are player based game builders.
@@ -74,7 +76,7 @@ public class GameCreator {
 		}
 	}
 
-	public void sendInvite(final Player inviter, final Player invited, final InviteResponse response) {
+	public void sendInvite(final Player inviter, final Player invited, final Consumer<InviteResult> response) {
 		if (invited == null) {
 			MessageUtils.sendMessage(inviter, "target-is-not-online");
 			return;

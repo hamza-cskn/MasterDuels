@@ -1,6 +1,8 @@
 package mc.obliviate.masterduels.game;
 
+import mc.obliviate.masterduels.api.arena.IGame;
 import mc.obliviate.masterduels.api.arena.ITeamBuilder;
+import mc.obliviate.masterduels.api.user.ITeam;
 import mc.obliviate.masterduels.user.team.Team;
 import org.bukkit.entity.Player;
 
@@ -40,7 +42,7 @@ public class TeamBuilder implements ITeamBuilder {
 		members.remove(p);
 	}
 
-	public Team build(Game game) {
+	public Team build(IGame game) {
 		return new Team(teamId, getSize(), members, game);
 	}
 

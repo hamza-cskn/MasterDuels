@@ -1,6 +1,7 @@
 package mc.obliviate.masterduels.arenaclear.modes.smart;
 
 import mc.obliviate.masterduels.MasterDuels;
+import mc.obliviate.masterduels.api.arena.IArena;
 import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.arenaclear.IArenaClear;
 import mc.obliviate.masterduels.arenaclear.modes.smart.workloads.BlockWorkLoad;

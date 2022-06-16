@@ -14,9 +14,9 @@ public class Team implements ITeam {
 	private final int teamId;
 	private final int size;
 	private final List<IMember> members = new ArrayList<>();
-	private final Game game;
+	private final IGame game;
 
-	public Team(final int teamId, final int size, final List<Player> members, final Game game) {
+	public Team(final int teamId, final int size, final List<Player> members, final IGame game) {
 		this.teamId = teamId;
 		this.size = size;
 		this.game = game;
