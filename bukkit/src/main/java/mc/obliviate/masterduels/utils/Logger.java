@@ -5,6 +5,13 @@ import org.bukkit.Bukkit;
 public class Logger {
 
 	private static boolean debugModeEnabled = false;
+	private static DebugPart debugPart = null;
+
+	public static void debug(DebugPart part, String message) {
+		if (!debugModeEnabled) return;
+		if (part.equals(debugPart)) return;
+		debug(message);
+	}
 
 	public static void debug(String message) {
 		if (!debugModeEnabled) return;
@@ -30,11 +37,23 @@ public class Logger {
 		return string;
 	}
 
+	public static DebugPart getDebugPart() {
+		return debugPart;
+	}
+
+	public static void setDebugPart(DebugPart debugPart) {
+		Logger.debugPart = debugPart;
+	}
+
 	public static void setDebugModeEnabled(boolean debugModeEnabled) {
 		Logger.debugModeEnabled = debugModeEnabled;
 	}
 
 	public static boolean isDebugModeEnabled() {
 		return debugModeEnabled;
+	}
+
+	public enum DebugPart {
+		GAME
 	}
 }
