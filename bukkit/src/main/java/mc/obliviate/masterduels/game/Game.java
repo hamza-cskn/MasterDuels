@@ -2,9 +2,8 @@ package mc.obliviate.masterduels.game;
 
 import com.hakan.core.HCore;
 import mc.obliviate.masterduels.MasterDuels;
-import mc.obliviate.masterduels.api.arena.ITeamBuilder;
 import mc.obliviate.masterduels.api.events.DuelGameMemberDeathEvent;
-import mc.obliviate.masterduels.api.events.DuelGameTeamEleminateEvent;
+import mc.obliviate.masterduels.api.events.DuelGameTeamEliminateEvent;
 import mc.obliviate.masterduels.api.arena.GameState;
 import mc.obliviate.masterduels.api.arena.IGame;
 import mc.obliviate.masterduels.api.events.arena.*;
@@ -459,7 +458,7 @@ public class Game implements IGame {
 
 		if (checkTeamEliminated(victim.getTeam())) {
 
-			new DuelGameTeamEleminateEvent(victim.getTeam(), duelGameMemberDeathEvent);
+			new DuelGameTeamEliminateEvent(victim.getTeam(), duelGameMemberDeathEvent);
 
 			if (victim.getTeam().getMembers().size() > 1) {
 				broadcastInGame("duel-team-eliminated", new PlaceholderUtil().add("{victim}", Utils.getDisplayName(victim.getPlayer())));

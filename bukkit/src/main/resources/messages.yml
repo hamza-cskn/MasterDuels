@@ -33,7 +33,7 @@ enter-bet-amount: '&cEnter bet amount to chat.'
 enter-player-name-to-invite: '&cEnter player name you want to invite.'
 you-can-not-place: '&cYou can not place block here.'
 you-can-not-break: '&cYou can not break this block.'
-duel-team-eliminated: '&7The team of &c{victim}&7 has been eleminated!' #for non-solo games
+duel-team-eliminated: '&7The team of &c{victim}&7 has been eliminated!' #for non-solo games
 you-are-in-duel: '&cYou cannot do this in duel game.'
 you-are-not-in-duel: '&cYou are not in a duel game.'
 target-already-in-duel: '&c{target} is already in duel game.'

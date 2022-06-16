@@ -5,14 +5,14 @@ import mc.obliviate.masterduels.api.user.ITeam;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class DuelGameTeamEleminateEvent extends Event {
+public class DuelGameTeamEliminateEvent extends Event {
 
 	private static final HandlerList handlers = new HandlerList();
 
 	private final ITeam team;
 	private final DuelGameMemberDeathEvent duelGameMemberDeathEvent;
 
-	public DuelGameTeamEleminateEvent(final ITeam team, final DuelGameMemberDeathEvent duelGameMemberDeathEvent) {
+	public DuelGameTeamEliminateEvent(final ITeam team, final DuelGameMemberDeathEvent duelGameMemberDeathEvent) {
 		this.team = team;
 		this.duelGameMemberDeathEvent = duelGameMemberDeathEvent;
 	}
