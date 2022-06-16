@@ -1,19 +1,19 @@
 package mc.obliviate.masterduels.api.events.arena;
 
-import mc.obliviate.masterduels.arena.Arena;
-import mc.obliviate.masterduels.game.Game;
-import mc.obliviate.masterduels.game.GameState;
+import mc.obliviate.masterduels.api.arena.GameState;
+import mc.obliviate.masterduels.api.arena.IArena;
+import mc.obliviate.masterduels.api.arena.IGame;
 
 public interface GameEvent extends ArenaEvent {
 
-	Game getGame();
+	IGame getGame();
 
 	default GameState getGameState() {
 		return getGame().getGameState();
 	}
 
 	@Override
-	default Arena getArena() {
+	default IArena getArena() {
 		return getGame().getArena();
 	}
 }

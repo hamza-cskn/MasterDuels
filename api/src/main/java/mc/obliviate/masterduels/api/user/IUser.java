@@ -1,6 +1,6 @@
-package mc.obliviate.masterduels.user;
+package mc.obliviate.masterduels.api.user;
 
-import mc.obliviate.masterduels.game.Game;
+import mc.obliviate.masterduels.api.arena.IGame;
 import org.bukkit.entity.Player;
 
 /**
@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
  */
 public interface IUser {
 
-	Game getGame();
+	IGame getGame();
 
 	Player getPlayer();
 
