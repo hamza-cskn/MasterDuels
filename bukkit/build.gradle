@@ -1,0 +1,53 @@
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
+}
+
+
+repositories {
+    mavenLocal()
+    maven {
+        url = uri("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
+    }
+
+    maven {
+        url = uri("https://jitpack.io")
+    }
+
+    maven {
+        url = uri("https://repo.puha.io/repo/")
+    }
+
+    maven {
+        url = uri("https://oss.sonatype.org/content/repositories/snapshots")
+    }
+
+    maven {
+        url = uri("https://repo.kryptonmc.org/releases")
+    }
+
+    maven {
+        url = uri("https://repo.maven.apache.org/maven2/")
+    }
+}
+
+dependencies {
+    implementation 'com.github.Obliviated:ObliviateInvs:3.2.0'
+    implementation 'com.github.Obliviated:BlokSQLiteAPI:1.0.7-b'
+    implementation 'com.github.hakan-krgn.hCore:bukkit-primary:0.4.7'
+    implementation project(':api')
+    compileOnly 'io.puharesource.mc:TitleManager:2.2.0'
+    compileOnly 'me.neznamy:tab-api:3.0.1'
+    compileOnly 'org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT'
+    compileOnly 'com.github.MilkBowl:VaultAPI:1.7'
+}
+
+group = 'mc.obliviate'
+version = '1.0-SNAPSHOT'
+description = 'MasterDuels'
+java.sourceCompatibility = JavaVersion.VERSION_11
+
+shadowJar {
+    relocate 'mc.obliviate.inventory', 'mc.obliviate.masterduels.lib.inventory'
+    relocate 'mc.obliviate.bloksqlite', 'mc.obliviate.masterduels.lib.sqlite'
+}
