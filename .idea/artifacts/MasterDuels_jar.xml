@@ -3,7 +3,7 @@
     <output-path>$PROJECT_DIR$/../../Local Servers &amp; Setups/LOCAL 118/plugins</output-path>
     <root id="archive" name="MasterDuels.jar">
       <element id="directory" name="META-INF">
-        <element id="file-copy" path="$PROJECT_DIR$/src/main/java/META-INF/MANIFEST.MF" />
+        <element id="file-copy" path="$PROJECT_DIR$/bukkit/src/main/java/META-INF/MANIFEST.MF" />
       </element>
       <element id="module-output" name="MasterDuels" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/github/Obliviated/ObliviateInvs/3.0.1/ObliviateInvs-3.0.1.jar" path-in-jar="/" />
