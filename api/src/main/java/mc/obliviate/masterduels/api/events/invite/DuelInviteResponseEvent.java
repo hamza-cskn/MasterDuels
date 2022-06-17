@@ -5,7 +5,6 @@ import mc.obliviate.masterduels.api.invite.InviteState;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import java.util.UUID;
 import java.util.function.Consumer;
 
 public class DuelInviteResponseEvent extends Event implements InviteEvent {
@@ -28,15 +27,4 @@ public class DuelInviteResponseEvent extends Event implements InviteEvent {
 		return invite;
 	}
 
-	public UUID getSenderUniqueId() {
-		return invite.getSenderUniqueId();
-	}
-
-	public UUID getRecipientUniqueId() {
-		return invite.getRecipientUniqueId();
-	}
-
-	public Consumer<InviteState> getResponse() {
-		return response;
-	}
 }
