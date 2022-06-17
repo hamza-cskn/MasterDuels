@@ -5,6 +5,7 @@ import mc.obliviate.masterduels.api.events.queue.DuelQueueLeaveEvent;
 import mc.obliviate.masterduels.api.queue.IDuelQueue;
 import mc.obliviate.masterduels.game.Game;
 import mc.obliviate.masterduels.game.GameBuilder;
+import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -24,7 +25,7 @@ public class DuelQueue implements IDuelQueue {
 		final DuelQueue queue = availableQueues.get(template);
 		if (queue != null) {
 			queue.lock();
-			Bukkit.broadcastMessage("double queue creation found in same template.");
+			Logger.error("double queue creation found in same template.");
 		}
 		availableQueues.put(template, this);
 	}
