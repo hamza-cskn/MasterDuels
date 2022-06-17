@@ -1,6 +1,5 @@
 package mc.obliviate.masterduels.game;
 
-import com.hakan.core.HCore;
 import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.api.arena.GameRule;
 import mc.obliviate.masterduels.api.arena.GameState;
@@ -15,7 +14,8 @@ import mc.obliviate.masterduels.api.user.ITeam;
 import mc.obliviate.masterduels.api.user.IUser;
 import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.arena.elements.Positions;
-import mc.obliviate.masterduels.bossbar.TABBossbarManager;
+import mc.obliviate.masterduels.bossbar.BossBarHandler;
+import mc.obliviate.masterduels.bossbar.IBossBarManager;
 import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.game.round.RoundData;
 import mc.obliviate.masterduels.game.spectator.GameSpectatorManager;
@@ -60,7 +60,7 @@ public class Game implements IGame {
 	private final RoundData roundData = new RoundData();
 	private final GameSpectatorManager spectatorManager = new GameSpectatorManager(this);
 	private final GameBuilder gameBuilder;
-	private final TABBossbarManager bossBarData = new TABBossbarManager(this);
+	private final IBossBarManager bossBarManager = BossBarHandler.getBossBarManager(this);
 	private final GameHistoryLog gameHistoryLog = new GameHistoryLog();
 	private long timer;
 	private GameState gameState = GameState.GAME_STARING;
@@ -109,9 +109,9 @@ public class Game implements IGame {
 	@Override
 	public void initBossBar() {
 		for (final IMember member : getAllMembers()) {
-			bossBarData.show(member);
+			bossBarManager.show(member);
 		}
-		bossBarData.init();
+		bossBarManager.init();
 	}
 
 	@Override
@@ -393,7 +393,7 @@ public class Game implements IGame {
 		teleportToLobby(member.getPlayer());
 
 		MessageUtils.sendMessage(member.getPlayer(), "you-left-from-duel");
-		bossBarData.hide(member);
+		bossBarManager.hide(member);
 
 		if (member.getTeam().getMembers().size() == 0) {
 			if (gameState.equals(GameState.GAME_ENDING) || gameState.equals(GameState.UNINSTALLING)) return;

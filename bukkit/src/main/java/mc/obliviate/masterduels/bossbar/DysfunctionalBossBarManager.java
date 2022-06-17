@@ -2,7 +2,7 @@ package mc.obliviate.masterduels.bossbar;
 
 import mc.obliviate.masterduels.api.user.IMember;
 
-public class DysfunctionalBossBarManager implements BossBarManager {
+public class DysfunctionalBossBarManager implements IBossBarManager {
 	@Override
 	public void show(IMember member) {
 

@@ -4,7 +4,6 @@ import mc.obliviate.masterduels.api.arena.GameState;
 import mc.obliviate.masterduels.api.user.IMember;
 import mc.obliviate.masterduels.game.Game;
 import mc.obliviate.masterduels.utils.Utils;
-import mc.obliviate.masterduels.utils.tab.TABManager;
 import mc.obliviate.masterduels.utils.timer.TimerUtils;
 import me.neznamy.tab.api.TabAPI;
 import me.neznamy.tab.api.TabPlayer;
@@ -13,21 +12,17 @@ import me.neznamy.tab.api.bossbar.BarStyle;
 import me.neznamy.tab.api.bossbar.BossBar;
 import org.bukkit.Bukkit;
 
-@Deprecated
-public class TABBossbarManager implements BossBarManager {
+import static mc.obliviate.masterduels.bossbar.BossBarHandler.CLOSING_TEXT_FORMAT;
+import static mc.obliviate.masterduels.bossbar.BossBarHandler.NORMAL_TEXT_FORMAT;
 
-	public static String NORMAL_TEXT_FORMAT = "{time}";
-	public static String CLOSING_TEXT_FORMAT = "{time}";
+public class TABBossBarManager implements IBossBarManager {
 
 	private final BossBar bar;
 	private final Game game;
 
-	public TABBossbarManager(final Game game) {
+	public TABBossBarManager(final Game game) {
 		this.game = game;
-		if (!TABManager.isEnabled()) {
-			this.bar = null;
-			return;
-		}
+
 		final String title = NORMAL_TEXT_FORMAT.replace("{timer}", "...").replace("{time}", "...");
 		this.bar = TabAPI.getInstance().getBossBarManager().createBossBar(title, 100f, BarColor.WHITE, BarStyle.NOTCHED_10);
 	}
@@ -64,6 +59,5 @@ public class TABBossbarManager implements BossBarManager {
 	public void hide(final IMember member) {
 		final TabPlayer player = TabAPI.getInstance().getPlayer(member.getPlayer().getUniqueId());
 		bar.removePlayer(player);
-
 	}
 }

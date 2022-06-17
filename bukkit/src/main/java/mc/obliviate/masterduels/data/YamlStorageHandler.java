@@ -1,14 +1,14 @@
 package mc.obliviate.masterduels.data;
 
 import mc.obliviate.masterduels.MasterDuels;
+import mc.obliviate.masterduels.api.arena.GameRule;
 import mc.obliviate.masterduels.api.arena.GameState;
 import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.arena.BasicArenaState;
 import mc.obliviate.masterduels.arenaclear.modes.smart.SmartArenaClear;
-import mc.obliviate.masterduels.bossbar.TABBossbarManager;
+import mc.obliviate.masterduels.bossbar.BossBarHandler;
 import mc.obliviate.masterduels.game.Game;
 import mc.obliviate.masterduels.game.GameCreator;
-import mc.obliviate.masterduels.api.arena.GameRule;
 import mc.obliviate.masterduels.gui.DuelArenaListGUI;
 import mc.obliviate.masterduels.gui.DuelHistoryLogGUI;
 import mc.obliviate.masterduels.history.GameHistoryLog;
@@ -21,8 +21,10 @@ import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.scoreboard.ScoreboardFormatConfig;
 import mc.obliviate.masterduels.utils.scoreboard.ScoreboardManager;
 import mc.obliviate.masterduels.utils.serializer.SerializerUtils;
+import mc.obliviate.masterduels.utils.tab.TABManager;
 import mc.obliviate.masterduels.utils.timer.TimerUtils;
 import mc.obliviate.masterduels.utils.title.TitleHandler;
+import mc.obliviate.masterduels.utils.versioncontroller.ServerVersionController;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
@@ -31,7 +33,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class YamlStorageHandler {
 
@@ -255,8 +260,31 @@ public class YamlStorageHandler {
 
 	private void registerBossbars() {
 		if (config.getBoolean("bossbars.enabled", false)) {
-			TABBossbarManager.NORMAL_TEXT_FORMAT = config.getString("bossbars.in-battle");
-			TABBossbarManager.CLOSING_TEXT_FORMAT = config.getString("bossbars.arena-closing");
+
+			BossBarHandler.BossBarModule module = BossBarHandler.BossBarModule.DISABLED;
+			;
+			switch (config.getString("bossbars.mode")) {
+				case "INTERNAL":
+					if (ServerVersionController.isServerVersionAbove(ServerVersionController.V1_8)) {
+						module = BossBarHandler.BossBarModule.INTERNAL;
+					}
+				case "TAB":
+					if (TABManager.isEnabled()) {
+						module = BossBarHandler.BossBarModule.TAB;
+					}
+				default:
+					if (ServerVersionController.isServerVersionAbove(ServerVersionController.V1_8)) {
+						module = BossBarHandler.BossBarModule.INTERNAL;
+					} else if (TABManager.isEnabled()) {
+						module = BossBarHandler.BossBarModule.TAB;
+					}
+			}
+
+			BossBarHandler.setBossBarModule(module);
+			BossBarHandler.NORMAL_TEXT_FORMAT = config.getString("bossbars.in-battle");
+			BossBarHandler.CLOSING_TEXT_FORMAT = config.getString("bossbars.arena-closing");
+		} else {
+			BossBarHandler.setBossBarModule(BossBarHandler.BossBarModule.DISABLED);
 		}
 	}
 
