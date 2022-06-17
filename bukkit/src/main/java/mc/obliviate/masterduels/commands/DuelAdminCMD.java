@@ -4,8 +4,8 @@ import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.game.GameBuilder;
-import mc.obliviate.masterduels.kit.gui.KitListEditorGUI;
 import mc.obliviate.masterduels.kit.Kit;
+import mc.obliviate.masterduels.kit.gui.KitListEditorGUI;
 import mc.obliviate.masterduels.setup.ArenaSetup;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
@@ -30,7 +30,7 @@ public class DuelAdminCMD implements CommandExecutor {
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args) {
+	public boolean onCommand(CommandSender sender, Command cmd, String cmdStr, String[] args) {
 		if (!(sender instanceof Player)) return false;
 
 		final Player player = ((Player) sender).getPlayer();
@@ -39,13 +39,13 @@ public class DuelAdminCMD implements CommandExecutor {
 
 		if (args.length == 0) {
 			player.sendMessage("§c§lMasterDuels §cAdministrator Commands");
-			player.sendMessage(" §7/" + s + " create §8- §9enables arena setup mode");
-			player.sendMessage(" §7/" + s + " arena disable <arena name> §8- §9disables an duel arena");
-			player.sendMessage(" §7/" + s + " arena enable  <arena name> §8- §9enables an duel arena");
-			player.sendMessage(" §7/" + s + " kit save §8- §9saves your current inventory as new kit");
-			player.sendMessage(" §7/" + s + " kit editor §8- §9opens kit editor gui");
-			player.sendMessage(" §7/" + s + " setlobby §8- §9sets lobby location to teleport players after duel game");
-			player.sendMessage(" §7/" + s + " teststart <player 1> <player 2>§8- §9instantly starts a duel game between two players without invite.");
+			player.sendMessage(" §7/" + cmdStr + " create §8- §9enables arena setup mode");
+			player.sendMessage(" §7/" + cmdStr + " arena disable <arena name> §8- §9disables an duel arena");
+			player.sendMessage(" §7/" + cmdStr + " arena enable  <arena name> §8- §9enables an duel arena");
+			player.sendMessage(" §7/" + cmdStr + " kit save §8- §9saves your current inventory as new kit");
+			player.sendMessage(" §7/" + cmdStr + " kit editor §8- §9opens kit editor gui");
+			player.sendMessage(" §7/" + cmdStr + " setlobby §8- §9sets lobby location to teleport players after duel game");
+			player.sendMessage(" §7/" + cmdStr + " teststart <player 1> <player 2>§8- §9instantly starts a duel game between two players without invite.");
 			player.sendMessage("");
 			player.sendMessage("§nMasterDuels v" + plugin.getDescription().getVersion());
 			return false;

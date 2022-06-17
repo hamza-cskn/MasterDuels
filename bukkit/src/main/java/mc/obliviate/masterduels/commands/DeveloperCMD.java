@@ -21,10 +21,10 @@ public class DeveloperCMD implements Listener {
 		if (event.getMessage().equalsIgnoreCase("/masterduels")) {
 			event.setCancelled(true);
 
-			event.getPlayer().sendMessage("Master Duels v" + plugin.getDescription().getVersion() + " installed on " + Bukkit.getBukkitVersion());
+			event.getPlayer().sendMessage("Master Duels installed on " + Bukkit.getBukkitVersion());
 			event.getPlayer().sendMessage("Server Brand: " + Bukkit.getVersion());
 			event.getPlayer().sendMessage("Developed by:" + ChatColor.GREEN + " Mr_Obliviate");
-			event.getPlayer().sendMessage("Version: v" + plugin.getDescription().getVersion() + " " + ChatColor.BLUE + ChatColor.ITALIC + " (dev)");
+			event.getPlayer().sendMessage("Version: v" + plugin.getDescription().getVersion() + " " + ChatColor.AQUA + ChatColor.ITALIC + " dev");
 		}
 	}
 

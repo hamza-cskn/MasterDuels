@@ -1,14 +1,13 @@
 package mc.obliviate.masterduels.game;
 
 import mc.obliviate.masterduels.MasterDuels;
-import mc.obliviate.masterduels.api.arena.ITeamBuilder;
+import mc.obliviate.masterduels.api.arena.GameRule;
 import mc.obliviate.masterduels.api.arena.IGameBuilder;
+import mc.obliviate.masterduels.api.arena.ITeamBuilder;
 import mc.obliviate.masterduels.api.kit.IKit;
 import mc.obliviate.masterduels.api.user.IUser;
 import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.data.DataHandler;
-import mc.obliviate.masterduels.api.arena.GameRule;
-import mc.obliviate.masterduels.kit.Kit;
 import mc.obliviate.masterduels.user.team.Member;
 import org.bukkit.entity.Player;
 
@@ -25,14 +24,12 @@ public class GameBuilder implements IGameBuilder {
 	private Game game = null;
 
 	public GameBuilder(final MasterDuels plugin) {
-
 		this.plugin = plugin;
 		this.id = UUID.randomUUID();
 
 		createRandomizedTeams();
 
 		GAME_BUILDER_MAP.put(id, this);
-
 	}
 
 	@Override
