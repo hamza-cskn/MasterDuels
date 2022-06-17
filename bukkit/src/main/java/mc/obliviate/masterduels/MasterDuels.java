@@ -50,6 +50,10 @@ public class MasterDuels extends JavaPlugin {
 	private IArenaClearHandler arenaClearHandler;
 	private ScoreboardManager scoreboardManager;
 
+	public static MasterDuels getInstance() {
+		return JavaPlugin.getPlugin(MasterDuels.class);
+	}
+
 	public static boolean isInShutdownMode() {
 		return shutdownMode;
 	}
