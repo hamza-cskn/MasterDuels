@@ -167,7 +167,7 @@ public class Game implements IGame {
 		}
 
 		for (final IMember member : getAllMembers()) {
-			HCore.sendTitle(member.getPlayer(), TitleHandler.getTitle(TitleHandler.TitleType.ROUND_STARTED));
+			TitleHandler.sendTitle(member.getPlayer(), TitleHandler.TitleType.ROUND_STARTED);
 		}
 
 		Bukkit.getPluginManager().callEvent(new DuelGameRoundStartEvent(this));
@@ -509,13 +509,16 @@ public class Game implements IGame {
 
 			if (i == 1 || i % 10 == 0) {
 				task("ROUNDTASK_team-sendTitle-" + team.getTeamId() + "_" + i, Bukkit.getScheduler().runTaskLater(plugin, () -> {
+
 					for (IMember member : getAllMembers()) {
-						HCore.sendTitle(member.getPlayer(), TitleHandler.getTitle(TitleHandler.TitleType.ROUND_STARTING,
+						TitleHandler.sendTitle(member.getPlayer(),
+								TitleHandler.TitleType.ROUND_STARTING,
 								new PlaceholderUtil().add("{round}", roundData.getCurrentRound() + "")
 										.add("{remaining-time-second}", ((int) (timer + 100 - System.currentTimeMillis()) / 1000) + "")
 										.add("{remaining-time-timer}", TimerUtils.formatTimeUntilThenAsTimer(timer + 100))
-										.add("{remaining-time-time}", TimerUtils.formatTimeUntilThenAsTime(timer + 100))));
+										.add("{remaining-time-time}", TimerUtils.formatTimeUntilThenAsTime(timer + 100)));
 					}
+
 				}, i * 2L));
 			}
 		}

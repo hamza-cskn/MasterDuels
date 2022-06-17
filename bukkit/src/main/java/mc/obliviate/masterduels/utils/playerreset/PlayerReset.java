@@ -1,5 +1,7 @@
 package mc.obliviate.masterduels.utils.playerreset;
 
+import com.hakan.core.HCore;
+import com.hakan.core.message.title.HTitle;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -54,7 +56,7 @@ public class PlayerReset {
 				player.removePotionEffect(effect.getType());
 			}
 		if (title)
-			player.resetTitle();
+			HCore.sendTitle(player, new HTitle("", "")); //resets title
 	}
 
 	public PlayerReset excludeHealth() {

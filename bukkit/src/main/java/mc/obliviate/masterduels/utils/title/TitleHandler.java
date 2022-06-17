@@ -1,9 +1,11 @@
 package mc.obliviate.masterduels.utils.title;
 
+import com.hakan.core.HCore;
 import com.hakan.core.message.title.HTitle;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,20 +22,28 @@ public class TitleHandler {
 		titles.put(titleType, deseralize(section));
 	}
 
-	public static HTitle getTitle(TitleType type) {
+	private static HTitle getTitle(TitleType type) {
 		return getTitle(type, null);
 	}
 
-	public static HTitle getTitle(TitleType type, final PlaceholderUtil placeholderUtil) {
+	private static HTitle getTitle(TitleType type, final PlaceholderUtil placeholderUtil) {
 		final HTitle title = titles.get(type);
 		if (title == null) return new HTitle("", "", 0, 0, 0);
 		return format(new HTitle(title.getTitle(), title.getSubtitle(), title.getStay(), title.getFadeIn(), title.getFadeOut()), placeholderUtil);
 	}
 
-	public static HTitle format(final HTitle title, final PlaceholderUtil placeholderUtil) {
+	private static HTitle format(final HTitle title, final PlaceholderUtil placeholderUtil) {
 		title.setTitle(MessageUtils.parseColor(MessageUtils.applyPlaceholders(title.getTitle(), placeholderUtil)));
 		title.setSubtitle(MessageUtils.parseColor(MessageUtils.applyPlaceholders(title.getSubtitle(), placeholderUtil)));
 		return title;
+	}
+
+	public static void sendTitle(Player player, TitleType titleType) {
+		HCore.sendTitle(player, TitleHandler.getTitle(titleType));
+	}
+
+	public static void sendTitle(Player player, TitleType titleType, PlaceholderUtil placeholderUtil) {
+		HCore.sendTitle(player, TitleHandler.getTitle(titleType, placeholderUtil));
 	}
 
 	public enum TitleType {
