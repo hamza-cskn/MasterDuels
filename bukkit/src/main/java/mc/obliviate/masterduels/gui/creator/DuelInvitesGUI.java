@@ -2,6 +2,7 @@ package mc.obliviate.masterduels.gui.creator;
 
 import mc.obliviate.inventory.GUI;
 import mc.obliviate.inventory.Icon;
+import mc.obliviate.masterduels.api.invite.InviteState;
 import mc.obliviate.masterduels.game.GameBuilder;
 import mc.obliviate.masterduels.game.GameCreator;
 import mc.obliviate.masterduels.invite.Invite;
@@ -32,7 +33,7 @@ public class DuelInvitesGUI extends GUI {
 		addItem(4, new Icon(XMaterial.WRITABLE_BOOK.parseItem()).setName(MessageUtils.parseColor("&aInvite a player")).setLore(MessageUtils.parseColor("&7Players: " + gameBuilder.getPlayers().size())).onClick(e -> {
 			player.closeInventory();
 			new ChatEntry(player.getUniqueId(), getPlugin()).onResponse(chatEvent -> {
-				gameCreator.sendInvite(player, Bukkit.getPlayer(chatEvent.getMessage()), response -> {
+				gameCreator.trySendInvite(player, Bukkit.getPlayer(chatEvent.getMessage()), response -> {
 					gameBuilder.addPlayer(Bukkit.getPlayer(chatEvent.getMessage()));
 				});
 				open();
@@ -41,8 +42,8 @@ public class DuelInvitesGUI extends GUI {
 		}));
 		int i = 9;
 		for (Invite invite : gameCreator.getInvites().values()) {
-			addItem(i++, new Icon(XMaterial.MAP.parseItem()).setName(invite.getTarget().getName()).onClick(e -> {
-				invite.setResult(true);
+			addItem(i++, new Icon(XMaterial.MAP.parseItem()).setName(Bukkit.getPlayer(invite.getRecipientUniqueId()).getName()).onClick(e -> {
+				invite.response(InviteState.ACCEPTED);
 			}));
 		}
 	}

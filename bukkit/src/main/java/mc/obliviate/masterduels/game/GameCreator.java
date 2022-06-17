@@ -2,11 +2,14 @@ package mc.obliviate.masterduels.game;
 
 import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.api.arena.GameRule;
-import mc.obliviate.masterduels.api.invite.InviteResult;
+import mc.obliviate.masterduels.api.invite.InviteState;
+import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.invite.Invite;
+import mc.obliviate.masterduels.invite.InviteUtils;
 import mc.obliviate.masterduels.kit.Kit;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
+import mc.obliviate.masterduels.utils.timer.TimerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -70,43 +73,55 @@ public class GameCreator {
 		return invites;
 	}
 
-	public void addPlayer(final Player player) {
-		for (final Invite invite : findInvites(player.getUniqueId())) {
-			invite.setResult(false);
-		}
-	}
 
-	public void sendInvite(final Player inviter, final Player invited, final Consumer<InviteResult> response) {
-		if (invited == null) {
-			MessageUtils.sendMessage(inviter, "target-is-not-online");
+	public void trySendInvite(final Player sender, final Player target, final Consumer<Invite> response) {
+
+		//check: target is online
+		if (target == null) {
+			MessageUtils.sendMessage(sender, "target-is-not-online");
 			return;
 		}
 
-		//check: is it invite spam
-		if (getInvites().containsKey(invited.getUniqueId())) {
-			MessageUtils.sendMessage(inviter, "invite.already-invited", new PlaceholderUtil().add("{target}", invited.getName()));
+		//check: target is not sender
+		if (sender.equals(target)) {
+			MessageUtils.sendMessage(sender, "invite.you-cannot-invite-yourself");
 			return;
 		}
 
-		final Invite invite = new Invite(plugin, inviter, invited, this);
-		invites.put(invited.getUniqueId(), invite);
-		invite.onResponse(response);
+		//check: target is not in duel
+		if (DataHandler.getMember(target.getUniqueId()) != null) {
+			MessageUtils.sendMessage(sender, "target-already-in-duel");
+			return;
+		}
+
+		//todo cache invite receives
+		//check: target accepts invites
+		if (!plugin.getSqlManager().getReceivesInvites(target.getUniqueId())) {
+			MessageUtils.sendMessage(sender, "invite.toggle.you-can-not-invite", new PlaceholderUtil().add("{target}", target.getName()));
+			return;
+		}
+
+		final Invite.InviteBuildResult buildResult = Invite.create()
+				.setExpireTimeLater(plugin.getDatabaseHandler().getConfig().getInt("invite-timeout") * 1000L)
+				.setReceiver(target.getUniqueId())
+				.setSender(sender.getUniqueId())
+				.onResponse(invite -> {
+					this.removeInvite(target.getUniqueId());
+					response.accept(invite);
+				}).build();
+
+		if (buildResult.getInviteBuildState().equals(Invite.InviteBuildState.ERROR_ALREADY_INVITED)) {
+			MessageUtils.sendMessage(sender, "invite.already-invited", new PlaceholderUtil().add("{target}", target.getName()));
+
+		} else if (buildResult.getInviteBuildState().equals(Invite.InviteBuildState.SUCCESS)) {
+			MessageUtils.sendMessage(sender, "invite.target-has-invited", new PlaceholderUtil().add("{target}", target.getName()).add("{expire-time}", TimerUtils.formatTimeUntilThenAsTimer(buildResult.getInvite().getExpireOutTime()) + ""));
+			InviteUtils.sendInviteMessage(buildResult.getInvite(), MessageUtils.getMessageConfig().getStringList("invite.game-creator-invite-text"));
+			invites.put(target.getUniqueId(), buildResult.getInvite());
+		}
 	}
 
 	public void removeInvite(final UUID uuid) {
 		invites.remove(uuid);
-	}
-
-	public List<Invite> findInvites(final UUID player) {
-		final List<Invite> invites = new ArrayList<>();
-		for (final GameCreator creator : GAME_CREATOR_MAP.values()) {
-			for (final UUID uuid : creator.getInvites().keySet()) {
-				if (uuid.equals(player)) {
-					invites.add(creator.getInvites().get(uuid));
-				}
-			}
-		}
-		return invites;
 	}
 
 	public GameBuilder getBuilder() {
@@ -120,7 +135,7 @@ public class GameCreator {
 	public void destroy() {
 		GAME_CREATOR_MAP.remove(ownerPlayer);
 		for (final Invite invite : invites.values()) {
-			invite.onExpire();
+			invite.response(InviteState.CANCELLED);
 		}
 	}
 

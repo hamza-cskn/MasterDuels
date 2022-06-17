@@ -1,176 +1,170 @@
 package mc.obliviate.masterduels.invite;
 
+import com.google.common.base.Preconditions;
 import mc.obliviate.masterduels.MasterDuels;
-import mc.obliviate.masterduels.api.invite.InviteResult;
-import mc.obliviate.masterduels.api.user.IUser;
-import mc.obliviate.masterduels.data.DataHandler;
-import mc.obliviate.masterduels.game.GameCreator;
-import mc.obliviate.masterduels.user.team.Member;
-import mc.obliviate.masterduels.utils.Logger;
-import mc.obliviate.masterduels.utils.MessageUtils;
-import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
-import mc.obliviate.masterduels.utils.timer.TimerUtils;
-import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
+import mc.obliviate.masterduels.api.invite.IInvite;
+import mc.obliviate.masterduels.api.invite.InviteState;
+import org.bukkit.Bukkit;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-public class Invite {
+public class Invite implements IInvite {
 
-	private static final Map<UUID, Invites> INVITES_MAP = new HashMap<>();
-	private final GameCreator gameCreator;
-	private final Player target;
-	private final Player inviter;
-	private final int expireTime;
-	private final long invitedTime;
-	private boolean expired;
-	private Boolean answer = null;
-	private Consumer<InviteResult> response;
+	private final UUID sender;
+	private final UUID receiver;
+	private final long expireOutTime;
+	private final Consumer<Invite> response;
+	private InviteState state = InviteState.PENDING;
 
-	public Invite(MasterDuels plugin, Player inviter, Player invited, GameCreator gameCreator) {
-		this(plugin, inviter, invited, gameCreator, plugin.getDatabaseHandler().getConfig().getInt("invite-timeout"));
+	protected Invite(UUID sender, UUID receiverUniqueId, long expireTimeOut, Consumer<Invite> response) {
+		this.sender = sender;
+		this.receiver = receiverUniqueId;
+		this.expireOutTime = expireTimeOut;
+		this.response = response;
+
+		InviteRecipient.getInviteRecipient(receiverUniqueId).addInvite(this);
+
+		Bukkit.getScheduler().runTaskLater(MasterDuels.getInstance(), () -> {
+			if (state.equals(InviteState.PENDING)) {
+				response(InviteState.EXPIRED);
+			}
+		}, (expireTimeOut - System.currentTimeMillis()) / 50); //time difference in ms / 50 = time difference in ticks
 	}
 
-	public Invite(MasterDuels plugin, Player inviter, Player invited, GameCreator gameCreator, int expireTime) {
-		this.gameCreator = gameCreator;
-		this.expireTime = expireTime;
-		this.target = invited;
-		this.inviter = inviter;
-		this.invitedTime = System.currentTimeMillis();
+	/**
+	 * Purpose of this class is,
+	 * building new invite class.
+	 */
+	public static class Builder {
 
-		//check: inviter is not null
-		if (inviter == null) {
-			onExpire();
-			Logger.error("An invite sent by null player!");
-			return;
+		private UUID sender;
+		private UUID receiver;
+		private long expireTime;
+		private Consumer<Invite> response;
+
+		protected Builder() {
 		}
 
-		//check: invited is not null
-		if (invited == null) {
-			MessageUtils.sendMessage(inviter, "target-is-not-online");
-			onExpire();
-			return;
-		}
-
-		//check: inviter is online definitely
-		if (!invited.isOnline()) {
-			MessageUtils.sendMessage(inviter, "target-is-not-online");
-			onExpire();
-			return;
-		}
-
-		//check: invited is not in a duel game
-		final IUser invitedUser = DataHandler.getUser(invited.getUniqueId());
-
-		if (invitedUser instanceof Member) {
-			MessageUtils.sendMessage(inviter, "target-already-in-duel", new PlaceholderUtil().add("{target}", inviter.getName()));
-			return;
-		}
-
-		//todo cache invite receives
-		if (!plugin.getSqlManager().getReceivesInvites(invited.getUniqueId())) {
-			MessageUtils.sendMessage(inviter, "invite.toggle.you-can-not-invite", new PlaceholderUtil().add("{target}", invited.getName()));
-			onExpire();
-			return;
-		}
-
-		addInvite(invited.getUniqueId(), this);
-		MessageUtils.sendMessage(inviter, "invite.target-has-invited", new PlaceholderUtil().add("{target}", target.getName()).add("{expire-time}", expireTime + ""));
-
-		if (gameCreator == null) {
-			InviteUtils.sendInviteMessage(this, MessageUtils.getMessageConfig().getStringList("invite.normal-invite-text"));
-		} else {
-			InviteUtils.sendInviteMessage(this, MessageUtils.getMessageConfig().getStringList("invite.game-creator-invite-text"));
-		}
-		new BukkitRunnable() {
-			public void run() {
-				if (!expired && answer == null) {
-					onExpire();
-					MessageUtils.sendMessage(target, "invite.invite-expired-target", new PlaceholderUtil().add("{inviter}", inviter.getName()));
-					MessageUtils.sendMessage(inviter, "invite.invite-expired-inviter", new PlaceholderUtil().add("{target}", target.getName()));
-					response.accept(InviteResult.EXPIRE);
+		public InviteBuildResult build() {
+			InviteRecipient inviteRecipient = InviteRecipient.getInviteRecipient(receiver);
+			for (Invite invite : inviteRecipient.getInvites()) {
+				if (invite.sender.equals(sender)) {
+					if (invite.expireOutTime < System.currentTimeMillis()) {
+						return new InviteBuildResult(null, InviteBuildState.ERROR_ALREADY_INVITED);
+					} else {
+						inviteRecipient.removeInvite(invite);
+					}
 				}
 			}
-		}.runTaskLater(plugin, expireTime * 20L);
 
-
-	}
-
-	public static Invites findInvites(final Player player) {
-		return INVITES_MAP.get(player.getUniqueId());
-	}
-
-	private static void addInvite(final UUID uuid, final Invite invite) {
-		Invites invites = INVITES_MAP.get(uuid);
-		if (invites == null) {
-			invites = new Invites(uuid);
-		}
-		invites.add(invite);
-		INVITES_MAP.put(uuid, invites);
-	}
-
-	public int getExpireTime() {
-		return this.expireTime;
-	}
-
-	public void onExpire() {
-		expired = true;
-		if (gameCreator != null) gameCreator.removeInvite(target.getUniqueId());
-	}
-
-	public String getFormattedExpireTimeLeft() {
-		return TimerUtils.formatTimeAsTime((invitedTime + (1000L * expireTime) - System.currentTimeMillis()));
-	}
-
-	public boolean isExpired() {
-		return expired;
-	}
-
-	public GameCreator getGameCreator() {
-		return gameCreator;
-	}
-
-	public Player getInviter() {
-		return inviter;
-	}
-
-	public Player getTarget() {
-		return target;
-	}
-
-	public void setResult(boolean answer) {
-		final Invites invites = INVITES_MAP.get(target.getUniqueId());
-		if (invites.removeInvite(this)) {
-			INVITES_MAP.remove(invites.getPlayerUniqueId());
-		}
-		onExpire();
-		this.answer = answer;
-
-		//ACCEPT
-		if (answer) {
-			MessageUtils.sendMessage(getInviter(), "invite.target-accepted-the-invite", new PlaceholderUtil().add("{target}", target.getName()));
-			final Player player = getTarget();
-			MessageUtils.sendMessage(player, "invite.successfully-accepted", new PlaceholderUtil().add("{inviter}", target.getName()));
-			response.accept(InviteResult.ACCEPT);
-		}
-		//DECLINE
-		else {
-			response.accept(InviteResult.DECLINE);
-			MessageUtils.sendMessage(getInviter(), "invite.target-declined-the-invite", new PlaceholderUtil().add("{target}", target.getName()));
-			MessageUtils.sendMessage(getTarget(), "invite.successfully-declined", new PlaceholderUtil().add("{inviter}", inviter.getName()));
-
+			final Invite inviteBuilt = new Invite(sender, receiver, expireTime, response);
+			return new InviteBuildResult(inviteBuilt, InviteBuildState.SUCCESS);
 		}
 
+		public Consumer<Invite> getResponse() {
+			return response;
+		}
+
+		public long getExpireTime() {
+			return expireTime;
+		}
+
+		public UUID getReceiver() {
+			return receiver;
+		}
+
+		public UUID getSender() {
+			return sender;
+		}
+
+		public Builder onResponse(Consumer<Invite> action) {
+			Preconditions.checkArgument(receiver != null, "action cannot be null");
+			this.response = action;
+			return this;
+		}
+
+		public Builder setExpireTimeLater(long msLater) {
+			Preconditions.checkArgument(msLater > 0, "expire time cannot be negative");
+			return setExpireTime(System.currentTimeMillis() + msLater);
+		}
+
+		public Builder setExpireTime(long expireTime) {
+			Preconditions.checkArgument(expireTime > System.currentTimeMillis(), "expire time cannot be smaller than now");
+			this.expireTime = expireTime;
+			return this;
+		}
+
+		public Builder setReceiver(UUID receiver) {
+			Preconditions.checkArgument(receiver != null, "receiver cannot be null");
+			this.receiver = receiver;
+			return this;
+		}
+
+		public Builder setSender(UUID sender) {
+			Preconditions.checkArgument(sender != null, "sender cannot be null");
+			this.sender = sender;
+			return this;
+		}
 	}
 
-	public Consumer<InviteResult> getResponse() {
-		return response;
+	public static Builder create() {
+		return new Builder();
 	}
 
-	public void onResponse(Consumer<InviteResult> response) {
-		this.response = response;
+	public void response(InviteState inviteState) {
+		state = inviteState;
+		InviteRecipient.getInviteRecipient(receiver).removeInvite(this);
+		response.accept(this);
 	}
+
+	public InviteState getState() {
+		return state;
+	}
+
+	public long getExpireOutTime() {
+		return expireOutTime;
+	}
+
+	public UUID getRecipientUniqueId() {
+		return receiver;
+	}
+
+	public UUID getSenderUniqueId() {
+		return sender;
+	}
+
+
+	/**
+	 * Purpose of this class is,
+	 * storing invite and invite build state
+	 * when invite builder built.
+	 */
+	public static class InviteBuildResult {
+		final Invite invite;
+		final InviteBuildState inviteBuildState;
+
+		public InviteBuildResult(Invite invite, InviteBuildState inviteBuildState) {
+			this.invite = invite;
+			this.inviteBuildState = inviteBuildState;
+		}
+
+		public Invite getInvite() {
+			return invite;
+		}
+
+		public InviteBuildState getInviteBuildState() {
+			return inviteBuildState;
+		}
+	}
+
+	/**
+	 * Purpose of this class is,
+	 * defining build result of invite.
+	 */
+	public enum InviteBuildState {
+		SUCCESS,
+		ERROR_ALREADY_INVITED,
+	}
+
 }

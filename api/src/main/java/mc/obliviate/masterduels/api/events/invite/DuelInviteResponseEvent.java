@@ -1,20 +1,20 @@
 package mc.obliviate.masterduels.api.events.invite;
 
 import mc.obliviate.masterduels.api.invite.IInvite;
-import mc.obliviate.masterduels.api.invite.InviteResult;
-import org.bukkit.entity.Player;
+import mc.obliviate.masterduels.api.invite.InviteState;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
+import java.util.UUID;
 import java.util.function.Consumer;
 
 public class DuelInviteResponseEvent extends Event implements InviteEvent {
 
 	private static final HandlerList handlers = new HandlerList();
 	private final IInvite invite;
-	private final Consumer<InviteResult> response;
+	private final Consumer<InviteState> response;
 
-	public DuelInviteResponseEvent(IInvite invite, Consumer<InviteResult> response) {
+	public DuelInviteResponseEvent(IInvite invite, Consumer<InviteState> response) {
 		this.invite = invite;
 		this.response = response;
 	}
@@ -28,15 +28,15 @@ public class DuelInviteResponseEvent extends Event implements InviteEvent {
 		return invite;
 	}
 
-	public Player getSender() {
-		return invite.getInviter();
+	public UUID getSenderUniqueId() {
+		return invite.getSenderUniqueId();
 	}
 
-	public Player getReceiver() {
-		return invite.getTarget();
+	public UUID getRecipientUniqueId() {
+		return invite.getRecipientUniqueId();
 	}
 
-	public Consumer<InviteResult> getResponse() {
+	public Consumer<InviteState> getResponse() {
 		return response;
 	}
 }

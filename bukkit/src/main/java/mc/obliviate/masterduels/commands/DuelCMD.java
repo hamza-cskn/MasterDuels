@@ -1,7 +1,7 @@
 package mc.obliviate.masterduels.commands;
 
 import mc.obliviate.masterduels.MasterDuels;
-import mc.obliviate.masterduels.api.invite.InviteResult;
+import mc.obliviate.masterduels.api.invite.InviteState;
 import mc.obliviate.masterduels.api.user.IMember;
 import mc.obliviate.masterduels.api.user.IUser;
 import mc.obliviate.masterduels.data.DataHandler;
@@ -11,10 +11,11 @@ import mc.obliviate.masterduels.game.GameCreator;
 import mc.obliviate.masterduels.gui.DuelArenaListGUI;
 import mc.obliviate.masterduels.gui.DuelHistoryLogGUI;
 import mc.obliviate.masterduels.gui.creator.DuelGameCreatorGUI;
-import mc.obliviate.masterduels.kit.gui.KitSelectionGUI;
 import mc.obliviate.masterduels.history.GameHistoryLog;
 import mc.obliviate.masterduels.invite.Invite;
-import mc.obliviate.masterduels.invite.Invites;
+import mc.obliviate.masterduels.invite.InviteRecipient;
+import mc.obliviate.masterduels.invite.InviteUtils;
+import mc.obliviate.masterduels.kit.gui.KitSelectionGUI;
 import mc.obliviate.masterduels.queue.DuelQueue;
 import mc.obliviate.masterduels.queue.DuelQueueHandler;
 import mc.obliviate.masterduels.queue.DuelQueueTemplate;
@@ -23,6 +24,7 @@ import mc.obliviate.masterduels.statistics.DuelStatistic;
 import mc.obliviate.masterduels.user.team.Member;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
+import mc.obliviate.masterduels.utils.timer.TimerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -92,11 +94,8 @@ public class DuelCMD implements CommandExecutor {
 		} else if (plugin.getDatabaseHandler().getConfig().getBoolean("duel-arenas-gui.enabled") && args[0].equalsIgnoreCase("arenas")) {
 			new DuelArenaListGUI(player).open();
 			return true;
-		} else if (args[0].equalsIgnoreCase("accept")) {
-			answerInvite(player, true, args);
-			return true;
-		} else if (args[0].equalsIgnoreCase("decline")) {
-			answerInvite(player, false, args);
+		} else if (args[0].equalsIgnoreCase("accept") || args[0].equalsIgnoreCase("decline")) {
+			responseInvite(player, args);
 			return true;
 		} else if (args[0].equalsIgnoreCase("spectate")) {
 			spectate(player, args);
@@ -134,7 +133,7 @@ public class DuelCMD implements CommandExecutor {
 					new PlaceholderUtil()
 							.add("{queue-name}", queue.getName())
 							.add("{player-amount}", queue.getBuilder().getPlayers().size() + "")
-							.add("{max-player-amount}",queue.getBuilder().getTeamAmount() * queue.getBuilder().getTeamSize() + "")
+							.add("{max-player-amount}", queue.getBuilder().getTeamAmount() * queue.getBuilder().getTeamSize() + "")
 			);
 		} else if (args.get(1).equalsIgnoreCase("leave")) {
 			final DuelQueue queue = DuelQueue.findQueueOfPlayer(player);
@@ -187,31 +186,41 @@ public class DuelCMD implements CommandExecutor {
 
 	}
 
-	private void answerInvite(final Player player, final boolean answer, final String[] args) {
-		final Invites invites = Invite.findInvites(player);
-		if (invites == null || invites.size() == 0) {
+	private void responseInvite(Player player, String[] args) {
+		final InviteRecipient receiver = InviteRecipient.getInviteRecipient(player.getUniqueId());
+
+		final InviteState responseState = args[0].equalsIgnoreCase("accept") ? InviteState.ACCEPTED : InviteState.REJECTED;
+
+		if (receiver.getInvites().size() == 0) {
 			MessageUtils.sendMessage(player, "invite.you-dont-have-invite");
 			return;
+
 		}
-		if (invites.size() == 1) {
-			invites.get(0).setResult(answer);
+
+		if (receiver.getInvites().size() == 1) {
+			receiver.getInvites().get(0).response(responseState);
 			return;
 		}
-		if (args.length == 1) {
-			int index = 0;
-			for (final Invite invite : invites.getInvites()) {
-				player.sendMessage(MessageUtils.parseColor("&8- &f/duel " + args[0] + " &7" + ++index + " -> " + invite.getInviter().getName()) + " (" + invite.getFormattedExpireTimeLeft() + ")");
-			}
-		} else {
-			try {
-				final int index = Integer.parseInt(args[1]);
-				final Invite invite = invites.get(index - 1);
-				invite.setResult(answer);
 
-			} catch (NumberFormatException ex) {
+		if (args.length >= 2) {
+			int inviteNo;
+			try {
+				inviteNo = Integer.parseInt(args[1]);
+			} catch (NumberFormatException exception) {
 				MessageUtils.sendMessage(player, "this-is-not-valid-number");
+				return;
+			}
+
+			receiver.getInvites().get(inviteNo - 1).response(responseState);
+
+		} else {
+			int index = 0;
+			for (final Invite invite : receiver.getInvites()) {
+				player.sendMessage(MessageUtils.parseColor("&8- &f/duel " + args[0] + " &7" + index++ + " -> " + Bukkit.getOfflinePlayer(invite.getSenderUniqueId()).getName() + " (" + TimerUtils.formatTimeUntilThenAsTime(invite.getExpireOutTime()) + ")"));
 			}
 		}
+
+
 	}
 
 	private void spectate(final Player player, final String[] args) {
@@ -241,18 +250,28 @@ public class DuelCMD implements CommandExecutor {
 		final String targetName = args.length == 1 ? args[0] : args[1];
 		final Player target = Bukkit.getPlayerExact(targetName);
 
+		//check: target is online
 		if (target == null) {
 			MessageUtils.sendMessage(player, "target-is-not-online");
 			return;
 		}
 
+		//check: target is not sender
 		if (player.equals(target)) {
 			MessageUtils.sendMessage(player, "invite.you-cannot-invite-yourself");
 			return;
 		}
 
+		//check: target is not in duel
 		if (DataHandler.getMember(target.getUniqueId()) != null) {
 			MessageUtils.sendMessage(player, "target-already-in-duel");
+			return;
+		}
+
+		//todo cache invite receives
+		//check: target accepts invites
+		if (!plugin.getSqlManager().getReceivesInvites(target.getUniqueId())) {
+			MessageUtils.sendMessage(player, "invite.toggle.you-can-not-invite", new PlaceholderUtil().add("{target}", target.getName()));
 			return;
 		}
 
@@ -260,19 +279,34 @@ public class DuelCMD implements CommandExecutor {
 		final GameBuilder gameBuilder = Game.create(plugin).setTeamAmount(2).setTeamSize(1).setFinishTime(60).setTotalRounds(1);
 		gameBuilder.addPlayer(player);
 
-		new KitSelectionGUI(player, gameBuilder, selectedKit -> {
-			new Invite(plugin, player, target, null).onResponse(result -> {
-				if (result.equals(InviteResult.ACCEPT)) {
-					gameBuilder.addPlayer(target);
-					Game game = gameBuilder.build();
-					if (game == null) {
-						MessageUtils.sendMessage(player, "no-arena-found");
-						return;
+		final Invite.Builder inviteBuilder = Invite.create()
+				.setExpireTimeLater(plugin.getDatabaseHandler().getConfig().getInt("invite-timeout") * 1000L)
+				.setSender(player.getUniqueId())
+				.setReceiver(target.getUniqueId())
+				.onResponse(invite -> {
+					if (invite.getState().equals(InviteState.ACCEPTED)) {
+						gameBuilder.addPlayer(target);
+						Game game = gameBuilder.build();
+						if (game == null) {
+							MessageUtils.sendMessage(player, "no-arena-found");
+							return;
+						}
+						game.startGame();
+					} else {
+						//destroy game builder
 					}
-					game.startGame();
-				}
-			});
+				});
 
+		new KitSelectionGUI(player, gameBuilder, selectedKit -> {
+			Invite.InviteBuildResult buildResult = inviteBuilder.build();
+
+			if (buildResult.getInviteBuildState().equals(Invite.InviteBuildState.ERROR_ALREADY_INVITED)) {
+				MessageUtils.sendMessage(player, "invite.already-invited", new PlaceholderUtil().add("{target}", target.getName()));
+
+			} else if (buildResult.getInviteBuildState().equals(Invite.InviteBuildState.SUCCESS)) {
+				MessageUtils.sendMessage(player, "invite.target-has-invited", new PlaceholderUtil().add("{target}", target.getName()).add("{expire-time}", TimerUtils.formatTimeUntilThenAsTimer(buildResult.getInvite().getExpireOutTime()) + ""));
+				InviteUtils.sendInviteMessage(buildResult.getInvite(), MessageUtils.getMessageConfig().getStringList("invite.normal-invite-text"));
+			}
 		}).open();
 
 
