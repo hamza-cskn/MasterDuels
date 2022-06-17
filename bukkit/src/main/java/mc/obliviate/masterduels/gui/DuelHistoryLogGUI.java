@@ -1,6 +1,6 @@
 package mc.obliviate.masterduels.gui;
 
-import mc.obliviate.inventory.GUI;
+import mc.obliviate.inventory.Gui;
 import mc.obliviate.inventory.Icon;
 import mc.obliviate.masterduels.history.GameHistoryLog;
 import mc.obliviate.masterduels.utils.MessageUtils;
@@ -15,7 +15,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
-public class DuelHistoryLogGUI extends GUI {
+public class DuelHistoryLogGUI extends Gui {
 
 	public static ConfigurationSection guiSection;
 	public static DuelHistoryLogGUIConfig guiConfig;

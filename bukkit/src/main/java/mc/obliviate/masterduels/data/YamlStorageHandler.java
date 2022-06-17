@@ -65,7 +65,7 @@ public class YamlStorageHandler {
 		registerDelayEndDuelAfterPlayerKill();
 		registerScoreboards();
 		registerTitles();
-		registerBossbars();
+		registerBossBars();
 		registerTimerFormats();
 		registerGameCreatorLimits(config.getConfigurationSection("duel-creator.data-limits"));
 		registerHistoryGui();
@@ -258,12 +258,12 @@ public class YamlStorageHandler {
 		}
 	}
 
-	private void registerBossbars() {
-		if (config.getBoolean("bossbars.enabled", false)) {
+	private void registerBossBars() {
+		if (config.getBoolean("boss-bars.enabled", false)) {
 
 			BossBarHandler.BossBarModule module = BossBarHandler.BossBarModule.DISABLED;
 			;
-			switch (config.getString("bossbars.mode")) {
+			switch (config.getString("boss-bars.mode")) {
 				case "INTERNAL":
 					if (ServerVersionController.isServerVersionAbove(ServerVersionController.V1_8)) {
 						module = BossBarHandler.BossBarModule.INTERNAL;
@@ -281,8 +281,8 @@ public class YamlStorageHandler {
 			}
 
 			BossBarHandler.setBossBarModule(module);
-			BossBarHandler.NORMAL_TEXT_FORMAT = config.getString("bossbars.in-battle");
-			BossBarHandler.CLOSING_TEXT_FORMAT = config.getString("bossbars.arena-closing");
+			BossBarHandler.NORMAL_TEXT_FORMAT = config.getString("boss-bars.in-battle");
+			BossBarHandler.CLOSING_TEXT_FORMAT = config.getString("boss-bars.arena-closing");
 		} else {
 			BossBarHandler.setBossBarModule(BossBarHandler.BossBarModule.DISABLED);
 		}

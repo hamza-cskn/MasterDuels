@@ -1,6 +1,6 @@
 package mc.obliviate.masterduels.queue.gui;
 
-import mc.obliviate.inventory.GUI;
+import mc.obliviate.inventory.Gui;
 import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.api.events.queue.DuelQueueJoinEvent;
 import mc.obliviate.masterduels.api.events.queue.DuelQueueLeaveEvent;
@@ -22,19 +22,19 @@ public class DuelQueueListGUIUpdaterListener implements Listener {
 		updateGuis();
 	}
 
+	@EventHandler
+	public void onQueueLeave(DuelQueueLeaveEvent event) {
+		updateGuis();
+	}
+
 	private void updateGuis() {
 		if (taskGiven) return;
 		taskGiven = true;
 		Bukkit.getScheduler().runTaskLater(plugin, () -> {
-			for (GUI gui : DuelQueueListGUI.OPENED_DUEL_QUEUE_LIST_GUI_LIST) {
+			for (Gui gui : DuelQueueListGUI.OPENED_DUEL_QUEUE_LIST_GUI_LIST) {
 				gui.open();
 			}
 			taskGiven = false;
 		}, 5);
-	}
-
-	@EventHandler
-	public void onQueueLeave(DuelQueueLeaveEvent event) {
-		updateGuis();
 	}
 }

@@ -1,6 +1,6 @@
 package mc.obliviate.masterduels.gui;
 
-import mc.obliviate.inventory.GUI;
+import mc.obliviate.inventory.Gui;
 import mc.obliviate.inventory.Icon;
 import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.arena.BasicArenaState;
@@ -15,7 +15,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Map;
 
-public class DuelArenaListGUI extends GUI {
+public class DuelArenaListGUI extends Gui {
 
 	public static DuelArenaListGUIConfig guiConfig;
 

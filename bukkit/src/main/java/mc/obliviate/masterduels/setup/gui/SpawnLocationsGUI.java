@@ -1,6 +1,6 @@
 package mc.obliviate.masterduels.setup.gui;
 
-import mc.obliviate.inventory.GUI;
+import mc.obliviate.inventory.Gui;
 import mc.obliviate.inventory.Icon;
 import mc.obliviate.masterduels.arena.elements.Positions;
 import mc.obliviate.masterduels.setup.ArenaSetup;
@@ -13,7 +13,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 
-public class SpawnLocationsGUI extends GUI {
+public class SpawnLocationsGUI extends Gui {
 
 	private final ArenaSetup arenaSetup;
 
@@ -68,7 +68,7 @@ public class SpawnLocationsGUI extends GUI {
 			}
 		}
 
-		fillRow(new Icon(XMaterial.BLACK_STAINED_GLASS_PANE.parseItem()).setDamage(15), 5);
+		fillRow(new Icon(XMaterial.BLACK_STAINED_GLASS_PANE.parseItem()).setDurability(15), 5);
 		addItem(49, new Icon(XMaterial.ARROW.parseItem()).setName(ChatColor.RED + "Back").onClick(e -> {
 			new ArenaSetupGUI(player, arenaSetup).open();
 		}));

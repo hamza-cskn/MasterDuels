@@ -1,11 +1,10 @@
 package mc.obliviate.masterduels.gui.creator;
 
-import mc.obliviate.inventory.GUI;
+import mc.obliviate.inventory.Gui;
 import mc.obliviate.inventory.Icon;
 import mc.obliviate.masterduels.api.arena.ITeamBuilder;
 import mc.obliviate.masterduels.game.GameBuilder;
 import mc.obliviate.masterduels.game.GameCreator;
-import mc.obliviate.masterduels.game.TeamBuilder;
 import mc.obliviate.masterduels.utils.Utils;
 import mc.obliviate.masterduels.utils.xmaterial.XMaterial;
 import org.bukkit.Bukkit;
@@ -17,7 +16,7 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
-public class DuelTeamManagerGUI extends GUI {
+public class DuelTeamManagerGUI extends Gui {
 
 	private final GameBuilder gameBuilder;
 	private final GameCreator gameCreator;

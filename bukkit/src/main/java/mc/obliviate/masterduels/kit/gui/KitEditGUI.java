@@ -1,6 +1,6 @@
 package mc.obliviate.masterduels.kit.gui;
 
-import mc.obliviate.inventory.GUI;
+import mc.obliviate.inventory.Gui;
 import mc.obliviate.inventory.Icon;
 import mc.obliviate.inventory.advancedslot.AdvancedSlot;
 import mc.obliviate.masterduels.MasterDuels;
@@ -14,7 +14,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
-public class KitEditGUI extends GUI {
+public class KitEditGUI extends Gui {
 
 	private final Kit kit;
 	private ItemStack[] armors;

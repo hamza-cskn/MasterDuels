@@ -1,15 +1,14 @@
 package mc.obliviate.masterduels.gui;
 
-import mc.obliviate.inventory.GUI;
+import mc.obliviate.inventory.Gui;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
 import mc.obliviate.masterduels.utils.serializer.SerializerUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 
 public class GUISerializerUtils {
 
-	public static void putDysfunctionalIcons(GUI gui, ConfigurationSection iconsSection) {
+	public static void putDysfunctionalIcons(Gui gui, ConfigurationSection iconsSection) {
 		if (iconsSection == null) throw new IllegalArgumentException("null configuration section given!");
 		for (String sectionName : iconsSection.getKeys(false)) {
 			final ConfigurationSection section = iconsSection.getConfigurationSection(sectionName);

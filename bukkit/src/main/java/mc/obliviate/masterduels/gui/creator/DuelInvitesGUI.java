@@ -1,6 +1,6 @@
 package mc.obliviate.masterduels.gui.creator;
 
-import mc.obliviate.inventory.GUI;
+import mc.obliviate.inventory.Gui;
 import mc.obliviate.inventory.Icon;
 import mc.obliviate.masterduels.api.invite.InviteState;
 import mc.obliviate.masterduels.game.GameBuilder;
@@ -13,7 +13,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 
-public class DuelInvitesGUI extends GUI {
+public class DuelInvitesGUI extends Gui {
 
 	private final GameBuilder gameBuilder;
 	private final GameCreator gameCreator;

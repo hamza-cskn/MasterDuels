@@ -1,17 +1,16 @@
 package mc.obliviate.masterduels.kit.gui;
 
-import mc.obliviate.inventory.GUI;
+import mc.obliviate.inventory.Gui;
 import mc.obliviate.inventory.Icon;
 import mc.obliviate.masterduels.game.GameBuilder;
 import mc.obliviate.masterduels.kit.Kit;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 
 import java.util.Collection;
 import java.util.List;
 
-public class KitSelectionGUI extends GUI {
+public class KitSelectionGUI extends Gui {
 
 	private final GameBuilder builder;
 	private final KitSelectResponse response;

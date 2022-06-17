@@ -1,16 +1,16 @@
 package mc.obliviate.masterduels.gui.creator;
 
-import mc.obliviate.inventory.GUI;
+import mc.obliviate.inventory.Gui;
 import mc.obliviate.inventory.Icon;
+import mc.obliviate.masterduels.api.arena.GameRule;
 import mc.obliviate.masterduels.game.GameBuilder;
 import mc.obliviate.masterduels.game.GameCreator;
-import mc.obliviate.masterduels.api.arena.GameRule;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.xmaterial.XMaterial;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 
-public class DuelSettingsGUI extends GUI {
+public class DuelSettingsGUI extends Gui {
 
 	private final GameBuilder gameBuilder;
 	private final GameCreator gameCreator;
