@@ -124,7 +124,7 @@ titles:
     fadein: 20
     stay: 10
     fadeout: 20
-bossbars:
+boss-bars:
   enabled: true
   # MasterDuels can use TAB's boss bar API or its own boss bar manager.
   # Boss bar manager of MasterDuels doesn't support 1.8 but TAB's API does.

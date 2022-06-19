@@ -389,7 +389,6 @@ public class Game implements IGame {
 		RESET_WHEN_PLAYER_LEFT.reset(member.getPlayer());
 		ScoreboardManager.defaultScoreboard(member.getPlayer());
 
-
 		teleportToLobby(member.getPlayer());
 
 		MessageUtils.sendMessage(member.getPlayer(), "you-left-from-duel");

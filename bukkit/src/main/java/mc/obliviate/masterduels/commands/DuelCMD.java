@@ -54,7 +54,7 @@ public class DuelCMD implements CommandExecutor {
 		final IUser user = DataHandler.getUser(player.getUniqueId());
 
 		if (args.length == 0) {
-			MessageUtils.sendMessage(player, "duel-command.usage");
+			MessageUtils.sendMessage(player, "duel-command.usage", new PlaceholderUtil().add("{build-version}", plugin.getDescription().getVersion()));
 			return false;
 		}
 
@@ -128,6 +128,7 @@ public class DuelCMD implements CommandExecutor {
 				MessageUtils.sendMessage(player, "queue.queue-not-found", new PlaceholderUtil().add("{entry}", args.get(2)));
 				return;
 			}
+
 			queue.addPlayer(player);
 			MessageUtils.sendMessage(player, "queue.joined",
 					new PlaceholderUtil()
@@ -148,7 +149,6 @@ public class DuelCMD implements CommandExecutor {
 
 	private void top(final Player player, List<String> args) {
 		final LinkedList<DuelStatistic> statistics;
-
 
 		final ConfigurationSection section = plugin.getDatabaseHandler().getConfig().getConfigurationSection("top.top-wins");
 		final String nobodyText = MessageUtils.parseColor(MessageUtils.getMessage("top.nobody"));
