@@ -9,7 +9,6 @@ import mc.obliviate.masterduels.queue.DuelQueueTemplate;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
 import mc.obliviate.masterduels.utils.serializer.SerializerUtils;
 import mc.obliviate.masterduels.utils.xmaterial.XMaterial;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -50,9 +49,6 @@ public class DuelQueueListGUI extends Gui implements Listener {
 			getPaginationManager().update();
 		}
 
-		Bukkit.broadcastMessage("" + getPaginationManager().getItems());
-		Bukkit.broadcastMessage("" + getPaginationManager().getLastPage());
-
 		if (getPaginationManager().getLastPage() != getPaginationManager().getPage()) {
 			addItem(8, new Icon(XMaterial.ARROW.parseItem()).onClick(e -> {
 				getPaginationManager().nextPage();
@@ -71,7 +67,6 @@ public class DuelQueueListGUI extends Gui implements Listener {
 
 	private void calculateIcons() {
 		for (final DuelQueueTemplate template : DuelQueueTemplate.getQueueTemplates()) {
-			Bukkit.broadcastMessage("template " + template.getName());
 			getPaginationManager().addIcon(new Icon(guiConfig.getIconOfTemplate(template.getName(), DuelQueue.getAvailableQueues().get(template).getBuilder()))
 					.onClick(e -> {
 						player.performCommand("duel queue join " + template.getName());
@@ -103,7 +98,7 @@ public class DuelQueueListGUI extends Gui implements Listener {
 		}
 
 		protected ItemStack getIconOfTemplate(String templateName, GameBuilder builder) {
-			ItemStack item = iconItemStacks.get(templateName);
+			ItemStack item = iconItemStacks.get(templateName).clone();
 			if (item == null) return XMaterial.BEDROCK.parseItem();
 
 			final int players = builder.getPlayers().size();
