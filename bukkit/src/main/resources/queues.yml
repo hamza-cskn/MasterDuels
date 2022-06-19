@@ -17,7 +17,7 @@ queues-gui:
   title: 'Queues'
   size: 6
   # amount of queue icons are dynamic. it shows player amount of the queue.
-  # if set false, MasterDuels will fix 0 amounts to 1 to prevent display bugs on 1.8+ clients
+  # if set false, MasterDuels will fix 0 amounts to 1 to prevent display bugs on 1.9+ clients
   use-zero-amount: false
   icons:
     # feel free to configure dysfunctional icons.
