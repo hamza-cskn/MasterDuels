@@ -3,6 +3,7 @@ package mc.obliviate.masterduels.commands;
 import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.data.DataHandler;
+import mc.obliviate.masterduels.game.Game;
 import mc.obliviate.masterduels.game.GameBuilder;
 import mc.obliviate.masterduels.kit.Kit;
 import mc.obliviate.masterduels.kit.gui.KitListEditorGUI;
@@ -38,16 +39,7 @@ public class DuelAdminCMD implements CommandExecutor {
 		if (!player.isOp()) return false;
 
 		if (args.length == 0) {
-			player.sendMessage("§c§lMasterDuels §cAdministrator Commands");
-			player.sendMessage(" §7/" + cmdStr + " create §8- §9enables arena setup mode");
-			player.sendMessage(" §7/" + cmdStr + " arena disable <arena name> §8- §9disables an duel arena");
-			player.sendMessage(" §7/" + cmdStr + " arena enable  <arena name> §8- §9enables an duel arena");
-			player.sendMessage(" §7/" + cmdStr + " kit save §8- §9saves your current inventory as new kit");
-			player.sendMessage(" §7/" + cmdStr + " kit editor §8- §9opens kit editor gui");
-			player.sendMessage(" §7/" + cmdStr + " setlobby §8- §9sets lobby location to teleport players after duel game");
-			player.sendMessage(" §7/" + cmdStr + " teststart <player 1> <player 2>§8- §9instantly starts a duel game between two players without invite.");
-			player.sendMessage("");
-			player.sendMessage("§nMasterDuels v" + plugin.getDescription().getVersion());
+			MessageUtils.sendMessage(player, "duel-command.admin.usage");
 			return false;
 		}
 
@@ -73,7 +65,8 @@ public class DuelAdminCMD implements CommandExecutor {
 		} else if (args[0].equalsIgnoreCase("setlobby")) {
 			SerializerUtils.serializeLocationYAML(plugin.getDatabaseHandler().getData().createSection("lobby-location"), player.getLocation());
 			plugin.getDatabaseHandler().saveDataFile();
-			player.sendMessage("§aLobby set successfully!");
+			MessageUtils.sendMessage(player, "duel-command.admin.lobby-set");
+
 		} else if (args[0].equalsIgnoreCase("kit")) {
 			if (args.length == 1) {
 				MessageUtils.sendMessage(player, "kit.usage");
@@ -84,6 +77,7 @@ public class DuelAdminCMD implements CommandExecutor {
 			} else if (args[1].equalsIgnoreCase("save")) {
 				kitSave(player, Arrays.asList(args));
 			}
+
 		} else if (args[0].equalsIgnoreCase("arena")) {
 			if (args.length == 1) {
 				MessageUtils.sendMessage(player, "duel-command.arena.usage");
@@ -93,13 +87,36 @@ public class DuelAdminCMD implements CommandExecutor {
 				toggleArena(player, Arrays.asList(args), false);
 			} else if (args[1].equalsIgnoreCase("enable")) {
 				toggleArena(player, Arrays.asList(args), true);
+			} else if (args[1].equalsIgnoreCase("cancel")) {
+				cancelCmd(player, Arrays.asList(args));
 			}
 			return true;
+
 		} else if (args[0].equalsIgnoreCase("teststart")) {
 			testStart(player, Arrays.asList(args));
 			return true;
+
 		}
 		return true;
+	}
+
+	private void cancelCmd(final Player player, final List<String> args) {
+		if (args.size() == 2) {
+			//dueladmin arena cancel arena1 -all
+			MessageUtils.sendMessage(player, "");
+		} else if (args.size() == 3) {
+			cancelGame(DataHandler.getArenaFromName(args.get(2)));
+		} else if (args.get(3).equalsIgnoreCase("-all")) {
+			for (final Arena arena : DataHandler.getArenas().keySet()) {
+				cancelGame(arena);
+			}
+		}
+	}
+
+	private void cancelGame(Arena arena) {
+		Game game = DataHandler.getArenas().get(arena);
+		if (game == null) return;
+		game.uninstallGame();
 	}
 
 	private void testStart(final Player player, final List<String> args) {
@@ -111,20 +128,27 @@ public class DuelAdminCMD implements CommandExecutor {
 		final Player p1 = Bukkit.getPlayerExact(args.get(1));
 		final Player p2 = Bukkit.getPlayerExact(args.get(2));
 		if (p1 == null || p2 == null) {
-			player.sendMessage("§cA player is not online");
+			player.sendMessage("§cA player is not online.");
 			return;
 		}
 
-		final GameBuilder gameBuilder = new GameBuilder(plugin);
-		gameBuilder.addPlayer(p2);
-		gameBuilder.setFinishTime(1440);
-		gameBuilder.build().startGame();
+		final GameBuilder gameBuilder = Game.create(plugin).setTeamSize(1).setTeamAmount(2).setFinishTime(1440);
+		if (gameBuilder.addPlayer(p1) && gameBuilder.addPlayer(p2)) {
+			Game game = gameBuilder.build();
+			if (game != null) {
+				game.startGame();
+			} else {
+				MessageUtils.sendMessage(player, "no-arena-found");
+			}
+		} else {
+			throw new IllegalStateException("players could not added to game builder");
+		}
 
 	}
 
 	private void toggleArena(Player player, List<String> args, boolean toggleState) {
 		if (args.size() < 3) {
-			MessageUtils.sendMessage(player, "duel-command.arena-toggle." + (toggleState ? "enable" : "disable") + "-usage");
+			MessageUtils.sendMessage(player, "duel-command.arena.toggle.usage." + (toggleState ? "enable" : "disable"));
 			return;
 		}
 
