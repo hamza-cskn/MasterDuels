@@ -57,7 +57,6 @@ public class DuelQueueTemplate {
 
 	public static boolean removeQueueTemplate(String name) {
 		final DuelQueueTemplate template = getQueueTemplateFromName(name);
-		if (template == null) return false;
 		return queueTemplates.remove(template);
 	}
 
@@ -67,7 +66,7 @@ public class DuelQueueTemplate {
 				return duelQueueTemplate;
 			}
 		}
-		return null;
+		throw new IllegalArgumentException("queue template could not found: " + name);
 	}
 
 	public void createNewQueue() {

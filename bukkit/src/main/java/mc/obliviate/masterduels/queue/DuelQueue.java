@@ -34,7 +34,7 @@ public class DuelQueue implements IDuelQueue {
 		return availableQueues;
 	}
 
-	public static DuelQueue findQueueOfPlayer(Player player) {
+	public static DuelQueue findQueueOfPlayer(Player player) { //fixme change that usage
 		for (DuelQueue queue : availableQueues.values()) {
 			if (queue.builder.getPlayers().contains(player)) return queue;
 		}

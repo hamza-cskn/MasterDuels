@@ -29,7 +29,7 @@ public class DuelQueueListGUI extends Gui implements Listener {
 	public DuelQueueListGUI(Player player) {
 		super(player, "duel-queue-list-gui", guiConfig.title, guiConfig.size);
 
-		getPaginationManager().registerSlotsBetween(0, 27);
+		getPaginationManager().registerSlotsBetween(9, 27);
 
 		calculateIcons();
 		getPaginationManager().firstPage();
