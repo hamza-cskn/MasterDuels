@@ -99,12 +99,12 @@ public class MasterDuels extends JavaPlugin {
 	}
 
 	private void setupHandlers() {
+		new TABManager(this);
 		yamlStorageHandler.init();
 		inventoryAPI.init();
 		setupArenaClearHandler();
 		scoreboardManager = new ScoreboardManager(this);
 		HCore.initialize(this);
-		new TABManager(this);
 		duelQueueHandler.init();
 		if (yamlStorageHandler.getConfig().getBoolean("optimize-duel-worlds", false)) {
 			worldOptimizerHandler.init();

@@ -10,8 +10,6 @@ public class TABManager {
 
 	public TABManager(final MasterDuels plugin) {
 
-		if (!plugin.getDatabaseHandler().getConfig().getBoolean("bossbars.enabled")) return;
-
 		if (Bukkit.getServer().getPluginManager().isPluginEnabled("TAB")) {
 			try {
 				Class.forName("me.neznamy.tab.api.TabAPI");
