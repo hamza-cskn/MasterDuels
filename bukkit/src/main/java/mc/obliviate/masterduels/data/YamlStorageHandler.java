@@ -262,7 +262,6 @@ public class YamlStorageHandler {
 		if (config.getBoolean("boss-bars.enabled", false)) {
 
 			BossBarHandler.BossBarModule module = BossBarHandler.BossBarModule.DISABLED;
-			;
 			switch (config.getString("boss-bars.mode")) {
 				case "INTERNAL":
 					if (ServerVersionController.isServerVersionAbove(ServerVersionController.V1_8)) {

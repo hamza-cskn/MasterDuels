@@ -71,11 +71,13 @@ public class MasterDuels extends JavaPlugin {
 		Logger.debug("Master Duels v" + getDescription().getVersion() + " loading process initializing...");
 		Logger.debug("Obfuscate: " + checkObfuscated());
 		Bukkit.getLogger().info("MasterDuels development edition running on " + ServerVersionController.getServerVersion() + " - build " + getDescription().getVersion());
+
 		setupHandlers();
 		registerListeners();
 		registerCommands();
 		setupTimers();
 		loadKits();
+
 		shutdownMode = false;
 		startMetrics();
 

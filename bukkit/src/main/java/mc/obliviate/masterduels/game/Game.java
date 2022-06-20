@@ -60,7 +60,7 @@ public class Game implements IGame {
 	private final RoundData roundData = new RoundData();
 	private final GameSpectatorManager spectatorManager = new GameSpectatorManager(this);
 	private final GameBuilder gameBuilder;
-	private final IBossBarManager bossBarManager = BossBarHandler.getBossBarManager(this);
+	private final IBossBarManager bossBarManager = BossBarHandler.createBossBarManager(this);
 	private final GameHistoryLog gameHistoryLog = new GameHistoryLog();
 	private long timer;
 	private GameState gameState = GameState.GAME_STARING;
