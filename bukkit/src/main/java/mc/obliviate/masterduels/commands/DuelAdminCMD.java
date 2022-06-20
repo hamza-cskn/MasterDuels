@@ -133,18 +133,17 @@ public class DuelAdminCMD implements CommandExecutor {
 		}
 
 		final GameBuilder gameBuilder = Game.create(plugin).setTeamSize(1).setTeamAmount(2).setFinishTime(1440);
-		if (gameBuilder.addPlayer(p1) && gameBuilder.addPlayer(p2)) {
-			Game game = gameBuilder.build();
-			if (game != null) {
-				game.startGame();
-			} else {
-				MessageUtils.sendMessage(player, "no-arena-found");
-			}
-		} else {
-			throw new IllegalStateException("players could not added to game builder");
-		}
+		gameBuilder.addPlayer(p1);
+		gameBuilder.addPlayer(p2);
 
+		final Game game = gameBuilder.build();
+		if (game != null) {
+			game.startGame();
+		} else {
+			MessageUtils.sendMessage(player, "no-arena-found");
+		}
 	}
+
 
 	private void toggleArena(Player player, List<String> args, boolean toggleState) {
 		if (args.size() < 3) {
