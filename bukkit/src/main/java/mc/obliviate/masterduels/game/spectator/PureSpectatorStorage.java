@@ -119,7 +119,7 @@ public class PureSpectatorStorage implements ISpectatorStorage {
 
 	@Override
 	public boolean isSpectator(Player player) {
-		return spectators.contains(player);
+		return findSpectator(player) != null;
 	}
 
 
