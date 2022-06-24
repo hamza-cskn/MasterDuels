@@ -2,6 +2,7 @@ package mc.obliviate.masterduels.utils.notify;
 
 import com.hakan.core.HCore;
 import com.hakan.core.message.title.HTitle;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
@@ -14,11 +15,11 @@ public class TitleNotify implements NotifyAction {
 	}
 
 	public TitleNotify(ConfigurationSection section) {
-		this(section.getString("title"),
-				section.getString("subtitle"),
-				section.getInt("fadein"),
-				section.getInt("stay"),
-				section.getInt("fadeout"));
+		this(ChatColor.translateAlternateColorCodes('&', section.getString("title", "")),
+				ChatColor.translateAlternateColorCodes('&', section.getString("subtitle", "")),
+				section.getInt("fadein", 0),
+				section.getInt("stay", 20),
+				section.getInt("fadeout", 0));
 	}
 
 	@Override
