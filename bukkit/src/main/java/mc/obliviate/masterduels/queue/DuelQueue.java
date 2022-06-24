@@ -16,6 +16,7 @@ import java.util.Map;
 public class DuelQueue implements IDuelQueue {
 
 	private static final Map<DuelQueueTemplate, DuelQueue> availableQueues = new HashMap<>();
+	private boolean locked = false;
 	private final DuelQueueTemplate template;
 	private final MatchBuilder builder;
 
@@ -77,8 +78,13 @@ public class DuelQueue implements IDuelQueue {
 	 * queue leaves from available duel queue list.
 	 */
 	public void lock() {
+		locked = true;
 		availableQueues.remove(template);
 		template.createNewQueue();
+	}
+
+	public boolean isLocked() {
+		return locked;
 	}
 
 	public String getName() {

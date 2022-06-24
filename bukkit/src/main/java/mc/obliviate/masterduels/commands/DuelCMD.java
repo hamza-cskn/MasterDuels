@@ -134,6 +134,14 @@ public class DuelCMD implements CommandExecutor {
 				return;
 			}
 
+			DuelQueue currentQueue = DuelQueue.findQueueOfPlayer(player);
+			if (currentQueue != null) {
+				if (currentQueue.equals(queue)) return;
+				if (!currentQueue.isLocked()) {
+					currentQueue.removePlayer(player);
+				}
+			}
+
 			queue.addPlayer(player);
 			MessageUtils.sendMessage(player, "queue.joined",
 					new PlaceholderUtil()
