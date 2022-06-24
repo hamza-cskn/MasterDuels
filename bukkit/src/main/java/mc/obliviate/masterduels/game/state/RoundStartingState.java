@@ -11,6 +11,7 @@ import mc.obliviate.masterduels.kit.InventoryStorer;
 import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.Utils;
+import mc.obliviate.masterduels.utils.notify.NotifyActionStack;
 import org.bukkit.Location;
 
 import java.time.Duration;
@@ -118,8 +119,12 @@ public class RoundStartingState implements MatchState {
 	public void updateLock(final ITeam team, final int updateNo) {
 		if (updateNo <= 0) return;
 
-		Object notifyAction = getNotifyAction(roundStartTime - System.currentTimeMillis());
-		if (notifyAction != null) return; //do notify action
+		NotifyActionStack notifyAction = getNotifyAction(roundStartTime - System.currentTimeMillis());
+		if (notifyAction != null) {
+			for (IMember member : team.getMembers()) {
+				notifyAction.run(member.getPlayer());
+			}
+		}
 
 		teleportToLockPosition(team);
 
@@ -128,8 +133,8 @@ public class RoundStartingState implements MatchState {
 		}, 20 / LOCK_FREQUENCY);
 	}
 
-	public Object getNotifyAction(long remainingTime) { //todo notify action
-		return null;
+	public NotifyActionStack getNotifyAction(long remainingTime) {
+		return NotifyActionStack.getActionAt(remainingTime);
 	}
 
 	@Override
