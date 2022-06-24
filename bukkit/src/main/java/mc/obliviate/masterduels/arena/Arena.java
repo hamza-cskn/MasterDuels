@@ -72,8 +72,8 @@ public class Arena implements IArena {
 			}
 		}
 
-		switch (game.getGameState()) {
-			case BATTLE:
+		switch (game.getGameState().getGameStateType()) {
+			case PLAYING:
 				return PLAYING;
 			case GAME_ENDING:
 			case UNINSTALLING:
