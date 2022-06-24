@@ -117,13 +117,13 @@ public class RoundStartingState implements MatchState {
 	 * @param updateNo
 	 */
 	public void updateLock(final ITeam team, final int updateNo) {
-		if (updateNo <= 0) return;
+		if (updateNo <= 0) {
+			runNotifyActionForTeam(team);
+			return;
+		}
 
-		NotifyActionStack notifyAction = getNotifyAction(roundStartTime - System.currentTimeMillis());
-		if (notifyAction != null) {
-			for (IMember member : team.getMembers()) {
-				notifyAction.run(member.getPlayer());
-			}
+		if (updateNo % LOCK_FREQUENCY == 0) {
+			runNotifyActionForTeam(team);
 		}
 
 		teleportToLockPosition(team);
@@ -133,7 +133,17 @@ public class RoundStartingState implements MatchState {
 		}, 20 / LOCK_FREQUENCY);
 	}
 
-	public NotifyActionStack getNotifyAction(long remainingTime) {
+	private void runNotifyActionForTeam(ITeam team) {
+		NotifyActionStack notifyAction = getNotifyAction(Math.max(roundStartTime - System.currentTimeMillis(), 0));
+		if (notifyAction != null) {
+			for (IMember member : team.getMembers()) {
+				notifyAction.run(member.getPlayer());
+			}
+		}
+
+	}
+
+	private NotifyActionStack getNotifyAction(long remainingTime) {
 		return NotifyActionStack.getActionAt(remainingTime);
 	}
 
