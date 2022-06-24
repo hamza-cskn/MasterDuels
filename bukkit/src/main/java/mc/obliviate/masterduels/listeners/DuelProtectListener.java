@@ -122,9 +122,9 @@ public class DuelProtectListener implements Listener {
 		final IMember member = DataHandler.getMember(e.getPlayer().getUniqueId());
 		if (member == null) return;
 
-		if (!member.getGame().getGameSpectatorManager().isSpectator(e.getPlayer())) {
+		if (!member.getMatch().getGameSpectatorManager().isSpectator(e.getPlayer())) {
 
-			final Arena arena = (Arena) member.getGame().getArena();
+			final Arena arena = (Arena) member.getMatch().getArena();
 			if (arena.getArenaCuboid().isIn(e.getBlock().getLocation())) return;
 
 			e.setCancelled(true);
@@ -144,9 +144,9 @@ public class DuelProtectListener implements Listener {
 		final IMember member = DataHandler.getMember(e.getPlayer().getUniqueId());
 		if (member == null) return;
 
-		final Arena arena = (Arena) member.getGame().getArena();
+		final Arena arena = (Arena) member.getMatch().getArena();
 
-		if (!member.getGame().getGameSpectatorManager().isSpectator(e.getPlayer())) {
+		if (!member.getMatch().getGameSpectatorManager().isSpectator(e.getPlayer())) {
 			if (arena.getArenaCuboid().isIn(e.getBlock().getLocation())) return;
 
 			e.setCancelled(true);

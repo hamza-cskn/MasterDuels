@@ -105,21 +105,20 @@ public class MasterDuels extends JavaPlugin {
 		yamlStorageHandler.init();
 		inventoryAPI.init();
 		setupArenaClearHandler();
-		scoreboardManager = new ScoreboardManager(this);
 		HCore.initialize(this);
 		scoreboardManager = new InternalScoreboardManager(this);
 		duelQueueHandler.init();
-		if (yamlStorageHandler.getConfig().getBoolean("optimize-duel-worlds", false)) {
+		if (YamlStorageHandler.getConfig().getBoolean("optimize-duel-worlds", false)) {
 			worldOptimizerHandler.init();
 		}
 		sqlManager.init();
 		setupVaultUtils();
 
-		Logger.setDebugModeEnabled(yamlStorageHandler.getConfig().getBoolean("debug", false));
+		Logger.setDebugModeEnabled(YamlStorageHandler.getConfig().getBoolean("debug", false));
 	}
 
 	private void setupArenaClearHandler() {
-		final String mode = yamlStorageHandler.getConfig().getString("arena-regeneration.mode", "SMART");
+		final String mode = YamlStorageHandler.getConfig().getString("arena-regeneration.mode", "SMART");
 		//SMART
 		if (!("ROLLBACKCORE".equals(mode) || "SLIMEWORLD".equals(mode) || "DISABLED".equals(mode))) {
 			arenaClearHandler = new SmartArenaClearHandler(this);

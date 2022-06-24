@@ -21,7 +21,6 @@ import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.notify.NotifyActionStack;
 import mc.obliviate.masterduels.utils.scoreboard.ScoreboardFormatConfig;
-import mc.obliviate.masterduels.utils.scoreboard.ScoreboardManager;
 import mc.obliviate.masterduels.utils.serializer.SerializerUtils;
 import mc.obliviate.masterduels.utils.tab.TABManager;
 import mc.obliviate.masterduels.utils.timer.TimerUtils;
@@ -264,7 +263,6 @@ public class YamlStorageHandler {
 			} else {
 				new ScoreboardFormatConfig(gameState, MessageUtils.parseColor(section.getString("live-opponent-format")), MessageUtils.parseColor(section.getString("dead-opponent-format")), MessageUtils.parseColor(section.getString("quit-opponent-format")), MessageUtils.parseColor(section.getString("title")), MessageUtils.parseColor(section.getStringList("lines")));
 			}
-			ScoreboardManager.getScoreboardLines().put(gameState, scoreboardFormatConfig);
 		}
 	}
 

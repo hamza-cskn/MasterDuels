@@ -7,7 +7,7 @@ public interface IMember extends IUser {
 
 	ITeam getTeam();
 
-	IMatch getGame();
+	IMatch getMatch();
 
 	IKit getKit();
 

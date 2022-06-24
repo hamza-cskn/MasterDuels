@@ -31,7 +31,7 @@ public class Member implements IMember {
 	}
 
 	@Override
-	public IMatch getGame() {
+	public IMatch getMatch() {
 		return team.getMatch();
 	}
 

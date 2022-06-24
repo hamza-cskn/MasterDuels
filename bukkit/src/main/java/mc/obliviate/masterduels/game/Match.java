@@ -103,6 +103,7 @@ public class Match implements IMatch {
 	}
 
 	public void setGameState(MatchState gameState) {
+		Bukkit.getPluginManager().callEvent(new MatchStateChangeEvent(this, this.gameState, gameState));
 		this.gameState = gameState;
 	}
 

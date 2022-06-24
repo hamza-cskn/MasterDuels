@@ -67,7 +67,7 @@ public class DuelCMD implements CommandExecutor {
 		} else if (args[0].equalsIgnoreCase("leave")) {
 			if (user instanceof Member) {
 				final Member member = ((Member) user);
-				member.getGame().getMatchState().leave(member); //todo add methods of game states to game.class
+				member.getMatch().getMatchState().leave(member); //todo add methods of game states to game.class
 				return true;
 			} else {
 				MessageUtils.sendMessage(player, "you-are-not-in-duel");

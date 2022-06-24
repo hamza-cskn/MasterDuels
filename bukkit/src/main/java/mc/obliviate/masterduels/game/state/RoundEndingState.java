@@ -1,8 +1,6 @@
 package mc.obliviate.masterduels.game.state;
 
 import mc.obliviate.masterduels.api.arena.MatchStateType;
-import mc.obliviate.masterduels.api.user.IMember;
-import mc.obliviate.masterduels.api.user.ISpectator;
 import mc.obliviate.masterduels.game.Match;
 
 public class RoundEndingState implements MatchState {
@@ -22,16 +20,6 @@ public class RoundEndingState implements MatchState {
 	@Override
 	public void next() {
 		new RoundStartingState(match);
-	}
-
-	@Override
-	public void leave(IMember player) {
-
-	}
-
-	@Override
-	public void leave(ISpectator player) {
-
 	}
 
 	@Override

@@ -32,7 +32,7 @@ public class RollbackListener implements Listener {
 	public void onBlockPlace(BlockPlaceEvent e) {
 		final IMember member = DataHandler.getMember(e.getPlayer().getUniqueId());
 		if (member == null) return;
-		final IArena arena = member.getGame().getArena();
+		final IArena arena = member.getMatch().getArena();
 		final Block block = e.getBlockPlaced();
 		final SmartArenaClear arenaClear = (SmartArenaClear) plugin.getArenaClearHandler().getArenaClear(arena.getName());
 		arenaClear.addBlock(block.getX(), block.getY(), block.getZ(), block.getWorld().getUID());
@@ -103,7 +103,7 @@ public class RollbackListener implements Listener {
 	public void onBucketEmpty(PlayerBucketEmptyEvent e) {
 		final IMember member = DataHandler.getMember(e.getPlayer().getUniqueId());
 		if (member == null) return;
-		final IArena arena = member.getGame().getArena();
+		final IArena arena = member.getMatch().getArena();
 		final Block block = e.getBlockClicked();
 		final BlockFace face = e.getBlockFace();
 		final SmartArenaClear arenaClear = (SmartArenaClear) plugin.getArenaClearHandler().getArenaClear(arena.getName());

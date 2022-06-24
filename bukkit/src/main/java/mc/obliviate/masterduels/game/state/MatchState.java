@@ -2,6 +2,7 @@ package mc.obliviate.masterduels.game.state;
 
 import mc.obliviate.masterduels.api.arena.IMatchState;
 import mc.obliviate.masterduels.api.arena.MatchStateType;
+import mc.obliviate.masterduels.api.events.DuelMatchMemberLeaveEvent;
 import mc.obliviate.masterduels.api.kit.IKit;
 import mc.obliviate.masterduels.api.user.IMember;
 import mc.obliviate.masterduels.api.user.ISpectator;
@@ -10,6 +11,7 @@ import mc.obliviate.masterduels.data.YamlStorageHandler;
 import mc.obliviate.masterduels.game.Match;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
