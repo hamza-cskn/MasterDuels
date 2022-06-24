@@ -1,11 +1,13 @@
 package mc.obliviate.masterduels.api.arena.spectator;
 
-import mc.obliviate.masterduels.api.user.IMember;
+import mc.obliviate.masterduels.api.user.ISpectator;
 import org.bukkit.entity.Player;
 
 import java.util.List;
 
 public interface ISpectatorStorage {
+
+	void unspectate(final ISpectator spectator);
 
 	void unspectate(final Player player);
 
@@ -13,11 +15,11 @@ public interface ISpectatorStorage {
 
 	boolean isSpectator(final Player player);
 
-	List<Player> getSpectatorList();
+	List<ISpectator> getSpectatorList();
 
 	default void unspectateAll() {
-		for (final Player player : getSpectatorList()) {
-			unspectate(player);
+		for (final ISpectator spectator : getSpectatorList()) {
+			unspectate(spectator);
 		}
 	}
 }

@@ -1,8 +1,8 @@
 package mc.obliviate.masterduels.api.events.spectator;
 
 import mc.obliviate.masterduels.api.arena.IGame;
-import mc.obliviate.masterduels.api.user.ISpectator;
 import mc.obliviate.masterduels.api.events.arena.GameEvent;
+import mc.obliviate.masterduels.api.user.ISpectator;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 

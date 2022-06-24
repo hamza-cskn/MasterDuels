@@ -1,5 +1,7 @@
 package mc.obliviate.masterduels.utils;
 
+import mc.obliviate.masterduels.MasterDuels;
+import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.utils.xmaterial.XMaterial;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -30,13 +32,26 @@ public class Utils {
 		}
 	}
 
-	public static String getDisplayName(OfflinePlayer player)  {
+	public static String getDisplayName(OfflinePlayer player) {
 		if (player instanceof Player) return getDisplayName(player.getPlayer());
 		return player.getName();
 	}
 
-	public static String getDisplayName(Player player)  {
+	public static String getDisplayName(Player player) {
 		return player.getDisplayName();
+	}
+
+	public static void teleportToLobby(final Player player) {
+		if (DataHandler.getLobbyLocation() != null) {
+			if (DataHandler.getLobbyLocation().getWorld() != null) {
+				if (!player.teleport(DataHandler.getLobbyLocation())) {
+					if (!MasterDuels.isInShutdownMode()) {
+						player.kickPlayer("You could not teleported to lobby.\n" + DataHandler.getLobbyLocation());
+						Logger.error("Player " + player.getName() + " could not teleported to lobby. MasterDuels kicked him.");
+					}
+				}
+			}
+		}
 	}
 
 }

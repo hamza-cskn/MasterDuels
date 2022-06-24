@@ -1,25 +1,32 @@
-package mc.obliviate.masterduels.game;
+package mc.obliviate.masterduels.game.team;
 
 import mc.obliviate.masterduels.api.arena.ITeamBuilder;
+import mc.obliviate.masterduels.game.Game;
+import mc.obliviate.masterduels.game.GameBuilder;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Deprecated
 public class TeamBuilderManager {
 
 	private final Map<Integer, ITeamBuilder> teams = new HashMap<>();
 	private final GameBuilder builder;
 
-	protected TeamBuilderManager(final GameBuilder builder) {
+	public TeamBuilderManager(final GameBuilder builder) {
 		this.builder = builder;
 	}
 
 	public void registerTeamsIntoGame(final Game game) {
 		for (final ITeamBuilder teamBuilder : teams.values()) {
-			game.registerTeam(teamBuilder.build(game));
+			registerTeamIntoGame(teamBuilder, game);
 		}
+	}
+
+	private void registerTeamIntoGame(ITeamBuilder builder, Game game) {
+		game.getGameDataStorage().getGameTeamManager().registerTeam(builder.build(game));
 	}
 
 	public GameBuilder getBuilder() {

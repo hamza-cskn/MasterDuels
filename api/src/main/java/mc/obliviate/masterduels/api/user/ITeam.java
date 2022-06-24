@@ -12,7 +12,9 @@ public interface ITeam {
 
 	List<IMember> getMembers();
 
-	void removeMember(IMember member);
+	void unregisterMember(IMember member);
+
+	void registerMember(IMember member);
 
 	int getTeamId();
 

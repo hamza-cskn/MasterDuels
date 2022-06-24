@@ -4,7 +4,6 @@ import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.api.arena.IGame;
 import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.arenaclear.IArenaClearHandler;
-import mc.obliviate.masterduels.game.Game;
 import org.bukkit.Bukkit;
 
 import java.util.HashMap;

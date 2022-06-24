@@ -1,17 +1,18 @@
 package mc.obliviate.masterduels.listeners;
 
+import com.google.common.base.Preconditions;
 import com.hakan.core.HCore;
 import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.api.arena.spectator.IGameSpectatorManager;
 import mc.obliviate.masterduels.api.user.IMember;
 import mc.obliviate.masterduels.api.user.IUser;
 import mc.obliviate.masterduels.data.DataHandler;
-import mc.obliviate.masterduels.game.spectator.GameSpectatorManager;
+import mc.obliviate.masterduels.game.state.GameState;
 import mc.obliviate.masterduels.user.spectator.Spectator;
 import mc.obliviate.masterduels.user.team.Member;
-import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -32,10 +33,15 @@ public class DamageListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onPreDeath(EntityDamageEvent e) {
 		if (!e.getEntityType().equals(EntityType.PLAYER)) {
-			if (e instanceof EntityDamageByEntityEvent && ((EntityDamageByEntityEvent) e).getDamager() instanceof Player) {
-				final IMember member = DataHandler.getMember((((EntityDamageByEntityEvent) e).getDamager()).getUniqueId());
-				if (member == null) return;
-				e.setCancelled(true);
+			if (e instanceof EntityDamageByEntityEvent) {
+
+				final Entity damager = ((EntityDamageByEntityEvent) e).getDamager();
+				if (damager instanceof Player) {
+					final IMember member = DataHandler.getMember(damager.getUniqueId());
+					if (member == null) return;
+					e.setCancelled(true);
+				}
+
 			}
 			return;
 		}
@@ -47,41 +53,40 @@ public class DamageListener implements Listener {
 
 		if (victimUser instanceof Member) {
 			final IMember victimMember = (Member) victimUser;
+
+			Preconditions.checkNotNull(victimMember.getTeam(), victim.getPlayer() + " team cannot be null");
+			Preconditions.checkNotNull(victimMember.getTeam().getGame(), victim.getPlayer() + "match cannot be null");
+
 			IMember attackerMember = null;
-
-			if (victimMember.getTeam() == null) Logger.error("Team is null! on damage listener");
-			if (victimMember.getTeam().getGame() == null) Logger.error("Game is null! on damage listener");
-
-
 			if (e instanceof EntityDamageByEntityEvent) {
-				if (((EntityDamageByEntityEvent) e).getDamager() instanceof Player) {
-					attackerMember = DataHandler.getMember(((EntityDamageByEntityEvent) e).getDamager().getUniqueId());
+
+				final Entity damager = ((EntityDamageByEntityEvent) e).getDamager();
+				if (damager instanceof Player) {
+
+					attackerMember = DataHandler.getMember(damager.getUniqueId());
 					if (attackerMember == null) {
 						e.setCancelled(true);
 						return;
 					}
+
 					if (attackerMember.getTeam().equals(victimMember.getTeam())) {
 						e.setCancelled(true);
-						//friendly protect
+						//friendly fire protect
 						return;
 					}
-					final IGameSpectatorManager spectatorData = victimMember.getTeam().getGame().getSpectatorManager();
+
+					final IGameSpectatorManager spectatorData = victimMember.getTeam().getGame().getGameSpectatorManager();
 					if (spectatorData.isSpectator(victim) || spectatorData.isSpectator(attackerMember.getPlayer())) {
 						e.setCancelled(true);
 						//spectator protect
 					}
-				} else if (((EntityDamageByEntityEvent) e).getDamager() instanceof Projectile) {
-					final Projectile projectile = (Projectile) ((EntityDamageByEntityEvent) e).getDamager();
+				} else if (damager instanceof Projectile) {
+					final Projectile projectile = (Projectile) damager;
 					if (projectile.getShooter() instanceof Player) {
 						attackerMember = DataHandler.getMember(((Player) projectile.getShooter()).getUniqueId());
 					}
 				}
 			}
-			if (e.getFinalDamage() >= victim.getHealth()) {
-				e.setCancelled(true);
-				victimMember.getTeam().getGame().onDeath(victimMember, attackerMember);
-			}
-		}
 
 			//todo find another way which is makes it without cast
 			GameState gameState = (GameState) victimMember.getTeam().getGame().getGameState();

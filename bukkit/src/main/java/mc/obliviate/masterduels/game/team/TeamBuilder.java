@@ -1,14 +1,13 @@
-package mc.obliviate.masterduels.game;
+package mc.obliviate.masterduels.game.team;
 
 import mc.obliviate.masterduels.api.arena.IGame;
 import mc.obliviate.masterduels.api.arena.ITeamBuilder;
-import mc.obliviate.masterduels.api.user.ITeam;
-import mc.obliviate.masterduels.user.team.Team;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 public class TeamBuilder implements ITeamBuilder {
 
 	private final int teamId;
@@ -34,10 +33,12 @@ public class TeamBuilder implements ITeamBuilder {
 		return teamId;
 	}
 
+	@Override
 	public void add(Player p) {
 		members.add(p);
 	}
 
+	@Override
 	public void remove(Player p) {
 		members.remove(p);
 	}

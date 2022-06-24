@@ -5,7 +5,6 @@ import mc.obliviate.masterduels.api.arena.IArena;
 import mc.obliviate.masterduels.api.user.IMember;
 import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.data.DataHandler;
-import mc.obliviate.masterduels.user.team.Member;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;

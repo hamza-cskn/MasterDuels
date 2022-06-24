@@ -2,7 +2,6 @@ package mc.obliviate.masterduels.listeners;
 
 import mc.obliviate.masterduels.api.user.IMember;
 import mc.obliviate.masterduels.data.DataHandler;
-import mc.obliviate.masterduels.user.team.Member;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;

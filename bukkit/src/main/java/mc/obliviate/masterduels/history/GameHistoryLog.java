@@ -4,8 +4,6 @@ import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.api.user.IMember;
 import mc.obliviate.masterduels.api.user.ITeam;
 import mc.obliviate.masterduels.game.Game;
-import mc.obliviate.masterduels.user.team.Member;
-import mc.obliviate.masterduels.user.team.Team;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -40,10 +38,10 @@ public class GameHistoryLog implements HistoryLog {
 
 		final List<UUID> losers = new ArrayList<>();
 		final List<UUID> winners = new ArrayList<>();
-		for (final ITeam team : game.getTeams().values()) {
+		for (final ITeam team : game.getGameDataStorage().getGameTeamManager().getTeams()) {
 			final List<UUID> list;
 
-			if (game.checkTeamEliminated(team)) list = losers;
+			if (game.getGameDataStorage().getGameTeamManager().checkTeamEliminated(team)) list = losers;
 			else list = winners;
 
 			for (final IMember member : team.getMembers()) {
@@ -52,14 +50,14 @@ public class GameHistoryLog implements HistoryLog {
 		}
 		setLosers(losers);
 		setWinners(winners);
-		save(game.getPlugin());
+		save(MasterDuels.getInstance());
 
 		//save statistics
 		for (final UUID winner : winners) {
-			game.getPlugin().getSqlManager().addWin(winner, 1);
+			MasterDuels.getInstance().getSqlManager().addWin(winner, 1);
 		}
 		for (final UUID loser : losers) {
-			game.getPlugin().getSqlManager().addLose(loser, 1);
+			MasterDuels.getInstance().getSqlManager().addLose(loser, 1);
 		}
 		setWinners(winners);
 		setLosers(losers);

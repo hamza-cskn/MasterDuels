@@ -7,8 +7,8 @@ import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.arena.BasicArenaState;
 import mc.obliviate.masterduels.arenaclear.modes.smart.SmartArenaClear;
 import mc.obliviate.masterduels.bossbar.BossBarHandler;
-import mc.obliviate.masterduels.game.Game;
 import mc.obliviate.masterduels.game.GameCreator;
+import mc.obliviate.masterduels.game.GameDataStorage;
 import mc.obliviate.masterduels.gui.DuelArenaListGUI;
 import mc.obliviate.masterduels.gui.DuelHistoryLogGUI;
 import mc.obliviate.masterduels.history.GameHistoryLog;
@@ -33,6 +33,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -46,9 +47,9 @@ public class YamlStorageHandler {
 	private static final String QUEUES_FILE_NAME = "queues.yml";
 	private static File dataFile;
 	private final MasterDuels plugin;
-	private YamlConfiguration data;
-	private YamlConfiguration queues;
-	private YamlConfiguration config;
+	private static YamlConfiguration data;
+	private static YamlConfiguration queues;
+	private static YamlConfiguration config;
 
 	public YamlStorageHandler(final MasterDuels plugin) {
 		this.plugin = plugin;

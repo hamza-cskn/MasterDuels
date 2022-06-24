@@ -11,7 +11,7 @@ public class InventoryStorer {
 	private static final Map<UUID, PlayerInventoryFrame> inventories = new HashMap<>();
 
 	/**
-	 * @return restore is success or not.
+	 * @return true if restore is success.
 	 */
 	public static boolean restore(final Player player) {
 		if (player == null) return false;

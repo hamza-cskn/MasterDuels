@@ -1,18 +1,22 @@
 package mc.obliviate.masterduels.user.team;
 
 import mc.obliviate.masterduels.api.arena.IGame;
+import mc.obliviate.masterduels.api.kit.IKit;
 import mc.obliviate.masterduels.api.user.IMember;
+import mc.obliviate.masterduels.api.user.ITeam;
 import mc.obliviate.masterduels.data.DataHandler;
 import org.bukkit.entity.Player;
 
 public class Member implements IMember {
 
-	private final Team team;
 	private final Player player;
+	private final ITeam team;
+	private final IKit kit;
 
-	public Member(final Team team, final Player player) {
+	public Member(final Player player, final ITeam team, IKit kit) {
 		this.team = team;
 		this.player = player;
+		this.kit = kit;
 		DataHandler.getUsers().put(player.getUniqueId(), this);
 	}
 
@@ -21,7 +25,8 @@ public class Member implements IMember {
 		return player;
 	}
 
-	public Team getTeam() {
+	@Override
+	public ITeam getTeam() {
 		return team;
 	}
 
@@ -29,4 +34,10 @@ public class Member implements IMember {
 	public IGame getGame() {
 		return team.getGame();
 	}
+
+	@Override
+	public IKit getKit() {
+		return kit;
+	}
+
 }

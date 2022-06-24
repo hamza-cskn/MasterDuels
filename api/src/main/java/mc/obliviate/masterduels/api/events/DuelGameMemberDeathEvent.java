@@ -4,17 +4,24 @@ import mc.obliviate.masterduels.api.arena.IGame;
 import mc.obliviate.masterduels.api.user.IMember;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.bukkit.event.entity.EntityDamageEvent;
 
 public class DuelGameMemberDeathEvent extends Event {
 
 	private static final HandlerList handlers = new HandlerList();
 
+	private final EntityDamageEvent entityDamageEvent;
 	private final IMember victim;
 	private final IMember attacker;
 
-	public DuelGameMemberDeathEvent(IMember victim, IMember attacker) {
+	public DuelGameMemberDeathEvent(EntityDamageEvent entityDamageEvent, IMember victim, IMember attacker) {
+		this.entityDamageEvent = entityDamageEvent;
 		this.victim = victim;
 		this.attacker = attacker;
+	}
+
+	public EntityDamageEvent getEntityDamageEvent() {
+		return entityDamageEvent;
 	}
 
 	public static HandlerList getHandlerList() {

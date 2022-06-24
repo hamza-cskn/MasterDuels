@@ -11,7 +11,6 @@ import mc.obliviate.masterduels.game.GameDataStorage;
 import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.Utils;
 import mc.obliviate.masterduels.utils.timer.TimerUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import static mc.obliviate.masterduels.bossbar.BossBarHandler.CLOSING_TEXT_FORMAT;

@@ -2,7 +2,7 @@ package mc.obliviate.masterduels.kit.gui;
 
 import mc.obliviate.inventory.Gui;
 import mc.obliviate.inventory.Icon;
-import mc.obliviate.masterduels.game.GameBuilder;
+import mc.obliviate.masterduels.api.arena.IGameBuilder;
 import mc.obliviate.masterduels.kit.Kit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryOpenEvent;
@@ -12,15 +12,15 @@ import java.util.List;
 
 public class KitSelectionGUI extends Gui {
 
-	private final GameBuilder builder;
+	private final IGameBuilder builder;
 	private final KitSelectResponse response;
 	private final List<Kit> allowedKits;
 
-	public KitSelectionGUI(Player player, GameBuilder builder, KitSelectResponse response) {
+	public KitSelectionGUI(Player player, IGameBuilder builder, KitSelectResponse response) {
 		this(player, builder, response, null);
 	}
 
-	public KitSelectionGUI(Player player, GameBuilder builder, KitSelectResponse response, List<Kit> allowedKits) {
+	public KitSelectionGUI(Player player, IGameBuilder builder, KitSelectResponse response, List<Kit> allowedKits) {
 		super(player, "kit-selection-gui", "Select a kit", 6);
 		this.builder = builder;
 		this.response = response;

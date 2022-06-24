@@ -10,7 +10,6 @@ import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -18,8 +17,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockMultiPlaceEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.InventoryHolder;
 
@@ -107,7 +104,7 @@ public class DuelProtectListener implements Listener {
 		final IMember member = DataHandler.getMember(e.getPlayer().getUniqueId());
 		if (member == null || e.getPlayer().isOp()) return;
 		if (e.getMessage().startsWith("/")) {
-			if (!plugin.getDatabaseHandler().getConfig().getStringList("executable-commands-by-player." + member.getTeam().getGame().getGameState().name()).contains(e.getMessage())) {
+			if (!YamlStorageHandler.getConfig().getStringList("executable-commands-by-player." + member.getTeam().getGame().getGameState().getGameStateType().name()).contains(e.getMessage())) {
 				e.setCancelled(true);
 				MessageUtils.sendMessage(e.getPlayer(), "command-is-blocked", new PlaceholderUtil().add("{command}", e.getMessage()));
 			}
@@ -122,19 +119,20 @@ public class DuelProtectListener implements Listener {
 
 	@EventHandler(ignoreCancelled = true)
 	public void onBreak(final BlockBreakEvent e) {
-		final IUser user = DataHandler.getUser(e.getPlayer().getUniqueId());
-		if (user == null) return;
+		final IMember member = DataHandler.getMember(e.getPlayer().getUniqueId());
+		if (member == null) return;
 
-		final Arena arena = (Arena) user.getGame().getArena();
+		if (!member.getGame().getGameSpectatorManager().isSpectator(e.getPlayer())) {
 
-		if (!user.getGame().getSpectatorManager().isSpectator(e.getPlayer())) {
-			if (!arena.getArenaCuboid().isIn(e.getBlock().getLocation())) {
-				e.setCancelled(true);
-				MessageUtils.sendMessage(e.getPlayer(), "you-can-not-break");
-				if (teleportBackWhenLimitViolate) {
-					e.getPlayer().teleport(arena.getPositions().get("spawn-team-1").getLocation(1));
-				}
+			final Arena arena = (Arena) member.getGame().getArena();
+			if (arena.getArenaCuboid().isIn(e.getBlock().getLocation())) return;
+
+			e.setCancelled(true);
+			MessageUtils.sendMessage(e.getPlayer(), "you-can-not-break");
+			if (teleportBackWhenLimitViolate) {
+				e.getPlayer().teleport(arena.getPositions().get("spawn-team-1").getLocation(1));
 			}
+
 		} else {
 			e.setCancelled(true);
 			MessageUtils.sendMessage(e.getPlayer(), "you-can-not-break");
@@ -143,46 +141,29 @@ public class DuelProtectListener implements Listener {
 
 	@EventHandler(ignoreCancelled = true)
 	public void onPlace(final BlockPlaceEvent e) {
-		final IUser user = DataHandler.getUser(e.getPlayer().getUniqueId());
-		if (user == null) return;
+		final IMember member = DataHandler.getMember(e.getPlayer().getUniqueId());
+		if (member == null) return;
 
-		final Arena arena = (Arena) user.getGame().getArena();
+		final Arena arena = (Arena) member.getGame().getArena();
 
-		if (!user.getGame().getSpectatorManager().isSpectator(e.getPlayer())) {
-			if (!arena.getArenaCuboid().isIn(e.getBlock().getLocation())) {
-				e.setCancelled(true);
-				MessageUtils.sendMessage(e.getPlayer(), "you-can-not-place");
-				if (teleportBackWhenLimitViolate) {
-					e.getPlayer().teleport(arena.getPositions().get("spawn-team-1").getLocation(1));
-				}
+		if (!member.getGame().getGameSpectatorManager().isSpectator(e.getPlayer())) {
+			if (arena.getArenaCuboid().isIn(e.getBlock().getLocation())) return;
+
+			e.setCancelled(true);
+			MessageUtils.sendMessage(e.getPlayer(), "you-can-not-place");
+			if (teleportBackWhenLimitViolate) {
+				e.getPlayer().teleport(arena.getPositions().get("spawn-team-1").getLocation(1));
 			}
+
 		} else {
 			e.setCancelled(true);
 			MessageUtils.sendMessage(e.getPlayer(), "you-can-not-break");
 		}
 	}
 
-	@EventHandler
-	public void onDamage(final EntityDamageEvent e) {
-		if (e.getEntity().getType().equals(EntityType.PLAYER)) {
-			final IUser user = DataHandler.getUser(e.getEntity().getUniqueId());
-			if (user == null) return;
 
-			if (user.getGame().getSpectatorManager().isSpectator((Player) e.getEntity())) {
-				e.setCancelled(true);
-				return;
-			}
+	//todo victim is in duel
+	// attacker isn't in duel
+	// cancel it.
 
-			if (e instanceof EntityDamageByEntityEvent) {
-				if (((EntityDamageByEntityEvent) e).getDamager() instanceof Player) {
-					if (!isUser(((EntityDamageByEntityEvent) e).getDamager())) {
-						//victim is in duel
-						//attacker isn't in duel
-						//cancel it.
-						e.setCancelled(true);
-					}
-				}
-			}
-		}
-	}
 }

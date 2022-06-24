@@ -1,6 +1,8 @@
 package mc.obliviate.masterduels.commands;
 
 import mc.obliviate.masterduels.MasterDuels;
+import mc.obliviate.masterduels.api.arena.IGame;
+import mc.obliviate.masterduels.api.arena.IGameBuilder;
 import mc.obliviate.masterduels.api.invite.InviteState;
 import mc.obliviate.masterduels.api.user.IMember;
 import mc.obliviate.masterduels.api.user.IUser;
@@ -32,6 +34,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -70,8 +73,6 @@ public class DuelCMD implements CommandExecutor {
 				MessageUtils.sendMessage(player, "you-are-not-in-duel");
 				return false;
 			}
-			user.getGame().leave(user);
-			return true;
 		} else if (args[0].equalsIgnoreCase("top")) {
 			top(player, Arrays.asList(args));
 			return true;

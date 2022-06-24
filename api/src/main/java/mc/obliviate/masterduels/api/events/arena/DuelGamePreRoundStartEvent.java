@@ -1,7 +1,7 @@
 package mc.obliviate.masterduels.api.events.arena;
 
 import mc.obliviate.masterduels.api.arena.IGame;
-import mc.obliviate.masterduels.api.arena.IRoundData;
+import mc.obliviate.masterduels.api.arena.IGameRoundData;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
@@ -29,10 +29,10 @@ public class DuelGamePreRoundStartEvent extends Event implements GameEvent {
 	}
 
 	public int getNewRound() {
-		return game.getRoundData().getCurrentRound() + 1;
+		return game.getGameDataStorage().getGameRoundData().getCurrentRound() + 1;
 	}
 
-	public IRoundData getRoundData() {
-		return game.getRoundData();
+	public IGameRoundData getRoundData() {
+		return game.getGameDataStorage().getGameRoundData();
 	}
 }

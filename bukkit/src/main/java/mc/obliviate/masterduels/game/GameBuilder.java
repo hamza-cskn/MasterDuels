@@ -8,9 +8,11 @@ import mc.obliviate.masterduels.api.kit.IKit;
 import mc.obliviate.masterduels.api.user.IUser;
 import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.data.DataHandler;
+import mc.obliviate.masterduels.game.team.TeamBuilderManager;
 import mc.obliviate.masterduels.user.team.Member;
 import org.bukkit.entity.Player;
 
+import java.time.Duration;
 import java.util.*;
 
 public class GameBuilder implements IGameBuilder {
@@ -55,7 +57,7 @@ public class GameBuilder implements IGameBuilder {
 			throw new IllegalStateException("Game Builder already built before.");
 		}
 
-		final Game game = new Game(plugin, this, arena);
+		final Game game = new Game(arena, new GameDataStorage());
 
 		teamBuilderManager.registerTeamsIntoGame(game);
 
@@ -84,24 +86,24 @@ public class GameBuilder implements IGameBuilder {
 
 	@Override
 	public int getTeamSize() {
-		return gameDataStorage.getTeamSize();
+		return gameDataStorage.getGameTeamManager().getTeamSize();
 	}
 
 	@Override
 	public GameBuilder setTeamSize(int teamSize) {
-		gameDataStorage.setTeamSize(teamSize);
+		gameDataStorage.getGameTeamManager().setTeamSize(teamSize);
 		createRandomizedTeams();
 		return this;
 	}
 
 	@Override
 	public int getTeamAmount() {
-		return gameDataStorage.getTeamAmount();
+		return gameDataStorage.getGameTeamManager().getTeamAmount();
 	}
 
 	@Override
 	public GameBuilder setTeamAmount(int teamAmount) {
-		gameDataStorage.setTeamAmount(teamAmount);
+		gameDataStorage.getGameTeamManager().setTeamAmount(teamAmount);
 		createRandomizedTeams();
 		return this;
 	}
@@ -129,23 +131,23 @@ public class GameBuilder implements IGameBuilder {
 
 	@Override
 	public int getTotalRounds() {
-		return gameDataStorage.getTotalRounds();
+		return gameDataStorage.getGameRoundData().getTotalRounds();
 	}
 
 	@Override
 	public GameBuilder setTotalRounds(int totalRounds) {
-		gameDataStorage.setTotalRounds(totalRounds);
+		gameDataStorage.getGameRoundData().setTotalRounds(totalRounds);
 		return this;
 	}
 
 	@Override
-	public int getFinishTime() {
-		return gameDataStorage.getFinishTime();
+	public Duration getMatchDuration() {
+		return gameDataStorage.getMatchDuration();
 	}
 
 	@Override
-	public GameBuilder setFinishTime(int finishTime) {
-		gameDataStorage.setFinishTime(finishTime);
+	public GameBuilder setMatchDuration(Duration matchTime) {
+		gameDataStorage.setMatchDuration(matchTime);
 		return this;
 	}
 

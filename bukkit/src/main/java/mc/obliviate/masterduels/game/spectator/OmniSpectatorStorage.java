@@ -2,7 +2,9 @@ package mc.obliviate.masterduels.game.spectator;
 
 import mc.obliviate.masterduels.api.arena.spectator.ISpectatorStorage;
 import mc.obliviate.masterduels.api.user.IMember;
+import mc.obliviate.masterduels.api.user.ISpectator;
 import mc.obliviate.masterduels.game.Game;
+import mc.obliviate.masterduels.user.spectator.Spectator;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.playerreset.PlayerReset;
 import org.bukkit.Bukkit;
@@ -11,11 +13,12 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 
+//todo change name conversation with SemiSpectatorStorage
 public class OmniSpectatorStorage implements ISpectatorStorage {
 
 	protected static final PlayerReset playerReset = new PlayerReset().excludeExp().excludeLevel().excludeInventory().excludeTitle();
 	private final GameSpectatorManager gsm;
-	private final List<Player> spectators = new ArrayList<>();
+	private final List<ISpectator> spectators = new ArrayList<>();
 	private final Game game;
 
 	public OmniSpectatorStorage(GameSpectatorManager gsm, Game game) {
@@ -23,26 +26,42 @@ public class OmniSpectatorStorage implements ISpectatorStorage {
 		this.game = game;
 	}
 
+	private ISpectator findSpectator(Player player) {
+		for (final ISpectator spectator : spectators) {
+			if (spectator.getPlayer().equals(player)) {
+				return spectator;
+			}
+		}
+		return null;
+	}
+
 	@Override
-	public void unspectate(Player player) {
-		if (!spectators.remove(player)) return;
+	public void unspectate(ISpectator spectator) {
+		if (!spectators.remove(spectator)) return;
 
 		//Bukkit.getPluginManager().callEvent(new DuelGameSpectatorLeaveEvent(spectator));
 		Bukkit.broadcastMessage("omni spectator unspectate()");
-		playerReset.reset(player);
+		playerReset.reset(spectator.getPlayer());
 
 		for (final IMember member : game.getAllMembers()) {
-			member.getPlayer().showPlayer(player);
+			member.getPlayer().showPlayer(spectator.getPlayer());
 		}
+	}
 
-		//MessageAPI.getInstance(game.getPlugin()).sendTitle(player, TitleHandler.getTitle(TitleHandler.TitleType.SPECTATOR_LEAVE));
+	@Override
+	public void unspectate(Player player) {
+		final ISpectator spectator = findSpectator(player);
+		if (spectator == null) return;
+		unspectate(spectator);
 
 	}
 
 	@Override
 	public void spectate(Player player) {
-		if (spectators.contains(player)) return;
-		spectators.add(player);
+		final ISpectator spectator = findSpectator(player);
+		if (spectator != null) return;
+
+		spectators.add(new Spectator(null, player));
 
 		/*final DuelGamePreSpectatorJoinEvent duelGamePreSpectatorJoinEvent = new DuelGamePreSpectatorJoinEvent(player, game);
 		Bukkit.getPluginManager().callEvent(duelGamePreSpectatorJoinEvent);
@@ -57,9 +76,9 @@ public class OmniSpectatorStorage implements ISpectatorStorage {
 			member.getPlayer().hidePlayer(player);
 		}
 
-		for (final Player spec : gsm.getAllSpectators()) {
-			spec.showPlayer(player);
-			player.showPlayer(spec);
+		for (final ISpectator spec : gsm.getAllSpectators()) {
+			spec.getPlayer().showPlayer(player);
+			player.showPlayer(spec.getPlayer());
 		}
 
 		player.setAllowFlight(true);
@@ -76,7 +95,7 @@ public class OmniSpectatorStorage implements ISpectatorStorage {
 	}
 
 	@Override
-	public List<Player> getSpectatorList() {
+	public List<ISpectator> getSpectatorList() {
 		return spectators;
 	}
 }

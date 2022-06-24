@@ -3,7 +3,9 @@ package mc.obliviate.masterduels.utils.optimization;
 import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.data.DataHandler;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class ArenaWorldOptimizerHandler {
 

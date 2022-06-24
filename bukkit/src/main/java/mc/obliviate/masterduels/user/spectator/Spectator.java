@@ -1,20 +1,18 @@
 package mc.obliviate.masterduels.user.spectator;
 
-import mc.obliviate.masterduels.api.user.IUser;
-import mc.obliviate.masterduels.data.DataHandler;
+import mc.obliviate.masterduels.api.user.ISpectator;
 import mc.obliviate.masterduels.game.Game;
-import mc.obliviate.masterduels.game.spectator.SpectatorHandler;
 import org.bukkit.entity.Player;
 
 /**
  * Purpose of this class
  * storing PURE SPECTATOR players.
- *
+ * <p>
  * PURE SPECTATORS
  * Spectator players from out of game,
  * not member.
  */
-public class Spectator implements IUser {
+public class Spectator implements ISpectator {
 
 	private final Game game;
 	private final Player player;
@@ -22,8 +20,6 @@ public class Spectator implements IUser {
 	public Spectator(Game game, Player player) {
 		this.game = game;
 		this.player = player;
-		SpectatorHandler.giveSpectatorItems(player);
-		DataHandler.getUsers().put(player.getUniqueId(), this);
 	}
 
 	@Override

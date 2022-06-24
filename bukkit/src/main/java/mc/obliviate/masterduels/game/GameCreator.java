@@ -34,6 +34,7 @@ public class GameCreator {
 	public static int MIN_GAME_TIME;
 	public static int MAX_ROUNDS;
 	public static int MIN_ROUNDS;
+
 	private final Map<UUID, Invite> invites = new HashMap<>();
 	private final UUID ownerPlayer;
 	private final GameBuilder builder;

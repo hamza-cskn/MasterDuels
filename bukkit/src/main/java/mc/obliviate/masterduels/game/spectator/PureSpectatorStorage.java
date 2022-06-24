@@ -31,7 +31,7 @@ import static mc.obliviate.masterduels.game.spectator.OmniSpectatorStorage.playe
 public class PureSpectatorStorage implements ISpectatorStorage {
 
 	private final GameSpectatorManager gsm;
-	private final List<Player> spectators = new ArrayList<>();
+	private final List<ISpectator> spectators = new ArrayList<>();
 	private final Game game;
 
 	public PureSpectatorStorage(GameSpectatorManager gsm, Game game) {
@@ -39,32 +39,43 @@ public class PureSpectatorStorage implements ISpectatorStorage {
 		this.game = game;
 	}
 
+	private ISpectator findSpectator(Player player) {
+		for (final ISpectator spectator : spectators) {
+			if (spectator.getPlayer().equals(player)) {
+				return spectator;
+			}
+		}
+		return null;
+	}
 
 	@Override
-	public void unspectate(Player player) {
-		if (!spectators.remove(player)) return;
-
-		final ISpectator spectator = DataHandler.getSpectator(player.getUniqueId());
-		if (spectator == null) return;
+	public void unspectate(ISpectator spectator) {
+		if (!spectators.remove(spectator)) return;
 
 		Bukkit.getPluginManager().callEvent(new DuelGameSpectatorLeaveEvent(spectator));
 		Bukkit.broadcastMessage("pure spectator unspectate()");
-		playerReset.reset(player);
+		playerReset.reset(spectator.getPlayer());
 
-		DataHandler.getUsers().remove(player.getUniqueId());
+		DataHandler.getUsers().remove(spectator.getPlayer().getUniqueId());
 		if (DataHandler.getLobbyLocation() != null) {
-			player.teleport(DataHandler.getLobbyLocation());
+			spectator.getPlayer().teleport(DataHandler.getLobbyLocation());
 		}
-		InventoryStorer.restore(player);
+		InventoryStorer.restore(spectator.getPlayer());
 		//MessageAPI.getInstance(game.getPlugin()).sendTitle(player, TitleHandler.getTitle(TitleHandler.TitleType.SPECTATOR_LEAVE));
-
 
 	}
 
 	@Override
+	public void unspectate(Player player) {
+		final ISpectator spectator = findSpectator(player);
+		if (spectator == null) return;
+		unspectate(spectator);
+	}
+
+	@Override
 	public void spectate(Player player) {
-		if (spectators.contains(player)) return;
-		spectators.add(player);
+		ISpectator spectator = findSpectator(player);
+		if (spectator != null) return;
 
 		final DuelGamePreSpectatorJoinEvent duelGamePreSpectatorJoinEvent = new DuelGamePreSpectatorJoinEvent(player, game);
 		Bukkit.getPluginManager().callEvent(duelGamePreSpectatorJoinEvent);
@@ -90,10 +101,9 @@ public class PureSpectatorStorage implements ISpectatorStorage {
 			}
 		}
 
-
-		for (final Player spec : gsm.getAllSpectators()) {
-			spec.showPlayer(player);
-			player.showPlayer(spec);
+		for (final ISpectator spec : gsm.getAllSpectators()) {
+			spec.getPlayer().showPlayer(player);
+			player.showPlayer(spec.getPlayer());
 		}
 
 		player.setAllowFlight(true);
@@ -114,7 +124,7 @@ public class PureSpectatorStorage implements ISpectatorStorage {
 
 
 	@Override
-	public List<Player> getSpectatorList() {
+	public List<ISpectator> getSpectatorList() {
 		return spectators;
 	}
 }
