@@ -19,14 +19,23 @@ import static mc.obliviate.masterduels.kit.Kit.USE_PLAYER_INVENTORIES;
 
 public class RoundStartingState implements MatchState {
 
-	private static final Duration LOCK_DURATION = Duration.ofSeconds(3);
-	private static final int LOCK_FREQUENCY = 2; //must be bigger than 0
+	private static Duration LOCK_DURATION = Duration.ofSeconds(3);
+	private static int LOCK_FREQUENCY = 5;
 	private long roundStartTime;
 	private final Match match;
 
 	public RoundStartingState(Match match) {
 		this.match = match;
 		init();
+	}
+
+	public static void setLockFrequency(int lockFrequency) {
+		if (lockFrequency > 0)
+			LOCK_FREQUENCY = lockFrequency;
+	}
+
+	public static void setLockDuration(Duration lockDuration) {
+		LOCK_DURATION = lockDuration;
 	}
 
 	private void init() {

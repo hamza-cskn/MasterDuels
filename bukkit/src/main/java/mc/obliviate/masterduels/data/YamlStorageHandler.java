@@ -9,6 +9,7 @@ import mc.obliviate.masterduels.arenaclear.modes.smart.SmartArenaClear;
 import mc.obliviate.masterduels.bossbar.BossBarHandler;
 import mc.obliviate.masterduels.game.MatchCreator;
 import mc.obliviate.masterduels.game.MatchDataStorage;
+import mc.obliviate.masterduels.game.state.RoundStartingState;
 import mc.obliviate.masterduels.gui.DuelArenaListGUI;
 import mc.obliviate.masterduels.gui.DuelHistoryLogGUI;
 import mc.obliviate.masterduels.history.MatchHistoryLog;
@@ -74,6 +75,8 @@ public class YamlStorageHandler {
 
 		initQueues();
 
+		RoundStartingState.setLockDuration(Duration.ofSeconds(config.getInt("duel-game-lock.lock-duration")));
+		RoundStartingState.setLockFrequency(config.getInt("duel-game-lock.teleport-frequency"));
 		TimerUtils.DATE_FORMAT = new SimpleDateFormat(MessageUtils.getMessageConfig().getString("time-format.date-format"));
 		MatchHistoryLog.GAME_HISTORY_LOG_ENABLED = config.getBoolean("game-history.enabled", true);
 		DataHandler.LOCK_TIME_IN_SECONDS = config.getInt("game-starting-lock-time", 3);
