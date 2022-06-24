@@ -13,6 +13,6 @@ public class SoundNotify implements NotifyAction {
 
 	@Override
 	public void run(Player player) {
-		player.playSound(player.getLocation(), sound, 1f, 1f);
+		player.playSound(player.getLocation(), sound, 100f, 100f);
 	}
 }

@@ -30,13 +30,13 @@ public class NotifyActionStack {
 		if (section.isConfigurationSection("title")) {
 			resultList.add(new TitleNotify(section.getConfigurationSection("title")));
 		}
-		if (section.isConfigurationSection("sound")) {
+		if (section.isSet("sound")) {
 			resultList.add(new SoundNotify(Sound.valueOf(section.getString("sound"))));
 		}
-		if (section.isConfigurationSection("chat")) {
+		if (section.isSet("chat")) {
 			resultList.add(new ChatAction(section.getString("chat")));
 		}
-		if (section.isConfigurationSection("action-bar")) {
+		if (section.isSet("action-bar")) {
 			resultList.add(new ActionBarAction(section.getString("action-bar")));
 		}
 
