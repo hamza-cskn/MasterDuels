@@ -33,7 +33,7 @@ repositories {
 
 dependencies {
     //implementation 'com.github.Obliviated:ObliviateInvs:3.2.0'
-    implementation files('../../../Libraries/ObliviateInvs.jar')
+    implementation files('D:/Users/User/Desktop/Libraries/ObliviateInvs.jar')
     implementation 'com.github.Obliviated:BlokSQLiteAPI:1.0.7-b'
     implementation 'com.github.hakan-krgn.hCore:bukkit-primary:0.4.7'
     implementation project(':api')
@@ -48,9 +48,11 @@ version = '1.0-SNAPSHOT'
 description = 'MasterDuels'
 java.sourceCompatibility = JavaVersion.VERSION_11
 
-project.setLibsDirName('../../../../Local Servers & Setups/LOCAL 1.8/plugins')
+project.setLibsDirName('D:/Users/User/Desktop/Local Servers & Setups/LOCAL 1.8/plugins')
 
 shadowJar {
+    exclude 'com/hakan/core/command/**/*.class'
+    //relocate 'com.hakan.core', 'mc.obliviate.masterduels.lib.hcore'
     relocate 'mc.obliviate.inventory', 'mc.obliviate.masterduels.lib.inventory'
     relocate 'mc.obliviate.bloksqlite', 'mc.obliviate.masterduels.lib.sqlite'
 }
