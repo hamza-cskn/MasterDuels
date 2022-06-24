@@ -5,7 +5,7 @@ import mc.obliviate.masterduels.api.user.IMember;
 import mc.obliviate.masterduels.api.user.IUser;
 import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.data.DataHandler;
-import mc.obliviate.masterduels.user.team.Member;
+import mc.obliviate.masterduels.data.YamlStorageHandler;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
 import org.bukkit.Material;
@@ -30,7 +30,7 @@ public class DuelProtectListener implements Listener {
 
 	public DuelProtectListener(MasterDuels plugin) {
 		this.plugin = plugin;
-		teleportBackWhenLimitViolate = plugin.getDatabaseHandler().getConfig().getBoolean("teleport-back-when-arena-cuboid-violated", false);
+		teleportBackWhenLimitViolate = YamlStorageHandler.getConfig().getBoolean("teleport-back-when-arena-cuboid-violated", false);
 	}
 
 	private boolean isUser(final Player player) {

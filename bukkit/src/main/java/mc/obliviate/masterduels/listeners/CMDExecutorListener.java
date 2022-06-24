@@ -21,14 +21,14 @@ import org.bukkit.event.Listener;
 
 	@EventHandler
 	public void onDuelGameStart(DuelGameStartEvent event) {
-		for (String cmd : plugin.getDatabaseHandler().getConfig().getStringList("execute-console-commands.when-duel-started")) {
+		for (String cmd : YamlStorageHandler.getConfig().getStringList("execute-console-commands.when-duel-started")) {
 			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
 		}
 	}
 
 	@EventHandler
 	public void onDuelGameEnd(DuelGameFinishEvent event) {
-		for (String cmd : plugin.getDatabaseHandler().getConfig().getStringList("execute-console-commands.when-duel-ended")) {
+		for (String cmd : YamlStorageHandler.getConfig().getStringList("execute-console-commands.when-duel-ended")) {
 			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
 
 		}

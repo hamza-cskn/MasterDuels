@@ -46,7 +46,7 @@ public class DuelGameCreatorGUI extends Gui {
 	public void open() {
 		setTitle(MessageUtils.parseColor(MessageUtils.applyPlaceholders(plugin.getDatabaseHandler().getConfig().getString(getGuiSectionPath() + ".title"),
 				new PlaceholderUtil().add("{mode}", MessageUtils.convertMode(gameBuilder.getTeamSize(), gameBuilder.getTeamAmount())))));
-		setSize(plugin.getDatabaseHandler().getConfig().getInt(getGuiSectionPath() + ".size", 5) * 9);
+		setSize(YamlStorageHandler.getConfig().getInt(getGuiSectionPath() + ".size", 5) * 9);
 		super.open();
 	}
 
@@ -63,7 +63,7 @@ public class DuelGameCreatorGUI extends Gui {
 	}
 
 	private ConfigurationSection getConfigSection(String sectionName) {
-		return plugin.getDatabaseHandler().getConfig().getConfigurationSection(sectionName);
+		return YamlStorageHandler.getConfig().getConfigurationSection(sectionName);
 	}
 
 	private int getConfigSlot(String sectionName) {

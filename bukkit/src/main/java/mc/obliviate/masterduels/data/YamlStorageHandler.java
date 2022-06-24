@@ -77,7 +77,7 @@ public class YamlStorageHandler {
 		GameHistoryLog.GAME_HISTORY_LOG_ENABLED = config.getBoolean("game-history.enabled", true);
 		DataHandler.LOCK_TIME_IN_SECONDS = config.getInt("game-starting-lock-time", 3);
 		Kit.USE_PLAYER_INVENTORIES = config.getBoolean("use-player-inventories", false);
-		SmartArenaClear.REMOVE_ENTITIES = plugin.getDatabaseHandler().getConfig().getBoolean("arena-regeneration.remove-entities", true);
+		SmartArenaClear.REMOVE_ENTITIES = getConfig().getBoolean("arena-regeneration.remove-entities", true);
 
 	}
 
@@ -314,7 +314,7 @@ public class YamlStorageHandler {
 		}
 	}
 
-	public YamlConfiguration getConfig() {
+	public static YamlConfiguration getConfig() {
 		return config;
 	}
 
