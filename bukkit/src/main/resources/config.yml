@@ -5,7 +5,6 @@
 # MasterDuels coded by Mr_Obliviate
 #
 
-game-starting-lock-time: 3 #in seconds
 delay-end-duel-after-player-kill: 20 #in seconds
 invite-timeout: 120 #in seconds
 
@@ -56,8 +55,8 @@ executable-commands-by-player:
   #empty lists means all commands should be blocked.
 
 duel-game-lock:
-  lock-time: 5 #in seconds
-  teleport-frequency: 2 #teleport amount per second
+  lock-duration: 5 #in seconds
+  teleport-frequency: 5 #teleport amount per second
   notify-actions:
     first-action:
       remaining-time: 2 #remaining lock time in seconds
