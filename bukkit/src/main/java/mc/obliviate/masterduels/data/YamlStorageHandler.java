@@ -260,9 +260,9 @@ public class YamlStorageHandler {
 			final ConfigurationSection section = config.getConfigurationSection("scoreboards." + gameState.name());
 			ScoreboardFormatConfig scoreboardFormatConfig;
 			if (section == null) {
-				scoreboardFormatConfig = new ScoreboardFormatConfig(MessageUtils.parseColor("{name} &c{health}HP"), MessageUtils.parseColor("{name} &cDEAD"), MessageUtils.parseColor("&e&lDuels"), MessageUtils.parseColor(Arrays.asList("{+opponents}", "", "&4&lERROR: &8" + gameState, "&cNo Lines Found")));
+				new ScoreboardFormatConfig(gameState, MessageUtils.parseColor("{name} &c{health}HP"), MessageUtils.parseColor("{name} &cDEAD"), MessageUtils.parseColor("{name} &cQUIT"), MessageUtils.parseColor("&e&lDuels"), MessageUtils.parseColor(Arrays.asList("{+opponents}", "", "&4&lERROR: &8" + gameState, "&cNo Lines Found")));
 			} else {
-				scoreboardFormatConfig = new ScoreboardFormatConfig(MessageUtils.parseColor(section.getString("live-opponent-format")), MessageUtils.parseColor(section.getString("dead-opponent-format")), MessageUtils.parseColor(section.getString("title")), MessageUtils.parseColor(section.getStringList("lines")));
+				new ScoreboardFormatConfig(gameState, MessageUtils.parseColor(section.getString("live-opponent-format")), MessageUtils.parseColor(section.getString("dead-opponent-format")), MessageUtils.parseColor(section.getString("quit-opponent-format")), MessageUtils.parseColor(section.getString("title")), MessageUtils.parseColor(section.getStringList("lines")));
 			}
 			ScoreboardManager.getScoreboardLines().put(gameState, scoreboardFormatConfig);
 		}
