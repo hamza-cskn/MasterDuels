@@ -13,6 +13,7 @@ public class ScoreboardFormatConfig {
 
 	private final String liveOpponentFormat;
 	private final String deadOpponentFormat;
+	private final String quitOpponentFormat;
 	private final String title;
 	private final List<String> lines;
 
@@ -24,6 +25,10 @@ public class ScoreboardFormatConfig {
 		this.lines = MessageUtils.parseColor(lines);
 
 		SCOREBOARD_FORMAT_CONFIG_MAP.put(matchStateType, this);
+	}
+
+	public String getQuitOpponentFormat() {
+		return quitOpponentFormat;
 	}
 
 	public String getLiveOpponentFormat() {

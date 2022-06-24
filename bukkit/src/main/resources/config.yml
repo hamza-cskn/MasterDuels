@@ -113,6 +113,7 @@ scoreboards: #Requires TitleManager plugin
     title: '&e&lDUELS'
     live-opponent-format: '&a{name} &c{health}❤'
     dead-opponent-format: '&a{name} &cDEAD'
+    quit-opponent-format: '&a{name} &cQUIT'
     lines:
       - '&fRound: &e#{round}'
       - '&fMap: &e{map}'
@@ -127,6 +128,7 @@ scoreboards: #Requires TitleManager plugin
     title: '&e&lDUELS'
     live-opponent-format: '&a{name} &c{health}❤'
     dead-opponent-format: '&a{name} &cDEAD'
+    quit-opponent-format: '&a{name} &cQUIT'
     lines:
       - '&fRound: &e#{round}'
       - '&fMap: &e{map}'
@@ -138,6 +140,7 @@ scoreboards: #Requires TitleManager plugin
     title: '&e&lDUELS'
     live-opponent-format: '&a{name} &c{health}❤'
     dead-opponent-format: '&a{name} &cDEAD'
+    quit-opponent-format: '&a{name} &cQUIT'
     lines:
       - '&fRound: &e#{round}'
       - '&fMap: &e{map}'
