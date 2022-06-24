@@ -23,7 +23,7 @@ public class MatchStartingState implements MatchState {
 
 		//match time out task
 		match.getGameTaskManager().delayedTask("time-out", match::uninstall, match.getGameDataStorage().getMatchDuration().toSeconds() * 20);
-		next();
+		match.getGameTaskManager().delayedTask("process-switcher-task", this::next, 0); //this is a strange bug fix.
 	}
 
 	@Override

@@ -19,7 +19,7 @@ public class RoundEndingState implements MatchState {
 
 	@Override
 	public void next() {
-		new RoundStartingState(match);
+		match.setGameState(new RoundStartingState(match));
 	}
 
 	@Override
