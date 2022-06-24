@@ -13,15 +13,14 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-//todo change name conversation with SemiSpectatorStorage
-public class OmniSpectatorStorage implements ISpectatorStorage {
+public class SemiSpectatorStorage implements ISpectatorStorage {
 
 	protected static final PlayerReset playerReset = new PlayerReset().excludeExp().excludeLevel().excludeInventory().excludeTitle();
 	private final GameSpectatorManager gsm;
 	private final List<ISpectator> spectators = new ArrayList<>();
 	private final Game game;
 
-	public OmniSpectatorStorage(GameSpectatorManager gsm, Game game) {
+	public SemiSpectatorStorage(GameSpectatorManager gsm, Game game) {
 		this.gsm = gsm;
 		this.game = game;
 	}

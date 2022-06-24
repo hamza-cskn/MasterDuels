@@ -18,7 +18,7 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-import static mc.obliviate.masterduels.game.spectator.OmniSpectatorStorage.playerReset;
+import static mc.obliviate.masterduels.game.spectator.SemiSpectatorStorage.playerReset;
 
 /**
  * Purpose of this class

@@ -12,18 +12,18 @@ import java.util.List;
 
 public class GameSpectatorManager implements IGameSpectatorManager {
 
-	private final OmniSpectatorStorage omniSpectatorStorage;
+	private final SemiSpectatorStorage semiSpectatorStorage;
 	private final PureSpectatorStorage pureSpectatorStorage;
 	private final Game game;
 
 	public GameSpectatorManager(Game game) {
-		this.omniSpectatorStorage = new OmniSpectatorStorage(this, game);
+		this.semiSpectatorStorage = new SemiSpectatorStorage(this, game);
 		this.pureSpectatorStorage = new PureSpectatorStorage(this, game);
 		this.game = game;
 	}
 
-	public OmniSpectatorStorage getOmniSpectatorStorage() {
-		return omniSpectatorStorage;
+	public SemiSpectatorStorage getOmniSpectatorStorage() {
+		return semiSpectatorStorage;
 	}
 
 	public PureSpectatorStorage getPureSpectatorStorage() {
@@ -31,7 +31,7 @@ public class GameSpectatorManager implements IGameSpectatorManager {
 	}
 
 	public void spectate(IMember member) {
-		omniSpectatorStorage.spectate(member.getPlayer());
+		semiSpectatorStorage.spectate(member.getPlayer());
 	}
 
 	public void spectate(ISpectator spectator) {
@@ -40,14 +40,14 @@ public class GameSpectatorManager implements IGameSpectatorManager {
 
 	public void spectate(Player player) {
 		if (game.getGameDataStorage().getGameTeamManager().getMember(player.getUniqueId()) != null) {
-			omniSpectatorStorage.spectate(player);
+			semiSpectatorStorage.spectate(player);
 			return;
 		}
 		pureSpectatorStorage.spectate(player);
 	}
 
 	public void unspectate(IMember member) {
-		omniSpectatorStorage.unspectate(member.getPlayer());
+		semiSpectatorStorage.unspectate(member.getPlayer());
 	}
 
 	public void unspectate(ISpectator spectator) {
@@ -55,20 +55,20 @@ public class GameSpectatorManager implements IGameSpectatorManager {
 	}
 
 	public void unspectate(Player player) {
-		if (game.getGameDataStorage().getGameTeamManager().getMember(player.getUniqueId()) != null) { //todo change check usage
-			omniSpectatorStorage.unspectate(player);
+		if (game.getGameDataStorage().getGameTeamManager().isMember(player.getUniqueId())) {
+			semiSpectatorStorage.unspectate(player);
 			return;
 		}
 		pureSpectatorStorage.unspectate(player);
 	}
 
 	public List<ISpectator> getAllSpectators() {
-		final List<ISpectator> spectators = new ArrayList<>(omniSpectatorStorage.getSpectatorList());
+		final List<ISpectator> spectators = new ArrayList<>(semiSpectatorStorage.getSpectatorList());
 		spectators.addAll(pureSpectatorStorage.getSpectatorList());
 		return spectators;
 	}
 
 	public boolean isSpectator(Player player) {
-		return omniSpectatorStorage.isSpectator(player) || pureSpectatorStorage.isSpectator(player);
+		return semiSpectatorStorage.isSpectator(player) || pureSpectatorStorage.isSpectator(player);
 	}
 }
