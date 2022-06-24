@@ -50,6 +50,10 @@ public class GameTeamManager implements IGameTeamManager {
 		return null;
 	}
 
+	public boolean isMember(UUID playerUniqueId) {
+		return getMember(playerUniqueId) != null;
+	}
+
 	public void unregisterMember(IMember member) {
 		member.getTeam().unregisterMember(member);
 	}
