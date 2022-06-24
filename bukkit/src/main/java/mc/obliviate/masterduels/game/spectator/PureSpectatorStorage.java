@@ -70,13 +70,21 @@ public class PureSpectatorStorage implements ISpectatorStorage {
 		Bukkit.getPluginManager().callEvent(duelGamePreSpectatorJoinEvent);
 		if (duelGamePreSpectatorJoinEvent.isCancelled()) return;
 
-		DataHandler.getUsers().put(player.getUniqueId(), new Spectator(game, player));
+		spectator = new Spectator(game, player);
+
+		//fixme external registering
+		SpectatorHandler.giveSpectatorItems(player);
+		DataHandler.getUsers().put(player.getUniqueId(), spectator);
+
+		spectators.add(spectator);
+
+		DataHandler.getUsers().put(player.getUniqueId(), spectator);
 
 		new PlayerReset().excludeGamemode().excludeInventory().excludeLevel().excludeExp().reset(player);
 
 		Bukkit.broadcastMessage("pure spectator spectate()");
 
-		for (final ITeam team : game.getTeams().values()) {
+		for (final ITeam team : game.getGameDataStorage().getGameTeamManager().getTeams()) {
 			for (final IMember m : team.getMembers()) {
 				m.getPlayer().hidePlayer(player);
 			}

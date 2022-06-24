@@ -7,6 +7,7 @@ import com.hakan.core.message.bossbar.HBossBar;
 import mc.obliviate.masterduels.api.arena.GameStateType;
 import mc.obliviate.masterduels.api.user.IMember;
 import mc.obliviate.masterduels.game.Game;
+import mc.obliviate.masterduels.game.GameDataStorage;
 import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.Utils;
 import mc.obliviate.masterduels.utils.timer.TimerUtils;
@@ -44,15 +45,15 @@ public class InternalBossBarManager implements IBossBarManager {
 			return;
 		}
 
-		game.task("BOSSBAR", Bukkit.getScheduler().runTaskTimer(game.getPlugin(), () -> {
-			if (game.getGameState().equals(GameState.GAME_ENDING)) {
-				bar.setProgress((Utils.getPercentage(Game.getEndDelay() * 1000, (game.getTimer() - System.currentTimeMillis()))));
-				bar.setTitle(CLOSING_TEXT_FORMAT.replace("{time}", TimerUtils.formatTimeUntilThenAsTimer(game.getTimer())).replace("{timer}", TimerUtils.formatTimeUntilThenAsTimer(game.getTimer())));
+		game.getGameTaskManager().repeatTask("BOSSBAR", () -> {
+			if (game.getGameState().getGameStateType().equals(GameStateType.GAME_ENDING)) {
+				bar.setProgress((Utils.getPercentage(GameDataStorage.getEndDelay().toMillis(), (game.getGameDataStorage().getFinishTime() - System.currentTimeMillis()))));
+				bar.setTitle(CLOSING_TEXT_FORMAT.replace("{time}", TimerUtils.formatTimeUntilThenAsTimer(game.getGameDataStorage().getFinishTime())).replace("{timer}", TimerUtils.formatTimeUntilThenAsTimer(game.getGameDataStorage().getFinishTime())));
 			} else {
-				bar.setProgress((Utils.getPercentage(game.getFinishTime() * 1000, (game.getTimer() - System.currentTimeMillis()))));
-				bar.setTitle(NORMAL_TEXT_FORMAT.replace("{time}", TimerUtils.formatTimeUntilThenAsTimer(game.getTimer())).replace("{timer}", TimerUtils.formatTimeUntilThenAsTimer(game.getTimer())));
+				bar.setProgress((Utils.getPercentage(game.getGameDataStorage().getMatchDuration().toMillis(), (game.getGameDataStorage().getFinishTime() - System.currentTimeMillis()))));
+				bar.setTitle(NORMAL_TEXT_FORMAT.replace("{time}", TimerUtils.formatTimeUntilThenAsTimer(game.getGameDataStorage().getFinishTime())).replace("{timer}", TimerUtils.formatTimeUntilThenAsTimer(game.getGameDataStorage().getFinishTime())));
 			}
-		}, 0, 20));
+		}, this::finish, 0, 20);
 	}
 
 	@Override

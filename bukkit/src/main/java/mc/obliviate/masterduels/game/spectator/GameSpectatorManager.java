@@ -39,7 +39,7 @@ public class GameSpectatorManager implements IGameSpectatorManager {
 	}
 
 	public void spectate(Player player) {
-		if (game.isMember(player)) {
+		if (game.getGameDataStorage().getGameTeamManager().getMember(player.getUniqueId()) != null) {
 			omniSpectatorStorage.spectate(player);
 			return;
 		}
@@ -55,15 +55,15 @@ public class GameSpectatorManager implements IGameSpectatorManager {
 	}
 
 	public void unspectate(Player player) {
-		if (game.isMember(player)) {
+		if (game.getGameDataStorage().getGameTeamManager().getMember(player.getUniqueId()) != null) { //todo change check usage
 			omniSpectatorStorage.unspectate(player);
 			return;
 		}
 		pureSpectatorStorage.unspectate(player);
 	}
 
-	public List<Player> getAllSpectators() {
-		final List<Player> spectators = new ArrayList<>(omniSpectatorStorage.getSpectatorList());
+	public List<ISpectator> getAllSpectators() {
+		final List<ISpectator> spectators = new ArrayList<>(omniSpectatorStorage.getSpectatorList());
 		spectators.addAll(pureSpectatorStorage.getSpectatorList());
 		return spectators;
 	}

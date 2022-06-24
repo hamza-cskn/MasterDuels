@@ -74,18 +74,18 @@ public class ScoreboardManager {
 			if (line.equalsIgnoreCase("{+opponents}")) {
 				for (final IMember m : game.getAllMembers()) {
 					if (!m.getTeam().equals(m.getTeam())) {
-						if (game.getSpectatorManager().isSpectator(m.getPlayer())){ //todo add is death method for disconnected players.
+						if (game.getGameSpectatorManager().isSpectator(m.getPlayer())) { //todo add is death method for disconnected players.
 							api.setProcessedScoreboardValue(player, ++index, MessageUtils.parseColor(scoreboardFormatConfig.getDeadOpponentFormat().replace("{health}", "0").replace("{name}", m.getPlayer().getName() + "")));
-						} else{
+						} else {
 							api.setProcessedScoreboardValue(player, ++index, MessageUtils.parseColor(scoreboardFormatConfig.getLiveOpponentFormat().replace("{health}", "" + m.getPlayer().getHealthScale()).replace("{name}", m.getPlayer().getName() + "")));
 						}
 					}
 				}
 			} else {
 				api.setProcessedScoreboardValue(player, ++index, MessageUtils.parseColor(line
-						.replace("{round}", "" + game.getRoundData().getCurrentRound())
+						.replace("{round}", "" + game.getGameDataStorage().getGameRoundData().getCurrentRound())
 						.replace("{map}", game.getArena().getMapName() + "")
-						.replace("{timer}", TimerUtils.formatTimeUntilThenAsTimer(game.getTimer()))
+						//todo .replace("{timer}", TimerUtils.formatTimeUntilThenAsTimer(game.getTimer()))
 						.replace("{team-size}", member.getTeam().getMembers().size() + "")));
 			}
 		}

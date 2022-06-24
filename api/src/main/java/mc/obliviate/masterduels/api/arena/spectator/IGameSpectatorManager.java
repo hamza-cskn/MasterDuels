@@ -24,7 +24,7 @@ public interface IGameSpectatorManager {
 
 	void unspectate(Player player);
 
-	List<Player> getAllSpectators();
+	List<ISpectator> getAllSpectators();
 
 	boolean isSpectator(Player player);
 

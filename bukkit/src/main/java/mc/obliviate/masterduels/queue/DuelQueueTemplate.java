@@ -43,10 +43,10 @@ public class DuelQueueTemplate {
 
 		final GameDataStorage gameDataStorage = new GameDataStorage();
 		gameDataStorage.setKit(kit);
-		gameDataStorage.setTeamAmount(teamAmount);
-		gameDataStorage.setTeamSize(teamSize);
-		gameDataStorage.setFinishTime(duration);
-		gameDataStorage.setTotalRounds(rounds);
+		gameDataStorage.getGameTeamManager().setTeamAmount(teamAmount);
+		gameDataStorage.getGameTeamManager().setTeamSize(teamSize);
+		gameDataStorage.setMatchDuration(Duration.ofSeconds(duration));
+		gameDataStorage.getGameRoundData().setTotalRounds(rounds);
 
 		return new DuelQueueTemplate(plugin, name, gameDataStorage);
 	}

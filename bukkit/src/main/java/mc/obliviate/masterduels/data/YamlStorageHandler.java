@@ -242,7 +242,7 @@ public class YamlStorageHandler {
 
 
 	private void registerDelayEndDuelAfterPlayerKill() {
-		Game.setEndDelay(getConfig().getInt("delay-end-duel-after-player-kill", 20));
+		GameDataStorage.setEndDelay(Duration.ofSeconds(config.getInt("delay-end-duel-after-player-kill", 20)));
 	}
 
 	private void registerScoreboards() {

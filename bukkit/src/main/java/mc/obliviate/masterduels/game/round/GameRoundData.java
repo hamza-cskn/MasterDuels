@@ -1,15 +1,15 @@
 package mc.obliviate.masterduels.game.round;
 
-import mc.obliviate.masterduels.api.arena.IRoundData;
+import mc.obliviate.masterduels.api.arena.IGameRoundData;
 import mc.obliviate.masterduels.api.user.ITeam;
-import mc.obliviate.masterduels.user.team.Team;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class RoundData implements IRoundData {
+public class GameRoundData implements IGameRoundData {
 
 	private final Map<ITeam, Integer> teamWins = new HashMap<>();
+	private ITeam winnerTeam;
 	private int round = 0;
 	private int totalRounds;
 
@@ -27,20 +27,21 @@ public class RoundData implements IRoundData {
 	 * @return return is there more round?
 	 * returns false when last round is finished.
 	 */
-	public boolean addRound() {
-		for (final Map.Entry<ITeam, Integer> entry : teamWins.entrySet()) {
-			//3 rounds, 2 win means no third round.
-			if (entry.getValue() > totalRounds/2) {
-				return false;
-			}
-		}
+	public boolean nextRound() {
+		if (didTeamWin()) return false;
 
-		//remove 1 to compare as unadded.
-		return ++round-1 < totalRounds;
+		//compare as unadded
+		return totalRounds > round++;
 	}
 
-	public boolean isLastRound() {
-		return totalRounds == round;
+	public boolean didTeamWin() {
+		for (int wins : teamWins.values()) {
+			//3 rounds, 2 win means no third round.
+			if (wins > totalRounds / 2) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public int getTotalRounds() {
@@ -52,10 +53,18 @@ public class RoundData implements IRoundData {
 	}
 
 	public int getWins(final ITeam team) {
-		return teamWins.getOrDefault(team,0);
+		return teamWins.getOrDefault(team, 0);
 	}
 
 	public Map<ITeam, Integer> getTeamWins() {
 		return teamWins;
+	}
+
+	public ITeam getWinnerTeam() {
+		return winnerTeam;
+	}
+
+	public void setWinnerTeam(ITeam winnerTeam) {
+		this.winnerTeam = winnerTeam;
 	}
 }

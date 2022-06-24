@@ -37,19 +37,18 @@ public class DuelArenaListGUI extends Gui {
 		final Game game = DataHandler.getArenas().get(arena);
 		final BasicArenaState state = Arena.getBasicArenaState(arena);
 		if (game != null) {
-			final int players = game.getGameBuilder().getPlayers().size();
-			final int spectators = game.getSpectatorManager().getAllSpectators().size();
+			final int players = game.getGameDataStorage().getGameTeamManager().getAllMembers().size();
+			final int spectators = game.getGameSpectatorManager().getAllSpectators().size();
 			placeholderUtil.add("{players}", players + "");
 			placeholderUtil.add("{spectators}", spectators + "");
 			placeholderUtil.add("{playersandspectators}", (spectators + players) + "");
-			placeholderUtil.add("{kit}", game.getKit() == null ? "" : game.getKit().getKitName());
-			placeholderUtil.add("{mode}", MessageUtils.convertMode(game.getGameBuilder().getTeamSize(), game.getGameBuilder().getTeamAmount()));
+			placeholderUtil.add("{mode}", MessageUtils.convertMode(game.getGameDataStorage().getGameTeamManager().getTeamSize(), game.getGameDataStorage().getGameTeamManager().getTeamAmount()));
 		}
 		final Icon icon = new Icon(guiConfig.getIcon(state, placeholderUtil));
 		icon.onClick(e -> {
-			final Game g = DataHandler.getArenas().get(arena);
-			if (g != null) {
-				g.spectate(player);
+			final Game updatedGameObject = DataHandler.getArenas().get(arena);
+			if (updatedGameObject != null) {
+				updatedGameObject.getGameSpectatorManager().spectate(player);
 			}
 		});
 		return icon;

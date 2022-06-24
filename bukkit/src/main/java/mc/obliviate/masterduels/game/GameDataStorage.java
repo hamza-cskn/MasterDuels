@@ -1,62 +1,54 @@
 package mc.obliviate.masterduels.game;
 
 import mc.obliviate.masterduels.api.arena.GameRule;
+import mc.obliviate.masterduels.api.arena.IGameDataStorage;
 import mc.obliviate.masterduels.api.kit.IKit;
-import mc.obliviate.masterduels.kit.Kit;
+import mc.obliviate.masterduels.game.round.GameRoundData;
+import mc.obliviate.masterduels.game.team.GameTeamManager;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Purpose of class,
- *
+ * <p>
  * Raw storing datas of a game.
  * Game builders and game creators objects has any dependents
  * GameDataStorage doesn't have.
  */
-public class GameDataStorage {
+public class GameDataStorage implements IGameDataStorage {
 
+	private final GameRoundData gameRoundData = new GameRoundData();
+	private final GameTeamManager gameTeamManager = new GameTeamManager();
 	private final List<GameRule> gameRules = new ArrayList<>();
-	private int teamAmount = 2;
-	private int teamSize = 1;
-	private int totalRounds = 1;
-	private int finishTime = 60;
+	private static Duration endDelay;
+	private long finishTime;
+	private Duration matchDuration = Duration.ofMinutes(1); //in millis
 	private IKit kit = null;
 
 	public List<GameRule> getGameRules() {
 		return gameRules;
 	}
 
-	public int getTeamAmount() {
-		return teamAmount;
+	public GameRoundData getGameRoundData() {
+		return gameRoundData;
 	}
 
-	public void setTeamAmount(int teamAmount) {
-		this.teamAmount = teamAmount;
+	public Duration getMatchDuration() {
+		return matchDuration;
 	}
 
-	public int getTeamSize() {
-		return teamSize;
+	public void setMatchDuration(Duration duration) {
+		this.matchDuration = duration;
 	}
 
-	public void setTeamSize(int teamSize) {
-		this.teamSize = teamSize;
+	public GameRoundData getRoundData() {
+		return gameRoundData;
 	}
 
-	public int getTotalRounds() {
-		return totalRounds;
-	}
-
-	public void setTotalRounds(int totalRounds) {
-		this.totalRounds = totalRounds;
-	}
-
-	public int getFinishTime() {
-		return finishTime;
-	}
-
-	public void setFinishTime(int finishTime) {
-		this.finishTime = finishTime;
+	public GameTeamManager getGameTeamManager() {
+		return gameTeamManager;
 	}
 
 	public IKit getKit() {
@@ -65,5 +57,21 @@ public class GameDataStorage {
 
 	public void setKit(IKit kit) {
 		this.kit = kit;
+	}
+
+	public long getFinishTime() {
+		return finishTime;
+	}
+
+	public void setFinishTime(long finishTime) {
+		this.finishTime = finishTime;
+	}
+
+	public static Duration getEndDelay() {
+		return endDelay;
+	}
+
+	public static void setEndDelay(Duration endDelay) {
+		GameDataStorage.endDelay = endDelay;
 	}
 }

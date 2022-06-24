@@ -4,7 +4,6 @@ import mc.obliviate.masterduels.api.arena.GameRule;
 import mc.obliviate.masterduels.api.events.spectator.DuelGamePreSpectatorJoinEvent;
 import mc.obliviate.masterduels.api.user.IMember;
 import mc.obliviate.masterduels.data.DataHandler;
-import mc.obliviate.masterduels.user.team.Member;
 import mc.obliviate.masterduels.utils.xmaterial.XMaterial;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -35,7 +34,7 @@ public class GameRuleListener implements Listener {
 		final Player player = (Player) e.getEntity();
 		final IMember member = DataHandler.getMember(player.getUniqueId());
 		if (member == null) return;
-		if (!member.getGame().getGameRules().contains(GameRule.NO_FIRE)) return;
+		if (!member.getGame().getGameDataStorage().getGameRules().contains(GameRule.NO_FIRE)) return;
 		e.setCancelled(true);
 		player.setFireTicks(0);
 	}
@@ -46,11 +45,12 @@ public class GameRuleListener implements Listener {
 		final IMember member = DataHandler.getMember(player.getUniqueId());
 		if (member == null) return;
 		if (e.getItem().getData().equals(XMaterial.ENCHANTED_GOLDEN_APPLE.parseItem().getData())) {
-			if (!member.getGame().getGameRules().contains(GameRule.NO_ENCHANTED_GOLDEN_APPLE)) return;
+			if (!member.getGame().getGameDataStorage().getGameRules().contains(GameRule.NO_ENCHANTED_GOLDEN_APPLE))
+				return;
 		} else if (e.getItem().getData().equals(XMaterial.GOLDEN_APPLE.parseItem().getData())) {
-			if (!member.getGame().getGameRules().contains(GameRule.NO_GOLDEN_APPLE)) return;
+			if (!member.getGame().getGameDataStorage().getGameRules().contains(GameRule.NO_GOLDEN_APPLE)) return;
 		} else if (e.getItem().getType().equals(XMaterial.POTION.parseMaterial())) {
-			if (!member.getGame().getGameRules().contains(GameRule.NO_POTION)) return;
+			if (!member.getGame().getGameDataStorage().getGameRules().contains(GameRule.NO_POTION)) return;
 		}
 
 		e.setCancelled(true);
@@ -64,7 +64,7 @@ public class GameRuleListener implements Listener {
 
 		final IMember member = DataHandler.getMember(e.getPlayer().getUniqueId());
 		if (member == null) return;
-		if (!member.getGame().getGameRules().contains(GameRule.NO_POTION)) return;
+		if (!member.getGame().getGameDataStorage().getGameRules().contains(GameRule.NO_POTION)) return;
 		e.setCancelled(true);
 		e.getPlayer().updateInventory();
 
@@ -76,13 +76,13 @@ public class GameRuleListener implements Listener {
 		final Player player = (Player) e.getEntity();
 		final IMember member = DataHandler.getMember(player.getUniqueId());
 		if (member == null) return;
-		if (!member.getGame().getGameRules().contains(GameRule.NO_BOW)) return;
+		if (!member.getGame().getGameDataStorage().getGameRules().contains(GameRule.NO_BOW)) return;
 		e.setCancelled(true);
 	}
 
 	@EventHandler
 	public void onSpectate(DuelGamePreSpectatorJoinEvent e) {
-		if (!e.getGame().getGameRules().contains(GameRule.NO_SPECTATOR)) return;
+		if (!e.getGame().getGameDataStorage().getGameRules().contains(GameRule.NO_SPECTATOR)) return;
 		e.setCancelled(true);
 	}
 

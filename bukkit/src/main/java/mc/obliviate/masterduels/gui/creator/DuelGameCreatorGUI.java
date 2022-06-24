@@ -36,8 +36,8 @@ public class DuelGameCreatorGUI extends Gui {
 				.add("{team-size}", gameBuilder.getTeamSize() + "")
 				.add("{round-amount}", gameBuilder.getTotalRounds() + "")
 				.add("{kit}", gameBuilder.getKit() == null ? "" : gameBuilder.getKit().getKitName())
-				.add("{game-time}", TimerUtils.formatTimeAsTime(gameBuilder.getFinishTime()))
-				.add("{game-timer}", TimerUtils.formatTimeAsTimer(gameBuilder.getFinishTime()))
+				.add("{game-time}", TimerUtils.formatTimeAsTime(gameBuilder.getMatchDuration().toMillis()))
+				.add("{game-timer}", TimerUtils.formatTimeAsTimer(gameBuilder.getMatchDuration().toMillis()))
 				.add("{invited-players}", gameCreator.getInvites().size() + "")
 				.add("{total-players}", gameBuilder.getPlayers().size() + "");
 	}
@@ -113,7 +113,7 @@ public class DuelGameCreatorGUI extends Gui {
 				MessageUtils.sendMessage(player, "no-arena-found");
 				return;
 			}
-			game.startGame();
+			game.start();
 		});
 	}
 
@@ -158,14 +158,14 @@ public class DuelGameCreatorGUI extends Gui {
 
 	private Icon getFinishTimeIcon() {
 		final Icon finishTimeIcon = new Icon(getConfigItem("game-time", new PlaceholderUtil()
-				.add("{game-timer}", TimerUtils.formatTimeAsTimer(gameBuilder.getFinishTime()))
-				.add("{game-time}", TimerUtils.formatTimeAsTime(gameBuilder.getFinishTime()))
+				.add("{game-timer}", TimerUtils.formatTimeAsTimer(gameBuilder.getMatchDuration().toMillis()))
+				.add("{game-time}", TimerUtils.formatTimeAsTime(gameBuilder.getMatchDuration().toMillis()))
 		));
 		return finishTimeIcon.onClick(e -> {
 			if (e.isRightClick()) {
-				gameBuilder.setFinishTime(Math.max(gameBuilder.getFinishTime() - 30, GameCreator.MIN_GAME_TIME));
+				gameBuilder.setMatchDuration(Duration.ofSeconds(Math.max(gameBuilder.getMatchDuration().toSeconds() - 30, GameCreator.MIN_GAME_TIME)));
 			} else if (e.isLeftClick()) {
-				gameBuilder.setFinishTime(Math.min(gameBuilder.getFinishTime() + 30, GameCreator.MAX_GAME_TIME));
+				gameBuilder.setMatchDuration(Duration.ofSeconds(Math.min(gameBuilder.getMatchDuration().toSeconds() + 30, GameCreator.MIN_GAME_TIME)));
 			}
 			open();
 		});

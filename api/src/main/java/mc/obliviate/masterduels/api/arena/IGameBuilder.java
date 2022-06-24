@@ -3,6 +3,7 @@ package mc.obliviate.masterduels.api.arena;
 import mc.obliviate.masterduels.api.kit.IKit;
 import org.bukkit.entity.Player;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -39,9 +40,9 @@ public interface IGameBuilder {
 
 	IGameBuilder setTotalRounds(int totalRounds);
 
-	int getFinishTime();
+	Duration getMatchDuration();
 
-	IGameBuilder setFinishTime(int finishTime);
+	IGameBuilder setMatchDuration(Duration duration);
 
 	List<GameRule> getGameRules();
 
