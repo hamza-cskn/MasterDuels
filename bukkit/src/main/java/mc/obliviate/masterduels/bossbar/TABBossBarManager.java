@@ -1,6 +1,6 @@
 package mc.obliviate.masterduels.bossbar;
 
-import mc.obliviate.masterduels.api.arena.GameState;
+import mc.obliviate.masterduels.api.arena.GameStateType;
 import mc.obliviate.masterduels.api.user.IMember;
 import mc.obliviate.masterduels.game.Game;
 import mc.obliviate.masterduels.utils.Utils;

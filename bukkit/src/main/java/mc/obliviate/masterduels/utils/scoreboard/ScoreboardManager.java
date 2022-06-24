@@ -2,13 +2,11 @@ package mc.obliviate.masterduels.utils.scoreboard;
 
 import io.puharesource.mc.titlemanager.api.v2.TitleManagerAPI;
 import mc.obliviate.masterduels.MasterDuels;
-import mc.obliviate.masterduels.api.arena.GameState;
+import mc.obliviate.masterduels.api.arena.GameStateType;
 import mc.obliviate.masterduels.api.arena.IGame;
 import mc.obliviate.masterduels.api.user.IMember;
 import mc.obliviate.masterduels.data.DataHandler;
-import mc.obliviate.masterduels.user.team.Member;
 import mc.obliviate.masterduels.utils.MessageUtils;
-import mc.obliviate.masterduels.utils.timer.TimerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -17,11 +15,11 @@ import java.util.Map;
 
 public class ScoreboardManager {
 
-	private static final Map<GameState, ScoreboardFormatConfig> scoreboardLines = new HashMap<>();
+	private static final Map<GameStateType, ScoreboardFormatConfig> scoreboardLines = new HashMap<>();
 	private static TitleManagerAPI api;
 	private final MasterDuels plugin;
 
-	public static Map<GameState, ScoreboardFormatConfig> getScoreboardLines() {
+	public static Map<GameStateType, ScoreboardFormatConfig> getScoreboardLines() {
 		return scoreboardLines;
 	}
 

@@ -69,7 +69,7 @@ public class DuelQueue implements IDuelQueue {
 			return;
 		}
 		lock();
-		game.startGame();
+		game.start();
 	}
 
 	/**

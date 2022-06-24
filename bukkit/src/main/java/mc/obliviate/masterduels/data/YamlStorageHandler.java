@@ -2,7 +2,7 @@ package mc.obliviate.masterduels.data;
 
 import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.api.arena.GameRule;
-import mc.obliviate.masterduels.api.arena.GameState;
+import mc.obliviate.masterduels.api.arena.GameStateType;
 import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.arena.BasicArenaState;
 import mc.obliviate.masterduels.arenaclear.modes.smart.SmartArenaClear;
@@ -246,7 +246,7 @@ public class YamlStorageHandler {
 	}
 
 	private void registerScoreboards() {
-		for (final GameState gameState : GameState.values()) {
+		for (final GameStateType gameState : GameStateType.values()) {
 			final ConfigurationSection section = config.getConfigurationSection("scoreboards." + gameState.name());
 			ScoreboardFormatConfig scoreboardFormatConfig;
 			if (section == null) {

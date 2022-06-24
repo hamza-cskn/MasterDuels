@@ -1,6 +1,6 @@
 package mc.obliviate.masterduels.api.events.arena;
 
-import mc.obliviate.masterduels.api.arena.GameState;
+import mc.obliviate.masterduels.api.arena.GameStateType;
 import mc.obliviate.masterduels.api.arena.IGame;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -10,9 +10,9 @@ public class GameStateChangeEvent extends Event implements GameEvent {
 	private static final HandlerList handlers = new HandlerList();
 
 	private final IGame game;
-	private final GameState old;
+	private final GameStateType old;
 
-	public GameStateChangeEvent(IGame game, GameState old) {
+	public GameStateChangeEvent(IGame game, GameStateType old) {
 		this.game = game;
 		this.old = old;
 	}
@@ -30,7 +30,7 @@ public class GameStateChangeEvent extends Event implements GameEvent {
 		return handlers;
 	}
 
-	public GameState getOldGameState() {
+	public GameStateType getOldGameState() {
 		return old;
 	}
 }

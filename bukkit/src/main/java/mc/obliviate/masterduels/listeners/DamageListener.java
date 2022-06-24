@@ -83,7 +83,11 @@ public class DamageListener implements Listener {
 			}
 		}
 
-		else if (victim instanceof Spectator) {
+			//todo find another way which is makes it without cast
+			GameState gameState = (GameState) victimMember.getTeam().getGame().getGameState();
+			gameState.onDamage(e, victimMember, attackerMember);
+
+		} else if (victim instanceof Spectator) {
 			e.setCancelled(true);
 		}
 

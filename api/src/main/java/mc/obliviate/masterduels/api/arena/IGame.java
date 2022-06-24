@@ -3,99 +3,72 @@ package mc.obliviate.masterduels.api.arena;
 import mc.obliviate.masterduels.api.arena.spectator.IGameSpectatorManager;
 import mc.obliviate.masterduels.api.kit.IKit;
 import mc.obliviate.masterduels.api.user.IMember;
-import mc.obliviate.masterduels.api.user.ISpectator;
-import mc.obliviate.masterduels.api.user.ITeam;
-import mc.obliviate.masterduels.api.user.IUser;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.util.List;
-import java.util.Map;
+import java.util.UUID;
 
 public interface IGame {
 
-	void startGame();
+	void start();
 
-	void initBossBar();
+	IMember getMember(UUID playerUniqueId);
 
-	void updateScoreboardTasks();
+	/**
+	 * adds player to game
+	 *
+	 * @param player the player
+	 * @param kit    kit of the player
+	 * @param teamNo team no of player
+	 */
+	void addPlayer(Player player, IKit kit, int teamNo);
 
-	void nextRound();
+	/**
+	 * removes player from game
+	 * if game doesn't contains param player
+	 * the method would ignores it.
+	 *
+	 * @param playerUniqueId
+	 */
+	void removePlayer(UUID playerUniqueId);
 
-	void onRoundStart(final int round);
+	IGameTaskManager getGameTaskManager();
 
-	void storeKits();
+	IGameSpectatorManager getGameSpectatorManager();
 
-	void reloadKits();
+	IGameDataStorage getGameDataStorage();
 
-	void finishRound();
+	IArena getArena();
+
+	IGameState getGameState();
 
 	List<IMember> getAllMembers();
 
 	List<Player> getAllMembersAndSpectatorsAsPlayer();
 
 	/**
-	 * natural finish game method
+	 * uninstalls match instantly.
+	 * unregisters match, members, spectators; clears arena etc...
 	 */
-	void finishGame();
+	void uninstall();
 
 	/**
-	 * ultimate finish game method
+	 * finishes match naturally.
 	 */
-	void uninstallGame();
+	void finish();
 
-	void dropItems(final Player player);
+	/**
+	 * Shows every player to param player
+	 *
+	 * @param player
+	 */
+	//todo vanish plugin compatibility
+	void showAll(Player player);
 
-	void leave(final Player player);
-
-	void leave(final IUser user);
-
-	void leave(final ISpectator spectator);
-
-	void leave(final IMember member);
-
-	boolean isMember(Player player);
+	void dropItems(final Player player, Location loc);
 
 	void resetPlayers();
-
-	void lockTeams();
-
-	void onDeath(final IMember victim, final IMember attacker);
-
-	void spectate(Player player);
-
-	//todo test: start a game when player is spectating
-	void unspectate(Player player);
-
-	boolean checkTeamEliminated(final ITeam team);
-
-	void lockTeam(final ITeam team);
-
-	void teleportToLockPosition(final ITeam team);
-
-	void cancelTasks(String prefix);
-
-	IGameBuilder getGameBuilder();
-
-	GameState getGameState();
-
-	IRoundData getRoundData();
-
-	IGameSpectatorManager getSpectatorManager();
-
-	IArena getArena();
-
-	IKit getKit();
-
-	List<GameRule> getGameRules();
-
-	Map<Integer, ITeam> getTeams();
-
-	long getFinishTime();
-
-	Map<String, BukkitTask> getTasks();
-
-	long getTimer();
 
 }
 

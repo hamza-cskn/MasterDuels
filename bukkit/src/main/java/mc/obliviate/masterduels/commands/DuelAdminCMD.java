@@ -116,7 +116,7 @@ public class DuelAdminCMD implements CommandExecutor {
 	private void cancelGame(Arena arena) {
 		Game game = DataHandler.getArenas().get(arena);
 		if (game == null) return;
-		game.uninstallGame();
+		game.uninstall();
 	}
 
 	private void testStart(final Player player, final List<String> args) {
@@ -132,13 +132,13 @@ public class DuelAdminCMD implements CommandExecutor {
 			return;
 		}
 
-		final GameBuilder gameBuilder = Game.create(plugin).setTeamSize(1).setTeamAmount(2).setFinishTime(1440);
+		final IGameBuilder gameBuilder = new GameBuilder(plugin).setTeamSize(1).setTeamAmount(2).setMatchDuration(Duration.ofSeconds(1440));
 		gameBuilder.addPlayer(p1);
 		gameBuilder.addPlayer(p2);
 
-		final Game game = gameBuilder.build();
+		final IGame game = gameBuilder.build();
 		if (game != null) {
-			game.startGame();
+			game.start();
 		} else {
 			MessageUtils.sendMessage(player, "no-arena-found");
 		}

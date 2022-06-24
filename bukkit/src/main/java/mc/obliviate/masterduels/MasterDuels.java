@@ -184,7 +184,7 @@ public class MasterDuels extends JavaPlugin {
 		shutdownMode = true;
 		for (final Game game : DataHandler.getArenas().values()) {
 			if (game != null) {
-				game.uninstallGame();
+				game.uninstall();
 			}
 		}
 		getSqlManager().disconnect();

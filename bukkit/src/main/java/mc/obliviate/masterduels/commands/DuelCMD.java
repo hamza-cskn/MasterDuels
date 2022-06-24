@@ -62,7 +62,11 @@ public class DuelCMD implements CommandExecutor {
 			new DuelHistoryLogGUI(player).open();
 			return true;
 		} else if (args[0].equalsIgnoreCase("leave")) {
-			if (user == null) {
+			if (user instanceof Member) {
+				final Member member = ((Member) user);
+				member.getGame().getGameState().leave(member); //todo add methods of game states to game.class
+				return true;
+			} else {
 				MessageUtils.sendMessage(player, "you-are-not-in-duel");
 				return false;
 			}
@@ -239,7 +243,7 @@ public class DuelCMD implements CommandExecutor {
 				return;
 			}
 
-			member.getTeam().getGame().spectate(player);
+			member.getTeam().getGame().getGameSpectatorManager().spectate(player);
 
 		} else {
 			player.sendMessage("§cUsage: /duel spectate <player>");
@@ -276,7 +280,7 @@ public class DuelCMD implements CommandExecutor {
 		}
 
 		//1v1
-		final GameBuilder gameBuilder = Game.create(plugin).setTeamAmount(2).setTeamSize(1).setFinishTime(60).setTotalRounds(1);
+		final IGameBuilder gameBuilder = new GameBuilder(plugin).setTeamAmount(2).setTeamSize(1).setMatchDuration(Duration.ofMinutes(1)).setTotalRounds(1);
 		gameBuilder.addPlayer(player);
 
 		final Invite.Builder inviteBuilder = Invite.create()
@@ -286,12 +290,12 @@ public class DuelCMD implements CommandExecutor {
 				.onResponse(invite -> {
 					if (invite.getState().equals(InviteState.ACCEPTED)) {
 						gameBuilder.addPlayer(target);
-						Game game = gameBuilder.build();
+						IGame game = gameBuilder.build();
 						if (game == null) {
 							MessageUtils.sendMessage(player, "no-arena-found");
 							return;
 						}
-						game.startGame();
+						game.start();
 					} else {
 						//destroy game builder
 					}

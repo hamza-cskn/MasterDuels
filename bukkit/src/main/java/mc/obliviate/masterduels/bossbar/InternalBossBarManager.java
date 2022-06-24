@@ -4,7 +4,7 @@ import com.hakan.core.HCore;
 import com.hakan.core.message.bossbar.HBarColor;
 import com.hakan.core.message.bossbar.HBarStyle;
 import com.hakan.core.message.bossbar.HBossBar;
-import mc.obliviate.masterduels.api.arena.GameState;
+import mc.obliviate.masterduels.api.arena.GameStateType;
 import mc.obliviate.masterduels.api.user.IMember;
 import mc.obliviate.masterduels.game.Game;
 import mc.obliviate.masterduels.utils.Logger;
