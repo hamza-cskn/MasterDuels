@@ -55,6 +55,34 @@ executable-commands-by-player:
   #- this_command_is_executable_after_victim_dead_too
   #empty lists means all commands should be blocked.
 
+duel-game-lock:
+  lock-time: 5 #in seconds
+  teleport-frequency: 2 #teleport amount per second
+  notify-actions:
+    first-action:
+      remaining-time: 2 #remaining lock time in seconds
+      title:
+        title: ''
+        subtitle: '&6&lBE!'
+        fadein: 5 #in ticks
+        stay: 20 #in ticks
+        fadeout: 3 #in ticks
+      sound: SOUND_NAME
+      chat: TEXT
+      action-bar: TEXT
+    second-action:
+      remaining-time: 1
+      title:
+        title: ''
+        subtitle: '&6&lREADY!'
+        fadein: 5
+        stay: 20
+        fadeout: 3
+      sound: SOUND_NAME
+      chat: TEXT
+      action-bar: TEXT
+
+
 #{timer} = 13:59
 #{time} = 13 minutes 59 seconds
 #You can translate time format from message.yml time-format
