@@ -3,11 +3,11 @@ package mc.obliviate.masterduels.listeners;
 import com.google.common.base.Preconditions;
 import com.hakan.core.HCore;
 import mc.obliviate.masterduels.MasterDuels;
-import mc.obliviate.masterduels.api.arena.spectator.IGameSpectatorManager;
+import mc.obliviate.masterduels.api.arena.spectator.IMatchSpectatorManager;
 import mc.obliviate.masterduels.api.user.IMember;
 import mc.obliviate.masterduels.api.user.IUser;
 import mc.obliviate.masterduels.data.DataHandler;
-import mc.obliviate.masterduels.game.state.GameState;
+import mc.obliviate.masterduels.game.state.MatchState;
 import mc.obliviate.masterduels.user.spectator.Spectator;
 import mc.obliviate.masterduels.user.team.Member;
 import mc.obliviate.masterduels.utils.MessageUtils;
@@ -55,7 +55,7 @@ public class DamageListener implements Listener {
 			final IMember victimMember = (Member) victimUser;
 
 			Preconditions.checkNotNull(victimMember.getTeam(), victim.getPlayer() + " team cannot be null");
-			Preconditions.checkNotNull(victimMember.getTeam().getGame(), victim.getPlayer() + "match cannot be null");
+			Preconditions.checkNotNull(victimMember.getTeam().getMatch(), victim.getPlayer() + "match cannot be null");
 
 			IMember attackerMember = null;
 			if (e instanceof EntityDamageByEntityEvent) {
@@ -75,7 +75,7 @@ public class DamageListener implements Listener {
 						return;
 					}
 
-					final IGameSpectatorManager spectatorData = victimMember.getTeam().getGame().getGameSpectatorManager();
+					final IMatchSpectatorManager spectatorData = victimMember.getTeam().getMatch().getGameSpectatorManager();
 					if (spectatorData.isSpectator(victim) || spectatorData.isSpectator(attackerMember.getPlayer())) {
 						e.setCancelled(true);
 						//spectator protect
@@ -89,7 +89,7 @@ public class DamageListener implements Listener {
 			}
 
 			//todo find another way which is makes it without cast
-			GameState gameState = (GameState) victimMember.getTeam().getGame().getGameState();
+			MatchState gameState = (MatchState) victimMember.getTeam().getMatch().getMatchState();
 			gameState.onDamage(e, victimMember, attackerMember);
 
 		} else if (victim instanceof Spectator) {

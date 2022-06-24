@@ -1,21 +1,21 @@
 package mc.obliviate.masterduels.game.state;
 
-import mc.obliviate.masterduels.api.arena.GameStateType;
+import mc.obliviate.masterduels.api.arena.MatchStateType;
 import mc.obliviate.masterduels.api.user.IMember;
 import mc.obliviate.masterduels.api.user.ISpectator;
-import mc.obliviate.masterduels.game.Game;
+import mc.obliviate.masterduels.game.Match;
 
-public class RoundEndingState implements GameState {
+public class RoundEndingState implements MatchState {
 
-	private final Game match;
+	private final Match match;
 
-	public RoundEndingState(Game match) {
+	public RoundEndingState(Match match) {
 		this.match = match;
 		init();
 	}
 
 	private void init() {
-		match.getGameSpectatorManager().getOmniSpectatorStorage().unspectateAll();
+		match.getGameSpectatorManager().getSemiSpectatorStorage().unspectateAll();
 		match.resetPlayers();
 	}
 
@@ -35,13 +35,13 @@ public class RoundEndingState implements GameState {
 	}
 
 	@Override
-	public Game getMatch() {
+	public Match getMatch() {
 		return match;
 	}
 
 
 	@Override
-	public GameStateType getGameStateType() {
-		return GameStateType.ROUND_ENDING;
+	public MatchStateType getMatchStateType() {
+		return MatchStateType.ROUND_ENDING;
 	}
 }

@@ -104,7 +104,7 @@ public class DuelProtectListener implements Listener {
 		final IMember member = DataHandler.getMember(e.getPlayer().getUniqueId());
 		if (member == null || e.getPlayer().isOp()) return;
 		if (e.getMessage().startsWith("/")) {
-			if (!YamlStorageHandler.getConfig().getStringList("executable-commands-by-player." + member.getTeam().getGame().getGameState().getGameStateType().name()).contains(e.getMessage())) {
+			if (!YamlStorageHandler.getConfig().getStringList("executable-commands-by-player." + member.getTeam().getMatch().getMatchState().getMatchStateType().name()).contains(e.getMessage())) {
 				e.setCancelled(true);
 				MessageUtils.sendMessage(e.getPlayer(), "command-is-blocked", new PlaceholderUtil().add("{command}", e.getMessage()));
 			}

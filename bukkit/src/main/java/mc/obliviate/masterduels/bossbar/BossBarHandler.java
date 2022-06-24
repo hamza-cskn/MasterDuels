@@ -1,6 +1,6 @@
 package mc.obliviate.masterduels.bossbar;
 
-import mc.obliviate.masterduels.game.Game;
+import mc.obliviate.masterduels.game.Match;
 
 public class BossBarHandler {
 
@@ -8,7 +8,7 @@ public class BossBarHandler {
 	public static String CLOSING_TEXT_FORMAT = "{time}";
 	private static BossBarModule bossBarModule;
 
-	public static IBossBarManager createBossBarManager(Game game) {
+	public static IBossBarManager createBossBarManager(Match game) {
 		switch (bossBarModule) {
 			case TAB:
 				return new TABBossBarManager(game);

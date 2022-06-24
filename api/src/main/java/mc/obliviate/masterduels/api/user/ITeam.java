@@ -1,12 +1,12 @@
 package mc.obliviate.masterduels.api.user;
 
-import mc.obliviate.masterduels.api.arena.IGame;
+import mc.obliviate.masterduels.api.arena.IMatch;
 
 import java.util.List;
 
 public interface ITeam {
 
-	IGame getGame();
+	IMatch getMatch();
 
 	int getSize();
 

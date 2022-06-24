@@ -17,6 +17,6 @@ public interface ITeamBuilder {
 
 	void remove(Player p);
 
-	ITeam build(IGame game);
+	ITeam build(IMatch game);
 
 }

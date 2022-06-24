@@ -14,13 +14,13 @@ public interface IGameBuilder {
 
 	void createTeam(List<Player> players);
 
-	IGame build();
+	IMatch build();
 
 	Map<Integer, ITeamBuilder> getTeamBuilders();
 
 	ITeamBuilder getTeamBuilder(Player player);
 
-	IGame getGame();
+	IMatch getMatch();
 
 	int getTeamSize();
 

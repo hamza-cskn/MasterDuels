@@ -72,7 +72,7 @@ duel-command:
     &7 /duel queue menu &8- &9opens duel queues menu
     &7 /duel queue join <queue name>&8- &9joins a duel queue
     &7 /duel queue leave &8- &9leaves from duel queue
-    &7 /duel creator &c&l[BETA] &8- &9opens game builder menu
+    &7 /duel creator &c&l[BETA] &8- &9opens match builder menu
     &f&nMasterDuels&f {build-version}
   admin:
     usage: |-

@@ -1,22 +1,22 @@
 package mc.obliviate.masterduels.game.state;
 
-import mc.obliviate.masterduels.api.arena.GameStateType;
+import mc.obliviate.masterduels.api.arena.MatchStateType;
 import mc.obliviate.masterduels.api.kit.IKit;
 import mc.obliviate.masterduels.api.user.IMember;
-import mc.obliviate.masterduels.game.Game;
+import mc.obliviate.masterduels.game.Match;
 import org.bukkit.entity.Player;
 
-public class IdleState implements GameState {
+public class IdleState implements MatchState {
 
-	private final Game match;
+	private final Match match;
 
-	public IdleState(Game match) {
+	public IdleState(Match match) {
 		this.match = match;
 	}
 
 	@Override
 	public void next() {
-		match.setGameState(new GameStartingState(match));
+		match.setGameState(new MatchStartingState(match));
 	}
 
 	@Override
@@ -30,12 +30,12 @@ public class IdleState implements GameState {
 	}
 
 	@Override
-	public Game getMatch() {
+	public Match getMatch() {
 		return match;
 	}
 
 	@Override
-	public GameStateType getGameStateType() {
-		return GameStateType.IDLE;
+	public MatchStateType getMatchStateType() {
+		return MatchStateType.IDLE;
 	}
 }

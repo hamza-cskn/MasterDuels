@@ -1,12 +1,12 @@
 package mc.obliviate.masterduels.commands;
 
 import mc.obliviate.masterduels.MasterDuels;
-import mc.obliviate.masterduels.api.arena.IGame;
 import mc.obliviate.masterduels.api.arena.IGameBuilder;
+import mc.obliviate.masterduels.api.arena.IMatch;
 import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.data.DataHandler;
-import mc.obliviate.masterduels.game.Game;
-import mc.obliviate.masterduels.game.GameBuilder;
+import mc.obliviate.masterduels.game.Match;
+import mc.obliviate.masterduels.game.MatchBuilder;
 import mc.obliviate.masterduels.kit.Kit;
 import mc.obliviate.masterduels.kit.gui.KitListEditorGUI;
 import mc.obliviate.masterduels.setup.ArenaSetup;
@@ -117,7 +117,7 @@ public class DuelAdminCMD implements CommandExecutor {
 	}
 
 	private void cancelGame(Arena arena) {
-		Game game = DataHandler.getArenas().get(arena);
+		Match game = DataHandler.getArenas().get(arena);
 		if (game == null) return;
 		game.uninstall();
 	}
@@ -135,11 +135,11 @@ public class DuelAdminCMD implements CommandExecutor {
 			return;
 		}
 
-		final IGameBuilder gameBuilder = new GameBuilder(plugin).setTeamSize(1).setTeamAmount(2).setMatchDuration(Duration.ofSeconds(1440));
+		final IGameBuilder gameBuilder = new MatchBuilder(plugin).setTeamSize(1).setTeamAmount(2).setMatchDuration(Duration.ofSeconds(1440));
 		gameBuilder.addPlayer(p1);
 		gameBuilder.addPlayer(p2);
 
-		final IGame game = gameBuilder.build();
+		final IMatch game = gameBuilder.build();
 		if (game != null) {
 			game.start();
 		} else {

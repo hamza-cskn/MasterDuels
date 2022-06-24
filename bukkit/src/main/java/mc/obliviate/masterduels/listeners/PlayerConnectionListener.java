@@ -13,7 +13,7 @@ public class PlayerConnectionListener implements Listener {
 	public void onDisconnect(PlayerQuitEvent e) {
 		final IMember member = DataHandler.getMember(e.getPlayer().getUniqueId());
 		if (member != null) {
-			member.getTeam().getGame().getGameState().leave(member);
+			member.getTeam().getMatch().getMatchState().leave(member);
 		}
 	}
 

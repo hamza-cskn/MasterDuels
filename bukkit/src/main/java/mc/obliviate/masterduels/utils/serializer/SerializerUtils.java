@@ -1,6 +1,6 @@
 package mc.obliviate.masterduels.utils.serializer;
 
-import mc.obliviate.masterduels.history.GameHistoryLog;
+import mc.obliviate.masterduels.history.MatchHistoryLog;
 import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
@@ -118,14 +118,14 @@ public class SerializerUtils {
 		}
 	}
 
-	public static GameHistoryLog deserializeGameHistoryLog(ResultSet rs) throws SQLException {
+	public static MatchHistoryLog deserializeGameHistoryLog(ResultSet rs) throws SQLException {
 		final String uuid = rs.getString("uuid");
 		final String serializedWinners = rs.getString("winners");
 		final String serializedLosers = rs.getString("losers");
 		final long startTime = rs.getLong("startTime");
 		final long endTime = rs.getLong("endTime");
 
-		return new GameHistoryLog(UUID.fromString(uuid), startTime, endTime, SerializerUtils.deserializeUUIDList(serializedWinners), SerializerUtils.deserializeUUIDList(serializedLosers));
+		return new MatchHistoryLog(UUID.fromString(uuid), startTime, endTime, SerializerUtils.deserializeUUIDList(serializedWinners), SerializerUtils.deserializeUUIDList(serializedLosers));
 
 	}
 

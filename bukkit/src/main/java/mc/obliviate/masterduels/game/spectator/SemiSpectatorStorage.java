@@ -3,7 +3,7 @@ package mc.obliviate.masterduels.game.spectator;
 import mc.obliviate.masterduels.api.arena.spectator.ISpectatorStorage;
 import mc.obliviate.masterduels.api.user.IMember;
 import mc.obliviate.masterduels.api.user.ISpectator;
-import mc.obliviate.masterduels.game.Game;
+import mc.obliviate.masterduels.game.Match;
 import mc.obliviate.masterduels.user.spectator.Spectator;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.playerreset.PlayerReset;
@@ -16,11 +16,11 @@ import java.util.List;
 public class SemiSpectatorStorage implements ISpectatorStorage {
 
 	protected static final PlayerReset playerReset = new PlayerReset().excludeExp().excludeLevel().excludeInventory().excludeTitle();
-	private final GameSpectatorManager gsm;
+	private final MatchSpectatorManager gsm;
 	private final List<ISpectator> spectators = new ArrayList<>();
-	private final Game game;
+	private final Match game;
 
-	public SemiSpectatorStorage(GameSpectatorManager gsm, Game game) {
+	public SemiSpectatorStorage(MatchSpectatorManager gsm, Match game) {
 		this.gsm = gsm;
 		this.game = game;
 	}

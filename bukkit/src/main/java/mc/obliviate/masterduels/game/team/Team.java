@@ -1,6 +1,6 @@
 package mc.obliviate.masterduels.game.team;
 
-import mc.obliviate.masterduels.api.arena.IGame;
+import mc.obliviate.masterduels.api.arena.IMatch;
 import mc.obliviate.masterduels.api.user.IMember;
 import mc.obliviate.masterduels.api.user.ITeam;
 import mc.obliviate.masterduels.user.team.Member;
@@ -15,20 +15,20 @@ public class Team implements ITeam {
 	private final int teamId;
 	private final int size;
 	private final List<IMember> members = new ArrayList<>();
-	private final IGame game;
+	private final IMatch match;
 
-	protected Team(final int teamId, final int size, final List<Player> members, final IGame game) {
+	protected Team(final int teamId, final int size, final List<Player> members, final IMatch match) {
 		this.teamId = teamId;
 		this.size = size;
-		this.game = game;
+		this.match = match;
 		for (Player player : members) {
 			this.members.add(new Member(player, this, null));
 		}
 	}
 
 	@Override
-	public IGame getGame() {
-		return game;
+	public IMatch getMatch() {
+		return match;
 	}
 
 	@Override

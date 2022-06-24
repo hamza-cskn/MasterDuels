@@ -2,16 +2,16 @@ package mc.obliviate.masterduels.data;
 
 import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.api.arena.GameRule;
-import mc.obliviate.masterduels.api.arena.GameStateType;
+import mc.obliviate.masterduels.api.arena.MatchStateType;
 import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.arena.BasicArenaState;
 import mc.obliviate.masterduels.arenaclear.modes.smart.SmartArenaClear;
 import mc.obliviate.masterduels.bossbar.BossBarHandler;
-import mc.obliviate.masterduels.game.GameCreator;
-import mc.obliviate.masterduels.game.GameDataStorage;
+import mc.obliviate.masterduels.game.MatchCreator;
+import mc.obliviate.masterduels.game.MatchDataStorage;
 import mc.obliviate.masterduels.gui.DuelArenaListGUI;
 import mc.obliviate.masterduels.gui.DuelHistoryLogGUI;
-import mc.obliviate.masterduels.history.GameHistoryLog;
+import mc.obliviate.masterduels.history.MatchHistoryLog;
 import mc.obliviate.masterduels.kit.Kit;
 import mc.obliviate.masterduels.queue.DuelQueueHandler;
 import mc.obliviate.masterduels.queue.DuelQueueTemplate;
@@ -75,7 +75,7 @@ public class YamlStorageHandler {
 		initQueues();
 
 		TimerUtils.DATE_FORMAT = new SimpleDateFormat(MessageUtils.getMessageConfig().getString("time-format.date-format"));
-		GameHistoryLog.GAME_HISTORY_LOG_ENABLED = config.getBoolean("game-history.enabled", true);
+		MatchHistoryLog.GAME_HISTORY_LOG_ENABLED = config.getBoolean("game-history.enabled", true);
 		DataHandler.LOCK_TIME_IN_SECONDS = config.getInt("game-starting-lock-time", 3);
 		Kit.USE_PLAYER_INVENTORIES = config.getBoolean("use-player-inventories", false);
 		SmartArenaClear.REMOVE_ENTITIES = getConfig().getBoolean("arena-regeneration.remove-entities", true);
@@ -125,23 +125,23 @@ public class YamlStorageHandler {
 
 	private void registerGameCreatorLimits(ConfigurationSection section) {
 		if (section == null) throw new IllegalArgumentException("section cannot null!");
-		GameCreator.MAX_GAME_TIME = section.getInt("max-game-time", 600);
-		GameCreator.MIN_GAME_TIME = section.getInt("min-game-time", 60);
+		MatchCreator.MAX_GAME_TIME = section.getInt("max-game-time", 600);
+		MatchCreator.MIN_GAME_TIME = section.getInt("min-game-time", 60);
 
-		GameCreator.MAX_TEAM_SIZE = section.getInt("max-team-size", 8);
-		GameCreator.MIN_TEAM_SIZE = section.getInt("min-team-size", 1);
+		MatchCreator.MAX_TEAM_SIZE = section.getInt("max-team-size", 8);
+		MatchCreator.MIN_TEAM_SIZE = section.getInt("min-team-size", 1);
 
-		GameCreator.MAX_TEAM_AMOUNT = section.getInt("max-team-amount", 10);
-		GameCreator.MIN_TEAM_AMOUNT = section.getInt("min-team-amount", 2);
+		MatchCreator.MAX_TEAM_AMOUNT = section.getInt("max-team-amount", 10);
+		MatchCreator.MIN_TEAM_AMOUNT = section.getInt("min-team-amount", 2);
 
-		GameCreator.MAX_ROUNDS = section.getInt("max-rounds", 5);
-		GameCreator.MIN_ROUNDS = section.getInt("min-rounds", 1);
+		MatchCreator.MAX_ROUNDS = section.getInt("max-rounds", 5);
+		MatchCreator.MIN_ROUNDS = section.getInt("min-rounds", 1);
 
 		final List<String> gameRules = section.getStringList("allowed-game-rules");
 		boolean allOfThem = gameRules.contains("*");
 		for (GameRule rule : GameRule.values()) {
 			if (allOfThem || gameRules.contains(rule.name())) {
-				GameCreator.ALLOWED_GAME_RULES.add(rule);
+				MatchCreator.ALLOWED_GAME_RULES.add(rule);
 			}
 		}
 
@@ -149,7 +149,7 @@ public class YamlStorageHandler {
 		allOfThem = gameKits.contains("*");
 		for (Kit kit : Kit.getKits().values()) {
 			if (allOfThem || gameKits.contains(kit.getKitName())) {
-				GameCreator.ALLOWED_KITS.add(kit);
+				MatchCreator.ALLOWED_KITS.add(kit);
 			}
 		}
 
@@ -243,11 +243,11 @@ public class YamlStorageHandler {
 
 
 	private void registerDelayEndDuelAfterPlayerKill() {
-		GameDataStorage.setEndDelay(Duration.ofSeconds(config.getInt("delay-end-duel-after-player-kill", 20)));
+		MatchDataStorage.setEndDelay(Duration.ofSeconds(config.getInt("delay-end-duel-after-player-kill", 20)));
 	}
 
 	private void registerScoreboards() {
-		for (final GameStateType gameState : GameStateType.values()) {
+		for (final MatchStateType gameState : MatchStateType.values()) {
 			final ConfigurationSection section = config.getConfigurationSection("scoreboards." + gameState.name());
 			ScoreboardFormatConfig scoreboardFormatConfig;
 			if (section == null) {

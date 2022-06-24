@@ -5,7 +5,7 @@ import mc.obliviate.bloksqliteapi.sqlutils.DataType;
 import mc.obliviate.bloksqliteapi.sqlutils.SQLTable;
 import mc.obliviate.bloksqliteapi.sqlutils.SQLUpdateColumn;
 import mc.obliviate.masterduels.MasterDuels;
-import mc.obliviate.masterduels.history.GameHistoryLog;
+import mc.obliviate.masterduels.history.MatchHistoryLog;
 import mc.obliviate.masterduels.statistics.DuelStatistic;
 import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.serializer.SerializerUtils;
@@ -74,7 +74,7 @@ public class SQLManager extends SQLHandler {
 		historyTable.create();
 	}
 
-	public void appendDuelHistory(final GameHistoryLog log) {
+	public void appendDuelHistory(final MatchHistoryLog log) {
 		final SQLUpdateColumn update = historyTable.createUpdate(log.getUuid())
 				.putData("uuid", log.getUuid())
 				.putData("winners", SerializerUtils.serializeStringConvertableList(log.getWinners()))
@@ -95,20 +95,20 @@ public class SQLManager extends SQLHandler {
 		}
 	}
 
-	public GameHistoryLog getDuelHistory(final UUID uuid) throws SQLException {
+	public MatchHistoryLog getDuelHistory(final UUID uuid) throws SQLException {
 		final ResultSet rs = historyTable.select(uuid.toString());
 
 		rs.next();
-		final GameHistoryLog log = SerializerUtils.deserializeGameHistoryLog(rs);
+		final MatchHistoryLog log = SerializerUtils.deserializeGameHistoryLog(rs);
 		while (rs.next()) { //empty result set.
 			Logger.severe("Duplicated history found: " + uuid);
 		}
 		return log;
 	}
 
-	public LinkedList<GameHistoryLog> getAllLogs() throws SQLException {
+	public LinkedList<MatchHistoryLog> getAllLogs() throws SQLException {
 		final ResultSet rs = sqlQuery("SELECT * FROM " + historyTable.getTableName() + " ORDER BY startTime DESC");
-		final LinkedList<GameHistoryLog> logs = new LinkedList<>();
+		final LinkedList<MatchHistoryLog> logs = new LinkedList<>();
 		while (rs.next()) {
 			logs.add(SerializerUtils.deserializeGameHistoryLog(rs));
 		}

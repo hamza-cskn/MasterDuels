@@ -4,10 +4,10 @@ import com.hakan.core.HCore;
 import com.hakan.core.message.bossbar.HBarColor;
 import com.hakan.core.message.bossbar.HBarStyle;
 import com.hakan.core.message.bossbar.HBossBar;
-import mc.obliviate.masterduels.api.arena.GameStateType;
+import mc.obliviate.masterduels.api.arena.MatchStateType;
 import mc.obliviate.masterduels.api.user.IMember;
-import mc.obliviate.masterduels.game.Game;
-import mc.obliviate.masterduels.game.GameDataStorage;
+import mc.obliviate.masterduels.game.Match;
+import mc.obliviate.masterduels.game.MatchDataStorage;
 import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.Utils;
 import mc.obliviate.masterduels.utils.timer.TimerUtils;
@@ -19,9 +19,9 @@ import static mc.obliviate.masterduels.bossbar.BossBarHandler.NORMAL_TEXT_FORMAT
 public class InternalBossBarManager implements IBossBarManager {
 
 	private final HBossBar bar;
-	private final Game game;
+	private final Match game;
 
-	public InternalBossBarManager(final Game game) {
+	public InternalBossBarManager(final Match game) {
 		this.game = game;
 
 		final String title = NORMAL_TEXT_FORMAT.replace("{timer}", "...").replace("{time}", "...");
@@ -45,8 +45,8 @@ public class InternalBossBarManager implements IBossBarManager {
 		}
 
 		game.getGameTaskManager().repeatTask("BOSSBAR", () -> {
-			if (game.getGameState().getGameStateType().equals(GameStateType.GAME_ENDING)) {
-				bar.setProgress((Utils.getPercentage(GameDataStorage.getEndDelay().toMillis(), (game.getGameDataStorage().getFinishTime() - System.currentTimeMillis()))));
+			if (game.getMatchState().getMatchStateType().equals(MatchStateType.GAME_ENDING)) {
+				bar.setProgress((Utils.getPercentage(MatchDataStorage.getEndDelay().toMillis(), (game.getGameDataStorage().getFinishTime() - System.currentTimeMillis()))));
 				bar.setTitle(CLOSING_TEXT_FORMAT.replace("{time}", TimerUtils.formatTimeUntilThenAsTimer(game.getGameDataStorage().getFinishTime())).replace("{timer}", TimerUtils.formatTimeUntilThenAsTimer(game.getGameDataStorage().getFinishTime())));
 			} else {
 				bar.setProgress((Utils.getPercentage(game.getGameDataStorage().getMatchDuration().toMillis(), (game.getGameDataStorage().getFinishTime() - System.currentTimeMillis()))));

@@ -1,8 +1,8 @@
 package mc.obliviate.masterduels.queue;
 
 import mc.obliviate.masterduels.MasterDuels;
-import mc.obliviate.masterduels.game.GameBuilder;
-import mc.obliviate.masterduels.game.GameDataStorage;
+import mc.obliviate.masterduels.game.MatchBuilder;
+import mc.obliviate.masterduels.game.MatchDataStorage;
 import mc.obliviate.masterduels.kit.Kit;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -15,12 +15,12 @@ public class DuelQueueTemplate {
 	private static final List<DuelQueueTemplate> queueTemplates = new LinkedList<>();
 	private final String queueTemplateName;
 	private final MasterDuels plugin;
-	private final GameDataStorage gameDataStorage;
+	private final MatchDataStorage matchDataStorage;
 
-	public DuelQueueTemplate(final MasterDuels plugin, final String queueTemplateName, GameDataStorage gameDataStorage) {
+	public DuelQueueTemplate(final MasterDuels plugin, final String queueTemplateName, MatchDataStorage matchDataStorage) {
 		this.queueTemplateName = queueTemplateName;
 		this.plugin = plugin;
-		this.gameDataStorage = gameDataStorage;
+		this.matchDataStorage = matchDataStorage;
 		queueTemplates.add(this);
 		createNewQueue();
 	}
@@ -42,14 +42,14 @@ public class DuelQueueTemplate {
 		final int duration = section.getInt("game-duration", 60);
 		final int rounds = section.getInt("rounds", 1);
 
-		final GameDataStorage gameDataStorage = new GameDataStorage();
-		gameDataStorage.setKit(kit);
-		gameDataStorage.getGameTeamManager().setTeamAmount(teamAmount);
-		gameDataStorage.getGameTeamManager().setTeamSize(teamSize);
-		gameDataStorage.setMatchDuration(Duration.ofSeconds(duration));
-		gameDataStorage.getGameRoundData().setTotalRounds(rounds);
+		final MatchDataStorage matchDataStorage = new MatchDataStorage();
+		matchDataStorage.setKit(kit);
+		matchDataStorage.getGameTeamManager().setTeamAmount(teamAmount);
+		matchDataStorage.getGameTeamManager().setTeamSize(teamSize);
+		matchDataStorage.setMatchDuration(Duration.ofSeconds(duration));
+		matchDataStorage.getGameRoundData().setTotalRounds(rounds);
 
-		return new DuelQueueTemplate(plugin, name, gameDataStorage);
+		return new DuelQueueTemplate(plugin, name, matchDataStorage);
 	}
 
 	public static List<DuelQueueTemplate> getQueueTemplates() {
@@ -71,7 +71,7 @@ public class DuelQueueTemplate {
 	}
 
 	public void createNewQueue() {
-		new DuelQueue(this, new GameBuilder(plugin));
+		new DuelQueue(this, new MatchBuilder(plugin));
 	}
 
 	public String getName() {

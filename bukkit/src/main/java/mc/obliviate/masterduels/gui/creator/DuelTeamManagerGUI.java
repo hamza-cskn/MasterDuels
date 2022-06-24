@@ -3,8 +3,8 @@ package mc.obliviate.masterduels.gui.creator;
 import mc.obliviate.inventory.Gui;
 import mc.obliviate.inventory.Icon;
 import mc.obliviate.masterduels.api.arena.ITeamBuilder;
-import mc.obliviate.masterduels.game.GameBuilder;
-import mc.obliviate.masterduels.game.GameCreator;
+import mc.obliviate.masterduels.game.MatchBuilder;
+import mc.obliviate.masterduels.game.MatchCreator;
 import mc.obliviate.masterduels.utils.Utils;
 import mc.obliviate.masterduels.utils.xmaterial.XMaterial;
 import org.bukkit.Bukkit;
@@ -18,30 +18,30 @@ import org.bukkit.inventory.meta.SkullMeta;
 
 public class DuelTeamManagerGUI extends Gui {
 
-	private final GameBuilder gameBuilder;
-	private final GameCreator gameCreator;
+	private final MatchBuilder matchBuilder;
+	private final MatchCreator matchCreator;
 
-	public DuelTeamManagerGUI(Player player, GameCreator gameCreator) {
-		super(player, "duel-team-manage-gui", "Manage Teams", gameCreator.getBuilder().getTeamAmount() + 1);
-		this.gameBuilder = gameCreator.getBuilder();
-		this.gameCreator = gameCreator;
+	public DuelTeamManagerGUI(Player player, MatchCreator matchCreator) {
+		super(player, "duel-team-manage-gui", "Manage Teams", matchCreator.getBuilder().getTeamAmount() + 1);
+		this.matchBuilder = matchCreator.getBuilder();
+		this.matchCreator = matchCreator;
 	}
 
 	@Override
 	public void onOpen(final InventoryOpenEvent event) {
 		fillRow(new Icon(XMaterial.BLACK_STAINED_GLASS_PANE.parseItem()), 0);
 		addItem(0, new Icon(XMaterial.ARROW.parseItem()).onClick(e -> {
-			new DuelGameCreatorGUI(player, gameCreator).open();
+			new DuelMatchCreatorGUI(player, matchCreator).open();
 		}));
 
-		for (int team = 0; team < gameBuilder.getTeamAmount(); team++) {
+		for (int team = 0; team < matchBuilder.getTeamAmount(); team++) {
 			final Icon icon = new Icon(Utils.teamIcons.get(team).clone());
 			addItem((team + 1) * 9, icon.setName("§f" + (team + 1) + ". team")
-					.setLore("§7(" + gameBuilder.getTeamBuilders().get(team + 1).getMembers().size() + "/" + gameBuilder.getTeamAmount() + ")"));
-			for (int member = 0; member < gameBuilder.getTeamSize(); member++) {
+					.setLore("§7(" + matchBuilder.getTeamBuilders().get(team + 1).getMembers().size() + "/" + matchBuilder.getTeamAmount() + ")"));
+			for (int member = 0; member < matchBuilder.getTeamSize(); member++) {
 				final int slot = ((team + 1) * 9 + 1 + member);
 
-				final ITeamBuilder teamBuilder = gameBuilder.getTeamBuilders().get(team + 1);
+				final ITeamBuilder teamBuilder = matchBuilder.getTeamBuilders().get(team + 1);
 				if (teamBuilder.getMembers().size() <= member) {
 					addItem(slot, getNullMemberSlotIcon(teamBuilder));
 					continue;
@@ -88,8 +88,8 @@ public class DuelTeamManagerGUI extends Gui {
 							final Player target = Bukkit.getPlayerExact(ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName()));
 
 							//and their teams
-							final ITeamBuilder requesterTeamBuilder = gameBuilder.getTeamBuilder(requester);
-							final ITeamBuilder targetTeamBuilder = gameBuilder.getTeamBuilder(target);
+							final ITeamBuilder requesterTeamBuilder = matchBuilder.getTeamBuilder(requester);
+							final ITeamBuilder targetTeamBuilder = matchBuilder.getTeamBuilder(target);
 
 							//swap!
 							targetTeamBuilder.remove(target);
@@ -128,7 +128,7 @@ public class DuelTeamManagerGUI extends Gui {
 			if (target == null) {
 				return;
 			}
-			for (final ITeamBuilder builder : gameBuilder.getTeamBuilders().values()) {
+			for (final ITeamBuilder builder : matchBuilder.getTeamBuilders().values()) {
 				builder.remove(target);
 			}
 			teamBuilder.add(target);

@@ -11,9 +11,9 @@ import mc.obliviate.masterduels.commands.DuelCMD;
 import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.data.SQLManager;
 import mc.obliviate.masterduels.data.YamlStorageHandler;
-import mc.obliviate.masterduels.game.Game;
-import mc.obliviate.masterduels.game.gamerule.GameRuleListener;
-import mc.obliviate.masterduels.history.GameHistoryLog;
+import mc.obliviate.masterduels.game.Match;
+import mc.obliviate.masterduels.game.gamerule.MatchRuleListener;
+import mc.obliviate.masterduels.history.MatchHistoryLog;
 import mc.obliviate.masterduels.kit.serializer.KitSerializer;
 import mc.obliviate.masterduels.listeners.*;
 import mc.obliviate.masterduels.queue.DuelQueueHandler;
@@ -140,7 +140,7 @@ public class MasterDuels extends JavaPlugin {
 	}
 
 	private void setupTimers() {
-		if (GameHistoryLog.GAME_HISTORY_LOG_ENABLED) {
+		if (MatchHistoryLog.GAME_HISTORY_LOG_ENABLED) {
 			new GameHistoryCacheTimer().init(this);
 		}
 	}
@@ -166,7 +166,7 @@ public class MasterDuels extends JavaPlugin {
 		Bukkit.getPluginManager().registerEvents(new PlayerConnectionListener(), this);
 		Bukkit.getPluginManager().registerEvents(new TeleportListener(), this);
 		Bukkit.getPluginManager().registerEvents(new SpectatorListener(), this);
-		Bukkit.getPluginManager().registerEvents(new GameRuleListener(), this);
+		Bukkit.getPluginManager().registerEvents(new MatchRuleListener(), this);
 		Bukkit.getPluginManager().registerEvents(new DeveloperCMD(this), this);
 		Bukkit.getPluginManager().registerEvents(new CMDExecutorListener(this), this);
 	}
@@ -182,7 +182,7 @@ public class MasterDuels extends JavaPlugin {
 	@Override
 	public void onDisable() {
 		shutdownMode = true;
-		for (final Game game : DataHandler.getArenas().values()) {
+		for (final Match game : DataHandler.getArenas().values()) {
 			if (game != null) {
 				game.uninstall();
 			}

@@ -5,7 +5,7 @@ import mc.obliviate.inventory.Icon;
 import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.arena.BasicArenaState;
 import mc.obliviate.masterduels.data.DataHandler;
-import mc.obliviate.masterduels.game.Game;
+import mc.obliviate.masterduels.game.Match;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
 import mc.obliviate.masterduels.utils.serializer.SerializerUtils;
@@ -27,14 +27,14 @@ public class DuelArenaListGUI extends Gui {
 	@Override
 	public void onOpen(InventoryOpenEvent event) {
 		int slot = 0;
-		for (final Map.Entry<Arena, Game> entry : DataHandler.getArenas().entrySet()) {
+		for (final Map.Entry<Arena, Match> entry : DataHandler.getArenas().entrySet()) {
 			addItem(slot++, getGameIcon(entry.getKey()));
 		}
 	}
 
 	private Icon getGameIcon(final Arena arena) {
 		final PlaceholderUtil placeholderUtil = new PlaceholderUtil().add("{arena}", arena.getName()).add("{map}", arena.getMapName());
-		final Game game = DataHandler.getArenas().get(arena);
+		final Match game = DataHandler.getArenas().get(arena);
 		final BasicArenaState state = Arena.getBasicArenaState(arena);
 		if (game != null) {
 			final int players = game.getGameDataStorage().getGameTeamManager().getAllMembers().size();
@@ -46,7 +46,7 @@ public class DuelArenaListGUI extends Gui {
 		}
 		final Icon icon = new Icon(guiConfig.getIcon(state, placeholderUtil));
 		icon.onClick(e -> {
-			final Game updatedGameObject = DataHandler.getArenas().get(arena);
+			final Match updatedGameObject = DataHandler.getArenas().get(arena);
 			if (updatedGameObject != null) {
 				updatedGameObject.getGameSpectatorManager().spectate(player);
 			}

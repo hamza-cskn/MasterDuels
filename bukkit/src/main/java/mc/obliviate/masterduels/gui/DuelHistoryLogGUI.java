@@ -2,7 +2,7 @@ package mc.obliviate.masterduels.gui;
 
 import mc.obliviate.inventory.Gui;
 import mc.obliviate.inventory.Icon;
-import mc.obliviate.masterduels.history.GameHistoryLog;
+import mc.obliviate.masterduels.history.MatchHistoryLog;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
 import mc.obliviate.masterduels.utils.timer.TimerUtils;
@@ -30,7 +30,7 @@ public class DuelHistoryLogGUI extends Gui {
 		fillRow(new Icon(XMaterial.BLACK_STAINED_GLASS_PANE.parseItem()), 0);
 
 		int slot = 9;
-		for (final GameHistoryLog log : GameHistoryLog.historyCache) {
+		for (final MatchHistoryLog log : MatchHistoryLog.historyCache) {
 
 			HistoryIconType type;
 			if (log.getLosers().size() == 1) {
@@ -63,7 +63,7 @@ public class DuelHistoryLogGUI extends Gui {
 			losersFormat = guiSection.getString("losers-format");
 		}
 
-		protected Icon deserializeIcon(final HistoryIconType type, GameHistoryLog log) {
+		protected Icon deserializeIcon(final HistoryIconType type, MatchHistoryLog log) {
 			final Icon icon = new Icon(historyIconItemStacks.get(type).clone());
 			List<String> description = icon.getItem().getItemMeta().getLore(); //raw-placeholder lore
 			if (description == null) description = new ArrayList<>();

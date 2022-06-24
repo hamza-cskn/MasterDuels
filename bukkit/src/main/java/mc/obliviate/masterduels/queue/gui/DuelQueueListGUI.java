@@ -2,7 +2,7 @@ package mc.obliviate.masterduels.queue.gui;
 
 import mc.obliviate.inventory.Gui;
 import mc.obliviate.inventory.Icon;
-import mc.obliviate.masterduels.game.GameBuilder;
+import mc.obliviate.masterduels.game.MatchBuilder;
 import mc.obliviate.masterduels.gui.GUISerializerUtils;
 import mc.obliviate.masterduels.queue.DuelQueue;
 import mc.obliviate.masterduels.queue.DuelQueueTemplate;
@@ -97,7 +97,7 @@ public class DuelQueueListGUI extends Gui implements Listener {
 			this.iconsSection = iconsSection;
 		}
 
-		protected ItemStack getIconOfTemplate(String templateName, GameBuilder builder) {
+		protected ItemStack getIconOfTemplate(String templateName, MatchBuilder builder) {
 			ItemStack item = iconItemStacks.get(templateName).clone();
 			if (item == null) return XMaterial.BEDROCK.parseItem();
 

@@ -1,9 +1,9 @@
 package mc.obliviate.masterduels.bossbar;
 
-import mc.obliviate.masterduels.api.arena.GameStateType;
+import mc.obliviate.masterduels.api.arena.MatchStateType;
 import mc.obliviate.masterduels.api.user.IMember;
-import mc.obliviate.masterduels.game.Game;
-import mc.obliviate.masterduels.game.GameDataStorage;
+import mc.obliviate.masterduels.game.Match;
+import mc.obliviate.masterduels.game.MatchDataStorage;
 import mc.obliviate.masterduels.utils.Utils;
 import mc.obliviate.masterduels.utils.timer.TimerUtils;
 import me.neznamy.tab.api.TabAPI;
@@ -18,9 +18,9 @@ import static mc.obliviate.masterduels.bossbar.BossBarHandler.NORMAL_TEXT_FORMAT
 public class TABBossBarManager implements IBossBarManager {
 
 	private final BossBar bar;
-	private final Game game;
+	private final Match game;
 
-	public TABBossBarManager(final Game game) {
+	public TABBossBarManager(final Match game) {
 		this.game = game;
 
 		final String title = NORMAL_TEXT_FORMAT.replace("{timer}", "...").replace("{time}", "...");
@@ -38,8 +38,8 @@ public class TABBossBarManager implements IBossBarManager {
 	public void init() {
 		if (this.bar == null) return;
 		game.getGameTaskManager().repeatTask("BOSSBAR", () -> {
-			if (game.getGameState().getGameStateType().equals(GameStateType.GAME_ENDING)) {
-				bar.setProgress((Utils.getPercentage(GameDataStorage.getEndDelay().toMillis(), (game.getGameDataStorage().getFinishTime() - System.currentTimeMillis()))));
+			if (game.getMatchState().getMatchStateType().equals(MatchStateType.GAME_ENDING)) {
+				bar.setProgress((Utils.getPercentage(MatchDataStorage.getEndDelay().toMillis(), (game.getGameDataStorage().getFinishTime() - System.currentTimeMillis()))));
 				bar.setTitle(CLOSING_TEXT_FORMAT.replace("{time}", TimerUtils.formatTimeUntilThenAsTimer(game.getGameDataStorage().getFinishTime())).replace("{timer}", TimerUtils.formatTimeUntilThenAsTimer(game.getGameDataStorage().getFinishTime())));
 			} else {
 				bar.setProgress((Utils.getPercentage(game.getGameDataStorage().getMatchDuration().toMillis(), (game.getGameDataStorage().getFinishTime() - System.currentTimeMillis()))));

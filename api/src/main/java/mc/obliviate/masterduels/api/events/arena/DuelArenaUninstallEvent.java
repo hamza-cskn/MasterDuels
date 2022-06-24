@@ -1,25 +1,25 @@
 package mc.obliviate.masterduels.api.events.arena;
 
-import mc.obliviate.masterduels.api.arena.IGame;
+import mc.obliviate.masterduels.api.arena.IMatch;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class DuelArenaUninstallEvent extends Event implements GameEvent {
+public class DuelArenaUninstallEvent extends Event implements MatchEvent {
 
 	private static final HandlerList handlers = new HandlerList();
 
-	private final IGame game;
+	private final IMatch match;
 
-	public DuelArenaUninstallEvent(IGame game) {
-		this.game = game;
+	public DuelArenaUninstallEvent(IMatch match) {
+		this.match = match;
 	}
 
 	public static HandlerList getHandlerList() {
 		return handlers;
 	}
 
-	public IGame getGame() {
-		return game;
+	public IMatch getMatch() {
+		return match;
 	}
 
 	@Override

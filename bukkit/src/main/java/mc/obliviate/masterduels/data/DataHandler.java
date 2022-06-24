@@ -1,12 +1,12 @@
 package mc.obliviate.masterduels.data;
 
-import mc.obliviate.masterduels.api.arena.IGame;
+import mc.obliviate.masterduels.api.arena.IMatch;
 import mc.obliviate.masterduels.api.user.IMember;
 import mc.obliviate.masterduels.api.user.ISpectator;
 import mc.obliviate.masterduels.api.user.ITeam;
 import mc.obliviate.masterduels.api.user.IUser;
 import mc.obliviate.masterduels.arena.Arena;
-import mc.obliviate.masterduels.game.Game;
+import mc.obliviate.masterduels.game.Match;
 import org.bukkit.Location;
 
 import java.util.HashMap;
@@ -16,7 +16,7 @@ import java.util.UUID;
 public class DataHandler {
 
 	private static final Map<UUID, IUser> users = new HashMap<>();
-	private static final Map<Arena, Game> arenas = new HashMap<>();
+	private static final Map<Arena, Match> arenas = new HashMap<>();
 	public static int LOCK_TIME_IN_SECONDS = 3;
 	private static Location lobbyLocation = null;
 
@@ -26,10 +26,10 @@ public class DataHandler {
 		return member.getTeam();
 	}
 
-	public static IGame getGame(final UUID uuid) {
+	public static IMatch getGame(final UUID uuid) {
 		final ITeam team = getTeam(uuid);
 		if (team == null) return null;
-		return team.getGame();
+		return team.getMatch();
 	}
 
 	public static IMember getMember(final UUID uuid) {
@@ -56,7 +56,7 @@ public class DataHandler {
 		return users;
 	}
 
-	public static Map<Arena, Game> getArenas() {
+	public static Map<Arena, Match> getArenas() {
 		return arenas;
 	}
 
@@ -65,7 +65,7 @@ public class DataHandler {
 		arenas.put(arena, null);
 	}
 
-	public static void registerGame(final Arena arena, final Game game) {
+	public static void registerGame(final Arena arena, final Match game) {
 		if (arenas.containsKey(arena)) {
 			//put if value is null,
 			arenas.putIfAbsent(arena, game);

@@ -1,13 +1,13 @@
 package mc.obliviate.masterduels.game.spectator;
 
 import mc.obliviate.masterduels.api.arena.spectator.ISpectatorStorage;
-import mc.obliviate.masterduels.api.events.spectator.DuelGamePreSpectatorJoinEvent;
-import mc.obliviate.masterduels.api.events.spectator.DuelGameSpectatorLeaveEvent;
+import mc.obliviate.masterduels.api.events.spectator.DuelMatchPreSpectatorJoinEvent;
+import mc.obliviate.masterduels.api.events.spectator.DuelMatchSpectatorLeaveEvent;
 import mc.obliviate.masterduels.api.user.IMember;
 import mc.obliviate.masterduels.api.user.ISpectator;
 import mc.obliviate.masterduels.api.user.ITeam;
 import mc.obliviate.masterduels.data.DataHandler;
-import mc.obliviate.masterduels.game.Game;
+import mc.obliviate.masterduels.game.Match;
 import mc.obliviate.masterduels.kit.InventoryStorer;
 import mc.obliviate.masterduels.user.spectator.Spectator;
 import mc.obliviate.masterduels.utils.MessageUtils;
@@ -30,11 +30,11 @@ import static mc.obliviate.masterduels.game.spectator.SemiSpectatorStorage.playe
  */
 public class PureSpectatorStorage implements ISpectatorStorage {
 
-	private final GameSpectatorManager gsm;
+	private final MatchSpectatorManager gsm;
 	private final List<ISpectator> spectators = new ArrayList<>();
-	private final Game game;
+	private final Match game;
 
-	public PureSpectatorStorage(GameSpectatorManager gsm, Game game) {
+	public PureSpectatorStorage(MatchSpectatorManager gsm, Match game) {
 		this.gsm = gsm;
 		this.game = game;
 	}
@@ -52,7 +52,7 @@ public class PureSpectatorStorage implements ISpectatorStorage {
 	public void unspectate(ISpectator spectator) {
 		if (!spectators.remove(spectator)) return;
 
-		Bukkit.getPluginManager().callEvent(new DuelGameSpectatorLeaveEvent(spectator));
+		Bukkit.getPluginManager().callEvent(new DuelMatchSpectatorLeaveEvent(spectator));
 		Bukkit.broadcastMessage("pure spectator unspectate()");
 		playerReset.reset(spectator.getPlayer());
 
@@ -77,7 +77,7 @@ public class PureSpectatorStorage implements ISpectatorStorage {
 		ISpectator spectator = findSpectator(player);
 		if (spectator != null) return;
 
-		final DuelGamePreSpectatorJoinEvent duelGamePreSpectatorJoinEvent = new DuelGamePreSpectatorJoinEvent(player, game);
+		final DuelMatchPreSpectatorJoinEvent duelGamePreSpectatorJoinEvent = new DuelMatchPreSpectatorJoinEvent(player, game);
 		Bukkit.getPluginManager().callEvent(duelGamePreSpectatorJoinEvent);
 		if (duelGamePreSpectatorJoinEvent.isCancelled()) return;
 

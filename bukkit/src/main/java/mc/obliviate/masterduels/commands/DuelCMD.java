@@ -1,19 +1,19 @@
 package mc.obliviate.masterduels.commands;
 
 import mc.obliviate.masterduels.MasterDuels;
-import mc.obliviate.masterduels.api.arena.IGame;
 import mc.obliviate.masterduels.api.arena.IGameBuilder;
+import mc.obliviate.masterduels.api.arena.IMatch;
 import mc.obliviate.masterduels.api.invite.InviteState;
 import mc.obliviate.masterduels.api.user.IMember;
 import mc.obliviate.masterduels.api.user.IUser;
 import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.data.YamlStorageHandler;
-import mc.obliviate.masterduels.game.GameBuilder;
-import mc.obliviate.masterduels.game.GameCreator;
+import mc.obliviate.masterduels.game.MatchBuilder;
+import mc.obliviate.masterduels.game.MatchCreator;
 import mc.obliviate.masterduels.gui.DuelArenaListGUI;
 import mc.obliviate.masterduels.gui.DuelHistoryLogGUI;
-import mc.obliviate.masterduels.gui.creator.DuelGameCreatorGUI;
-import mc.obliviate.masterduels.history.GameHistoryLog;
+import mc.obliviate.masterduels.gui.creator.DuelMatchCreatorGUI;
+import mc.obliviate.masterduels.history.MatchHistoryLog;
 import mc.obliviate.masterduels.invite.Invite;
 import mc.obliviate.masterduels.invite.InviteRecipient;
 import mc.obliviate.masterduels.invite.InviteUtils;
@@ -61,13 +61,13 @@ public class DuelCMD implements CommandExecutor {
 			return false;
 		}
 
-		if (GameHistoryLog.GAME_HISTORY_LOG_ENABLED && args[0].equalsIgnoreCase("history")) {
+		if (MatchHistoryLog.GAME_HISTORY_LOG_ENABLED && args[0].equalsIgnoreCase("history")) {
 			new DuelHistoryLogGUI(player).open();
 			return true;
 		} else if (args[0].equalsIgnoreCase("leave")) {
 			if (user instanceof Member) {
 				final Member member = ((Member) user);
-				member.getGame().getGameState().leave(member); //todo add methods of game states to game.class
+				member.getGame().getMatchState().leave(member); //todo add methods of game states to game.class
 				return true;
 			} else {
 				MessageUtils.sendMessage(player, "you-are-not-in-duel");
@@ -107,9 +107,9 @@ public class DuelCMD implements CommandExecutor {
 		} else if (args[0].equalsIgnoreCase("queue") && DuelQueueHandler.enabled) {
 			queue(player, Arrays.asList(args));
 		} else if (args[0].equalsIgnoreCase("creator")) {
-			GameCreator gameCreator = GameCreator.getGameCreatorMap().get(player.getUniqueId());
-			if (gameCreator == null) gameCreator = new GameCreator(plugin, player.getUniqueId());
-			new DuelGameCreatorGUI(player, gameCreator).open();
+			MatchCreator matchCreator = MatchCreator.getGameCreatorMap().get(player.getUniqueId());
+			if (matchCreator == null) matchCreator = new MatchCreator(plugin, player.getUniqueId());
+			new DuelMatchCreatorGUI(player, matchCreator).open();
 		} else if (args.length == 1 || args[0].equalsIgnoreCase("invite")) {
 			invite(player, args);
 		}
@@ -244,7 +244,7 @@ public class DuelCMD implements CommandExecutor {
 				return;
 			}
 
-			member.getTeam().getGame().getGameSpectatorManager().spectate(player);
+			member.getTeam().getMatch().getGameSpectatorManager().spectate(player);
 
 		} else {
 			player.sendMessage("§cUsage: /duel spectate <player>");
@@ -281,7 +281,7 @@ public class DuelCMD implements CommandExecutor {
 		}
 
 		//1v1
-		final IGameBuilder gameBuilder = new GameBuilder(plugin).setTeamAmount(2).setTeamSize(1).setMatchDuration(Duration.ofMinutes(1)).setTotalRounds(1);
+		final IGameBuilder gameBuilder = new MatchBuilder(plugin).setTeamAmount(2).setTeamSize(1).setMatchDuration(Duration.ofMinutes(1)).setTotalRounds(1);
 		gameBuilder.addPlayer(player);
 
 		final Invite.Builder inviteBuilder = Invite.create()
@@ -291,7 +291,7 @@ public class DuelCMD implements CommandExecutor {
 				.onResponse(invite -> {
 					if (invite.getState().equals(InviteState.ACCEPTED)) {
 						gameBuilder.addPlayer(target);
-						IGame game = gameBuilder.build();
+						IMatch game = gameBuilder.build();
 						if (game == null) {
 							MessageUtils.sendMessage(player, "no-arena-found");
 							return;

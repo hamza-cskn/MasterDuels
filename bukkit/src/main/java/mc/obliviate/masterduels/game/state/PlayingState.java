@@ -1,12 +1,12 @@
 package mc.obliviate.masterduels.game.state;
 
-import mc.obliviate.masterduels.api.arena.GameStateType;
-import mc.obliviate.masterduels.api.events.DuelGameMemberDeathEvent;
+import mc.obliviate.masterduels.api.arena.MatchStateType;
+import mc.obliviate.masterduels.api.events.DuelMatchMemberDeathEvent;
 import mc.obliviate.masterduels.api.user.IMember;
 import mc.obliviate.masterduels.api.user.ISpectator;
 import mc.obliviate.masterduels.api.user.ITeam;
 import mc.obliviate.masterduels.data.DataHandler;
-import mc.obliviate.masterduels.game.Game;
+import mc.obliviate.masterduels.game.Match;
 import mc.obliviate.masterduels.kit.InventoryStorer;
 import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.MessageUtils;
@@ -17,11 +17,11 @@ import org.bukkit.event.entity.EntityDamageEvent;
 
 import static mc.obliviate.masterduels.kit.Kit.USE_PLAYER_INVENTORIES;
 
-public class PlayingState implements GameState {
+public class PlayingState implements MatchState {
 
-	private final Game match;
+	private final Match match;
 
-	public PlayingState(Game game) {
+	public PlayingState(Match game) {
 		this.match = game;
 	}
 
@@ -30,7 +30,7 @@ public class PlayingState implements GameState {
 		if (match.getGameDataStorage().getRoundData().nextRound()) {
 			match.setGameState(new RoundEndingState(match));
 		} else {
-			match.setGameState(new GameEndingState(match));
+			match.setGameState(new MatchEndingState(match));
 		}
 
 	}
@@ -46,7 +46,7 @@ public class PlayingState implements GameState {
 	}
 
 	private void onDeath(EntityDamageEvent event, IMember victim, IMember attacker) {
-		Bukkit.getPluginManager().callEvent(new DuelGameMemberDeathEvent(event, victim, attacker));
+		Bukkit.getPluginManager().callEvent(new DuelMatchMemberDeathEvent(event, victim, attacker));
 
 		match.getGameSpectatorManager().spectate(victim);
 
@@ -86,7 +86,7 @@ public class PlayingState implements GameState {
 
 		if (member.getPlayer().isOnline()) {
 			match.showAll(member.getPlayer());
-			Game.RESET_WHEN_PLAYER_LEFT.reset(member.getPlayer());
+			Match.RESET_WHEN_PLAYER_LEFT.reset(member.getPlayer());
 			Utils.teleportToLobby(member.getPlayer());
 			MessageUtils.sendMessage(member.getPlayer(), "you-left-from-duel");
 
@@ -104,13 +104,13 @@ public class PlayingState implements GameState {
 	}
 
 	@Override
-	public Game getMatch() {
+	public Match getMatch() {
 		return match;
 	}
 
 	@Override
-	public GameStateType getGameStateType() {
-		return GameStateType.PLAYING;
+	public MatchStateType getMatchStateType() {
+		return MatchStateType.PLAYING;
 	}
 
 }

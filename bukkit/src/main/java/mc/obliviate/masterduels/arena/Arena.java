@@ -4,7 +4,7 @@ import mc.obliviate.masterduels.api.arena.IArena;
 import mc.obliviate.masterduels.arena.elements.ArenaCuboid;
 import mc.obliviate.masterduels.arena.elements.Positions;
 import mc.obliviate.masterduels.data.DataHandler;
-import mc.obliviate.masterduels.game.Game;
+import mc.obliviate.masterduels.game.Match;
 import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.serializer.SerializerUtils;
 import org.bukkit.Location;
@@ -50,7 +50,7 @@ public class Arena implements IArena {
 	}
 
 	public static Arena findArena(int teamSize, int teamAmount) {
-		for (final Map.Entry<Arena, Game> entry : DataHandler.getArenas().entrySet()) {
+		for (final Map.Entry<Arena, Match> entry : DataHandler.getArenas().entrySet()) {
 			if (entry.getKey().getTeamAmount() >= teamAmount && entry.getKey().getTeamSize() >= teamSize) {
 				if (!entry.getKey().isEnabled()) continue;
 				if (entry.getValue() == null) return entry.getKey();
@@ -61,10 +61,10 @@ public class Arena implements IArena {
 
 	public static BasicArenaState getBasicArenaState(Arena arena) {
 		if (arena == null) return UNKNOWN;
-		final Game game = DataHandler.getArenas().get(arena);
+		final Match match = DataHandler.getArenas().get(arena);
 
 
-		if (game == null) {
+		if (match == null) {
 			if (arena.isEnabled()) {
 				return EMPTY;
 			} else {
@@ -72,7 +72,7 @@ public class Arena implements IArena {
 			}
 		}
 
-		switch (game.getGameState().getGameStateType()) {
+		switch (match.getMatchState().getMatchStateType()) {
 			case PLAYING:
 				return PLAYING;
 			case GAME_ENDING:

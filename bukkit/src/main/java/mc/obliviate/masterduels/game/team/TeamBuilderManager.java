@@ -1,8 +1,8 @@
 package mc.obliviate.masterduels.game.team;
 
 import mc.obliviate.masterduels.api.arena.ITeamBuilder;
-import mc.obliviate.masterduels.game.Game;
-import mc.obliviate.masterduels.game.GameBuilder;
+import mc.obliviate.masterduels.game.Match;
+import mc.obliviate.masterduels.game.MatchBuilder;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -13,23 +13,23 @@ import java.util.Map;
 public class TeamBuilderManager {
 
 	private final Map<Integer, ITeamBuilder> teams = new HashMap<>();
-	private final GameBuilder builder;
+	private final MatchBuilder builder;
 
-	public TeamBuilderManager(final GameBuilder builder) {
+	public TeamBuilderManager(final MatchBuilder builder) {
 		this.builder = builder;
 	}
 
-	public void registerTeamsIntoGame(final Game game) {
+	public void registerTeamsIntoGame(final Match game) {
 		for (final ITeamBuilder teamBuilder : teams.values()) {
 			registerTeamIntoGame(teamBuilder, game);
 		}
 	}
 
-	private void registerTeamIntoGame(ITeamBuilder builder, Game game) {
+	private void registerTeamIntoGame(ITeamBuilder builder, Match game) {
 		game.getGameDataStorage().getGameTeamManager().registerTeam(builder.build(game));
 	}
 
-	public GameBuilder getBuilder() {
+	public MatchBuilder getBuilder() {
 		return builder;
 	}
 

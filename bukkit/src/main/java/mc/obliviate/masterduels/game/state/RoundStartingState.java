@@ -1,12 +1,12 @@
 package mc.obliviate.masterduels.game.state;
 
-import mc.obliviate.masterduels.api.arena.GameStateType;
+import mc.obliviate.masterduels.api.arena.MatchStateType;
 import mc.obliviate.masterduels.api.user.IMember;
 import mc.obliviate.masterduels.api.user.ISpectator;
 import mc.obliviate.masterduels.api.user.ITeam;
 import mc.obliviate.masterduels.arena.elements.Positions;
 import mc.obliviate.masterduels.data.DataHandler;
-import mc.obliviate.masterduels.game.Game;
+import mc.obliviate.masterduels.game.Match;
 import mc.obliviate.masterduels.kit.InventoryStorer;
 import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.MessageUtils;
@@ -17,14 +17,14 @@ import java.time.Duration;
 
 import static mc.obliviate.masterduels.kit.Kit.USE_PLAYER_INVENTORIES;
 
-public class RoundStartingState implements GameState {
+public class RoundStartingState implements MatchState {
 
 	private static final Duration LOCK_DURATION = Duration.ofSeconds(3);
 	private static final int LOCK_FREQUENCY = 2; //must be bigger than 0
 	private long roundStartTime;
-	private final Game match;
+	private final Match match;
 
-	public RoundStartingState(Game match) {
+	public RoundStartingState(Match match) {
 		this.match = match;
 		init();
 	}
@@ -48,7 +48,7 @@ public class RoundStartingState implements GameState {
 	@Override
 	public void leave(final ISpectator spectator) {
 		match.getGameSpectatorManager().unspectate(spectator);
-		Game.RESET_WHEN_PLAYER_LEFT.reset(spectator.getPlayer());
+		Match.RESET_WHEN_PLAYER_LEFT.reset(spectator.getPlayer());
 		MessageUtils.sendMessage(spectator.getPlayer(), "you-left-from-duel");
 		Utils.teleportToLobby(spectator.getPlayer());
 	}
@@ -66,7 +66,7 @@ public class RoundStartingState implements GameState {
 			}
 
 			match.showAll(member.getPlayer());
-			Game.RESET_WHEN_PLAYER_LEFT.reset(member.getPlayer());
+			Match.RESET_WHEN_PLAYER_LEFT.reset(member.getPlayer());
 			Utils.teleportToLobby(member.getPlayer());
 			MessageUtils.sendMessage(member.getPlayer(), "you-left-from-duel");
 
@@ -124,12 +124,12 @@ public class RoundStartingState implements GameState {
 	}
 
 	@Override
-	public GameStateType getGameStateType() {
-		return GameStateType.ROUND_STARTING;
+	public MatchStateType getMatchStateType() {
+		return MatchStateType.ROUND_STARTING;
 	}
 
 	@Override
-	public Game getMatch() {
+	public Match getMatch() {
 		return match;
 	}
 }

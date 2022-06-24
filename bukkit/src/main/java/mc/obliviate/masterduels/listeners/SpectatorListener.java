@@ -16,7 +16,7 @@ public class SpectatorListener implements Listener {
 
 		e.setCancelled(true);
 		if (e.getItem() != null && e.getItem().getType().equals(Material.BARRIER)) {
-			spectator.getGame().getGameState().leave(spectator);
+			spectator.getGame().getMatchState().leave(spectator);
 		}
 	}
 }

@@ -3,8 +3,8 @@ package mc.obliviate.masterduels.queue;
 import mc.obliviate.masterduels.api.events.queue.DuelQueueJoinEvent;
 import mc.obliviate.masterduels.api.events.queue.DuelQueueLeaveEvent;
 import mc.obliviate.masterduels.api.queue.IDuelQueue;
-import mc.obliviate.masterduels.game.Game;
-import mc.obliviate.masterduels.game.GameBuilder;
+import mc.obliviate.masterduels.game.Match;
+import mc.obliviate.masterduels.game.MatchBuilder;
 import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import org.bukkit.Bukkit;
@@ -17,9 +17,9 @@ public class DuelQueue implements IDuelQueue {
 
 	private static final Map<DuelQueueTemplate, DuelQueue> availableQueues = new HashMap<>();
 	private final DuelQueueTemplate template;
-	private final GameBuilder builder;
+	private final MatchBuilder builder;
 
-	public DuelQueue(final DuelQueueTemplate template, final GameBuilder builder) {
+	public DuelQueue(final DuelQueueTemplate template, final MatchBuilder builder) {
 		this.builder = builder;
 		this.template = template;
 		final DuelQueue queue = availableQueues.get(template);
@@ -41,7 +41,7 @@ public class DuelQueue implements IDuelQueue {
 		return null;
 	}
 
-	public GameBuilder getBuilder() {
+	public MatchBuilder getBuilder() {
 		return builder;
 	}
 
@@ -61,7 +61,7 @@ public class DuelQueue implements IDuelQueue {
 	}
 
 	public void start() {
-		final Game game = builder.build();
+		final Match game = builder.build();
 		if (game == null) {
 			for (final Player player : builder.getPlayers()) {
 				MessageUtils.sendMessage(player, "queue.queue-could-not-started");

@@ -1,7 +1,7 @@
 package mc.obliviate.masterduels.utils.timer;
 
 import mc.obliviate.masterduels.MasterDuels;
-import mc.obliviate.masterduels.history.GameHistoryLog;
+import mc.obliviate.masterduels.history.MatchHistoryLog;
 import org.bukkit.Bukkit;
 
 import java.sql.SQLException;
@@ -14,8 +14,8 @@ public class GameHistoryCacheTimer implements Timer {
 		Bukkit.getScheduler().runTaskTimerAsynchronously(plugin,() -> {
 			try {
 				//update cache
-				GameHistoryLog.historyCache.clear();
-				GameHistoryLog.historyCache.addAll(plugin.getSqlManager().getAllLogs());
+				MatchHistoryLog.historyCache.clear();
+				MatchHistoryLog.historyCache.addAll(plugin.getSqlManager().getAllLogs());
 
 				//trim cache
 				plugin.getSqlManager().clearOldHistories(plugin.getDatabaseHandler().getConfig().getInt("game-history.max-amount-of-histories-in-storage"));

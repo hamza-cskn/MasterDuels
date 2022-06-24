@@ -1,6 +1,6 @@
 package mc.obliviate.masterduels.user.team;
 
-import mc.obliviate.masterduels.api.arena.IGame;
+import mc.obliviate.masterduels.api.arena.IMatch;
 import mc.obliviate.masterduels.api.kit.IKit;
 import mc.obliviate.masterduels.api.user.IMember;
 import mc.obliviate.masterduels.api.user.ITeam;
@@ -31,8 +31,8 @@ public class Member implements IMember {
 	}
 
 	@Override
-	public IGame getGame() {
-		return team.getGame();
+	public IMatch getGame() {
+		return team.getMatch();
 	}
 
 	@Override
