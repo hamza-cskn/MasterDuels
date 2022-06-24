@@ -20,7 +20,7 @@ import mc.obliviate.masterduels.queue.DuelQueueHandler;
 import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.metrics.Metrics;
 import mc.obliviate.masterduels.utils.optimization.ArenaWorldOptimizerHandler;
-import mc.obliviate.masterduels.utils.scoreboard.ScoreboardManager;
+import mc.obliviate.masterduels.utils.scoreboard.InternalScoreboardManager;
 import mc.obliviate.masterduels.utils.tab.TABManager;
 import mc.obliviate.masterduels.utils.timer.GameHistoryCacheTimer;
 import mc.obliviate.masterduels.utils.versioncontroller.ServerVersionController;
@@ -48,7 +48,7 @@ public class MasterDuels extends JavaPlugin {
 	private final YamlStorageHandler yamlStorageHandler = new YamlStorageHandler(this);
 	private final DuelQueueHandler duelQueueHandler = new DuelQueueHandler(this);
 	private IArenaClearHandler arenaClearHandler;
-	private ScoreboardManager scoreboardManager;
+	private InternalScoreboardManager scoreboardManager;
 
 	public static MasterDuels getInstance() {
 		return JavaPlugin.getPlugin(MasterDuels.class);
@@ -107,6 +107,7 @@ public class MasterDuels extends JavaPlugin {
 		setupArenaClearHandler();
 		scoreboardManager = new ScoreboardManager(this);
 		HCore.initialize(this);
+		scoreboardManager = new InternalScoreboardManager(this);
 		duelQueueHandler.init();
 		if (yamlStorageHandler.getConfig().getBoolean("optimize-duel-worlds", false)) {
 			worldOptimizerHandler.init();
@@ -213,7 +214,7 @@ public class MasterDuels extends JavaPlugin {
 		return inventoryAPI;
 	}
 
-	public ScoreboardManager getScoreboardManager() {
+	public InternalScoreboardManager getScoreboardManager() {
 		return scoreboardManager;
 	}
 
