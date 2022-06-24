@@ -1,6 +1,7 @@
 package mc.obliviate.masterduels.game.state;
 
 import mc.obliviate.masterduels.api.arena.GameStateType;
+import mc.obliviate.masterduels.api.events.DuelGameMemberDeathEvent;
 import mc.obliviate.masterduels.api.user.IMember;
 import mc.obliviate.masterduels.api.user.ISpectator;
 import mc.obliviate.masterduels.api.user.ITeam;
@@ -11,6 +12,7 @@ import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.Utils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.event.entity.EntityDamageEvent;
 
 import static mc.obliviate.masterduels.kit.Kit.USE_PLAYER_INVENTORIES;
@@ -44,7 +46,7 @@ public class PlayingState implements GameState {
 	}
 
 	private void onDeath(EntityDamageEvent event, IMember victim, IMember attacker) {
-		//todo call api events
+		Bukkit.getPluginManager().callEvent(new DuelGameMemberDeathEvent(event, victim, attacker));
 
 		match.getGameSpectatorManager().spectate(victim);
 
