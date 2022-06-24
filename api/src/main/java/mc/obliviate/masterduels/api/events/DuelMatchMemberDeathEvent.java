@@ -29,7 +29,7 @@ public class DuelMatchMemberDeathEvent extends Event {
 	}
 
 	public IMatch getMatch() {
-		return victim.getGame();
+		return victim.getMatch();
 	}
 
 	@Override

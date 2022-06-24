@@ -33,7 +33,9 @@ public interface MatchState extends IMatchState {
 		}
 	}
 
-	void leave(IMember member);
+	default void leave(IMember member) {
+		Bukkit.getPluginManager().callEvent(new DuelMatchMemberLeaveEvent(member));
+	}
 
 	default void leave(ISpectator spectator) {
 		getMatch().getGameSpectatorManager().unspectate(spectator);

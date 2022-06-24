@@ -1,6 +1,7 @@
 package mc.obliviate.masterduels.game.state;
 
 import mc.obliviate.masterduels.api.arena.MatchStateType;
+import mc.obliviate.masterduels.api.events.DuelMatchMemberLeaveEvent;
 import mc.obliviate.masterduels.api.events.arena.DuelMatchStartEvent;
 import mc.obliviate.masterduels.api.user.IMember;
 import mc.obliviate.masterduels.game.Match;
@@ -34,6 +35,7 @@ public class MatchStartingState implements MatchState {
 	public void leave(IMember member) {
 		if (!member.getTeam().getMembers().contains(member)) return;
 
+		Bukkit.getPluginManager().callEvent(new DuelMatchMemberLeaveEvent(member));
 		Logger.debug(Logger.DebugPart.GAME, "Player " + member.getPlayer().getName() + " has left from duel game during duel game starting.");
 		match.uninstall();
 	}

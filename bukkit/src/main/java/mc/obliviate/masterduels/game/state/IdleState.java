@@ -1,9 +1,11 @@
 package mc.obliviate.masterduels.game.state;
 
 import mc.obliviate.masterduels.api.arena.MatchStateType;
+import mc.obliviate.masterduels.api.events.DuelMatchMemberLeaveEvent;
 import mc.obliviate.masterduels.api.kit.IKit;
 import mc.obliviate.masterduels.api.user.IMember;
 import mc.obliviate.masterduels.game.Match;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class IdleState implements MatchState {
@@ -21,6 +23,7 @@ public class IdleState implements MatchState {
 
 	@Override
 	public void leave(IMember member) {
+		Bukkit.getPluginManager().callEvent(new DuelMatchMemberLeaveEvent(member));
 		match.removePlayer(member.getPlayer().getUniqueId());
 	}
 

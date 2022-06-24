@@ -1,6 +1,7 @@
 package mc.obliviate.masterduels.game.state;
 
 import mc.obliviate.masterduels.api.arena.MatchStateType;
+import mc.obliviate.masterduels.api.events.DuelMatchMemberLeaveEvent;
 import mc.obliviate.masterduels.api.user.IMember;
 import mc.obliviate.masterduels.api.user.ISpectator;
 import mc.obliviate.masterduels.api.user.ITeam;
@@ -12,6 +13,7 @@ import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.Utils;
 import mc.obliviate.masterduels.utils.notify.NotifyActionStack;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
 import java.time.Duration;
@@ -67,6 +69,7 @@ public class RoundStartingState implements MatchState {
 	public void leave(final IMember member) {
 		if (!member.getTeam().getMembers().contains(member)) return;
 
+		Bukkit.getPluginManager().callEvent(new DuelMatchMemberLeaveEvent(member));
 		DataHandler.getUsers().remove(member.getPlayer().getUniqueId());
 		member.getTeam().unregisterMember(member);
 

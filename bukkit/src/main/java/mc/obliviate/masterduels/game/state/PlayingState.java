@@ -2,6 +2,7 @@ package mc.obliviate.masterduels.game.state;
 
 import mc.obliviate.masterduels.api.arena.MatchStateType;
 import mc.obliviate.masterduels.api.events.DuelMatchMemberDeathEvent;
+import mc.obliviate.masterduels.api.events.DuelMatchMemberLeaveEvent;
 import mc.obliviate.masterduels.api.user.IMember;
 import mc.obliviate.masterduels.api.user.ISpectator;
 import mc.obliviate.masterduels.api.user.ITeam;
@@ -77,6 +78,7 @@ public class PlayingState implements MatchState {
 	public void leave(IMember member) {
 		if (!member.getTeam().getMembers().contains(member)) return;
 
+		Bukkit.getPluginManager().callEvent(new DuelMatchMemberLeaveEvent(member));
 		DataHandler.getUsers().remove(member.getPlayer().getUniqueId());
 		member.getTeam().unregisterMember(member);
 
