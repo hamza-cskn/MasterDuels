@@ -59,27 +59,49 @@ duel-game-lock:
   teleport-frequency: 5 #teleport amount per second
   notify-actions:
     first-action:
-      remaining-time: 2 #remaining lock time in seconds
+      remaining-time: 5 #remaining lock time in seconds
+      sound: NOTE_BASS
       title:
-        title: ''
-        subtitle: '&6&lBE!'
-        fadein: 5 #in ticks
-        stay: 20 #in ticks
-        fadeout: 3 #in ticks
-      sound: SOUND_NAME
-      chat: TEXT
-      action-bar: TEXT
-    second-action:
-      remaining-time: 1
-      title:
-        title: ''
-        subtitle: '&6&lREADY!'
+        subtitle: '&a&l5'
         fadein: 5
-        stay: 20
-        fadeout: 3
-      sound: SOUND_NAME
-      chat: TEXT
-      action-bar: TEXT
+        fadeout: 0
+    second-action:
+      remaining-time: 4
+      sound: NOTE_BASS
+      title:
+        title: ''
+        subtitle: '&a&l4'
+        fadein: 0
+    third-action:
+      remaining-time: 3 #remaining lock time in seconds
+      sound: NOTE_BASS
+      title:
+        title: ''
+        subtitle: '&a&l3'
+        fadein: 0
+    fourth-action:
+      remaining-time: 2
+      sound: NOTE_BASS
+      title:
+        title: ''
+        subtitle: '&a&l2'
+        fadein: 0
+    fiveth-action:
+      remaining-time: 1
+      sound: NOTE_BASS
+      title:
+        subtitle: '&a&l1'
+        fadein: 5
+        fadeout: 0
+    sixth-action:
+      remaining-time: 0
+      sound: NOTE_PIANO
+      title:
+        title: '&a&lGO'
+        fadein: 5
+        fadeout: 0
+      #chat: '&aGood luck!'
+      #action-bar: '&aGame is started'
 
 
 #{timer} = 13:59
