@@ -4,7 +4,7 @@ import com.google.common.base.Preconditions;
 import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.api.arena.GameRule;
 import mc.obliviate.masterduels.api.arena.IMatch;
-import mc.obliviate.masterduels.api.events.arena.MatchStateChangeEvent;
+import mc.obliviate.masterduels.api.events.arena.DuelMatchStateChangeEvent;
 import mc.obliviate.masterduels.api.kit.IKit;
 import mc.obliviate.masterduels.api.user.IMember;
 import mc.obliviate.masterduels.api.user.ITeam;
@@ -103,7 +103,7 @@ public class Match implements IMatch {
 	}
 
 	public void setGameState(MatchState gameState) {
-		Bukkit.getPluginManager().callEvent(new MatchStateChangeEvent(this, this.gameState, gameState));
+		Bukkit.getPluginManager().callEvent(new DuelMatchStateChangeEvent(this, this.gameState, gameState));
 		this.gameState = gameState;
 	}
 

@@ -2,6 +2,7 @@ package mc.obliviate.masterduels.game.state;
 
 import mc.obliviate.masterduels.api.arena.MatchStateType;
 import mc.obliviate.masterduels.api.events.DuelMatchMemberLeaveEvent;
+import mc.obliviate.masterduels.api.events.arena.DuelMatchPreStartEvent;
 import mc.obliviate.masterduels.api.kit.IKit;
 import mc.obliviate.masterduels.api.user.IMember;
 import mc.obliviate.masterduels.game.Match;
@@ -18,6 +19,7 @@ public class IdleState implements MatchState {
 
 	@Override
 	public void next() {
+		Bukkit.getPluginManager().callEvent(new DuelMatchPreStartEvent(match));
 		match.setGameState(new MatchStartingState(match));
 	}
 

@@ -2,7 +2,7 @@ package mc.obliviate.masterduels.game.state;
 
 import mc.obliviate.masterduels.api.arena.MatchStateType;
 import mc.obliviate.masterduels.api.events.DuelMatchMemberLeaveEvent;
-import mc.obliviate.masterduels.api.events.arena.DuelMatchFinishEvent;
+import mc.obliviate.masterduels.api.events.arena.DuelMatchEndEvent;
 import mc.obliviate.masterduels.api.user.IMember;
 import mc.obliviate.masterduels.api.user.ITeam;
 import mc.obliviate.masterduels.data.DataHandler;
@@ -27,7 +27,7 @@ public class MatchEndingState implements MatchState {
 	}
 
 	private void init() {
-		Bukkit.getPluginManager().callEvent(new DuelMatchFinishEvent(match));
+		Bukkit.getPluginManager().callEvent(new DuelMatchEndEvent(match, this));
 
 		match.getGameTaskManager().cancelTask("REMAINING_TIME");
 
@@ -57,6 +57,7 @@ public class MatchEndingState implements MatchState {
 
 		if (member.getPlayer().isOnline()) {
 			match.showAll(member.getPlayer());
+			match.showAll(member.getPlayer());
 			Match.RESET_WHEN_PLAYER_LEFT.reset(member.getPlayer());
 			Utils.teleportToLobby(member.getPlayer());
 			MessageUtils.sendMessage(member.getPlayer(), "you-left-from-duel");
@@ -66,7 +67,7 @@ public class MatchEndingState implements MatchState {
 
 	@Override
 	public MatchStateType getMatchStateType() {
-		return MatchStateType.GAME_ENDING;
+		return MatchStateType.MATCH_ENDING;
 	}
 
 	public void dropItemsOfLosers(Location loc) {

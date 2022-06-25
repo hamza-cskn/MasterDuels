@@ -18,7 +18,7 @@ public class MatchStartingState implements MatchState {
 	}
 
 	private void init() {
-		Bukkit.getPluginManager().callEvent(new DuelMatchStartEvent(match));
+		Bukkit.getPluginManager().callEvent(new DuelMatchStartEvent(match, this));
 		match.getGameDataStorage().setFinishTime(System.currentTimeMillis() + match.getGameDataStorage().getMatchDuration().toMillis());
 
 		//match time out task
@@ -42,7 +42,7 @@ public class MatchStartingState implements MatchState {
 
 	@Override
 	public MatchStateType getMatchStateType() {
-		return MatchStateType.GAME_STARING;
+		return MatchStateType.MATCH_STARING;
 	}
 
 	@Override

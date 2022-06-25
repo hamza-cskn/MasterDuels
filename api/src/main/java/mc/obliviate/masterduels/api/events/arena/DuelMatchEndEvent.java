@@ -5,13 +5,13 @@ import mc.obliviate.masterduels.api.arena.IMatchState;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class DuelMatchRoundStartEvent extends Event implements MatchEvent {
+public class DuelMatchEndEvent extends Event implements MatchEvent {
 
 	private final IMatch match;
 	private final IMatchState state;
 	private static final HandlerList handlers = new HandlerList();
 
-	public DuelMatchRoundStartEvent(IMatch match, IMatchState state) {
+	public DuelMatchEndEvent(IMatch match, IMatchState state) {
 		this.match = match;
 		this.state = state;
 	}

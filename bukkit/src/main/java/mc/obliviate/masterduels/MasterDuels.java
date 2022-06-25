@@ -18,10 +18,10 @@ import mc.obliviate.masterduels.history.MatchHistoryLog;
 import mc.obliviate.masterduels.kit.serializer.KitSerializer;
 import mc.obliviate.masterduels.listeners.*;
 import mc.obliviate.masterduels.queue.DuelQueueHandler;
+import mc.obliviate.masterduels.scoreboard.InternalScoreboardManager;
 import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.metrics.Metrics;
 import mc.obliviate.masterduels.utils.optimization.ArenaWorldOptimizerHandler;
-import mc.obliviate.masterduels.utils.scoreboard.InternalScoreboardManager;
 import mc.obliviate.masterduels.utils.tab.TABManager;
 import mc.obliviate.masterduels.utils.timer.GameHistoryCacheTimer;
 import mc.obliviate.masterduels.utils.versioncontroller.ServerVersionController;
@@ -49,7 +49,6 @@ public class MasterDuels extends JavaPlugin {
 	private final YamlStorageHandler yamlStorageHandler = new YamlStorageHandler(this);
 	private final DuelQueueHandler duelQueueHandler = new DuelQueueHandler(this);
 	private IArenaClearHandler arenaClearHandler;
-	private InternalScoreboardManager scoreboardManager;
 
 	public static MasterDuels getInstance() {
 		return JavaPlugin.getPlugin(MasterDuels.class);
@@ -107,9 +106,10 @@ public class MasterDuels extends JavaPlugin {
 		inventoryAPI.init();
 		setupArenaClearHandler();
 		HCore.initialize(this);
-		scoreboardManager = new InternalScoreboardManager(this);
+		if (YamlStorageHandler.getConfig().getBoolean("scoreboards.enabled"))
+			new InternalScoreboardManager().init(this);
 		duelQueueHandler.init();
-		if (YamlStorageHandler.getConfig().getBoolean("optimize-duel-worlds", false)) {
+		if (YamlStorageHandler.getConfig().getBoolean("optimize-duel-worlds", false))
 			worldOptimizerHandler.init();
 		if (YamlStorageHandler.getConfig().getBoolean("boss-bars.enabled"))
 			new BossBarHandler().init(this);
@@ -170,7 +170,7 @@ public class MasterDuels extends JavaPlugin {
 		Bukkit.getPluginManager().registerEvents(new SpectatorListener(), this);
 		Bukkit.getPluginManager().registerEvents(new MatchRuleListener(), this);
 		Bukkit.getPluginManager().registerEvents(new DeveloperCMD(this), this);
-		Bukkit.getPluginManager().registerEvents(new CMDExecutorListener(this), this);
+		Bukkit.getPluginManager().registerEvents(new CMDExecutorListener(), this);
 	}
 
 	private void loadKits() {
@@ -210,15 +210,6 @@ public class MasterDuels extends JavaPlugin {
 	public YamlStorageHandler getDatabaseHandler() {
 		return yamlStorageHandler;
 	}
-
-	public InventoryAPI getInventoryAPI() {
-		return inventoryAPI;
-	}
-
-	public InternalScoreboardManager getScoreboardManager() {
-		return scoreboardManager;
-	}
-
 
 	public SQLManager getSqlManager() {
 		return sqlManager;

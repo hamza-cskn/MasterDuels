@@ -5,7 +5,7 @@ import mc.obliviate.masterduels.api.arena.IMatchState;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class MatchStateChangeEvent extends Event implements MatchEvent {
+public class DuelMatchStateChangeEvent extends Event implements MatchEvent {
 
 	private static final HandlerList handlers = new HandlerList();
 
@@ -13,7 +13,7 @@ public class MatchStateChangeEvent extends Event implements MatchEvent {
 	private final IMatchState oldState;
 	private final IMatchState newState;
 
-	public MatchStateChangeEvent(IMatch game, IMatchState oldState, IMatchState newState) {
+	public DuelMatchStateChangeEvent(IMatch game, IMatchState oldState, IMatchState newState) {
 		this.game = game;
 		this.oldState = oldState;
 		this.newState = newState;

@@ -1,26 +1,23 @@
 package mc.obliviate.masterduels.api.events.arena;
 
 import mc.obliviate.masterduels.api.arena.IMatch;
-import mc.obliviate.masterduels.api.arena.IMatchRoundData;
+import mc.obliviate.masterduels.api.arena.IMatchState;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 public class DuelMatchRoundEndEvent extends Event implements MatchEvent {
 
+	private final IMatch match;
+	private final IMatchState state;
 	private static final HandlerList handlers = new HandlerList();
 
-	private final IMatch match;
-
-	public DuelMatchRoundEndEvent(IMatch match) {
+	public DuelMatchRoundEndEvent(IMatch match, IMatchState state) {
 		this.match = match;
+		this.state = state;
 	}
 
 	public static HandlerList getHandlerList() {
 		return handlers;
-	}
-
-	public IMatch getMatch() {
-		return match;
 	}
 
 	@Override
@@ -28,11 +25,13 @@ public class DuelMatchRoundEndEvent extends Event implements MatchEvent {
 		return handlers;
 	}
 
-	public int getNewRound() {
-		return match.getGameDataStorage().getGameRoundData().getCurrentRound();
+	public IMatchState getState() {
+		return state;
 	}
 
-	public IMatchRoundData getRoundData() {
-		return match.getGameDataStorage().getGameRoundData();
+	@Override
+	public IMatch getMatch() {
+		return match;
 	}
+
 }

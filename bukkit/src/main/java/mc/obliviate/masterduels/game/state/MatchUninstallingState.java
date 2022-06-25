@@ -2,7 +2,7 @@ package mc.obliviate.masterduels.game.state;
 
 import mc.obliviate.masterduels.api.arena.MatchStateType;
 import mc.obliviate.masterduels.api.events.DuelMatchMemberLeaveEvent;
-import mc.obliviate.masterduels.api.events.arena.DuelArenaUninstallEvent;
+import mc.obliviate.masterduels.api.events.arena.DuelMatchUninstallEvent;
 import mc.obliviate.masterduels.api.user.IMember;
 import mc.obliviate.masterduels.api.user.ISpectator;
 import mc.obliviate.masterduels.data.DataHandler;
@@ -25,8 +25,7 @@ public class MatchUninstallingState implements MatchState {
 	}
 
 	private void init() {
-		Bukkit.getPluginManager().callEvent(new DuelArenaUninstallEvent(match));
-
+		Bukkit.getPluginManager().callEvent(new DuelMatchUninstallEvent(match, this));
 		match.broadcastInGame("game-finished");
 
 		for (final IMember member : match.getAllMembers()) {
