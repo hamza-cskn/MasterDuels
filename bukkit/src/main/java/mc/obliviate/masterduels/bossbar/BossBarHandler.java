@@ -1,21 +1,19 @@
 package mc.obliviate.masterduels.bossbar;
 
-import mc.obliviate.masterduels.game.Match;
+import mc.obliviate.masterduels.MasterDuels;
 
-public class BossBarHandler {
+public final class BossBarHandler {
 
 	public static String NORMAL_TEXT_FORMAT = "{time}";
 	public static String CLOSING_TEXT_FORMAT = "{time}";
 	private static BossBarModule bossBarModule;
 
-	public static IBossBarManager createBossBarManager(Match game) {
+	public void init(MasterDuels plugin) {
 		switch (bossBarModule) {
 			case TAB:
-				return new TABBossBarManager(game);
+				new TABBossBarManager(plugin);
 			case INTERNAL:
-				return new InternalBossBarManager(game);
-			default:
-				return new DysfunctionalBossBarManager();
+				new InternalBossBarManager(plugin);
 		}
 	}
 

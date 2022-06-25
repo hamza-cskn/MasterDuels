@@ -5,6 +5,7 @@ import mc.obliviate.inventory.InventoryAPI;
 import mc.obliviate.masterduels.arenaclear.ArenaClearListener;
 import mc.obliviate.masterduels.arenaclear.IArenaClearHandler;
 import mc.obliviate.masterduels.arenaclear.modes.smart.SmartArenaClearHandler;
+import mc.obliviate.masterduels.bossbar.BossBarHandler;
 import mc.obliviate.masterduels.commands.DeveloperCMD;
 import mc.obliviate.masterduels.commands.DuelAdminCMD;
 import mc.obliviate.masterduels.commands.DuelCMD;
@@ -110,7 +111,8 @@ public class MasterDuels extends JavaPlugin {
 		duelQueueHandler.init();
 		if (YamlStorageHandler.getConfig().getBoolean("optimize-duel-worlds", false)) {
 			worldOptimizerHandler.init();
-		}
+		if (YamlStorageHandler.getConfig().getBoolean("boss-bars.enabled"))
+			new BossBarHandler().init(this);
 		sqlManager.init();
 		setupVaultUtils();
 
