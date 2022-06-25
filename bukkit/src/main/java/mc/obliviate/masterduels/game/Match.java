@@ -159,6 +159,7 @@ public class Match implements IMatch {
 	public void showAll(Player player) {
 		for (final Player p : getAllMembersAndSpectatorsAsPlayer()) {
 			player.showPlayer(p);
+			p.showPlayer(player);
 		}
 	}
 
