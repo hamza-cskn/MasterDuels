@@ -31,7 +31,12 @@ public class NotifyActionStack {
 			resultList.add(new TitleNotify(section.getConfigurationSection("title")));
 		}
 		if (section.isSet("sound")) {
-			resultList.add(new SoundNotify(Sound.valueOf(section.getString("sound"))));
+			try {
+				Sound sound = Sound.valueOf(section.getString("sound"));
+				resultList.add(new SoundNotify(sound));
+			} catch (IllegalArgumentException e) {
+				Logger.error("Sound could not find: " + section.getString("sound"));
+			}
 		}
 		if (section.isSet("chat")) {
 			resultList.add(new ChatAction(section.getString("chat")));
