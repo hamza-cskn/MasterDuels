@@ -14,14 +14,8 @@ import org.bukkit.event.Listener;
 /**
  * Purpose of this class,
  * executes console commands which is given in config.yml
-**/
- public class CMDExecutorListener implements Listener {
-
-	private final MasterDuels plugin;
-
-	public CMDExecutorListener(MasterDuels plugin) {
-		this.plugin = plugin;
-	}
+ **/
+public class CMDExecutorListener implements Listener {
 
 	@EventHandler
 	public void onDuelGameStart(DuelMatchStartEvent event) {
