@@ -1,4 +1,4 @@
-package mc.obliviate.masterduels.utils.scoreboard;
+package mc.obliviate.masterduels.scoreboard;
 
 import com.hakan.core.HCore;
 import com.hakan.core.scoreboard.HScoreboard;
@@ -6,7 +6,7 @@ import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.api.arena.IMatch;
 import mc.obliviate.masterduels.api.arena.MatchStateType;
 import mc.obliviate.masterduels.api.events.DuelMatchMemberLeaveEvent;
-import mc.obliviate.masterduels.api.events.arena.MatchStateChangeEvent;
+import mc.obliviate.masterduels.api.events.arena.DuelMatchStateChangeEvent;
 import mc.obliviate.masterduels.api.user.IMember;
 import mc.obliviate.masterduels.utils.Utils;
 import mc.obliviate.masterduels.utils.timer.TimerUtils;
@@ -15,15 +15,17 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-public class InternalScoreboardManager implements Listener {
+public final class InternalScoreboardManager implements Listener {
 
-	public InternalScoreboardManager(MasterDuels plugin) {
+	public void init(MasterDuels plugin) {
 		Bukkit.getPluginManager().registerEvents(this, plugin);
 	}
 
 	@EventHandler
-	public void onDuelMatchStateChange(MatchStateChangeEvent event) {
-		if (event.getMatch().getMatchState().getMatchStateType().equals(MatchStateType.UNINSTALLING)) return;
+	public void onDuelMatchStateChange(DuelMatchStateChangeEvent event) {
+		if (event.getNewState().getMatchStateType().equals(MatchStateType.UNINSTALLING)) return;
+		if (event.getNewState().getMatchStateType().equals(MatchStateType.MATCH_STARING)) return;
+		if (event.getNewState().getMatchStateType().equals(MatchStateType.IDLE)) return;
 		for (IMember member : event.getMatch().getGameDataStorage().getGameTeamManager().getAllMembers()) {
 			setupScoreboard(member, event.getNewState().getMatchStateType());
 		}
@@ -43,7 +45,6 @@ public class InternalScoreboardManager implements Listener {
 		final HScoreboard scoreboard = HCore.createScoreboard(member.getPlayer());
 
 		final ScoreboardFormatConfig formatConfig = ScoreboardFormatConfig.getFormatConfig(type);
-
 		scoreboard.setTitle(formatConfig.getTitle());
 		scoreboard.setUpdateInterval(20);
 		scoreboard.show();
@@ -54,7 +55,6 @@ public class InternalScoreboardManager implements Listener {
 			for (String line : formatConfig.getLines()) {
 
 				if (line.equalsIgnoreCase("{+opponents}")) {
-
 					for (final IMember loopMember : match.getAllMembers()) {
 						if (member.getTeam().equals(loopMember.getTeam())) continue;
 

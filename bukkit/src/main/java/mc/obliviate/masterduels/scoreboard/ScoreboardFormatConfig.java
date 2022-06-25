@@ -1,4 +1,4 @@
-package mc.obliviate.masterduels.utils.scoreboard;
+package mc.obliviate.masterduels.scoreboard;
 
 import mc.obliviate.masterduels.api.arena.MatchStateType;
 import mc.obliviate.masterduels.utils.MessageUtils;
