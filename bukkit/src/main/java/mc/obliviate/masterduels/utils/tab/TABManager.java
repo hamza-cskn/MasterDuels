@@ -4,7 +4,7 @@ import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.utils.Logger;
 import org.bukkit.Bukkit;
 
-public class TABManager {
+public final class TABManager {
 
 	private static boolean enabled = false;
 
