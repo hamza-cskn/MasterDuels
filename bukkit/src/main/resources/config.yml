@@ -109,7 +109,7 @@ duel-game-lock:
 #You can translate time format from message.yml time-format
 scoreboards: #Requires TitleManager plugin
   enabled: true
-  BATTLE:
+  PLAYING:
     title: '&e&lDUELS'
     live-opponent-format: '&a{name} &c{health}❤'
     dead-opponent-format: '&a{name} &cDEAD'
@@ -136,7 +136,7 @@ scoreboards: #Requires TitleManager plugin
       - '&fStarting: &a{timer}'
       - ''
       - '&ewww.yourserver.net'
-  GAME_ENDING:
+  MATCH_ENDING:
     title: '&e&lDUELS'
     live-opponent-format: '&a{name} &c{health}❤'
     dead-opponent-format: '&a{name} &cDEAD'
@@ -151,31 +151,6 @@ scoreboards: #Requires TitleManager plugin
       - '{+opponents}'
       - ''
       - '&ewww.yourserver.net'
-titles:
-  ROUND_STARTING:
-    title: '&c&l{remaining-time-second}' # also, you can use {round} and {remaining-time-timer} placeholders
-    subtitle: '&r'
-    fadein: 5 #in ticks
-    stay: 20 #in ticks
-    fadeout: 3 #in ticks
-  ROUND_STARTED:
-    title: ''
-    subtitle: '&6&lREADY!'
-    fadein: 5 #in ticks
-    stay: 20 #in ticks
-    fadeout: 3 #in ticks
-  SPECTATOR_JOIN:
-    title: ''
-    subtitle: '&7You are spectator now.'
-    fadein: 20
-    stay: 10
-    fadeout: 20
-  SPECTATOR_LEFT:
-    title: ''
-    subtitle: '&7You are no longer spectator.'
-    fadein: 20
-    stay: 10
-    fadeout: 20
 boss-bars:
   enabled: true
   # MasterDuels can use TAB's boss bar API or its own boss bar manager.

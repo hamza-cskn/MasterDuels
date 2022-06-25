@@ -75,12 +75,12 @@ public class Arena implements IArena {
 		switch (match.getMatchState().getMatchStateType()) {
 			case PLAYING:
 				return PLAYING;
-			case GAME_ENDING:
+			case MATCH_ENDING:
 			case UNINSTALLING:
 				return ENDING;
 			case ROUND_STARTING:
 			case ROUND_ENDING:
-			case GAME_STARING:
+			case MATCH_STARING:
 				return STARTING;
 		}
 		return UNKNOWN;
