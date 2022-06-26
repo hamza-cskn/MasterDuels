@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @Deprecated
 public class TeamBuilderManager {
@@ -27,6 +28,17 @@ public class TeamBuilderManager {
 
 	private void registerTeamIntoGame(ITeamBuilder builder, Match game) {
 		game.getGameDataStorage().getGameTeamManager().registerTeam(builder.build(game));
+	}
+
+	public ITeamBuilder getTeam(UUID playerUniqueId) {
+		for (ITeamBuilder team : teams.values()) {
+			for (Player member : team.getMembers()) {
+				if (member.getUniqueId().equals(playerUniqueId)) {
+					return team;
+				}
+			}
+		}
+		return null;
 	}
 
 	public MatchBuilder getBuilder() {

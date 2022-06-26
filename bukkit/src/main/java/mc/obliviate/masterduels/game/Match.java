@@ -18,7 +18,6 @@ import mc.obliviate.masterduels.game.state.MatchState;
 import mc.obliviate.masterduels.game.state.MatchUninstallingState;
 import mc.obliviate.masterduels.game.task.MatchTaskManager;
 import mc.obliviate.masterduels.kit.Kit;
-import mc.obliviate.masterduels.user.DuelSpace;
 import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.Utils;
@@ -36,7 +35,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public class Match implements IMatch, DuelSpace {
+public class Match implements IMatch {
 
 	public static final PlayerReset PLAYER_RESET = new PlayerReset().excludeExp().excludeLevel().excludeInventory().excludeTitle();
 	public static final PlayerReset RESET_WHEN_PLAYER_LEFT = new PlayerReset().excludeExp().excludeLevel().excludeInventory();

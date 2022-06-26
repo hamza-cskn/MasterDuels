@@ -1,6 +1,5 @@
 package mc.obliviate.masterduels.game;
 
-import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.api.arena.GameRule;
 import mc.obliviate.masterduels.api.arena.IGameBuilder;
 import mc.obliviate.masterduels.api.arena.ITeamBuilder;
@@ -9,7 +8,6 @@ import mc.obliviate.masterduels.api.user.IUser;
 import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.game.team.TeamBuilderManager;
-import mc.obliviate.masterduels.user.DuelSpace;
 import mc.obliviate.masterduels.user.DuelUser;
 import mc.obliviate.masterduels.user.team.Member;
 import org.bukkit.entity.Player;
@@ -17,18 +15,16 @@ import org.bukkit.entity.Player;
 import java.time.Duration;
 import java.util.*;
 
-public class MatchBuilder implements IGameBuilder, DuelSpace {
+public class MatchBuilder implements IGameBuilder {
 
 	public static final Map<UUID, MatchBuilder> GAME_BUILDER_MAP = new HashMap<>();
-	private final MasterDuels plugin;
 	private final TeamBuilderManager teamBuilderManager = new TeamBuilderManager(this);
 	private final UUID id;
 	private final List<Player> players = new ArrayList<>();
 	private final MatchDataStorage matchDataStorage = new MatchDataStorage();
 	private Match match = null;
 
-	public MatchBuilder(final MasterDuels plugin) {
-		this.plugin = plugin;
+	public MatchBuilder() {
 		this.id = UUID.randomUUID();
 
 		createRandomizedTeams();
@@ -205,7 +201,7 @@ public class MatchBuilder implements IGameBuilder, DuelSpace {
 
 		final ITeamBuilder team = getAvailableTeam();
 		if (team == null) return false;
-		join(duelUser);
+		duelUser.setMatchBuilder(this);
 		players.add(player);
 		team.add(player);
 
@@ -222,12 +218,19 @@ public class MatchBuilder implements IGameBuilder, DuelSpace {
 
 	@Override
 	public void removePlayer(Player player) {
+		DuelUser duelUser = DuelUser.getDuelUser(player.getUniqueId());
+		duelUser.exitMatchBuilder();
 		players.remove(player);
+		teamBuilderManager.getTeam(player.getUniqueId()).remove(player);
+
 	}
 
 	@Override
 	public void destroy() {
 		//unregister game builder
+		for (Player player : players) {
+			removePlayer(player);
+		}
 		GAME_BUILDER_MAP.remove(id);
 	}
 

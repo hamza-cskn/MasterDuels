@@ -2,6 +2,7 @@ package mc.obliviate.masterduels.user;
 
 import mc.obliviate.masterduels.api.user.IUser;
 import mc.obliviate.masterduels.data.SQLManager;
+import mc.obliviate.masterduels.game.MatchBuilder;
 import mc.obliviate.masterduels.statistics.DuelStatistic;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -19,7 +20,7 @@ public class DuelUser implements IUser {
 	private final Player player;
 	private boolean inviteReceiving;
 	private final DuelStatistic statistic;
-	private DuelSpace duelSpace = null;
+	private MatchBuilder duelSpace = null;
 
 	public static DuelUser getDuelUser(UUID playerUniqueId) {
 		return DUEL_USER_MAP.get(playerUniqueId);
@@ -53,15 +54,15 @@ public class DuelUser implements IUser {
 		return duelSpace != null;
 	}
 
-	public DuelSpace getDuelSpace() {
+	public MatchBuilder getDuelSpace() {
 		return duelSpace;
 	}
 
-	public void exitDuelSpace() {
-		setDuelSpace(null);
+	public void exitMatchBuilder() {
+		setMatchBuilder(null);
 	}
 
-	public void setDuelSpace(DuelSpace duelSpace) {
+	public void setMatchBuilder(MatchBuilder duelSpace) {
 		this.duelSpace = duelSpace;
 	}
 
