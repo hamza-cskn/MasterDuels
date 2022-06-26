@@ -9,13 +9,15 @@ import mc.obliviate.masterduels.api.user.IUser;
 import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.game.team.TeamBuilderManager;
+import mc.obliviate.masterduels.user.DuelSpace;
+import mc.obliviate.masterduels.user.DuelUser;
 import mc.obliviate.masterduels.user.team.Member;
 import org.bukkit.entity.Player;
 
 import java.time.Duration;
 import java.util.*;
 
-public class MatchBuilder implements IGameBuilder {
+public class MatchBuilder implements IGameBuilder, DuelSpace {
 
 	public static final Map<UUID, MatchBuilder> GAME_BUILDER_MAP = new HashMap<>();
 	private final MasterDuels plugin;
@@ -179,8 +181,12 @@ public class MatchBuilder implements IGameBuilder {
 			playerMatchBuilder.destroy();
 		}
 
-
 		if (!player.isOnline()) {
+			return false;
+		}
+
+		DuelUser duelUser = DuelUser.getDuelUser(player.getUniqueId());
+		if (duelUser.isInDuelSpace()) {
 			return false;
 		}
 
@@ -199,6 +205,7 @@ public class MatchBuilder implements IGameBuilder {
 
 		final ITeamBuilder team = getAvailableTeam();
 		if (team == null) return false;
+		join(duelUser);
 		players.add(player);
 		team.add(player);
 

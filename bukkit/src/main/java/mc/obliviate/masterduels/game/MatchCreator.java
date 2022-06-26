@@ -8,6 +8,7 @@ import mc.obliviate.masterduels.data.YamlStorageHandler;
 import mc.obliviate.masterduels.invite.Invite;
 import mc.obliviate.masterduels.invite.InviteUtils;
 import mc.obliviate.masterduels.kit.Kit;
+import mc.obliviate.masterduels.user.DuelUser;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
 import mc.obliviate.masterduels.utils.timer.TimerUtils;
