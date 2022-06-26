@@ -71,7 +71,7 @@ public class DuelQueueTemplate {
 	}
 
 	public void createNewQueue() {
-		new DuelQueue(this, new MatchBuilder(plugin));
+		new DuelQueue(this, new MatchBuilder());
 	}
 
 	public String getName() {

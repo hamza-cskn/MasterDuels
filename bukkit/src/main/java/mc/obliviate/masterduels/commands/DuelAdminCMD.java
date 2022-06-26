@@ -135,7 +135,7 @@ public class DuelAdminCMD implements CommandExecutor {
 			return;
 		}
 
-		final IGameBuilder gameBuilder = new MatchBuilder(plugin).setTeamSize(1).setTeamAmount(2).setMatchDuration(Duration.ofSeconds(1440));
+		final IGameBuilder gameBuilder = new MatchBuilder().setTeamSize(1).setTeamAmount(2).setMatchDuration(Duration.ofSeconds(1440));
 		gameBuilder.addPlayer(p1);
 		gameBuilder.addPlayer(p2);
 

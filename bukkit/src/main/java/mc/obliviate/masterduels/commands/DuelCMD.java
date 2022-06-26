@@ -289,7 +289,7 @@ public class DuelCMD implements CommandExecutor {
 		}
 
 		//1v1
-		final IGameBuilder gameBuilder = new MatchBuilder(plugin).setTeamAmount(2).setTeamSize(1).setMatchDuration(Duration.ofMinutes(1)).setTotalRounds(1);
+		final IGameBuilder gameBuilder = new MatchBuilder().setTeamAmount(2).setTeamSize(1).setMatchDuration(Duration.ofMinutes(1)).setTotalRounds(1);
 		gameBuilder.addPlayer(player);
 
 		final Invite.Builder inviteBuilder = Invite.create()

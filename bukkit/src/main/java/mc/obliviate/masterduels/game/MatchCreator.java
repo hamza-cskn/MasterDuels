@@ -44,7 +44,7 @@ public class MatchCreator {
 
 	public MatchCreator(MasterDuels plugin, UUID ownerPlayer) {
 		this.ownerPlayer = ownerPlayer;
-		this.builder = new MatchBuilder(plugin);
+		this.builder = new MatchBuilder();
 		this.plugin = plugin;
 
 		//check: player uuid is not null
