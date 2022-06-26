@@ -4,12 +4,12 @@ import java.util.UUID;
 
 public class DuelStatistic {
 
-	private final UUID player;
-	private final int wins;
-	private final int losses;
+	private final UUID playerUniqueId;
+	private int wins;
+	private int losses;
 
-	public DuelStatistic(UUID player, int wins, int losses) {
-		this.player = player;
+	public DuelStatistic(UUID playerUniqueId, int wins, int losses) {
+		this.playerUniqueId = playerUniqueId;
 		this.wins = wins;
 		this.losses = losses;
 	}
@@ -18,11 +18,15 @@ public class DuelStatistic {
 		return losses;
 	}
 
+	public void setWins(int wins) {
+		this.wins = wins;
+	}
+
 	public int getWins() {
 		return wins;
 	}
 
 	public UUID getPlayerUniqueId() {
-		return player;
+		return playerUniqueId;
 	}
 }
