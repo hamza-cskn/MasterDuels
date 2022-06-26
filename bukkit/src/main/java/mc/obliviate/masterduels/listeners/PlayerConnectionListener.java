@@ -18,8 +18,8 @@ public class PlayerConnectionListener implements Listener {
 	}
 
 	@EventHandler
-	public void onDisconnect(PlayerQuitEvent e) {
-		final IMember member = DataHandler.getMember(e.getPlayer().getUniqueId());
+	public void onDisconnect(PlayerQuitEvent event) {
+		final IMember member = DataHandler.getMember(event.getPlayer().getUniqueId());
 		if (member != null) {
 			member.getTeam().getMatch().getMatchState().leave(member);
 		}
