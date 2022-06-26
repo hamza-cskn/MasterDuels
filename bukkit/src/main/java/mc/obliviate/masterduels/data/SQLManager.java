@@ -37,15 +37,13 @@ public class SQLManager extends SQLHandler {
 				.addField("endTime", DataType.INTEGER);
 	}
 
-	public static DuelStatistic deserializeStatistic(ResultSet rs, boolean singleData) {
+	public static DuelStatistic deserializeStatistic(ResultSet rs, boolean emptyResultSet) {
 		try {
-			if (singleData && !rs.next()) return null;
 			final UUID uuid = UUID.fromString(rs.getString("uuid"));
 			final int wins = rs.getInt("wins");
 			final int loses = rs.getInt("loses");
-			while (singleData && rs.next()) {
-				Logger.severe("Statistics duplication found: " + uuid);
-			}
+			if (emptyResultSet)
+				while (rs.next()) ;
 			return new DuelStatistic(uuid, wins, loses);
 
 		} catch (SQLException e) {
