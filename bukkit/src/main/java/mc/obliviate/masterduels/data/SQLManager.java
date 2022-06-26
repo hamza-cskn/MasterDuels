@@ -141,7 +141,7 @@ public class SQLManager extends SQLHandler {
 			final ResultSet rs = playerDataTable.select(uuid.toString());
 			return deserializeStatistic(rs, true);
 		}
-		return new DuelStatistic(uuid, 0, 0);
+		return DuelStatistic.createDefaultInstance(uuid);
 	}
 
 	public LinkedList<DuelStatistic> getTopPlayers(String fieldName, int limit) {

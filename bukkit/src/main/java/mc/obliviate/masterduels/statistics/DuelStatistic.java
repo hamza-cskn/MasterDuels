@@ -14,6 +14,14 @@ public class DuelStatistic {
 		this.losses = losses;
 	}
 
+	public static DuelStatistic createDefaultInstance(UUID playerUniqueId) {
+		return new DuelStatistic(playerUniqueId, 0, 0);
+	}
+
+	public void setLosses(int losses) {
+		this.losses = losses;
+	}
+
 	public int getLosses() {
 		return losses;
 	}
