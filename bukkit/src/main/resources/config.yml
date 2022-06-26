@@ -45,11 +45,11 @@ execute-console-commands:
 # placeholders are unsupported yet.
 
 executable-commands-by-player:
-  BATTLE:
+  PLAYING:
   #- this_command_is_executable_in_battle
   ROUND_STARTING:
   #- this_command_is_executable_before_game_start
-  GAME_ENDING:
+  MATCH_ENDING:
   #- this_command_is_executable_after_victim_dead
   #- this_command_is_executable_after_victim_dead_too
   #empty lists means all commands should be blocked.
@@ -103,7 +103,6 @@ duel-game-lock:
       #chat: '&aGood luck!'
       #action-bar: '&aGame is started'
 
-
 #{timer} = 13:59
 #{time} = 13 minutes 59 seconds
 #You can translate time format from message.yml time-format
@@ -151,6 +150,7 @@ scoreboards: #Requires TitleManager plugin
       - '{+opponents}'
       - ''
       - '&ewww.yourserver.net'
+
 boss-bars:
   enabled: true
   # MasterDuels can use TAB's boss bar API or its own boss bar manager.
@@ -189,6 +189,7 @@ game-history:
         - ' {+losers}'
         - ''
         - '&8Game played at: {played-date}'
+
 duel-arenas-gui:
   enabled: true
   #You need 'masterduels.see-non-playing-games' permission to see 'disabled' and 'empty' arenas.
@@ -270,14 +271,12 @@ duel-creator:
     icons:
       fill-icon: #dysfunctional icon
         material: BLACK_STAINED_GLASS_PANE
-        display-name: '&r'
-        amount: 1
         slot: 45-53
+        display-name: '&r'
       team-size:
         material: PLAYER_HEAD
-        display-name: '&9Team Size'
-        amount: 1
         slot: 11
+        display-name: '&9Team Size'
         lore:
           - '&7'
           - '&7Currently: &f{team-size}'
@@ -291,9 +290,8 @@ duel-creator:
           - '&eRight click to decrease'
       team-amount:
         material: PLAYER_HEAD
-        display-name: '&9Team Amount'
-        amount: 1
         slot: 12
+        display-name: '&9Team Amount'
         lore:
           - '&7'
           - '&7Currently: &f{team-amount}'
@@ -307,9 +305,8 @@ duel-creator:
           - '&eRight click to decrease'
       invites:
         material: WRITABLE_BOOK
-        display-name: '&9Invited Players'
-        amount: 1
         slot: 13
+        display-name: '&9Invited Players'
         lore:
           - '&7'
           - '&7Pending Invites: {invited-players}'
@@ -321,9 +318,8 @@ duel-creator:
           - '&eClick to open menu'
       rules:
         material: COMPARATOR
-        display-name: '&9Rules'
-        amount: 1
         slot: 14
+        display-name: '&9Rules'
         lore:
           - '&7'
           - '&7Game rules of game.'
@@ -331,9 +327,8 @@ duel-creator:
           - '&eClick to open gui'
       round-amount:
         material: LADDER
-        display-name: '&9Round Amount'
-        amount: 1
         slot: 15
+        display-name: '&9Round Amount'
         lore:
           - '&7'
           - '&7Currently: &f{round-amount}'
@@ -347,9 +342,8 @@ duel-creator:
           - '&eRight click to decrease'
       kit:
         material: IRON_CHESTPLATE
-        display-name: '&9Kit'
-        amount: 1
         slot: 20
+        display-name: '&9Kit'
         lore:
           - '&7'
           - '&7Currently: &f{kit}'
@@ -357,9 +351,8 @@ duel-creator:
           - '&eClick to choose kit.'
       game-time:
         material: CLOCK
-        display-name: '&9Game Time'
-        amount: 1
         slot: 21
+        display-name: '&9Game Time'
         lore:
           - '&7'
           - '&7Currently: &a{game-timer}'
@@ -370,9 +363,8 @@ duel-creator:
           - '&eRight click to decrease'
       manage-teams:
         material: PAINTING
-        display-name: '&9Manage Teams'
-        amount: 1
         slot: 22
+        display-name: '&9Manage Teams'
         lore:
           - '&7'
           - '&7Manage members of teams.'
@@ -380,9 +372,8 @@ duel-creator:
           - '&eClick to increase'
       start-game:
         material: EMERALD_BLOCK
-        display-name: '&9Start Game!'
-        amount: 1
         slot: 49
+        display-name: '&9Start Game!'
         lore:
           - '&7'
           - '&eClick to start duel game.'
@@ -392,8 +383,8 @@ duel-creator:
     icons:
       fill-icon:
         material: BLACK_STAINED_GLASS_PANE
-        display-name: '&r'
         slot: 0-8
+        display-name: '&r'
       empty-player-slot:
         material: BARRIER
         display-name: '&cEmpty!'
@@ -421,34 +412,35 @@ duel-creator:
           - '&7({team-players-amount}&8/&7{team-size})'
       back:
         material: ARROW
-        display-name: '&cBack'
         slot: 0
+        display-name: '&cBack'
   game-rules-gui:
     title: 'Game Rules'
     size: 3
     icons:
       fill-icon:
         material: BLACK_STAINED_GLASS_PANE
-        display-name: '&r'
         slot: 0-8
+        display-name: '&r'
       back:
         material: ARROW
-        display-name: '&cBack'
         slot: 0
+        display-name: '&cBack'
   invites-gui:
     title: 'Pending Invites'
     size: 5
     icons:
       fill-icon:
         material: BLACK_STAINED_GLASS_PANE
-        display-name: '&r'
         slot: 0-8
+        display-name: '&r'
       back:
         material: ARROW
-        display-name: '&cBack'
         slot: 0
+        display-name: '&cBack'
       invite:
         material: WRITABLE_BOOK
+        slot: 4
         display-name: '&aInvite a Player'
         lore:
           - ''
