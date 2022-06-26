@@ -11,7 +11,7 @@ public class MatchRoundData implements IMatchRoundData {
 	private final Map<ITeam, Integer> teamWins = new HashMap<>();
 	private ITeam winnerTeam;
 	private int round = 0;
-	private int totalRounds;
+	private int totalRounds = 1;
 
 	@Override
 	public void addWin(final ITeam team) {
