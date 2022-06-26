@@ -1,14 +1,14 @@
 package mc.obliviate.masterduels.gui.creator;
 
-import mc.obliviate.inventory.Gui;
 import mc.obliviate.inventory.Icon;
 import mc.obliviate.masterduels.api.arena.ITeamBuilder;
-import mc.obliviate.masterduels.game.MatchBuilder;
 import mc.obliviate.masterduels.game.MatchCreator;
+import mc.obliviate.masterduels.gui.ConfigurableGui;
 import mc.obliviate.masterduels.utils.Utils;
+import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
+import mc.obliviate.masterduels.utils.serializer.SerializerUtils;
 import mc.obliviate.masterduels.utils.xmaterial.XMaterial;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -16,32 +16,45 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
-public class DuelTeamManagerGUI extends Gui {
+import java.util.List;
 
-	private final MatchBuilder matchBuilder;
+public class DuelTeamManagerGUI extends ConfigurableGui {
+
+	private static DuelTeamManagerGUIConfig guiConfig;
 	private final MatchCreator matchCreator;
 
 	public DuelTeamManagerGUI(Player player, MatchCreator matchCreator) {
-		super(player, "duel-team-manage-gui", "Manage Teams", matchCreator.getBuilder().getTeamAmount() + 1);
-		this.matchBuilder = matchCreator.getBuilder();
+		super(player, "duel-team-manage-gui");
 		this.matchCreator = matchCreator;
+		setSize((matchCreator.getBuilder().getTeamAmount() + 1) * 9);
+	}
+
+	public static void setGuiConfig(DuelTeamManagerGUIConfig guiConfig) {
+		DuelTeamManagerGUI.guiConfig = guiConfig;
 	}
 
 	@Override
 	public void onOpen(final InventoryOpenEvent event) {
-		fillRow(new Icon(XMaterial.BLACK_STAINED_GLASS_PANE.parseItem()), 0);
-		addItem(0, new Icon(XMaterial.ARROW.parseItem()).onClick(e -> {
-			new DuelMatchCreatorGUI(player, matchCreator).open();
-		}));
 
-		for (int team = 0; team < matchBuilder.getTeamAmount(); team++) {
-			final Icon icon = new Icon(Utils.teamIcons.get(team).clone());
-			addItem((team + 1) * 9, icon.setName("§f" + (team + 1) + ". team")
-					.setLore("§7(" + matchBuilder.getTeamBuilders().get(team + 1).getMembers().size() + "/" + matchBuilder.getTeamAmount() + ")"));
-			for (int member = 0; member < matchBuilder.getTeamSize(); member++) {
+		putDysfunctionalIcons();
+		putIcon("back", e -> {
+			new DuelMatchCreatorGUI(player, matchCreator).open();
+		});
+
+		for (int team = 0; team < matchCreator.getBuilder().getTeamAmount(); team++) {
+			final Icon icon = new Icon(Utils.teamIcons.get(team).clone()).setName(guiConfig.teamIconName).setLore(guiConfig.teamIconLore);
+			final ItemStack item = SerializerUtils.applyPlaceholdersOnItemStack(icon.getItem(),
+					new PlaceholderUtil()
+							.add("{team-no}", (team + 1) + "")
+							.add("{team-players-amount}", matchCreator.getBuilder().getTeamBuilders().get(team + 1).getMembers().size() + "")
+							.add("{team-size}", matchCreator.getBuilder().getTeamAmount() + ""));
+
+			addItem((team + 1) * 9, item);
+
+			for (int member = 0; member < matchCreator.getBuilder().getTeamSize(); member++) {
 				final int slot = ((team + 1) * 9 + 1 + member);
 
-				final ITeamBuilder teamBuilder = matchBuilder.getTeamBuilders().get(team + 1);
+				final ITeamBuilder teamBuilder = matchCreator.getBuilder().getTeamBuilders().get(team + 1);
 				if (teamBuilder.getMembers().size() <= member) {
 					addItem(slot, getNullMemberSlotIcon(teamBuilder));
 					continue;
@@ -57,22 +70,16 @@ public class DuelTeamManagerGUI extends Gui {
 					return;
 				}
 
-				final ItemStack playerHead = XMaterial.PLAYER_HEAD.parseItem();
-				assert playerHead != null;
-				final SkullMeta skullMeta = (SkullMeta) playerHead.getItemMeta();
-				if (skullMeta != null) {
-					skullMeta.setOwner(player.getName());
-					playerHead.setItemMeta(skullMeta);
-				}
+				final ItemStack playerHead = guiConfig.getPlayerSlotIcon(player);
 
-				addItem(slot, new Icon(playerHead).setName("§e" + player.getName()).onClick(e -> {
+				addItem(slot, new Icon(playerHead).onClick(e -> {
 					switch (e.getAction()) {
 						case PICKUP_HALF:
 						case PICKUP_ONE:
 						case PICKUP_ALL:
 						case PICKUP_SOME:
 							Bukkit.getScheduler().runTaskLater(getPlugin(), () -> {
-								addItem(slot, new Icon(XMaterial.BARRIER.parseItem()).onClick(ev -> {
+								addItem(slot, new Icon(guiConfig.getEmptyIcon()).onClick(ev -> {
 									ev.setCursor(null);
 									open();
 								}));
@@ -84,12 +91,12 @@ public class DuelTeamManagerGUI extends Gui {
 							if (!isValidPlayerHead(cursor)) break;
 
 							//get players that will swap
-							final Player requester = Bukkit.getPlayerExact(ChatColor.stripColor(cursor.getItemMeta().getDisplayName()));
-							final Player target = Bukkit.getPlayerExact(ChatColor.stripColor(e.getCurrentItem().getItemMeta().getDisplayName()));
+							final Player requester = getOwner(cursor);
+							final Player target = getOwner(e.getCurrentItem());
 
 							//and their teams
-							final ITeamBuilder requesterTeamBuilder = matchBuilder.getTeamBuilder(requester);
-							final ITeamBuilder targetTeamBuilder = matchBuilder.getTeamBuilder(target);
+							final ITeamBuilder requesterTeamBuilder = matchCreator.getBuilder().getTeamBuilder(requester);
+							final ITeamBuilder targetTeamBuilder = matchCreator.getBuilder().getTeamBuilder(target);
 
 							//swap!
 							targetTeamBuilder.remove(target);
@@ -105,9 +112,13 @@ public class DuelTeamManagerGUI extends Gui {
 
 					}
 				}));
-
 			}
 		}
+	}
+
+	private Player getOwner(ItemStack skullItemStack) {
+		final SkullMeta skullMeta = (SkullMeta) skullItemStack.getItemMeta();
+		return Bukkit.getPlayerExact(skullMeta.getOwner());
 	}
 
 	private boolean isValidPlayerHead(ItemStack item) {
@@ -115,25 +126,24 @@ public class DuelTeamManagerGUI extends Gui {
 		if (item.getAmount() != 1) return false;
 		if (!item.getType().equals(XMaterial.PLAYER_HEAD.parseMaterial())) return false;
 		return true;
-
 	}
 
 	private Icon getNullMemberSlotIcon(ITeamBuilder teamBuilder) {
-		return new Icon(XMaterial.BARRIER.parseItem()).setName("§cEmpty!").setLore("", "§7Put a player's head here", "§7to add him to team.").onClick(e -> {
+		return new Icon(guiConfig.getEmptyIcon()).onClick(e -> {
 			if (!isValidPlayerHead(e.getCursor())) {
 				return;
 			}
-			final Player target = Bukkit.getPlayerExact(ChatColor.stripColor(e.getCursor().getItemMeta().getDisplayName()));
+
+			final Player target = getOwner(e.getCursor());
 			e.setCursor(null);
 			if (target == null) {
 				return;
 			}
-			for (final ITeamBuilder builder : matchBuilder.getTeamBuilders().values()) {
+			for (final ITeamBuilder builder : matchCreator.getBuilder().getTeamBuilders().values()) {
 				builder.remove(target);
 			}
 			teamBuilder.add(target);
 			open();
-
 		});
 
 	}
@@ -145,16 +155,50 @@ public class DuelTeamManagerGUI extends Gui {
 
 	@Override
 	public boolean onClick(InventoryClickEvent e) {
-		if (e.getSlot() != e.getRawSlot()) return true;
-		switch (e.getAction()) {
-			case PICKUP_ALL:
-			case PICKUP_ONE:
-			case PICKUP_HALF:
-			case PICKUP_SOME:
-			case SWAP_WITH_CURSOR:
-				return false;
-			default:
-				return true;
+		if (e.getSlot() != e.getRawSlot()) {
+			e.setCancelled(true);
+			return false;
+		}
+		return false;
+	}
+
+	@Override
+	public String getSectionPath() {
+		return "duel-creator.manage-teams-gui";
+	}
+
+	/**
+	 * Purpose of this class is storing slot formats
+	 * gui configuration.
+	 */
+	public static class DuelTeamManagerGUIConfig {
+
+		private final ItemStack emptySlotIcon;
+		private final ItemStack playerSlotIcon;
+
+		private final String teamIconName;
+		private final List<String> teamIconLore;
+
+		public DuelTeamManagerGUIConfig(ItemStack emptySlotIcon, ItemStack playerSlotIcon, String teamIconName, List<String> teamIconLore) {
+			this.emptySlotIcon = emptySlotIcon;
+			this.playerSlotIcon = playerSlotIcon;
+			this.teamIconName = teamIconName;
+			this.teamIconLore = teamIconLore;
+		}
+
+		protected ItemStack getEmptyIcon() {
+			return emptySlotIcon.clone();
+		}
+
+		protected ItemStack getPlayerSlotIcon(Player player) {
+			final ItemStack item = SerializerUtils.applyPlaceholdersOnItemStack(playerSlotIcon.clone(), new PlaceholderUtil().add("{player}", Utils.getDisplayName(player)));
+			if (item.getItemMeta() instanceof SkullMeta) {
+				final SkullMeta skullMeta = (SkullMeta) item.getItemMeta();
+				skullMeta.setOwner(player.getName());
+				item.setItemMeta(skullMeta);
+			}
+			return item;
 		}
 	}
+
 }

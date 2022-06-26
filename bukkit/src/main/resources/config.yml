@@ -264,22 +264,20 @@ duel-creator:
     allowed-game-rules: #these game rules are setable
       - '*'
       #- NO_BOW
-
-
   gui:
     title: 'Duel Creator {mode} &c&lBETA'
-    size: 5
+    size: 6
     icons:
       fill-icon: #dysfunctional icon
         material: BLACK_STAINED_GLASS_PANE
         display-name: '&r'
         amount: 1
-        slot: 36-44
+        slot: 45-53
       team-size:
         material: PLAYER_HEAD
         display-name: '&9Team Size'
         amount: 1
-        slot: 10
+        slot: 11
         lore:
           - '&7'
           - '&7Currently: &f{team-size}'
@@ -295,7 +293,7 @@ duel-creator:
         material: PLAYER_HEAD
         display-name: '&9Team Amount'
         amount: 1
-        slot: 11
+        slot: 12
         lore:
           - '&7'
           - '&7Currently: &f{team-amount}'
@@ -311,7 +309,7 @@ duel-creator:
         material: WRITABLE_BOOK
         display-name: '&9Invited Players'
         amount: 1
-        slot: 12
+        slot: 13
         lore:
           - '&7'
           - '&7Pending Invites: {invited-players}'
@@ -325,7 +323,7 @@ duel-creator:
         material: COMPARATOR
         display-name: '&9Rules'
         amount: 1
-        slot: 13
+        slot: 14
         lore:
           - '&7'
           - '&7Game rules of game.'
@@ -335,7 +333,7 @@ duel-creator:
         material: LADDER
         display-name: '&9Round Amount'
         amount: 1
-        slot: 14
+        slot: 15
         lore:
           - '&7'
           - '&7Currently: &f{round-amount}'
@@ -351,27 +349,17 @@ duel-creator:
         material: IRON_CHESTPLATE
         display-name: '&9Kit'
         amount: 1
-        slot: 15
+        slot: 20
         lore:
           - '&7'
           - '&7Currently: &f{kit}'
           - '&7'
           - '&eClick to choose kit.'
-      bet:
-        material: EMERALD
-        display-name: '&9Bet'
-        amount: 1
-        slot: 16
-        lore:
-          - '&7'
-          - '&7Currently: &6{bet}'
-          - '&7'
-          - '&eClick to specify bet.'
       game-time:
         material: CLOCK
         display-name: '&9Game Time'
         amount: 1
-        slot: 17
+        slot: 21
         lore:
           - '&7'
           - '&7Currently: &a{game-timer}'
@@ -384,7 +372,7 @@ duel-creator:
         material: PAINTING
         display-name: '&9Manage Teams'
         amount: 1
-        slot: 18
+        slot: 22
         lore:
           - '&7'
           - '&7Manage members of teams.'
@@ -394,9 +382,80 @@ duel-creator:
         material: EMERALD_BLOCK
         display-name: '&9Start Game!'
         amount: 1
-        slot: 31
+        slot: 49
         lore:
           - '&7'
           - '&eClick to start duel game.'
+  manage-teams-gui:
+    title: Manage Teams
+    #the size of gui is dynamic
+    icons:
+      fill-icon:
+        material: BLACK_STAINED_GLASS_PANE
+        display-name: '&r'
+        slot: 0-8
+      empty-player-slot:
+        material: BARRIER
+        display-name: '&cEmpty!'
+        lore:
+          - ''
+          - '&7Put a player''s head here'
+          - '&7to add him to team.'
+      player-slot:
+        material: PLAYER_HEAD
+        display-name: '&e{player}'
+      team-slot:
+        dynamic-materials:
+          - RED_STAINED_GLASS
+          - BLUE_STAINED_GLASS
+          - YELLOW_STAINED_GLASS
+          - LIME_STAINED_GLASS
+          - PURPLE_STAINED_GLASS
+          - CYAN_STAINED_GLASS
+          - ORANGE_STAINED_GLASS
+          - PINK_STAINED_GLASS
+          - LIGHT_BLUE_STAINED_GLASS
+          - GREEN_STAINED_GLASS
+        display-name: '&f{team-no}. team'
+        lore:
+          - '&7({team-players-amount}&8/&7{team-size})'
+      back:
+        material: ARROW
+        display-name: '&cBack'
+        slot: 0
+  game-rules-gui:
+    title: 'Game Rules'
+    size: 3
+    icons:
+      fill-icon:
+        material: BLACK_STAINED_GLASS_PANE
+        display-name: '&r'
+        slot: 0-8
+      back:
+        material: ARROW
+        display-name: '&cBack'
+        slot: 0
+  invites-gui:
+    title: 'Pending Invites'
+    size: 5
+    icons:
+      fill-icon:
+        material: BLACK_STAINED_GLASS_PANE
+        display-name: '&r'
+        slot: 0-8
+      back:
+        material: ARROW
+        display-name: '&cBack'
+        slot: 0
+      invite:
+        material: WRITABLE_BOOK
+        display-name: '&aInvite a Player'
+        lore:
+          - ''
+          - '&7Current Players: {players-amount}'
+          - '&7Pending Invites: {pending-invites-amount}'
+          - ''
+          - '&eClick to invite a player!'
+
 duel-queues:
   enabled: true

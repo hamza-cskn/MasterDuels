@@ -12,6 +12,7 @@ import mc.obliviate.masterduels.game.MatchDataStorage;
 import mc.obliviate.masterduels.game.state.RoundStartingState;
 import mc.obliviate.masterduels.gui.DuelArenaListGUI;
 import mc.obliviate.masterduels.gui.DuelHistoryLogGUI;
+import mc.obliviate.masterduels.gui.creator.DuelTeamManagerGUI;
 import mc.obliviate.masterduels.history.MatchHistoryLog;
 import mc.obliviate.masterduels.kit.Kit;
 import mc.obliviate.masterduels.queue.DuelQueueHandler;
@@ -20,12 +21,14 @@ import mc.obliviate.masterduels.queue.gui.DuelQueueListGUI;
 import mc.obliviate.masterduels.scoreboard.ScoreboardFormatConfig;
 import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.MessageUtils;
+import mc.obliviate.masterduels.utils.Utils;
 import mc.obliviate.masterduels.utils.notify.NotifyActionStack;
 import mc.obliviate.masterduels.utils.serializer.SerializerUtils;
 import mc.obliviate.masterduels.utils.tab.TABManager;
 import mc.obliviate.masterduels.utils.timer.TimerUtils;
 import mc.obliviate.masterduels.utils.title.TitleHandler;
 import mc.obliviate.masterduels.utils.versioncontroller.ServerVersionController;
+import mc.obliviate.masterduels.utils.xmaterial.XMaterial;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
@@ -56,11 +59,14 @@ public class YamlStorageHandler {
 		this.plugin = plugin;
 	}
 
+	public static ConfigurationSection getSection(String sectionName) {
+		return config.getConfigurationSection(sectionName);
+	}
+
 	public void init() {
 		loadDataFile(new File(plugin.getDataFolder() + File.separator + DATA_FILE_NAME));
 		loadMessagesFile(new File(plugin.getDataFolder() + File.separator + MESSAGES_FILE_NAME));
 		loadConfigFile(new File(plugin.getDataFolder() + File.separator + CONFIG_FILE_NAME));
-
 
 		registerArenas();
 		registerLobbyLocation();
@@ -73,6 +79,7 @@ public class YamlStorageHandler {
 		registerHistoryGui();
 		registerDuelListGUIConfig(config.getConfigurationSection("duel-arenas-gui"));
 		registerNotifyActions(config.getConfigurationSection("duel-game-lock.notify-actions"));
+		loadTeamManagerConfig();
 
 		initQueues();
 
@@ -83,6 +90,21 @@ public class YamlStorageHandler {
 		Kit.USE_PLAYER_INVENTORIES = config.getBoolean("use-player-inventories", false);
 		SmartArenaClear.REMOVE_ENTITIES = getConfig().getBoolean("arena-regeneration.remove-entities", true);
 
+	}
+
+	private void loadTeamManagerConfig() {
+		DuelTeamManagerGUI.setGuiConfig(new DuelTeamManagerGUI.DuelTeamManagerGUIConfig(
+				SerializerUtils.deserializeItemStack(config.getConfigurationSection("duel-creator.manage-teams-gui.icons.empty-player-slot"), null),
+				SerializerUtils.deserializeItemStack(config.getConfigurationSection("duel-creator.manage-teams-gui.icons.player-slot"), null),
+				config.getString("duel-creator.manage-teams-gui.icons.team-slot.display-name"),
+				config.getStringList("duel-creator.manage-teams-gui.icons.team-slot.lore")));
+
+		int i = 0;
+		for (String materialName : config.getStringList("duel-creator.manage-teams-gui.team-slot.dynamic-materials")) {
+			final int index = i;
+			i++;
+			XMaterial.matchXMaterial(materialName).ifPresent(mat -> Utils.teamIcons.set(index, mat.parseItem()));
+		}
 	}
 
 	private void registerNotifyActions(ConfigurationSection section) {
