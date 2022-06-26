@@ -164,7 +164,7 @@ public class MasterDuels extends JavaPlugin {
 		//RollbackListener registering from ArenaClear.java
 		//Scoreboard and Boss bar listeners registering from their own manager classes
 		Bukkit.getPluginManager().registerEvents(new ChatListener(), this);
-		Bukkit.getPluginManager().registerEvents(new DuelProtectListener(this), this);
+		Bukkit.getPluginManager().registerEvents(new DuelProtectListener(), this);
 		Bukkit.getPluginManager().registerEvents(new DamageListener(this), this);
 		Bukkit.getPluginManager().registerEvents(new PlayerConnectionListener(this), this);
 		Bukkit.getPluginManager().registerEvents(new TeleportListener(), this);

@@ -1,6 +1,5 @@
 package mc.obliviate.masterduels.listeners;
 
-import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.api.user.IMember;
 import mc.obliviate.masterduels.api.user.IUser;
 import mc.obliviate.masterduels.arena.Arena;
@@ -22,11 +21,9 @@ import org.bukkit.inventory.InventoryHolder;
 
 public class DuelProtectListener implements Listener {
 
-	private final MasterDuels plugin;
 	private final boolean teleportBackWhenLimitViolate;
 
-	public DuelProtectListener(MasterDuels plugin) {
-		this.plugin = plugin;
+	public DuelProtectListener() {
 		teleportBackWhenLimitViolate = YamlStorageHandler.getConfig().getBoolean("teleport-back-when-arena-cuboid-violated", false);
 	}
 
@@ -160,7 +157,6 @@ public class DuelProtectListener implements Listener {
 			MessageUtils.sendMessage(e.getPlayer(), "you-can-not-break");
 		}
 	}
-
 
 	//todo victim is in duel
 	// attacker isn't in duel
