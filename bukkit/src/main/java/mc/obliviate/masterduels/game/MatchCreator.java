@@ -96,9 +96,8 @@ public class MatchCreator {
 			return;
 		}
 
-		//todo cache invite receives
 		//check: target accepts invites
-		if (!plugin.getSqlManager().getReceivesInvites(target.getUniqueId())) {
+		if (!DuelUser.getDuelUser(sender.getUniqueId()).inviteReceiving()) {
 			MessageUtils.sendMessage(sender, "invite.toggle.you-can-not-invite", new PlaceholderUtil().add("{target}", target.getName()));
 			return;
 		}
