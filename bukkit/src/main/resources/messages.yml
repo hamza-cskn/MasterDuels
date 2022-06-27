@@ -76,7 +76,7 @@ duel-command:
     &f&nMasterDuels&f {build-version}
   admin:
     usage: |-
-      [DISABLE_PREFIX]
+      [DISABLE_PREFIX]&c&lAdmin&c Commands
       &7 /dueladmin create &8- &9enables arena setup mode
       &7 /dueladmin arena disable <arena name>&8- &9disables an arena
       &7 /dueladmin arena enable <arena name> &8- &9enables an arena
