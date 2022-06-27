@@ -1,12 +1,10 @@
 package mc.obliviate.masterduels.gui;
 
-import mc.obliviate.inventory.Gui;
 import mc.obliviate.inventory.Icon;
 import mc.obliviate.masterduels.history.MatchHistoryLog;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
 import mc.obliviate.masterduels.utils.timer.TimerUtils;
-import mc.obliviate.masterduels.utils.xmaterial.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -15,40 +13,36 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
-public class DuelHistoryLogGUI extends Gui {
+public class DuelHistoryLogGUI extends ConfigurableGui {
 
-	public static ConfigurationSection guiSection;
 	public static DuelHistoryLogGUIConfig guiConfig;
 
 	public DuelHistoryLogGUI(Player player) {
-		super(player, "duel-history-log-gui", "", 6);
-		setTitle(guiSection.getString("title", ""));
+		super(player, "duel-history-log-gui");
+		getPaginationManager().registerItemSlots(9, 53);
+		for (final MatchHistoryLog log : MatchHistoryLog.historyCache) {
+			HistoryIconType type = HistoryIconType.SOLO;
+			if (log.getLosers().size() > 1) {
+				type = HistoryIconType.NON_SOLO;
+			}
+			getPaginationManager().addIcon(guiConfig.deserializeIcon(type, log));
+		}
 	}
 
 	@Override
 	public void onOpen(InventoryOpenEvent event) {
-		fillRow(new Icon(XMaterial.BLACK_STAINED_GLASS_PANE.parseItem()), 0);
-
-		int slot = 9;
-		for (final MatchHistoryLog log : MatchHistoryLog.historyCache) {
-
-			HistoryIconType type;
-			if (log.getLosers().size() == 1) {
-				type = HistoryIconType.SOLO;
-			} else {
-				type = HistoryIconType.NON_SOLO;
-			}
-
-			addItem(slot++, guiConfig.deserializeIcon(type, log));
-		}
+		putDysfunctionalIcons();
 	}
 
+	@Override
+	public String getSectionPath() {
+		return "game-history-gui";
+	}
 
 	private enum HistoryIconType {
 		SOLO,
 		NON_SOLO
 	}
-
 
 	public static class DuelHistoryLogGUIConfig {
 
@@ -97,6 +91,4 @@ public class DuelHistoryLogGUI extends Gui {
 			return icon;
 		}
 	}
-
-
 }
