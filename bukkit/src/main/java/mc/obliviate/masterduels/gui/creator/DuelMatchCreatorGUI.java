@@ -1,7 +1,7 @@
 package mc.obliviate.masterduels.gui.creator;
 
 import mc.obliviate.masterduels.VaultUtil;
-import mc.obliviate.masterduels.data.YamlStorageHandler;
+import mc.obliviate.masterduels.data.ConfigurationHandler;
 import mc.obliviate.masterduels.game.Match;
 import mc.obliviate.masterduels.game.MatchCreator;
 import mc.obliviate.masterduels.gui.ConfigurableGui;
@@ -26,9 +26,9 @@ public class DuelMatchCreatorGUI extends ConfigurableGui {
 
 	@Override
 	public void open() {
-		setTitle(MessageUtils.parseColor(MessageUtils.applyPlaceholders(YamlStorageHandler.getConfig().getString(getSectionPath() + ".title"),
+		setTitle(MessageUtils.parseColor(MessageUtils.applyPlaceholders(ConfigurationHandler.getConfig().getString(getSectionPath() + ".title"),
 				new PlaceholderUtil().add("{mode}", MessageUtils.convertMode(matchCreator.getBuilder().getTeamSize(), matchCreator.getBuilder().getTeamAmount())))));
-		setSize(YamlStorageHandler.getConfig().getInt(getSectionPath() + ".size", 5) * 9);
+		setSize(ConfigurationHandler.getConfig().getInt(getSectionPath() + ".size", 5) * 9);
 		super.open();
 	}
 

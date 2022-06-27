@@ -1,7 +1,7 @@
 package mc.obliviate.masterduels.utils.timer;
 
 import mc.obliviate.masterduels.MasterDuels;
-import mc.obliviate.masterduels.data.YamlStorageHandler;
+import mc.obliviate.masterduels.data.ConfigurationHandler;
 import mc.obliviate.masterduels.history.MatchHistoryLog;
 import org.bukkit.Bukkit;
 
@@ -19,11 +19,11 @@ public class GameHistoryCacheTimer implements Timer {
 				MatchHistoryLog.historyCache.addAll(plugin.getSqlManager().getAllLogs());
 
 				//trim cache
-				plugin.getSqlManager().clearOldHistories(YamlStorageHandler.getConfig().getInt("game-history.max-amount-of-histories-in-storage"));
+				plugin.getSqlManager().clearOldHistories(ConfigurationHandler.getConfig().getInt("game-history.max-amount-of-histories-in-storage"));
 			} catch (final SQLException e) {
 				e.printStackTrace();
 			}
-		}, 0, YamlStorageHandler.getConfig().getInt("game-history.cache-refresh"));
+		}, 0, ConfigurationHandler.getConfig().getInt("game-history.cache-refresh"));
 
 	}
 

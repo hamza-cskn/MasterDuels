@@ -6,8 +6,8 @@ import mc.obliviate.masterduels.api.events.DuelMatchMemberLeaveEvent;
 import mc.obliviate.masterduels.api.kit.IKit;
 import mc.obliviate.masterduels.api.user.IMember;
 import mc.obliviate.masterduels.api.user.ISpectator;
+import mc.obliviate.masterduels.data.ConfigurationHandler;
 import mc.obliviate.masterduels.data.DataHandler;
-import mc.obliviate.masterduels.data.YamlStorageHandler;
 import mc.obliviate.masterduels.game.Match;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
@@ -28,7 +28,7 @@ public interface MatchState extends IMatchState {
 		final IMember member = DataHandler.getMember(event.getPlayer().getUniqueId());
 		if (member == null || event.getPlayer().isOp()) return;
 		if (event.getMessage().startsWith("/")) {
-			if (!YamlStorageHandler.getConfig().getStringList("executable-commands-by-player." + getMatchStateType()).contains(event.getMessage())) {
+			if (!ConfigurationHandler.getConfig().getStringList("executable-commands-by-player." + getMatchStateType()).contains(event.getMessage())) {
 				event.setCancelled(true);
 				MessageUtils.sendMessage(event.getPlayer(), "command-is-blocked", new PlaceholderUtil().add("{command}", event.getMessage()));
 			}

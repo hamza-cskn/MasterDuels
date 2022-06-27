@@ -4,7 +4,7 @@ import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.api.arena.IMatch;
 import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.arenaclear.IArenaClearHandler;
-import mc.obliviate.masterduels.data.YamlStorageHandler;
+import mc.obliviate.masterduels.data.ConfigurationHandler;
 import org.bukkit.Bukkit;
 
 import java.util.HashMap;
@@ -20,7 +20,7 @@ public class SmartArenaClearHandler implements IArenaClearHandler {
 	}
 
 	public void init() {
-		Bukkit.getPluginManager().registerEvents(new RollbackListener(plugin, YamlStorageHandler.getConfig().getBoolean("prevent-break-non-placed-blocks", true)), plugin);
+		Bukkit.getPluginManager().registerEvents(new RollbackListener(plugin, ConfigurationHandler.getConfig().getBoolean("prevent-break-non-placed-blocks", true)), plugin);
 	}
 
 	public void add(IMatch match, MasterDuels plugin) {

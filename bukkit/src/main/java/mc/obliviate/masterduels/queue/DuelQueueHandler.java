@@ -14,7 +14,7 @@ public class DuelQueueHandler {
 	}
 
 	public void init() {
-		plugin.getDatabaseHandler().initQueues();
+		plugin.getConfigurationHandler().initQueues();
 		Bukkit.getPluginManager().registerEvents(new DuelQueueListGUIUpdaterListener(plugin), plugin);
 	}
 

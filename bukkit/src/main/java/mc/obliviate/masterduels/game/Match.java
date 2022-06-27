@@ -9,7 +9,7 @@ import mc.obliviate.masterduels.api.kit.IKit;
 import mc.obliviate.masterduels.api.user.IMember;
 import mc.obliviate.masterduels.api.user.ITeam;
 import mc.obliviate.masterduels.arena.Arena;
-import mc.obliviate.masterduels.data.YamlStorageHandler;
+import mc.obliviate.masterduels.data.ConfigurationHandler;
 import mc.obliviate.masterduels.game.round.MatchRoundData;
 import mc.obliviate.masterduels.game.spectator.MatchSpectatorManager;
 import mc.obliviate.masterduels.game.state.IdleState;
@@ -199,7 +199,7 @@ public class Match implements IMatch {
 
 
 	public void broadcastGameEnd() {
-		final String mode = YamlStorageHandler.getConfig().getString("game-end-broadcast-mode", "SERVER_WIDE");
+		final String mode = ConfigurationHandler.getConfig().getString("game-end-broadcast-mode", "SERVER_WIDE");
 
 		List<Player> receivers = null;
 

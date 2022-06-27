@@ -3,8 +3,8 @@ package mc.obliviate.masterduels.listeners;
 import mc.obliviate.masterduels.api.user.IMember;
 import mc.obliviate.masterduels.api.user.IUser;
 import mc.obliviate.masterduels.arena.Arena;
+import mc.obliviate.masterduels.data.ConfigurationHandler;
 import mc.obliviate.masterduels.data.DataHandler;
-import mc.obliviate.masterduels.data.YamlStorageHandler;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
 import org.bukkit.Material;
@@ -24,7 +24,7 @@ public class DuelProtectListener implements Listener {
 	private final boolean teleportBackWhenLimitViolate;
 
 	public DuelProtectListener() {
-		teleportBackWhenLimitViolate = YamlStorageHandler.getConfig().getBoolean("teleport-back-when-arena-cuboid-violated", false);
+		teleportBackWhenLimitViolate = ConfigurationHandler.getConfig().getBoolean("teleport-back-when-arena-cuboid-violated", false);
 	}
 
 	private boolean isUser(final Player player) {
@@ -101,7 +101,7 @@ public class DuelProtectListener implements Listener {
 		final IMember member = DataHandler.getMember(e.getPlayer().getUniqueId());
 		if (member == null || e.getPlayer().isOp()) return;
 		if (e.getMessage().startsWith("/")) {
-			if (!YamlStorageHandler.getConfig().getStringList("executable-commands-by-player." + member.getTeam().getMatch().getMatchState().getMatchStateType().name()).contains(e.getMessage())) {
+			if (!ConfigurationHandler.getConfig().getStringList("executable-commands-by-player." + member.getTeam().getMatch().getMatchState().getMatchStateType().name()).contains(e.getMessage())) {
 				e.setCancelled(true);
 				MessageUtils.sendMessage(e.getPlayer(), "command-is-blocked", new PlaceholderUtil().add("{command}", e.getMessage()));
 			}

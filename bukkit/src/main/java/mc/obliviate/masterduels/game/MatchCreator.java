@@ -3,8 +3,8 @@ package mc.obliviate.masterduels.game;
 import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.api.arena.GameRule;
 import mc.obliviate.masterduels.api.invite.InviteState;
+import mc.obliviate.masterduels.data.ConfigurationHandler;
 import mc.obliviate.masterduels.data.DataHandler;
-import mc.obliviate.masterduels.data.YamlStorageHandler;
 import mc.obliviate.masterduels.invite.Invite;
 import mc.obliviate.masterduels.invite.InviteUtils;
 import mc.obliviate.masterduels.kit.Kit;
@@ -104,7 +104,7 @@ public class MatchCreator {
 		}
 
 		final Invite.InviteBuildResult buildResult = Invite.create()
-				.setExpireTimeLater(YamlStorageHandler.getConfig().getInt("invite-timeout") * 1000L)
+				.setExpireTimeLater(ConfigurationHandler.getConfig().getInt("invite-timeout") * 1000L)
 				.setReceiver(target.getUniqueId())
 				.setSender(sender.getUniqueId())
 				.onResponse(invite -> {

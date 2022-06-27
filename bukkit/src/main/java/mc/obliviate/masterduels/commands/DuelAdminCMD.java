@@ -66,8 +66,8 @@ public class DuelAdminCMD implements CommandExecutor {
 			return true;
 
 		} else if (args[0].equalsIgnoreCase("setlobby")) {
-			SerializerUtils.serializeLocationYAML(plugin.getDatabaseHandler().getData().createSection("lobby-location"), player.getLocation());
-			plugin.getDatabaseHandler().saveDataFile();
+			SerializerUtils.serializeLocationYAML(plugin.getConfigurationHandler().getData().createSection("lobby-location"), player.getLocation());
+			plugin.getConfigurationHandler().saveDataFile();
 			MessageUtils.sendMessage(player, "duel-command.admin.lobby-set");
 
 		} else if (args[0].equalsIgnoreCase("kit")) {

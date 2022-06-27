@@ -9,9 +9,9 @@ import mc.obliviate.masterduels.bossbar.BossBarHandler;
 import mc.obliviate.masterduels.commands.DeveloperCMD;
 import mc.obliviate.masterduels.commands.DuelAdminCMD;
 import mc.obliviate.masterduels.commands.DuelCMD;
+import mc.obliviate.masterduels.data.ConfigurationHandler;
 import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.data.SQLManager;
-import mc.obliviate.masterduels.data.YamlStorageHandler;
 import mc.obliviate.masterduels.game.Match;
 import mc.obliviate.masterduels.game.gamerule.MatchRuleListener;
 import mc.obliviate.masterduels.history.MatchHistoryLog;
@@ -46,7 +46,7 @@ public class MasterDuels extends JavaPlugin {
 	private final ArenaWorldOptimizerHandler worldOptimizerHandler = new ArenaWorldOptimizerHandler();
 	private final SQLManager sqlManager = new SQLManager(this);
 	private final InventoryAPI inventoryAPI = new InventoryAPI(this);
-	private final YamlStorageHandler yamlStorageHandler = new YamlStorageHandler(this);
+	private final ConfigurationHandler configurationHandler = new ConfigurationHandler(this);
 	private final DuelQueueHandler duelQueueHandler = new DuelQueueHandler(this);
 	private IArenaClearHandler arenaClearHandler;
 
@@ -80,7 +80,6 @@ public class MasterDuels extends JavaPlugin {
 
 		shutdownMode = false;
 		startMetrics();
-
 	}
 
 	private void startMetrics() {
@@ -102,26 +101,26 @@ public class MasterDuels extends JavaPlugin {
 
 	private void setupHandlers() {
 		new TABManager().init();
-		yamlStorageHandler.init();
+		configurationHandler.init();
 		inventoryAPI.init();
 		setupArenaClearHandler();
 		HCore.initialize(this);
-		if (YamlStorageHandler.getConfig().getBoolean("scoreboards.enabled", true))
+		if (ConfigurationHandler.getConfig().getBoolean("scoreboards.enabled", true))
 			new InternalScoreboardManager().init(this);
-		if (YamlStorageHandler.getQueues().getBoolean("duel-queues-enabled", true))
+		if (ConfigurationHandler.getQueues().getBoolean("duel-queues-enabled", true))
 			duelQueueHandler.init();
-		if (YamlStorageHandler.getConfig().getBoolean("optimize-duel-worlds", false))
+		if (ConfigurationHandler.getConfig().getBoolean("optimize-duel-worlds", false))
 			worldOptimizerHandler.init();
-		if (YamlStorageHandler.getConfig().getBoolean("boss-bars.enabled"))
+		if (ConfigurationHandler.getConfig().getBoolean("boss-bars.enabled"))
 			new BossBarHandler().init(this);
 		sqlManager.init();
 		setupVaultUtils();
 
-		Logger.setDebugModeEnabled(YamlStorageHandler.getConfig().getBoolean("debug", false));
+		Logger.setDebugModeEnabled(ConfigurationHandler.getConfig().getBoolean("debug", false));
 	}
 
 	private void setupArenaClearHandler() {
-		final String mode = YamlStorageHandler.getConfig().getString("arena-regeneration.mode", "SMART");
+		final String mode = ConfigurationHandler.getConfig().getString("arena-regeneration.mode", "SMART");
 		//SMART
 		if (!("ROLLBACKCORE".equals(mode) || "SLIMEWORLD".equals(mode) || "DISABLED".equals(mode))) {
 			arenaClearHandler = new SmartArenaClearHandler(this);
@@ -208,8 +207,8 @@ public class MasterDuels extends JavaPlugin {
 		return permissions != null;
 	}
 
-	public YamlStorageHandler getDatabaseHandler() {
-		return yamlStorageHandler;
+	public ConfigurationHandler getConfigurationHandler() {
+		return configurationHandler;
 	}
 
 	public SQLManager getSqlManager() {

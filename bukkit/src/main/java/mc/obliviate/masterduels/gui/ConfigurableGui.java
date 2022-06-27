@@ -2,7 +2,7 @@ package mc.obliviate.masterduels.gui;
 
 import mc.obliviate.inventory.Gui;
 import mc.obliviate.inventory.Icon;
-import mc.obliviate.masterduels.data.YamlStorageHandler;
+import mc.obliviate.masterduels.data.ConfigurationHandler;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -14,8 +14,8 @@ public abstract class ConfigurableGui extends Gui {
 
 	public ConfigurableGui(Player player, String id) {
 		super(player, id, "...", 0);
-		setTitle(YamlStorageHandler.getMenusSection(getSectionPath()).getString("title"));
-		setSize(YamlStorageHandler.getMenusSection(getSectionPath()).getInt("size") * 9);
+		setTitle(ConfigurationHandler.getMenusSection(getSectionPath()).getString("title"));
+		setSize(ConfigurationHandler.getMenusSection(getSectionPath()).getInt("size") * 9);
 	}
 
 	abstract public String getSectionPath();
@@ -25,19 +25,19 @@ public abstract class ConfigurableGui extends Gui {
 	}
 
 	public int getConfigSlot(String sectionName) {
-		return GUISerializerUtils.getConfigSlot(YamlStorageHandler.getSection(getIconsSectionPath() + "." + sectionName));
+		return GUISerializerUtils.getConfigSlot(ConfigurationHandler.getSection(getIconsSectionPath() + "." + sectionName));
 	}
 
 	public ItemStack getConfigItem(String sectionName) {
-		return GUISerializerUtils.getConfigItem((YamlStorageHandler.getSection(getIconsSectionPath() + "." + sectionName)));
+		return GUISerializerUtils.getConfigItem((ConfigurationHandler.getSection(getIconsSectionPath() + "." + sectionName)));
 	}
 
 	public ItemStack getConfigItem(String sectionName, PlaceholderUtil placeholderUtil) {
-		return GUISerializerUtils.getConfigItem((YamlStorageHandler.getSection(getIconsSectionPath() + "." + sectionName)), placeholderUtil);
+		return GUISerializerUtils.getConfigItem((ConfigurationHandler.getSection(getIconsSectionPath() + "." + sectionName)), placeholderUtil);
 	}
 
 	public void putDysfunctionalIcons() {
-		GUISerializerUtils.putDysfunctionalIcons(this, YamlStorageHandler.getSection(getIconsSectionPath()));
+		GUISerializerUtils.putDysfunctionalIcons(this, ConfigurationHandler.getSection(getIconsSectionPath()));
 	}
 
 	public void putIcon(String configName, Consumer<InventoryClickEvent> click) {

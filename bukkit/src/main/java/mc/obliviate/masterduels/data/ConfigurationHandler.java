@@ -40,7 +40,7 @@ import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.*;
 
-public class YamlStorageHandler {//todo rename
+public class ConfigurationHandler {
 
 	private static final String DATA_FILE_NAME = "arenas.yml";
 	private static final String CONFIG_FILE_NAME = "config.yml";
@@ -55,7 +55,7 @@ public class YamlStorageHandler {//todo rename
 	private static YamlConfiguration queues;
 	private static YamlConfiguration menus;
 
-	public YamlStorageHandler(final MasterDuels plugin) {
+	public ConfigurationHandler(final MasterDuels plugin) {
 		this.plugin = plugin;
 	}
 
@@ -149,7 +149,7 @@ public class YamlStorageHandler {//todo rename
 	}
 
 	private void loadDataFile(File dataFile) {
-		YamlStorageHandler.dataFile = dataFile;
+		ConfigurationHandler.dataFile = dataFile;
 		data = YamlConfiguration.loadConfiguration(dataFile);
 	}
 

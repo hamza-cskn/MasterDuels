@@ -3,7 +3,7 @@ package mc.obliviate.masterduels.listeners;
 import com.hakan.core.HCore;
 import mc.obliviate.masterduels.api.events.arena.DuelMatchEndEvent;
 import mc.obliviate.masterduels.api.events.arena.DuelMatchStartEvent;
-import mc.obliviate.masterduels.data.YamlStorageHandler;
+import mc.obliviate.masterduels.data.ConfigurationHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -18,7 +18,7 @@ public class CMDExecutorListener implements Listener {
 
 	@EventHandler
 	public void onDuelGameStart(DuelMatchStartEvent event) {
-		for (String cmd : YamlStorageHandler.getConfig().getStringList("execute-console-commands.when-duel-started")) {
+		for (String cmd : ConfigurationHandler.getConfig().getStringList("execute-console-commands.when-duel-started")) {
 			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
 		}
 		event.getMatch().getGameTaskManager().repeatTask("debug", () -> {
@@ -30,7 +30,7 @@ public class CMDExecutorListener implements Listener {
 
 	@EventHandler
 	public void onDuelGameEnd(DuelMatchEndEvent event) {
-		for (String cmd : YamlStorageHandler.getConfig().getStringList("execute-console-commands.when-duel-ended")) {
+		for (String cmd : ConfigurationHandler.getConfig().getStringList("execute-console-commands.when-duel-ended")) {
 			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
 
 		}

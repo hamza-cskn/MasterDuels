@@ -6,8 +6,8 @@ import mc.obliviate.masterduels.api.arena.IMatch;
 import mc.obliviate.masterduels.api.invite.InviteState;
 import mc.obliviate.masterduels.api.user.IMember;
 import mc.obliviate.masterduels.api.user.IUser;
+import mc.obliviate.masterduels.data.ConfigurationHandler;
 import mc.obliviate.masterduels.data.DataHandler;
-import mc.obliviate.masterduels.data.YamlStorageHandler;
 import mc.obliviate.masterduels.game.MatchBuilder;
 import mc.obliviate.masterduels.game.MatchCreator;
 import mc.obliviate.masterduels.gui.DuelArenaListGUI;
@@ -96,7 +96,7 @@ public class DuelCMD implements CommandExecutor {
 		} else if (args[0].equalsIgnoreCase("stats")) {
 			stats(player, args);
 			return true;
-		} else if (YamlStorageHandler.getConfig().getBoolean("duel-arenas-gui.enabled") && args[0].equalsIgnoreCase("arenas")) {
+		} else if (ConfigurationHandler.getConfig().getBoolean("duel-arenas-gui.enabled") && args[0].equalsIgnoreCase("arenas")) {
 			new DuelArenaListGUI(player).open();
 			return true;
 		} else if (args[0].equalsIgnoreCase("accept") || args[0].equalsIgnoreCase("decline")) {
@@ -163,7 +163,7 @@ public class DuelCMD implements CommandExecutor {
 	private void top(final Player player, List<String> args) {
 		final LinkedList<DuelStatistic> statistics;
 
-		final ConfigurationSection section = YamlStorageHandler.getConfig().getConfigurationSection("top.top-wins");
+		final ConfigurationSection section = ConfigurationHandler.getConfig().getConfigurationSection("top.top-wins");
 		final String nobodyText = MessageUtils.parseColor(MessageUtils.getMessage("top.nobody"));
 		if (section == null) return;
 
@@ -293,7 +293,7 @@ public class DuelCMD implements CommandExecutor {
 		gameBuilder.addPlayer(player);
 
 		final Invite.Builder inviteBuilder = Invite.create()
-				.setExpireTimeLater(YamlStorageHandler.getConfig().getInt("invite-timeout") * 1000L)
+				.setExpireTimeLater(ConfigurationHandler.getConfig().getInt("invite-timeout") * 1000L)
 				.setSender(player.getUniqueId())
 				.setReceiver(target.getUniqueId())
 				.onResponse(invite -> {
