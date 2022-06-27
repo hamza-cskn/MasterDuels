@@ -32,6 +32,7 @@ public class WorldOptimizer {
 	public UUID getWorldUniqueId() {
 		return worldUniqueId;
 	}
+
 	public World getWorld() {
 		return Bukkit.getWorld(worldUniqueId);
 	}

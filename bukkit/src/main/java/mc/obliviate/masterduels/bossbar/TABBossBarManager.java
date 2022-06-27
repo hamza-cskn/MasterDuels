@@ -28,7 +28,6 @@ public class TABBossBarManager implements IBossBarManager, Listener {
 	private final Map<IMatch, BossBar> bossBarMap = new HashMap<>();
 
 	public TABBossBarManager(JavaPlugin plugin) {
-		Bukkit.broadcastMessage("tab bossbar manager initialized");
 		Bukkit.getPluginManager().registerEvents(this, plugin);
 	}
 
