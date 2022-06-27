@@ -108,7 +108,9 @@ public class MasterDuels extends JavaPlugin {
 		HCore.initialize(this);
 		if (YamlStorageHandler.getConfig().getBoolean("scoreboards.enabled"))
 			new InternalScoreboardManager().init(this);
-		duelQueueHandler.init();
+		if (YamlStorageHandler.getConfig().getBoolean("duel-queues.enabled")) {
+			duelQueueHandler.init();
+		}
 		if (YamlStorageHandler.getConfig().getBoolean("optimize-duel-worlds", false))
 			worldOptimizerHandler.init();
 		if (YamlStorageHandler.getConfig().getBoolean("boss-bars.enabled"))
