@@ -19,7 +19,7 @@ public class DuelHistoryLogGUI extends ConfigurableGui {
 
 	public DuelHistoryLogGUI(Player player) {
 		super(player, "duel-history-log-gui");
-		getPaginationManager().registerItemSlots(9, 53);
+		getPaginationManager().getSlots().addAll(guiConfig.pageSlots);
 		for (final MatchHistoryLog log : MatchHistoryLog.historyCache) {
 			HistoryIconType type = HistoryIconType.SOLO;
 			if (log.getLosers().size() > 1) {
@@ -47,12 +47,19 @@ public class DuelHistoryLogGUI extends ConfigurableGui {
 	public static class DuelHistoryLogGUIConfig {
 
 		private final Map<HistoryIconType, ItemStack> historyIconItemStacks = new HashMap<>();
+		private final List<Integer> pageSlots = new ArrayList<>();
 		private final String winnersFormat;
 		private final String losersFormat;
 
 		public DuelHistoryLogGUIConfig(ConfigurationSection guiSection) {
-			historyIconItemStacks.put(HistoryIconType.SOLO, GUISerializerUtils.getConfigItem(guiSection.getConfigurationSection("solo-games-icon")));
-			historyIconItemStacks.put(HistoryIconType.NON_SOLO, GUISerializerUtils.getConfigItem(guiSection.getConfigurationSection("non-solo-games-icon")));
+			for (final String slotText : guiSection.getString("page-slots").split(",")) {
+				try {
+					pageSlots.add(Integer.parseInt(slotText));
+				} catch (NumberFormatException ignore) {
+				}
+			}
+			historyIconItemStacks.put(HistoryIconType.SOLO, GUISerializerUtils.getConfigItem(guiSection.getConfigurationSection("icons.solo-games-icon")));
+			historyIconItemStacks.put(HistoryIconType.NON_SOLO, GUISerializerUtils.getConfigItem(guiSection.getConfigurationSection("icons.non-solo-games-icon")));
 			winnersFormat = guiSection.getString("winners-format");
 			losersFormat = guiSection.getString("losers-format");
 		}

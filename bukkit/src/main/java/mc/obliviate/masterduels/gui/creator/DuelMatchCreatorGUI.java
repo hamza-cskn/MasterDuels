@@ -26,9 +26,9 @@ public class DuelMatchCreatorGUI extends ConfigurableGui {
 
 	@Override
 	public void open() {
-		setTitle(MessageUtils.parseColor(MessageUtils.applyPlaceholders(ConfigurationHandler.getConfig().getString(getSectionPath() + ".title"),
+		setTitle(MessageUtils.parseColor(MessageUtils.applyPlaceholders(ConfigurationHandler.getMenus().getString(getSectionPath() + ".title"),
 				new PlaceholderUtil().add("{mode}", MessageUtils.convertMode(matchCreator.getBuilder().getTeamSize(), matchCreator.getBuilder().getTeamAmount())))));
-		setSize(ConfigurationHandler.getConfig().getInt(getSectionPath() + ".size", 5) * 9);
+		setSize(ConfigurationHandler.getMenus().getInt(getSectionPath() + ".size", 5) * 9);
 		super.open();
 	}
 

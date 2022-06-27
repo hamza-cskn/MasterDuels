@@ -100,7 +100,7 @@ public class ConfigurationHandler {
 		registerTimerFormats();
 		registerGameCreatorLimits(config.getConfigurationSection("duel-creator.data-limits"));
 		registerHistoryGui();
-		registerDuelListGUIConfig(config.getConfigurationSection("duel-arenas-gui"));
+		registerDuelListGUIConfig(menus.getConfigurationSection("duel-arenas-gui"));
 		registerNotifyActions(config.getConfigurationSection("duel-game-lock.notify-actions"));
 		loadTeamManagerConfig();
 
@@ -115,13 +115,13 @@ public class ConfigurationHandler {
 
 	private void loadTeamManagerConfig() {
 		DuelTeamManagerGUI.setGuiConfig(new DuelTeamManagerGUI.DuelTeamManagerGUIConfig(
-				SerializerUtils.deserializeItemStack(config.getConfigurationSection("duel-creator.manage-teams-gui.icons.empty-player-slot"), null),
-				SerializerUtils.deserializeItemStack(config.getConfigurationSection("duel-creator.manage-teams-gui.icons.player-slot"), null),
-				config.getString("duel-creator.manage-teams-gui.icons.team-slot.display-name"),
-				config.getStringList("duel-creator.manage-teams-gui.icons.team-slot.lore")));
+				SerializerUtils.deserializeItemStack(menus.getConfigurationSection("duel-creator.manage-teams-gui.icons.empty-player-slot"), null),
+				SerializerUtils.deserializeItemStack(menus.getConfigurationSection("duel-creator.manage-teams-gui.icons.player-slot"), null),
+				menus.getString("duel-creator.manage-teams-gui.icons.team-slot.display-name"),
+				menus.getStringList("duel-creator.manage-teams-gui.icons.team-slot.lore")));
 
 		int i = 0;
-		for (String materialName : config.getStringList("duel-creator.manage-teams-gui.team-slot.dynamic-materials")) {
+		for (String materialName : menus.getStringList("duel-creator.manage-teams-gui.team-slot.dynamic-materials")) {
 			final int index = i;
 			i++;
 			XMaterial.matchXMaterial(materialName).ifPresent(mat -> Utils.teamIcons.set(index, mat.parseItem()));
@@ -137,7 +137,7 @@ public class ConfigurationHandler {
 	public void initQueues() {
 		DuelQueueHandler.enabled = true;
 		registerQueues(queues.getConfigurationSection("queues"));
-		registerDuelQueueGUIConfig(queues.getConfigurationSection("queues-gui"));
+		registerDuelQueueGUIConfig(menus.getConfigurationSection("queues-gui"));
 	}
 
 	private void loadMenusFile(File menusFile) {
@@ -225,10 +225,10 @@ public class ConfigurationHandler {
 		final Map<String, ItemStack> iconItemStacks = new HashMap<>();
 
 		//firstly, deserialize default icon.
-		final ItemStack defaultIcon = SerializerUtils.deserializeItemStack(section.getConfigurationSection("icons.functional-icons.queue-icons.default"), null);
+		final ItemStack defaultIcon = SerializerUtils.deserializeItemStack(section.getConfigurationSection("icons.queue-icons.default"), null);
 		iconItemStacks.put("default", defaultIcon);
 
-		final ConfigurationSection iconsSection = section.getConfigurationSection("icons.functional-icons.queue-icons");
+		final ConfigurationSection iconsSection = section.getConfigurationSection("icons.queue-icons");
 
 		for (final DuelQueueTemplate template : DuelQueueTemplate.getQueueTemplates()) {
 			final String key = template.getName();
