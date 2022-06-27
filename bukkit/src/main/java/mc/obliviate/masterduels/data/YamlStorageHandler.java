@@ -38,10 +38,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class YamlStorageHandler {
 
@@ -250,7 +247,18 @@ public class YamlStorageHandler {
 			icons.put(state, SerializerUtils.deserializeItemStack(section.getConfigurationSection("icons." + state.name()), null));
 		}
 
-		DuelArenaListGUI.guiConfig = new DuelArenaListGUI.DuelArenaListGUIConfig(icons, section.getString("title", "Duel Arenas"));
+		// parse integer list
+		final List<Integer> pageSlots = new ArrayList<>();
+		final String[] slotsString = section.getString("page-slots").split(",");
+
+		for (final String slotText : slotsString) {
+			try {
+				pageSlots.add(Integer.parseInt(slotText));
+			} catch (NumberFormatException ignore) {
+			}
+		}
+
+		DuelArenaListGUI.guiConfig = new DuelArenaListGUI.DuelArenaListGUIConfig(icons, pageSlots, section.getString("title", "Duel Arenas"));
 	}
 
 	private void registerHistoryGui() {

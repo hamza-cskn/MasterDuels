@@ -37,6 +37,18 @@ public class SQLManager extends SQLHandler {
 				.addField("endTime", DataType.INTEGER);
 	}
 
+	public void init() {
+		connect("database");
+	}
+
+	@Override
+	public void onConnect() {
+		super.onConnect();
+
+		playerDataTable.create();
+		historyTable.create();
+	}
+
 	public static DuelStatistic deserializeStatistic(ResultSet rs, boolean emptyResultSet) {
 		try {
 			final UUID uuid = UUID.fromString(rs.getString("uuid"));
@@ -50,26 +62,6 @@ public class SQLManager extends SQLHandler {
 			e.printStackTrace();
 		}
 		return null;
-	}
-
-	public SQLTable getPlayerDataTable() {
-		return playerDataTable;
-	}
-
-	public SQLTable getHistoryTable() {
-		return historyTable;
-	}
-
-	public void init() {
-		connect("database");
-	}
-
-	@Override
-	public void onConnect() {
-		super.onConnect();
-
-		playerDataTable.create();
-		historyTable.create();
 	}
 
 	public void appendDuelHistory(final MatchHistoryLog log) {
@@ -145,7 +137,6 @@ public class SQLManager extends SQLHandler {
 	}
 
 	public LinkedList<DuelStatistic> getTopPlayers(String fieldName, int limit) {
-
 		final ResultSet rs = playerDataTable.getHighest(fieldName, limit);
 		final LinkedList<DuelStatistic> result = new LinkedList<>();
 		try {
@@ -163,7 +154,6 @@ public class SQLManager extends SQLHandler {
 	}
 
 	public LinkedList<DuelStatistic> deserializeStatisticsList(ResultSet rs) throws SQLException {
-
 		final LinkedList<DuelStatistic> result = new LinkedList<>();
 		while (rs.next()) {
 			result.add(deserializeStatistic(rs, false));
@@ -195,5 +185,12 @@ public class SQLManager extends SQLHandler {
 		}
 	}
 
+	public SQLTable getPlayerDataTable() {
+		return playerDataTable;
+	}
+
+	public SQLTable getHistoryTable() {
+		return historyTable;
+	}
 
 }

@@ -2,7 +2,6 @@ package mc.obliviate.masterduels.gui.creator;
 
 import mc.obliviate.inventory.Icon;
 import mc.obliviate.masterduels.api.invite.InviteState;
-import mc.obliviate.masterduels.game.MatchBuilder;
 import mc.obliviate.masterduels.game.MatchCreator;
 import mc.obliviate.masterduels.gui.ConfigurableGui;
 import mc.obliviate.masterduels.invite.Invite;
@@ -16,12 +15,10 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 
 public class DuelInvitesGUI extends ConfigurableGui {
 
-	private final MatchBuilder matchBuilder;
 	private final MatchCreator matchCreator;
 
 	public DuelInvitesGUI(Player player, MatchCreator matchCreator) {
 		super(player, "duel-invites-gui");
-		this.matchBuilder = matchCreator.getBuilder();
 		this.matchCreator = matchCreator;
 	}
 
@@ -31,11 +28,11 @@ public class DuelInvitesGUI extends ConfigurableGui {
 		putIcon("back", e -> {
 			new DuelMatchCreatorGUI(player, matchCreator).open();
 		});
-		putIcon("invite", new PlaceholderUtil().add("{players-amount}", matchBuilder.getPlayers().size() + "").add("{pending-invites-amount}", matchCreator.getInvites().size() + ""), e -> {
+		putIcon("invite", new PlaceholderUtil().add("{players-amount}", matchCreator.getBuilder().getPlayers().size() + "").add("{pending-invites-amount}", matchCreator.getInvites().size() + ""), e -> {
 			player.closeInventory();
 			new ChatEntry(player.getUniqueId(), getPlugin()).onResponse(chatEvent -> {
 				matchCreator.trySendInvite(player, Bukkit.getPlayer(chatEvent.getMessage()), response -> {
-					matchBuilder.addPlayer(Bukkit.getPlayer(chatEvent.getMessage()));
+					matchCreator.getBuilder().addPlayer(Bukkit.getPlayer(chatEvent.getMessage()));
 				});
 				open();
 			});
@@ -46,7 +43,6 @@ public class DuelInvitesGUI extends ConfigurableGui {
 					invite.response(InviteState.ACCEPTED);
 				}));
 			}
-
 		});
 	}
 

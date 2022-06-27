@@ -21,8 +21,8 @@ public class DuelHistoryLogGUI extends Gui {
 	public static DuelHistoryLogGUIConfig guiConfig;
 
 	public DuelHistoryLogGUI(Player player) {
-		super(player, "duel-history-log-gui", "Title could not loaded", 6);
-		setTitle(guiSection.getString("title", "Title could not loaded"));
+		super(player, "duel-history-log-gui", "", 6);
+		setTitle(guiSection.getString("title", ""));
 	}
 
 	@Override
@@ -63,7 +63,7 @@ public class DuelHistoryLogGUI extends Gui {
 			losersFormat = guiSection.getString("losers-format");
 		}
 
-		protected Icon deserializeIcon(final HistoryIconType type, MatchHistoryLog log) {
+		private Icon deserializeIcon(final HistoryIconType type, MatchHistoryLog log) {
 			final Icon icon = new Icon(historyIconItemStacks.get(type).clone());
 			List<String> description = icon.getItem().getItemMeta().getLore(); //raw-placeholder lore
 			if (description == null) description = new ArrayList<>();

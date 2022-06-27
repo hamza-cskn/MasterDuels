@@ -35,7 +35,6 @@ public class DuelTeamManagerGUI extends ConfigurableGui {
 
 	@Override
 	public void onOpen(final InventoryOpenEvent event) {
-
 		putDysfunctionalIcons();
 		putIcon("back", e -> {
 			new DuelMatchCreatorGUI(player, matchCreator).open();
@@ -186,11 +185,11 @@ public class DuelTeamManagerGUI extends ConfigurableGui {
 			this.teamIconLore = teamIconLore;
 		}
 
-		protected ItemStack getEmptyIcon() {
+		private ItemStack getEmptyIcon() {
 			return emptySlotIcon.clone();
 		}
 
-		protected ItemStack getPlayerSlotIcon(Player player) {
+		private ItemStack getPlayerSlotIcon(Player player) {
 			final ItemStack item = SerializerUtils.applyPlaceholdersOnItemStack(playerSlotIcon.clone(), new PlaceholderUtil().add("{player}", Utils.getDisplayName(player)));
 			if (item.getItemMeta() instanceof SkullMeta) {
 				final SkullMeta skullMeta = (SkullMeta) item.getItemMeta();
