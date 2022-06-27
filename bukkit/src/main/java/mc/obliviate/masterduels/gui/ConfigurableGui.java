@@ -14,8 +14,8 @@ public abstract class ConfigurableGui extends Gui {
 
 	public ConfigurableGui(Player player, String id) {
 		super(player, id, "...", 0);
-		setTitle(YamlStorageHandler.getSection(getSectionPath()).getString("title"));
-		setSize(YamlStorageHandler.getSection(getSectionPath()).getInt("size") * 9);
+		setTitle(YamlStorageHandler.getMenusSection(getSectionPath()).getString("title"));
+		setSize(YamlStorageHandler.getMenusSection(getSectionPath()).getInt("size") * 9);
 	}
 
 	abstract public String getSectionPath();

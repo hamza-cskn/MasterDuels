@@ -40,20 +40,27 @@ import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.*;
 
-public class YamlStorageHandler {
+public class YamlStorageHandler {//todo rename
 
 	private static final String DATA_FILE_NAME = "arenas.yml";
 	private static final String CONFIG_FILE_NAME = "config.yml";
 	private static final String MESSAGES_FILE_NAME = "messages.yml";
 	private static final String QUEUES_FILE_NAME = "queues.yml";
+	private static final String MENUS_FILE_NAME = "menus.yml";
 	private static File dataFile;
 	private final MasterDuels plugin;
 	private static YamlConfiguration data;
-	private static YamlConfiguration queues;
 	private static YamlConfiguration config;
+	//messages file instance in MessageUtils.class
+	private static YamlConfiguration queues;
+	private static YamlConfiguration menus;
 
 	public YamlStorageHandler(final MasterDuels plugin) {
 		this.plugin = plugin;
+	}
+
+	public static ConfigurationSection getMenusSection(String sectionName) {
+		return menus.getConfigurationSection(sectionName);
 	}
 
 	public static ConfigurationSection getSection(String sectionName) {
@@ -64,6 +71,7 @@ public class YamlStorageHandler {
 		loadDataFile(new File(plugin.getDataFolder() + File.separator + DATA_FILE_NAME));
 		loadMessagesFile(new File(plugin.getDataFolder() + File.separator + MESSAGES_FILE_NAME));
 		loadConfigFile(new File(plugin.getDataFolder() + File.separator + CONFIG_FILE_NAME));
+		loadMenusFile(new File(plugin.getDataFolder() + File.separator + MENUS_FILE_NAME));
 
 		registerArenas();
 		registerLobbyLocation();
@@ -77,8 +85,6 @@ public class YamlStorageHandler {
 		registerDuelListGUIConfig(config.getConfigurationSection("duel-arenas-gui"));
 		registerNotifyActions(config.getConfigurationSection("duel-game-lock.notify-actions"));
 		loadTeamManagerConfig();
-
-		initQueues();
 
 		RoundStartingState.setLockDuration(Duration.ofSeconds(config.getInt("duel-game-lock.lock-duration")));
 		RoundStartingState.setLockFrequency(config.getInt("duel-game-lock.teleport-frequency"));
@@ -110,11 +116,19 @@ public class YamlStorageHandler {
 		}
 	}
 
-	private void initQueues() {
+	public void initQueues() {
 		DuelQueueHandler.enabled = true;
 		loadQueuesFile(new File(plugin.getDataFolder() + File.separator + QUEUES_FILE_NAME));
 		registerQueues(queues.getConfigurationSection("queues"));
 		registerDuelQueueGUIConfig(queues.getConfigurationSection("queues-gui"));
+	}
+
+	private void loadMenusFile(File menusFile) {
+		menus = YamlConfiguration.loadConfiguration(menusFile);
+		if (menus.getKeys(false).isEmpty()) {
+			plugin.saveResource(MENUS_FILE_NAME, true);
+			menus = YamlConfiguration.loadConfiguration(menusFile);
+		}
 	}
 
 	private void loadDataFile(File dataFile) {
@@ -356,11 +370,14 @@ public class YamlStorageHandler {
 		return config;
 	}
 
+	public static YamlConfiguration getMenus() {
+		return menus;
+	}
+
 	public void saveArena(final Arena arena) {
 		final ConfigurationSection section = data.createSection(arena.getName());
 		arena.serialize(section);
 		saveDataFile();
-
 	}
 
 }
