@@ -2,6 +2,7 @@ package mc.obliviate.masterduels.queue.gui;
 
 import mc.obliviate.inventory.Gui;
 import mc.obliviate.inventory.Icon;
+import mc.obliviate.masterduels.data.ConfigurationHandler;
 import mc.obliviate.masterduels.game.MatchBuilder;
 import mc.obliviate.masterduels.gui.ConfigurableGui;
 import mc.obliviate.masterduels.queue.DuelQueue;
@@ -26,46 +27,22 @@ public class DuelQueueListGUI extends ConfigurableGui {
 
 	public DuelQueueListGUI(Player player) {
 		super(player, "duel-queue-list-gui");
-
-		getPaginationManager().registerSlotsBetween(9, 27);
-
-		calculateIcons();
-		getPaginationManager().firstPage();
-
 	}
-
 
 	@Override
 	public void onOpen(InventoryOpenEvent event) {
 		OPENED_DUEL_QUEUE_LIST_GUI_LIST.add(this);
-
 		putDysfunctionalIcons();
-		getPaginationManager().update();
 
-		if (getPaginationManager().getLastPage() != getPaginationManager().getPage()) {
-			putIcon("next", e -> {
-				getPaginationManager().nextPage();
-				open();
-			});
-		}
-		if (getPaginationManager().getPage() != 0) {
-			putIcon("previous", e -> {
-				getPaginationManager().previousPage();
-				open();
-			});
-		}
-
-		player.updateInventory();
-	}
-
-	private void calculateIcons() {
 		for (final DuelQueueTemplate template : DuelQueueTemplate.getQueueTemplates()) {
-			getPaginationManager().addIcon(new Icon(guiConfig.getIconOfTemplate(template.getName(), DuelQueue.getAvailableQueues().get(template).getBuilder()))
+			final int slot = ConfigurationHandler.getMenusSection("queues-gui.icons.queue-icons." + template.getName()).getInt("slot");
+			addItem(slot, new Icon(guiConfig.getIconOfTemplate(template.getName(), DuelQueue.getAvailableQueues().get(template).getBuilder()))
 					.onClick(e -> {
 						player.performCommand("duel queue join " + template.getName());
 						player.closeInventory();
 					}));
 		}
+
 	}
 
 	@Override

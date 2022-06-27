@@ -92,14 +92,6 @@ queues-gui:
     fill-icon:
       material: BLACK_STAINED_GLASS_PANE
       slot: 0-8
-    next:
-      material: ARROW
-      display-name: '&eNext'
-      slot: 8
-    previous:
-      material: ARROW
-      display-name: '&ePrevious'
-      slot: 0
     queue-icons:
       default:
         material: GOLD_BLOCK
@@ -110,10 +102,12 @@ queues-gui:
           - '&eClick to join queue!'
       uhc:
         material: DIAMOND
+        slot: 9
         # display-name and lore will be came from 'default' section.
         # because these datas are not specified here.
       archer:
         material: BOW
+        slot: 10
         lore:
           - '&7Players: &e{players}&8/&e{max-players}'
           - ''
