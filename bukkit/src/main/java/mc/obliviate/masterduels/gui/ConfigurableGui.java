@@ -25,19 +25,19 @@ public abstract class ConfigurableGui extends Gui {
 	}
 
 	public int getConfigSlot(String sectionName) {
-		return GUISerializerUtils.getConfigSlot(ConfigurationHandler.getSection(getIconsSectionPath() + "." + sectionName));
+		return GUISerializerUtils.getConfigSlot(ConfigurationHandler.getMenusSection(getIconsSectionPath() + "." + sectionName));
 	}
 
 	public ItemStack getConfigItem(String sectionName) {
-		return GUISerializerUtils.getConfigItem((ConfigurationHandler.getSection(getIconsSectionPath() + "." + sectionName)));
+		return GUISerializerUtils.getConfigItem((ConfigurationHandler.getMenusSection(getIconsSectionPath() + "." + sectionName)));
 	}
 
 	public ItemStack getConfigItem(String sectionName, PlaceholderUtil placeholderUtil) {
-		return GUISerializerUtils.getConfigItem((ConfigurationHandler.getSection(getIconsSectionPath() + "." + sectionName)), placeholderUtil);
+		return GUISerializerUtils.getConfigItem((ConfigurationHandler.getMenusSection(getIconsSectionPath() + "." + sectionName)), placeholderUtil);
 	}
 
 	public void putDysfunctionalIcons() {
-		GUISerializerUtils.putDysfunctionalIcons(this, ConfigurationHandler.getSection(getIconsSectionPath()));
+		GUISerializerUtils.putDysfunctionalIcons(this, ConfigurationHandler.getMenusSection(getIconsSectionPath()));
 	}
 
 	public void putIcon(String configName, Consumer<InventoryClickEvent> click) {
