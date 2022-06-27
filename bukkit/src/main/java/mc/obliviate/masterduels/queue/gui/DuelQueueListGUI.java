@@ -3,7 +3,7 @@ package mc.obliviate.masterduels.queue.gui;
 import mc.obliviate.inventory.Gui;
 import mc.obliviate.inventory.Icon;
 import mc.obliviate.masterduels.game.MatchBuilder;
-import mc.obliviate.masterduels.gui.GUISerializerUtils;
+import mc.obliviate.masterduels.gui.ConfigurableGui;
 import mc.obliviate.masterduels.queue.DuelQueue;
 import mc.obliviate.masterduels.queue.DuelQueueTemplate;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
@@ -11,7 +11,6 @@ import mc.obliviate.masterduels.utils.serializer.SerializerUtils;
 import mc.obliviate.masterduels.utils.xmaterial.XMaterial;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.ItemStack;
@@ -20,13 +19,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class DuelQueueListGUI extends Gui implements Listener {
+public class DuelQueueListGUI extends ConfigurableGui {
 
 	protected static final List<Gui> OPENED_DUEL_QUEUE_LIST_GUI_LIST = new ArrayList<>();
 	public static DuelQueueListGUIConfig guiConfig;
 
 	public DuelQueueListGUI(Player player) {
-		super(player, "duel-queue-list-gui", guiConfig.title, guiConfig.size);
+		super(player, "duel-queue-list-gui");
 
 		getPaginationManager().registerSlotsBetween(9, 27);
 
@@ -40,26 +39,20 @@ public class DuelQueueListGUI extends Gui implements Listener {
 	public void onOpen(InventoryOpenEvent event) {
 		OPENED_DUEL_QUEUE_LIST_GUI_LIST.add(this);
 
-		GUISerializerUtils.putDysfunctionalIcons(this, guiConfig.iconsSection.getConfigurationSection("dysfunctional-icons"));
-
-		if (DuelQueueTemplate.getQueueTemplates().isEmpty()) {
-			addItem(GUISerializerUtils.getConfigSlot(guiConfig.iconsSection.getConfigurationSection("functional-icons.other.no-queue-found")),
-					GUISerializerUtils.getConfigItem(guiConfig.iconsSection.getConfigurationSection("functional-icons.other.no-queue-found")));
-		} else {
-			getPaginationManager().update();
-		}
+		putDysfunctionalIcons();
+		getPaginationManager().update();
 
 		if (getPaginationManager().getLastPage() != getPaginationManager().getPage()) {
-			addItem(8, new Icon(XMaterial.ARROW.parseItem()).onClick(e -> {
+			putIcon("next", e -> {
 				getPaginationManager().nextPage();
 				open();
-			}));
+			});
 		}
 		if (getPaginationManager().getPage() != 0) {
-			addItem(0, new Icon(XMaterial.ARROW.parseItem()).onClick(e -> {
+			putIcon("previous", e -> {
 				getPaginationManager().previousPage();
 				open();
-			}));
+			});
 		}
 
 		player.updateInventory();
@@ -80,8 +73,12 @@ public class DuelQueueListGUI extends Gui implements Listener {
 		OPENED_DUEL_QUEUE_LIST_GUI_LIST.remove(this);
 	}
 
-	public static class DuelQueueListGUIConfig {
+	@Override
+	public String getSectionPath() {
+		return "queues-gui";
+	}
 
+	public static class DuelQueueListGUIConfig {
 		public final Map<String, ItemStack> iconItemStacks;
 		private final int zeroAmount;
 		private final List<Integer> slots = new ArrayList<>();

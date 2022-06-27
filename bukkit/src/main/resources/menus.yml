@@ -89,45 +89,39 @@ queues-gui:
   # if set false, MasterDuels will fix 0 amounts to 1 to prevent display bugs on 1.9+ clients
   use-zero-amount: false
   icons:
-    # feel free to configure dysfunctional icons.
-    dysfunctional-icons:
-      fill-icons:
-        material: BLACK_STAINED_GLASS_PANE
-        slot: 0-8
-
-    # functional icons has pre-specified key names
-    functional-icons:
-      queue-icons:
-        default:
-          material: GOLD_BLOCK
-          display-name: '&c{queue-name}'
-          lore:
-            - '&7Players: &e{players}&8/&e{max-players}'
-            - ''
-            - '&e&oClick to join queue!'
-        uhc:
-          material: DIAMOND
-          # display-name and lore will be came from 'default' section.
-          # because these datas are not specified.
-        archer:
-          material: BOW
-          lore:
-            - '&7Players: &e{players}&8/&e{max-players}'
-            - ''
-            - '&c&lNOTE: &cThere is no sword in'
-            - '&cthis kit!'
-            - ''
-            - '&e&oClick to join queue!'
-          # only display-name will be came from 'default' section.
-      other:
-        no-queue-found:
-          material: BARRIER
-          display-name: '&cNo queue found'
-          slot: 31
-          lore:
-            - '&7We searched all galaxies in'
-            - '&7the universe but we cannot found'
-            - '&7available queue. :('
+    fill-icon:
+      material: BLACK_STAINED_GLASS_PANE
+      slot: 0-8
+    next:
+      material: ARROW
+      display-name: '&eNext'
+      slot: 8
+    previous:
+      material: ARROW
+      display-name: '&ePrevious'
+      slot: 0
+    queue-icons:
+      default:
+        material: GOLD_BLOCK
+        display-name: '&c{queue-name}'
+        lore:
+          - '&7Players: &e{players}&8/&e{max-players}'
+          - ''
+          - '&eClick to join queue!'
+      uhc:
+        material: DIAMOND
+        # display-name and lore will be came from 'default' section.
+        # because these datas are not specified here.
+      archer:
+        material: BOW
+        lore:
+          - '&7Players: &e{players}&8/&e{max-players}'
+          - ''
+          - '&c&lNOTE: &cThere is no sword in'
+          - '&cthis kit!'
+          - ''
+          - '&eClick to join queue!'
+        # only display-name will become from 'default' section.
 
 duel-creator:
   gui:

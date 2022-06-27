@@ -63,9 +63,26 @@ public class YamlStorageHandler {//todo rename
 		return menus.getConfigurationSection(sectionName);
 	}
 
+	/**
+	 * @param sectionName section name
+	 * @return section from config.yml
+	 */
 	public static ConfigurationSection getSection(String sectionName) {
 		return config.getConfigurationSection(sectionName);
 	}
+
+	public static YamlConfiguration getQueues() {
+		return queues;
+	}
+
+	public static YamlConfiguration getConfig() {
+		return config;
+	}
+
+	public static YamlConfiguration getMenus() {
+		return menus;
+	}
+
 
 	public void init() {
 		loadDataFile(new File(plugin.getDataFolder() + File.separator + DATA_FILE_NAME));
@@ -276,8 +293,7 @@ public class YamlStorageHandler {//todo rename
 	}
 
 	private void registerHistoryGui() {
-		DuelHistoryLogGUI.guiSection = config.getConfigurationSection("game-history.gui");
-		DuelHistoryLogGUI.guiConfig = new DuelHistoryLogGUI.DuelHistoryLogGUIConfig(DuelHistoryLogGUI.guiSection);
+		DuelHistoryLogGUI.guiConfig = new DuelHistoryLogGUI.DuelHistoryLogGUIConfig(getMenusSection("game-history-gui"));
 	}
 
 	private void registerArenas() {
@@ -364,14 +380,6 @@ public class YamlStorageHandler {//todo rename
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-
-	public static YamlConfiguration getConfig() {
-		return config;
-	}
-
-	public static YamlConfiguration getMenus() {
-		return menus;
 	}
 
 	public void saveArena(final Arena arena) {
