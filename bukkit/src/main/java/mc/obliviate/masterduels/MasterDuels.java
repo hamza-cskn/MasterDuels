@@ -68,9 +68,17 @@ public class MasterDuels extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
+		initialize();
+	}
+
+	private void initialize() {
+		if (getDescription().getDescription().equalsIgnoreCase("-developerMode")) {
+			Logger.setDebugModeEnabled(true);
+		}
 		Logger.debug("Master Duels v" + getDescription().getVersion() + " loading process initializing...");
-		Logger.debug("Obfuscate: " + checkObfuscated());
 		Bukkit.getLogger().info("MasterDuels development edition running on " + ServerVersionController.getServerVersion() + " - build " + getDescription().getVersion());
+		if (!checkObfuscated())
+			Bukkit.getLogger().info("This MasterDuels copy is not obfuscated.");
 
 		setupHandlers();
 		registerListeners();
@@ -80,6 +88,7 @@ public class MasterDuels extends JavaPlugin {
 
 		shutdownMode = false;
 		startMetrics();
+
 	}
 
 	private void startMetrics() {
