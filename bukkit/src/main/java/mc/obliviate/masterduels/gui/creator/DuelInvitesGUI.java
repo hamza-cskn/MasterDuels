@@ -25,9 +25,11 @@ public class DuelInvitesGUI extends ConfigurableGui {
 	@Override
 	public void onOpen(InventoryOpenEvent event) {
 		putDysfunctionalIcons();
+
 		putIcon("back", e -> {
 			new DuelMatchCreatorGUI(player, matchCreator).open();
 		});
+
 		putIcon("invite", new PlaceholderUtil().add("{players-amount}", matchCreator.getBuilder().getPlayers().size() + "").add("{pending-invites-amount}", matchCreator.getInvites().size() + ""), e -> {
 			player.closeInventory();
 			new ChatEntry(player.getUniqueId(), getPlugin()).onResponse(chatEvent -> {

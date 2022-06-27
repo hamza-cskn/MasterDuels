@@ -82,7 +82,7 @@ public class SerializerUtils {
 	public static ItemStack deserializeItemStack(ConfigurationSection section, PlaceholderUtil placeholderUtil) {
 		if (section == null) throw new IllegalArgumentException("ItemStack section cannot be null!");
 		final Optional<XMaterial> xmaterial = XMaterial.matchXMaterial(section.getString("material", "BEDROCK"));
-		if (!xmaterial.isPresent()) {
+		if (xmaterial.isEmpty()) {
 			Logger.error("Material could not found: " + section.getString("material"));
 			return null;
 		}
@@ -107,15 +107,6 @@ public class SerializerUtils {
 		meta.setLore(MessageUtils.parseColor(MessageUtils.applyPlaceholders(meta.getLore(), placeholderUtil)));
 		item.setItemMeta(meta);
 		return item;
-	}
-
-	private static void setSafe(ConfigurationSection section, String key, Object value) {
-		if (value != null) {
-			if (value instanceof List && ((List) value).size() == 0) {
-				return;
-			}
-			section.set(key, value);
-		}
 	}
 
 	public static MatchHistoryLog deserializeGameHistoryLog(ResultSet rs) throws SQLException {

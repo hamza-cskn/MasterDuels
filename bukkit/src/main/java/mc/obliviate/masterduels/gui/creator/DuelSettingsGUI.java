@@ -21,6 +21,7 @@ public class DuelSettingsGUI extends ConfigurableGui {
 	@Override
 	public void onOpen(final InventoryOpenEvent event) {
 		putDysfunctionalIcons();
+
 		putIcon("back", e -> {
 			new DuelMatchCreatorGUI(player, matchCreator).open();
 		});
