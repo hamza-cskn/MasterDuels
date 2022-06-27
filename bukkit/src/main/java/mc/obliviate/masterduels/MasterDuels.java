@@ -169,7 +169,6 @@ public class MasterDuels extends JavaPlugin {
 		Bukkit.getPluginManager().registerEvents(new DuelProtectListener(), this);
 		Bukkit.getPluginManager().registerEvents(new DamageListener(this), this);
 		Bukkit.getPluginManager().registerEvents(new PlayerConnectionListener(this), this);
-		Bukkit.getPluginManager().registerEvents(new TeleportListener(), this);
 		Bukkit.getPluginManager().registerEvents(new SpectatorListener(), this);
 		Bukkit.getPluginManager().registerEvents(new MatchRuleListener(), this);
 		Bukkit.getPluginManager().registerEvents(new DeveloperCMD(this), this);
