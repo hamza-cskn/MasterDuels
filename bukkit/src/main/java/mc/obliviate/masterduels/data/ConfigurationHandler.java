@@ -89,6 +89,7 @@ public class ConfigurationHandler {
 		loadMessagesFile(new File(plugin.getDataFolder() + File.separator + MESSAGES_FILE_NAME));
 		loadConfigFile(new File(plugin.getDataFolder() + File.separator + CONFIG_FILE_NAME));
 		loadMenusFile(new File(plugin.getDataFolder() + File.separator + MENUS_FILE_NAME));
+		loadQueuesFile(new File(plugin.getDataFolder() + File.separator + QUEUES_FILE_NAME));
 
 		registerArenas();
 		registerLobbyLocation();
