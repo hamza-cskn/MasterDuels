@@ -5,6 +5,7 @@ import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.arena.elements.ArenaCuboid;
 import mc.obliviate.masterduels.arena.elements.Positions;
 import mc.obliviate.masterduels.data.DataHandler;
+import mc.obliviate.masterduels.setup.chatentry.ChatEntry;
 import mc.obliviate.masterduels.setup.gui.ArenaSetupGUI;
 import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.xmaterial.XMaterial;
@@ -208,6 +209,7 @@ public class ArenaSetup implements Listener {
 
 	public void destroy() {
 		HandlerList.unregisterAll(this);
+		ChatEntry.unregisterEntryTask(player.getUniqueId());
 		setuppers.remove(player.getUniqueId());
 	}
 }
