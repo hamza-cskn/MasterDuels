@@ -10,6 +10,7 @@ import mc.obliviate.masterduels.setup.gui.ArenaSetupGUI;
 import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.xmaterial.XMaterial;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -72,7 +73,7 @@ public class ArenaSetup implements Listener {
 			if (posSelection.getPos1() != null && posSelection.getPos1().equals(e.getClickedBlock().getLocation()))
 				return;
 			posSelection.setPos1(e.getClickedBlock().getLocation());
-			player.sendMessage("§7Position §61§7 has selected! Selected block is showing as redstone block. (client-side)");
+			player.sendMessage(ChatColor.GRAY + "Position 1 has selected! Selected block is showing as redstone block. (client-side)");
 			Bukkit.getScheduler().runTaskLater(plugin, () -> player.sendBlockChange(e.getClickedBlock().getLocation(), XMaterial.REDSTONE_BLOCK.parseMaterial(), (byte) 0), 2);
 			return;
 		}
@@ -83,7 +84,7 @@ public class ArenaSetup implements Listener {
 				return;
 			}
 			posSelection.setPos2(e.getClickedBlock().getLocation());
-			player.sendMessage("§7Position §62§7 has selected! Selected block is showing as redstone block. (client-side)");
+			player.sendMessage(ChatColor.GRAY + "Position 2 has selected! Selected block is showing as redstone block. (client-side)");
 			Bukkit.getScheduler().runTaskLater(plugin, () -> player.sendBlockChange(e.getClickedBlock().getLocation(), XMaterial.REDSTONE_BLOCK.parseMaterial(), (byte) 0), 2);
 
 		}
