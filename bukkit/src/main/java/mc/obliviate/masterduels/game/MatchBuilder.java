@@ -182,7 +182,7 @@ public class MatchBuilder implements IGameBuilder {
 		}
 
 		DuelUser duelUser = DuelUser.getDuelUser(player.getUniqueId());
-		if (duelUser.isInDuelSpace()) {
+		if (duelUser.isInMatchBuilder()) {
 			return false;
 		}
 

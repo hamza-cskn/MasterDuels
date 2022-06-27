@@ -20,7 +20,7 @@ public class DuelUser implements IUser {
 	private final Player player;
 	private boolean inviteReceiving;
 	private final DuelStatistic statistic;
-	private MatchBuilder duelSpace = null;
+	private MatchBuilder matchBuilder = null;
 
 	public static DuelUser getDuelUser(UUID playerUniqueId) {
 		return DUEL_USER_MAP.get(playerUniqueId);
@@ -50,12 +50,12 @@ public class DuelUser implements IUser {
 		DUEL_USER_MAP.put(player.getUniqueId(), this);
 	}
 
-	public boolean isInDuelSpace() {
-		return duelSpace != null;
+	public boolean isInMatchBuilder() {
+		return matchBuilder != null;
 	}
 
-	public MatchBuilder getDuelSpace() {
-		return duelSpace;
+	public MatchBuilder getMatchBuilder() {
+		return matchBuilder;
 	}
 
 	public void exitMatchBuilder() {
@@ -63,7 +63,7 @@ public class DuelUser implements IUser {
 	}
 
 	public void setMatchBuilder(MatchBuilder duelSpace) {
-		this.duelSpace = duelSpace;
+		this.matchBuilder = duelSpace;
 	}
 
 	public boolean inviteReceiving() {

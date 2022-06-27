@@ -136,7 +136,6 @@ public class ConfigurationHandler {
 
 	public void initQueues() {
 		DuelQueueHandler.enabled = true;
-		loadQueuesFile(new File(plugin.getDataFolder() + File.separator + QUEUES_FILE_NAME));
 		registerQueues(queues.getConfigurationSection("queues"));
 		registerDuelQueueGUIConfig(queues.getConfigurationSection("queues-gui"));
 	}
