@@ -101,7 +101,7 @@ public class MasterDuels extends JavaPlugin {
 	}
 
 	private void setupHandlers() {
-		new TABManager(this);
+		new TABManager().init();
 		yamlStorageHandler.init();
 		inventoryAPI.init();
 		setupArenaClearHandler();
