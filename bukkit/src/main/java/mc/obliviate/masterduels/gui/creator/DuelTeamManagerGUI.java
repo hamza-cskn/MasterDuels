@@ -20,7 +20,7 @@ import java.util.List;
 
 public class DuelTeamManagerGUI extends ConfigurableGui {
 
-	private static DuelTeamManagerGUIConfig guiConfig;
+	private static Config guiConfig;
 	private final MatchCreator matchCreator;
 
 	public DuelTeamManagerGUI(Player player, MatchCreator matchCreator) {
@@ -29,7 +29,7 @@ public class DuelTeamManagerGUI extends ConfigurableGui {
 		setSize((matchCreator.getBuilder().getTeamAmount() + 1) * 9);
 	}
 
-	public static void setGuiConfig(DuelTeamManagerGUIConfig guiConfig) {
+	public static void setGuiConfig(Config guiConfig) {
 		DuelTeamManagerGUI.guiConfig = guiConfig;
 	}
 
@@ -171,7 +171,7 @@ public class DuelTeamManagerGUI extends ConfigurableGui {
 	 * Purpose of this class is storing slot formats
 	 * gui configuration.
 	 */
-	public static class DuelTeamManagerGUIConfig {
+	public static class Config {
 
 		private final ItemStack emptySlotIcon;
 		private final ItemStack playerSlotIcon;
@@ -179,7 +179,7 @@ public class DuelTeamManagerGUI extends ConfigurableGui {
 		private final String teamIconName;
 		private final List<String> teamIconLore;
 
-		public DuelTeamManagerGUIConfig(ItemStack emptySlotIcon, ItemStack playerSlotIcon, String teamIconName, List<String> teamIconLore) {
+		public Config(ItemStack emptySlotIcon, ItemStack playerSlotIcon, String teamIconName, List<String> teamIconLore) {
 			this.emptySlotIcon = emptySlotIcon;
 			this.playerSlotIcon = playerSlotIcon;
 			this.teamIconName = teamIconName;

@@ -114,7 +114,7 @@ public class ConfigurationHandler {
 	}
 
 	private void loadTeamManagerConfig() {
-		DuelTeamManagerGUI.setGuiConfig(new DuelTeamManagerGUI.DuelTeamManagerGUIConfig(
+		DuelTeamManagerGUI.setGuiConfig(new DuelTeamManagerGUI.Config(
 				SerializerUtils.deserializeItemStack(menus.getConfigurationSection("duel-creator.manage-teams-gui.icons.empty-player-slot"), null),
 				SerializerUtils.deserializeItemStack(menus.getConfigurationSection("duel-creator.manage-teams-gui.icons.player-slot"), null),
 				menus.getString("duel-creator.manage-teams-gui.icons.team-slot.display-name"),
@@ -268,7 +268,7 @@ public class ConfigurationHandler {
 
 		final int zeroAmount = section.getBoolean("use-zero-amount", false) ? 0 : 1;
 
-		DuelQueueListGUI.guiConfig = new DuelQueueListGUI.DuelQueueListGUIConfig(zeroAmount, section.getInt("size", 6), section.getString("title", "Queues"), iconItemStacks, section.getConfigurationSection("icons"));
+		DuelQueueListGUI.guiConfig = new DuelQueueListGUI.Config(zeroAmount, section.getInt("size", 6), section.getString("title", "Queues"), iconItemStacks, section.getConfigurationSection("icons"));
 
 	}
 
@@ -289,11 +289,11 @@ public class ConfigurationHandler {
 			}
 		}
 
-		DuelArenaListGUI.guiConfig = new DuelArenaListGUI.DuelArenaListGUIConfig(icons, pageSlots, section.getString("title", "Duel Arenas"));
+		DuelArenaListGUI.guiConfig = new DuelArenaListGUI.Config(icons, pageSlots, section.getString("title", "Duel Arenas"));
 	}
 
 	private void registerHistoryGui() {
-		DuelHistoryLogGUI.guiConfig = new DuelHistoryLogGUI.DuelHistoryLogGUIConfig(getMenusSection("game-history-gui"));
+		DuelHistoryLogGUI.guiConfig = new DuelHistoryLogGUI.Config(getMenusSection("game-history-gui"));
 	}
 
 	private void registerArenas() {

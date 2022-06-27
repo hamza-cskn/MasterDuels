@@ -15,7 +15,7 @@ import java.util.*;
 
 public class DuelHistoryLogGUI extends ConfigurableGui {
 
-	public static DuelHistoryLogGUIConfig guiConfig;
+	public static Config guiConfig;
 
 	public DuelHistoryLogGUI(Player player) {
 		super(player, "duel-history-log-gui");
@@ -44,14 +44,14 @@ public class DuelHistoryLogGUI extends ConfigurableGui {
 		NON_SOLO
 	}
 
-	public static class DuelHistoryLogGUIConfig {
+	public static class Config {
 
 		private final Map<HistoryIconType, ItemStack> historyIconItemStacks = new HashMap<>();
 		private final List<Integer> pageSlots = new ArrayList<>();
 		private final String winnersFormat;
 		private final String losersFormat;
 
-		public DuelHistoryLogGUIConfig(ConfigurationSection guiSection) {
+		public Config(ConfigurationSection guiSection) {
 			for (final String slotText : guiSection.getString("page-slots").split(",")) {
 				try {
 					pageSlots.add(Integer.parseInt(slotText));

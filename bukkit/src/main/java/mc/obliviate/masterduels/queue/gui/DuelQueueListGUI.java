@@ -23,7 +23,7 @@ import java.util.Map;
 public class DuelQueueListGUI extends ConfigurableGui {
 
 	protected static final List<Gui> OPENED_DUEL_QUEUE_LIST_GUI_LIST = new ArrayList<>();
-	public static DuelQueueListGUIConfig guiConfig;
+	public static Config guiConfig;
 
 	public DuelQueueListGUI(Player player) {
 		super(player, "duel-queue-list-gui");
@@ -55,7 +55,7 @@ public class DuelQueueListGUI extends ConfigurableGui {
 		return "queues-gui";
 	}
 
-	public static class DuelQueueListGUIConfig {
+	public static class Config {
 		public final Map<String, ItemStack> iconItemStacks;
 		private final int zeroAmount;
 		private final List<Integer> slots = new ArrayList<>();
@@ -63,7 +63,7 @@ public class DuelQueueListGUI extends ConfigurableGui {
 		private final String title;
 		private final ConfigurationSection iconsSection;
 
-		public DuelQueueListGUIConfig(int zeroAmount, int size, String title, Map<String, ItemStack> iconItemStacks, ConfigurationSection iconsSection) {
+		public Config(int zeroAmount, int size, String title, Map<String, ItemStack> iconItemStacks, ConfigurationSection iconsSection) {
 			this.zeroAmount = zeroAmount;
 			this.size = size;
 			this.title = title;

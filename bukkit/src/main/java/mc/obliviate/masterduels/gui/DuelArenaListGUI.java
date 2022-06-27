@@ -17,7 +17,7 @@ import java.util.Map;
 
 public class DuelArenaListGUI extends ConfigurableGui {
 
-	public static DuelArenaListGUIConfig guiConfig;
+	public static Config guiConfig;
 
 	public DuelArenaListGUI(Player player) {
 		super(player, "duel-games-list-gui");
@@ -76,13 +76,13 @@ public class DuelArenaListGUI extends ConfigurableGui {
 	 * Purpose of this class is storing duel arena list
 	 * gui configuration datas.
 	 */
-	public static class DuelArenaListGUIConfig {
+	public static class Config {
 
 		private final Map<BasicArenaState, ItemStack> icons;
 		private final List<Integer> pageSlots;
 		private final String guiTitle;
 
-		public DuelArenaListGUIConfig(final Map<BasicArenaState, ItemStack> icons, List<Integer> pageSlots, final String guiTitle) {
+		public Config(final Map<BasicArenaState, ItemStack> icons, List<Integer> pageSlots, final String guiTitle) {
 			this.icons = icons;
 			this.pageSlots = pageSlots;
 			this.guiTitle = guiTitle;
