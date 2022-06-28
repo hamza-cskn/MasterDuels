@@ -1,7 +1,6 @@
 package mc.obliviate.masterduels.commands;
 
 import mc.obliviate.masterduels.MasterDuels;
-import mc.obliviate.masterduels.api.arena.IGameBuilder;
 import mc.obliviate.masterduels.api.arena.IMatch;
 import mc.obliviate.masterduels.api.invite.InviteState;
 import mc.obliviate.masterduels.api.user.IMember;
@@ -281,16 +280,15 @@ public class DuelCMD implements CommandExecutor {
 			return;
 		}
 
-		//todo cache invite receives
 		//check: target accepts invites
 		if (!plugin.getSqlManager().getReceivesInvites(target.getUniqueId())) {
 			MessageUtils.sendMessage(player, "invite.toggle.you-can-not-invite", new PlaceholderUtil().add("{target}", target.getName()));
 			return;
 		}
-
 		//1v1
-		final IGameBuilder gameBuilder = new MatchBuilder().setTeamAmount(2).setTeamSize(1).setMatchDuration(Duration.ofMinutes(1)).setTotalRounds(1);
-		gameBuilder.addPlayer(player);
+		final MatchBuilder matchBuilder = new MatchBuilder();
+		matchBuilder.setTeamAmount(2).setTeamSize(1).setMatchDuration(Duration.ofMinutes(1)).setTotalRounds(1);
+		matchBuilder.addPlayer(player);
 
 		final Invite.Builder inviteBuilder = Invite.create()
 				.setExpireTimeLater(ConfigurationHandler.getConfig().getInt("invite-timeout") * 1000L)
@@ -298,19 +296,19 @@ public class DuelCMD implements CommandExecutor {
 				.setReceiver(target.getUniqueId())
 				.onResponse(invite -> {
 					if (invite.getState().equals(InviteState.ACCEPTED)) {
-						gameBuilder.addPlayer(target);
-						IMatch game = gameBuilder.build();
+						matchBuilder.addPlayer(target);
+						IMatch game = matchBuilder.build();
 						if (game == null) {
 							MessageUtils.sendMessage(player, "no-arena-found");
 							return;
 						}
 						game.start();
 					} else {
-						//destroy game builder
+						matchBuilder.destroy();
 					}
 				});
 
-		new KitSelectionGUI(player, gameBuilder, selectedKit -> {
+		new KitSelectionGUI(player, matchBuilder, selectedKit -> {
 			Invite.InviteBuildResult buildResult = inviteBuilder.build();
 
 			if (buildResult.getInviteBuildState().equals(Invite.InviteBuildState.ERROR_ALREADY_INVITED)) {

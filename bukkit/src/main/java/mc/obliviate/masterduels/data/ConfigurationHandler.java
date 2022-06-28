@@ -26,7 +26,6 @@ import mc.obliviate.masterduels.utils.notify.NotifyActionStack;
 import mc.obliviate.masterduels.utils.serializer.SerializerUtils;
 import mc.obliviate.masterduels.utils.tab.TABManager;
 import mc.obliviate.masterduels.utils.timer.TimerUtils;
-import mc.obliviate.masterduels.utils.title.TitleHandler;
 import mc.obliviate.masterduels.utils.versioncontroller.ServerVersionController;
 import mc.obliviate.masterduels.utils.xmaterial.XMaterial;
 import org.bukkit.configuration.ConfigurationSection;
@@ -95,7 +94,6 @@ public class ConfigurationHandler {
 		registerLobbyLocation();
 		registerDelayEndDuelAfterPlayerKill();
 		registerScoreboards();
-		registerTitles();
 		registerBossBars();
 		registerTimerFormats();
 		registerGameCreatorLimits(config.getConfigurationSection("duel-creator.data-limits"));
@@ -352,14 +350,6 @@ public class ConfigurationHandler {
 			BossBarHandler.CLOSING_TEXT_FORMAT = config.getString("boss-bars.arena-closing");
 		} else {
 			BossBarHandler.setBossBarModule(BossBarHandler.BossBarModule.DISABLED);
-		}
-	}
-
-	private void registerTitles() {
-		for (final TitleHandler.TitleType type : TitleHandler.TitleType.values()) {
-			final ConfigurationSection section = config.getConfigurationSection("titles." + type.name());
-			if (section == null) return;
-			TitleHandler.registerTitle(type, section);
 		}
 	}
 
