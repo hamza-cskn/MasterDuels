@@ -52,7 +52,7 @@ project.setLibsDirName('D:/Users/User/Desktop/Local Servers & Setups/LOCAL 1.8/p
 
 shadowJar {
     exclude 'com/hakan/core/command/**/*.class'
-    //relocate 'com.hakan.core', 'mc.obliviate.masterduels.lib.hcore'
+    relocate 'com.hakan.core', 'mc.obliviate.masterduels.lib.hcore'
     relocate 'mc.obliviate.inventory', 'mc.obliviate.masterduels.lib.inventory'
     relocate 'mc.obliviate.bloksqlite', 'mc.obliviate.masterduels.lib.sqlite'
 }
