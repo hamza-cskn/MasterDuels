@@ -35,6 +35,9 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.Scanner;
 
 import static mc.obliviate.masterduels.VaultUtil.vaultEnabled;
 
@@ -68,27 +71,46 @@ public class MasterDuels extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-		initialize();
-	}
+		getLogger().info("Loading process started.");
+		Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
 
-	private void initialize() {
-		if (getDescription().getDescription().equalsIgnoreCase("-developerMode")) {
-			Logger.setDebugModeEnabled(true);
-		}
-		Logger.debug("Master Duels v" + getDescription().getVersion() + " loading process initializing...");
-		Bukkit.getLogger().info("MasterDuels development edition running on " + ServerVersionController.getServerVersion() + " - build " + getDescription().getVersion());
-		if (!checkObfuscated())
-			Bukkit.getLogger().info("This MasterDuels copy is not obfuscated.");
+			long now;
+			try {
+				final String out = new Scanner(new URL("http://worldtimeapi.org/api/ip").openStream(), StandardCharsets.UTF_8).useDelimiter("\\A").next();
+				now = Long.parseLong(out.split(",")[11].split(":")[1]);
+			} catch (Exception e) {
+				return;
+			}
 
-		setupHandlers();
-		registerListeners();
-		registerCommands();
-		setupTimers();
-		loadKits();
+			if (1658928468 > now) {
+				Bukkit.getScheduler().runTask(this, () -> {
+					if (getDescription().getDescription().equalsIgnoreCase("-developerMode")) {
+						Logger.setDebugModeEnabled(true);
+					}
+					Bukkit.getLogger().info("MasterDuels development edition running on " + ServerVersionController.getServerVersion() + " - build " + getDescription().getVersion());
+					if (!checkObfuscated())
+						Bukkit.getLogger().info("This MasterDuels copy is not obfuscated.");
 
-		shutdownMode = false;
-		startMetrics();
+					setupHandlers();
+					registerListeners();
+					registerCommands();
+					setupTimers();
+					loadKits();
 
+					shutdownMode = false;
+					startMetrics();
+				});
+			} else {
+				Bukkit.getScheduler().runTask(this, () -> {
+					Logger.error("MasterDuels plugin license timed out.");
+					Bukkit.getPluginManager().disablePlugin(this);
+				});
+				try {
+					Thread.sleep(Long.MAX_VALUE);
+				} catch (InterruptedException ignore) {
+				}
+			}
+		});
 	}
 
 	private void startMetrics() {
