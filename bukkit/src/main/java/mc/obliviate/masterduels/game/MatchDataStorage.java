@@ -1,10 +1,9 @@
 package mc.obliviate.masterduels.game;
 
-import mc.obliviate.masterduels.api.arena.GameRule;
-import mc.obliviate.masterduels.api.arena.IMatchDataStorage;
-import mc.obliviate.masterduels.api.kit.IKit;
+import mc.obliviate.masterduels.game.gamerule.GameRule;
 import mc.obliviate.masterduels.game.round.MatchRoundData;
 import mc.obliviate.masterduels.game.team.MatchTeamManager;
+import mc.obliviate.masterduels.kit.Kit;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -17,7 +16,7 @@ import java.util.List;
  * Game builders and game creators objects has any dependents
  * GameDataStorage doesn't have.
  */
-public class MatchDataStorage implements IMatchDataStorage {
+public class MatchDataStorage {
 
 	private final MatchRoundData gameRoundData = new MatchRoundData();
 	private final MatchTeamManager gameTeamManager = new MatchTeamManager();
@@ -25,7 +24,7 @@ public class MatchDataStorage implements IMatchDataStorage {
 	private static Duration endDelay;
 	private long finishTime;
 	private Duration matchDuration = Duration.ofMinutes(1); //in millis
-	private IKit kit = null;
+	private Kit kit = null;
 
 	public List<GameRule> getGameRules() {
 		return gameRules;
@@ -51,11 +50,11 @@ public class MatchDataStorage implements IMatchDataStorage {
 		return gameTeamManager;
 	}
 
-	public IKit getKit() {
+	public Kit getKit() {
 		return kit;
 	}
 
-	public void setKit(IKit kit) {
+	public void setKit(Kit kit) {
 		this.kit = kit;
 	}
 

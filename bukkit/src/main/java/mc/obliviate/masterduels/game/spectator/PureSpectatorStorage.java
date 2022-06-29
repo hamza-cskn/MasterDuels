@@ -1,15 +1,13 @@
 package mc.obliviate.masterduels.game.spectator;
 
-import mc.obliviate.masterduels.api.arena.spectator.ISpectatorStorage;
-import mc.obliviate.masterduels.api.events.spectator.DuelMatchPreSpectatorJoinEvent;
-import mc.obliviate.masterduels.api.events.spectator.DuelMatchSpectatorLeaveEvent;
-import mc.obliviate.masterduels.api.user.IMember;
-import mc.obliviate.masterduels.api.user.ISpectator;
-import mc.obliviate.masterduels.api.user.ITeam;
+import mc.obliviate.masterduels.api.spectator.DuelMatchPreSpectatorJoinEvent;
+import mc.obliviate.masterduels.api.spectator.DuelMatchSpectatorLeaveEvent;
 import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.game.Match;
+import mc.obliviate.masterduels.game.team.Team;
 import mc.obliviate.masterduels.kit.InventoryStorer;
 import mc.obliviate.masterduels.user.spectator.Spectator;
+import mc.obliviate.masterduels.user.team.Member;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.playerreset.PlayerReset;
 import org.bukkit.Bukkit;
@@ -28,10 +26,10 @@ import static mc.obliviate.masterduels.game.spectator.SemiSpectatorStorage.playe
  * Spectator players from out of game,
  * not member.
  */
-public class PureSpectatorStorage implements ISpectatorStorage {
+public class PureSpectatorStorage implements SpectatorStorage {
 
 	private final MatchSpectatorManager gsm;
-	private final List<ISpectator> spectators = new ArrayList<>();
+	private final List<Spectator> spectators = new ArrayList<>();
 	private final Match game;
 
 	public PureSpectatorStorage(MatchSpectatorManager gsm, Match game) {
@@ -39,8 +37,8 @@ public class PureSpectatorStorage implements ISpectatorStorage {
 		this.game = game;
 	}
 
-	private ISpectator findSpectator(Player player) {
-		for (final ISpectator spectator : spectators) {
+	private Spectator findSpectator(Player player) {
+		for (final Spectator spectator : spectators) {
 			if (spectator.getPlayer().equals(player)) {
 				return spectator;
 			}
@@ -49,7 +47,7 @@ public class PureSpectatorStorage implements ISpectatorStorage {
 	}
 
 	@Override
-	public void unspectate(ISpectator spectator) {
+	public void unspectate(Spectator spectator) {
 		if (!spectators.remove(spectator)) return;
 
 		Bukkit.getPluginManager().callEvent(new DuelMatchSpectatorLeaveEvent(spectator));
@@ -67,14 +65,14 @@ public class PureSpectatorStorage implements ISpectatorStorage {
 
 	@Override
 	public void unspectate(Player player) {
-		final ISpectator spectator = findSpectator(player);
+		final Spectator spectator = findSpectator(player);
 		if (spectator == null) return;
 		unspectate(spectator);
 	}
 
 	@Override
 	public void spectate(Player player) {
-		ISpectator spectator = findSpectator(player);
+		Spectator spectator = findSpectator(player);
 		if (spectator != null) return;
 
 		final DuelMatchPreSpectatorJoinEvent duelGamePreSpectatorJoinEvent = new DuelMatchPreSpectatorJoinEvent(player, game);
@@ -95,13 +93,13 @@ public class PureSpectatorStorage implements ISpectatorStorage {
 
 		Bukkit.broadcastMessage("pure spectator spectate()");
 
-		for (final ITeam team : game.getGameDataStorage().getGameTeamManager().getTeams()) {
-			for (final IMember m : team.getMembers()) {
+		for (final Team team : game.getGameDataStorage().getGameTeamManager().getTeams()) {
+			for (final Member m : team.getMembers()) {
 				m.getPlayer().hidePlayer(player);
 			}
 		}
 
-		for (final ISpectator spec : gsm.getAllSpectators()) {
+		for (final Spectator spec : gsm.getAllSpectators()) {
 			spec.getPlayer().showPlayer(player);
 			player.showPlayer(spec.getPlayer());
 		}
@@ -124,7 +122,7 @@ public class PureSpectatorStorage implements ISpectatorStorage {
 
 
 	@Override
-	public List<ISpectator> getSpectatorList() {
+	public List<Spectator> getSpectatorList() {
 		return spectators;
 	}
 }

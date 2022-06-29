@@ -1,6 +1,5 @@
 package mc.obliviate.masterduels.arena;
 
-import mc.obliviate.masterduels.api.arena.IArena;
 import mc.obliviate.masterduels.arena.elements.ArenaCuboid;
 import mc.obliviate.masterduels.arena.elements.Positions;
 import mc.obliviate.masterduels.data.DataHandler;
@@ -15,7 +14,7 @@ import java.util.Map;
 
 import static mc.obliviate.masterduels.arena.BasicArenaState.*;
 
-public class Arena implements IArena {
+public class Arena {
 
 	private final String name;
 	private final String mapName;

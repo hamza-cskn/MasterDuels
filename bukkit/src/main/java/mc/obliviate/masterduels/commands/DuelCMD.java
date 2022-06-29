@@ -1,12 +1,9 @@
 package mc.obliviate.masterduels.commands;
 
 import mc.obliviate.masterduels.MasterDuels;
-import mc.obliviate.masterduels.api.arena.IMatch;
-import mc.obliviate.masterduels.api.invite.InviteState;
-import mc.obliviate.masterduels.api.user.IMember;
-import mc.obliviate.masterduels.api.user.IUser;
 import mc.obliviate.masterduels.data.ConfigurationHandler;
 import mc.obliviate.masterduels.data.DataHandler;
+import mc.obliviate.masterduels.game.Match;
 import mc.obliviate.masterduels.game.MatchBuilder;
 import mc.obliviate.masterduels.game.MatchCreator;
 import mc.obliviate.masterduels.gui.DuelArenaListGUI;
@@ -22,6 +19,7 @@ import mc.obliviate.masterduels.queue.DuelQueueHandler;
 import mc.obliviate.masterduels.queue.DuelQueueTemplate;
 import mc.obliviate.masterduels.queue.gui.DuelQueueListGUI;
 import mc.obliviate.masterduels.statistics.DuelStatistic;
+import mc.obliviate.masterduels.user.IUser;
 import mc.obliviate.masterduels.user.team.Member;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
@@ -107,7 +105,7 @@ public class DuelCMD implements CommandExecutor {
 			queue(player, Arrays.asList(args));
 		} else if (args[0].equalsIgnoreCase("creator")) {
 			MatchCreator matchCreator = MatchCreator.getGameCreatorMap().get(player.getUniqueId());
-			if (matchCreator == null) matchCreator = new MatchCreator(plugin, player.getUniqueId());
+			if (matchCreator == null) matchCreator = new MatchCreator(player.getUniqueId());
 			new DuelMatchCreatorGUI(player, matchCreator).open();
 		} else if (args.length == 1 || args[0].equalsIgnoreCase("invite")) {
 			invite(player, args);
@@ -201,7 +199,7 @@ public class DuelCMD implements CommandExecutor {
 	private void responseInvite(Player player, String[] args) {
 		final InviteRecipient receiver = InviteRecipient.getInviteRecipient(player.getUniqueId());
 
-		final InviteState responseState = args[0].equalsIgnoreCase("accept") ? InviteState.ACCEPTED : InviteState.REJECTED;
+		final Invite.InviteState responseState = args[0].equalsIgnoreCase("accept") ? Invite.InviteState.ACCEPTED : Invite.InviteState.REJECTED;
 
 		if (receiver.getInvites().size() == 0) {
 			MessageUtils.sendMessage(player, "invite.you-dont-have-invite");
@@ -245,7 +243,7 @@ public class DuelCMD implements CommandExecutor {
 				return;
 			}
 
-			final IMember member = DataHandler.getMember(target.getUniqueId());
+			final Member member = DataHandler.getMember(target.getUniqueId());
 			if (member == null) {
 				player.sendMessage("§cThis player is not in a duel.");
 				return;
@@ -295,9 +293,9 @@ public class DuelCMD implements CommandExecutor {
 				.setSender(player.getUniqueId())
 				.setReceiver(target.getUniqueId())
 				.onResponse(invite -> {
-					if (invite.getState().equals(InviteState.ACCEPTED)) {
+					if (invite.getState().equals(Invite.InviteState.ACCEPTED)) {
 						matchBuilder.addPlayer(target);
-						IMatch game = matchBuilder.build();
+						Match game = matchBuilder.build();
 						if (game == null) {
 							MessageUtils.sendMessage(player, "no-arena-found");
 							return;

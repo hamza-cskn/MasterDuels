@@ -3,11 +3,11 @@ package mc.obliviate.masterduels.scoreboard;
 import com.hakan.core.HCore;
 import com.hakan.core.scoreboard.HScoreboard;
 import mc.obliviate.masterduels.MasterDuels;
-import mc.obliviate.masterduels.api.arena.IMatch;
-import mc.obliviate.masterduels.api.arena.MatchStateType;
-import mc.obliviate.masterduels.api.events.DuelMatchMemberLeaveEvent;
-import mc.obliviate.masterduels.api.events.arena.DuelMatchStateChangeEvent;
-import mc.obliviate.masterduels.api.user.IMember;
+import mc.obliviate.masterduels.api.DuelMatchMemberLeaveEvent;
+import mc.obliviate.masterduels.api.arena.DuelMatchStateChangeEvent;
+import mc.obliviate.masterduels.game.Match;
+import mc.obliviate.masterduels.game.MatchStateType;
+import mc.obliviate.masterduels.user.team.Member;
 import mc.obliviate.masterduels.utils.Utils;
 import mc.obliviate.masterduels.utils.timer.TimerUtils;
 import org.bukkit.Bukkit;
@@ -26,7 +26,7 @@ public final class InternalScoreboardManager implements Listener {
 		if (event.getNewState().getMatchStateType().equals(MatchStateType.UNINSTALLING)) return;
 		if (event.getNewState().getMatchStateType().equals(MatchStateType.MATCH_STARING)) return;
 		if (event.getNewState().getMatchStateType().equals(MatchStateType.IDLE)) return;
-		for (IMember member : event.getMatch().getGameDataStorage().getGameTeamManager().getAllMembers()) {
+		for (Member member : event.getMatch().getGameDataStorage().getGameTeamManager().getAllMembers()) {
 			setupScoreboard(member, event.getNewState().getMatchStateType());
 		}
 	}
@@ -40,7 +40,7 @@ public final class InternalScoreboardManager implements Listener {
 		HCore.findScoreboardByPlayer(player).ifPresent(HScoreboard::delete);
 	}
 
-	public void setupScoreboard(IMember member, MatchStateType type) {
+	public void setupScoreboard(Member member, MatchStateType type) {
 		uninstallScoreboard(member.getPlayer());
 		final HScoreboard scoreboard = HCore.createScoreboard(member.getPlayer());
 
@@ -49,13 +49,13 @@ public final class InternalScoreboardManager implements Listener {
 		scoreboard.setUpdateInterval(20);
 		scoreboard.show();
 
-		final IMatch match = member.getMatch();
+		final Match match = member.getMatch();
 		scoreboard.update(hScoreboard -> {
 			int lineNo = 0;
 			for (String line : formatConfig.getLines()) {
 
 				if (line.equalsIgnoreCase("{+opponents}")) {
-					for (final IMember loopMember : match.getAllMembers()) {
+					for (final Member loopMember : match.getAllMembers()) {
 						if (member.getTeam().equals(loopMember.getTeam())) continue;
 
 						if (!loopMember.getPlayer().isOnline()) {

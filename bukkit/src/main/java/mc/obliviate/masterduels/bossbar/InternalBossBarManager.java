@@ -4,12 +4,12 @@ import com.hakan.core.HCore;
 import com.hakan.core.message.bossbar.HBarColor;
 import com.hakan.core.message.bossbar.HBarStyle;
 import com.hakan.core.message.bossbar.HBossBar;
-import mc.obliviate.masterduels.api.arena.IMatch;
-import mc.obliviate.masterduels.api.arena.MatchStateType;
-import mc.obliviate.masterduels.api.events.DuelMatchMemberLeaveEvent;
-import mc.obliviate.masterduels.api.events.arena.DuelMatchStateChangeEvent;
-import mc.obliviate.masterduels.api.user.IMember;
+import mc.obliviate.masterduels.api.DuelMatchMemberLeaveEvent;
+import mc.obliviate.masterduels.api.arena.DuelMatchStateChangeEvent;
+import mc.obliviate.masterduels.game.Match;
 import mc.obliviate.masterduels.game.MatchDataStorage;
+import mc.obliviate.masterduels.game.MatchStateType;
+import mc.obliviate.masterduels.user.team.Member;
 import mc.obliviate.masterduels.utils.Utils;
 import mc.obliviate.masterduels.utils.timer.TimerUtils;
 import org.bukkit.Bukkit;
@@ -25,7 +25,7 @@ import static mc.obliviate.masterduels.bossbar.BossBarHandler.NORMAL_TEXT_FORMAT
 
 public class InternalBossBarManager implements Listener {
 
-	private final Map<IMatch, HBossBar> bossBarMap = new HashMap<>();
+	private final Map<Match, HBossBar> bossBarMap = new HashMap<>();
 
 	public InternalBossBarManager(JavaPlugin plugin) {
 		Bukkit.getPluginManager().registerEvents(this, plugin);
@@ -37,7 +37,7 @@ public class InternalBossBarManager implements Listener {
 			HBossBar bossBar = HCore.createBossBar(NORMAL_TEXT_FORMAT, HBarColor.WHITE, HBarStyle.SEGMENTED_10);
 			bossBarMap.put(event.getMatch(), bossBar);
 			initializeBossBarTimer(event.getMatch(), bossBar);
-			for (IMember member : event.getMatch().getGameDataStorage().getGameTeamManager().getAllMembers()) {
+			for (Member member : event.getMatch().getGameDataStorage().getGameTeamManager().getAllMembers()) {
 				bossBar.addPlayer(member.getPlayer());
 			}
 		}
@@ -50,7 +50,7 @@ public class InternalBossBarManager implements Listener {
 		bar.removePlayer(event.getMember().getPlayer());
 	}
 
-	private void initializeBossBarTimer(IMatch match, HBossBar bar) {
+	private void initializeBossBarTimer(Match match, HBossBar bar) {
 		match.getGameTaskManager().repeatTask("BOSSBAR", () -> {
 			if (match.getMatchState().getMatchStateType().equals(MatchStateType.MATCH_ENDING)) {
 				bar.setProgress((Utils.getPercentage(MatchDataStorage.getEndDelay().toMillis(), (match.getGameDataStorage().getFinishTime() - System.currentTimeMillis()))));

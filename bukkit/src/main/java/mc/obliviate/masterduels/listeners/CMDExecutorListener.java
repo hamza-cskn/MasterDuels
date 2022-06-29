@@ -1,8 +1,8 @@
 package mc.obliviate.masterduels.listeners;
 
 import com.hakan.core.HCore;
-import mc.obliviate.masterduels.api.events.arena.DuelMatchEndEvent;
-import mc.obliviate.masterduels.api.events.arena.DuelMatchStartEvent;
+import mc.obliviate.masterduels.api.arena.DuelMatchEndEvent;
+import mc.obliviate.masterduels.api.arena.DuelMatchStartEvent;
 import mc.obliviate.masterduels.data.ConfigurationHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

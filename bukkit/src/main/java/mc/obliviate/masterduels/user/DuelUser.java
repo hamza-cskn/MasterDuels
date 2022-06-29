@@ -1,6 +1,5 @@
 package mc.obliviate.masterduels.user;
 
-import mc.obliviate.masterduels.api.user.IUser;
 import mc.obliviate.masterduels.data.SQLManager;
 import mc.obliviate.masterduels.game.MatchBuilder;
 import mc.obliviate.masterduels.statistics.DuelStatistic;

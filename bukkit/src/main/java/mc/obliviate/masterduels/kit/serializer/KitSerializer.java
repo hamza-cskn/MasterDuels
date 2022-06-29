@@ -15,7 +15,6 @@ public class KitSerializer {
 		serializeItemList(section.createSection("armors"), kit.getArmorContents());
 
 		section.set("icon", kit.getIcon());
-
 	}
 
 	private static void serializeItemList(ConfigurationSection section, ItemStack[] items) {

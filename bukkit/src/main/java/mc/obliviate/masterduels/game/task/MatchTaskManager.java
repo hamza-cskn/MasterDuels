@@ -1,11 +1,9 @@
 package mc.obliviate.masterduels.game.task;
 
-import mc.obliviate.masterduels.api.arena.IMatchTaskManager;
-
 import java.util.HashMap;
 import java.util.Map;
 
-public class MatchTaskManager implements IMatchTaskManager {
+public class MatchTaskManager {
 
 	private final Map<String, MatchTask> tasks = new HashMap<>();
 

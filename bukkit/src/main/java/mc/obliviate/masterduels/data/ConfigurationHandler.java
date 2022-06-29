@@ -1,14 +1,14 @@
 package mc.obliviate.masterduels.data;
 
 import mc.obliviate.masterduels.MasterDuels;
-import mc.obliviate.masterduels.api.arena.GameRule;
-import mc.obliviate.masterduels.api.arena.MatchStateType;
 import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.arena.BasicArenaState;
 import mc.obliviate.masterduels.arenaclear.modes.smart.SmartArenaClear;
 import mc.obliviate.masterduels.bossbar.BossBarHandler;
 import mc.obliviate.masterduels.game.MatchCreator;
 import mc.obliviate.masterduels.game.MatchDataStorage;
+import mc.obliviate.masterduels.game.MatchStateType;
+import mc.obliviate.masterduels.game.gamerule.GameRule;
 import mc.obliviate.masterduels.game.state.RoundStartingState;
 import mc.obliviate.masterduels.gui.DuelArenaListGUI;
 import mc.obliviate.masterduels.gui.DuelHistoryLogGUI;

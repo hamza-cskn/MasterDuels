@@ -1,10 +1,10 @@
 package mc.obliviate.masterduels.listeners;
 
-import mc.obliviate.masterduels.api.user.IMember;
-import mc.obliviate.masterduels.api.user.IUser;
 import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.data.ConfigurationHandler;
 import mc.obliviate.masterduels.data.DataHandler;
+import mc.obliviate.masterduels.user.IUser;
+import mc.obliviate.masterduels.user.team.Member;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
 import org.bukkit.Material;
@@ -98,7 +98,7 @@ public class DuelProtectListener implements Listener {
 
 	@EventHandler
 	public void onCommand(final PlayerCommandPreprocessEvent e) {
-		final IMember member = DataHandler.getMember(e.getPlayer().getUniqueId());
+		final Member member = DataHandler.getMember(e.getPlayer().getUniqueId());
 		if (member == null || e.getPlayer().isOp()) return;
 		if (e.getMessage().startsWith("/")) {
 			if (!ConfigurationHandler.getConfig().getStringList("executable-commands-by-player." + member.getTeam().getMatch().getMatchState().getMatchStateType().name()).contains(e.getMessage())) {
@@ -116,7 +116,7 @@ public class DuelProtectListener implements Listener {
 
 	@EventHandler(ignoreCancelled = true)
 	public void onBreak(final BlockBreakEvent e) {
-		final IMember member = DataHandler.getMember(e.getPlayer().getUniqueId());
+		final Member member = DataHandler.getMember(e.getPlayer().getUniqueId());
 		if (member == null) return;
 
 		if (!member.getMatch().getGameSpectatorManager().isSpectator(e.getPlayer())) {
@@ -138,7 +138,7 @@ public class DuelProtectListener implements Listener {
 
 	@EventHandler(ignoreCancelled = true)
 	public void onPlace(final BlockPlaceEvent e) {
-		final IMember member = DataHandler.getMember(e.getPlayer().getUniqueId());
+		final Member member = DataHandler.getMember(e.getPlayer().getUniqueId());
 		if (member == null) return;
 
 		final Arena arena = (Arena) member.getMatch().getArena();

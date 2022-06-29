@@ -1,14 +1,14 @@
 package mc.obliviate.masterduels.game.state;
 
-import mc.obliviate.masterduels.api.arena.MatchStateType;
-import mc.obliviate.masterduels.api.events.DuelMatchMemberDeathEvent;
-import mc.obliviate.masterduels.api.events.DuelMatchMemberLeaveEvent;
-import mc.obliviate.masterduels.api.user.IMember;
-import mc.obliviate.masterduels.api.user.ISpectator;
-import mc.obliviate.masterduels.api.user.ITeam;
+import mc.obliviate.masterduels.api.DuelMatchMemberDeathEvent;
+import mc.obliviate.masterduels.api.DuelMatchMemberLeaveEvent;
 import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.game.Match;
+import mc.obliviate.masterduels.game.MatchStateType;
+import mc.obliviate.masterduels.game.team.Team;
 import mc.obliviate.masterduels.kit.InventoryStorer;
+import mc.obliviate.masterduels.user.spectator.Spectator;
+import mc.obliviate.masterduels.user.team.Member;
 import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.Utils;
@@ -33,11 +33,10 @@ public class PlayingState implements MatchState {
 		} else {
 			match.setGameState(new MatchEndingState(match));
 		}
-
 	}
 
 	@Override
-	public void onDamage(EntityDamageEvent event, IMember victim, IMember attacker) {
+	public void onDamage(EntityDamageEvent event, Member victim, Member attacker) {
 		if (attacker != null)
 			attacker.getPlayer().sendMessage("You hitted to " + victim.getPlayer().getName());
 		if (event.getFinalDamage() >= victim.getPlayer().getHealth()) {
@@ -46,7 +45,7 @@ public class PlayingState implements MatchState {
 		}
 	}
 
-	private void onDeath(EntityDamageEvent event, IMember victim, IMember attacker) {
+	private void onDeath(EntityDamageEvent event, Member victim, Member attacker) {
 		Bukkit.getPluginManager().callEvent(new DuelMatchMemberDeathEvent(event, victim, attacker));
 
 		match.getGameSpectatorManager().spectate(victim);
@@ -65,7 +64,7 @@ public class PlayingState implements MatchState {
 			match.broadcastInGame("duel-team-eliminated", new PlaceholderUtil().add("{victim}", Utils.getDisplayName(victim.getPlayer())));
 		}
 
-		final ITeam lastSurvivedTeam = match.getGameDataStorage().getGameTeamManager().getLastSurvivedTeam();
+		final Team lastSurvivedTeam = match.getGameDataStorage().getGameTeamManager().getLastSurvivedTeam();
 		if (lastSurvivedTeam != null) {
 			match.getGameDataStorage().getGameRoundData().addWin(lastSurvivedTeam);
 			match.getGameDataStorage().getGameRoundData().setWinnerTeam(lastSurvivedTeam);
@@ -75,12 +74,12 @@ public class PlayingState implements MatchState {
 	}
 
 	@Override
-	public void leave(IMember member) {
+	public void leave(Member member) {
 		if (!member.getTeam().getMembers().contains(member)) return;
 
 		Bukkit.getPluginManager().callEvent(new DuelMatchMemberLeaveEvent(member));
 		DataHandler.getUsers().remove(member.getPlayer().getUniqueId());
-		member.getTeam().unregisterMember(member);
+		member.getMatch().getGameDataStorage().getGameTeamManager().unregisterMember(member);
 
 		if (!USE_PLAYER_INVENTORIES && !InventoryStorer.restore(member.getPlayer())) {
 			Logger.severe("inventory could not restored: " + member.getPlayer());
@@ -101,7 +100,7 @@ public class PlayingState implements MatchState {
 	}
 
 	@Override
-	public void leave(ISpectator player) {
+	public void leave(Spectator player) {
 
 	}
 

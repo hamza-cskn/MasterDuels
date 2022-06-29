@@ -1,12 +1,11 @@
 package mc.obliviate.masterduels.data;
 
-import mc.obliviate.masterduels.api.arena.IMatch;
-import mc.obliviate.masterduels.api.user.IMember;
-import mc.obliviate.masterduels.api.user.ISpectator;
-import mc.obliviate.masterduels.api.user.ITeam;
-import mc.obliviate.masterduels.api.user.IUser;
 import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.game.Match;
+import mc.obliviate.masterduels.game.team.Team;
+import mc.obliviate.masterduels.user.IUser;
+import mc.obliviate.masterduels.user.spectator.Spectator;
+import mc.obliviate.masterduels.user.team.Member;
 import org.bukkit.Location;
 
 import java.util.HashMap;
@@ -20,30 +19,30 @@ public class DataHandler {
 	public static int LOCK_TIME_IN_SECONDS = 3;
 	private static Location lobbyLocation = null;
 
-	public static ITeam getTeam(final UUID uuid) {
-		final IMember member = getMember(uuid);
+	public static Team getTeam(final UUID uuid) {
+		final Member member = getMember(uuid);
 		if (member == null) return null;
 		return member.getTeam();
 	}
 
-	public static IMatch getGame(final UUID uuid) {
-		final ITeam team = getTeam(uuid);
+	public static Match getGame(final UUID uuid) {
+		final Team team = getTeam(uuid);
 		if (team == null) return null;
 		return team.getMatch();
 	}
 
-	public static IMember getMember(final UUID uuid) {
+	public static Member getMember(final UUID uuid) {
 		final IUser user = users.get(uuid);
-		if (user instanceof IMember) {
-			return (IMember) user;
+		if (user instanceof Member) {
+			return (Member) user;
 		}
 		return null;
 	}
 
-	public static ISpectator getSpectator(final UUID uuid) {
+	public static Spectator getSpectator(final UUID uuid) {
 		final IUser user = users.get(uuid);
-		if (user instanceof ISpectator) {
-			return (ISpectator) user;
+		if (user instanceof Spectator) {
+			return (Spectator) user;
 		}
 		return null;
 	}

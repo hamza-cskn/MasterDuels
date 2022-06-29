@@ -1,6 +1,6 @@
 package mc.obliviate.masterduels.scoreboard;
 
-import mc.obliviate.masterduels.api.arena.MatchStateType;
+import mc.obliviate.masterduels.game.MatchStateType;
 import mc.obliviate.masterduels.utils.MessageUtils;
 
 import java.util.HashMap;

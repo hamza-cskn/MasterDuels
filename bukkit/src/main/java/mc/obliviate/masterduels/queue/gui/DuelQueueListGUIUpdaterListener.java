@@ -2,8 +2,8 @@ package mc.obliviate.masterduels.queue.gui;
 
 import mc.obliviate.inventory.Gui;
 import mc.obliviate.masterduels.MasterDuels;
-import mc.obliviate.masterduels.api.events.queue.DuelQueueJoinEvent;
-import mc.obliviate.masterduels.api.events.queue.DuelQueueLeaveEvent;
+import mc.obliviate.masterduels.api.queue.DuelQueueJoinEvent;
+import mc.obliviate.masterduels.api.queue.DuelQueueLeaveEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

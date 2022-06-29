@@ -3,11 +3,10 @@ package mc.obliviate.masterduels.listeners;
 import com.google.common.base.Preconditions;
 import com.hakan.core.HCore;
 import mc.obliviate.masterduels.MasterDuels;
-import mc.obliviate.masterduels.api.arena.spectator.IMatchSpectatorManager;
-import mc.obliviate.masterduels.api.user.IMember;
-import mc.obliviate.masterduels.api.user.IUser;
 import mc.obliviate.masterduels.data.DataHandler;
+import mc.obliviate.masterduels.game.spectator.MatchSpectatorManager;
 import mc.obliviate.masterduels.game.state.MatchState;
+import mc.obliviate.masterduels.user.IUser;
 import mc.obliviate.masterduels.user.spectator.Spectator;
 import mc.obliviate.masterduels.user.team.Member;
 import mc.obliviate.masterduels.utils.MessageUtils;
@@ -37,7 +36,7 @@ public class DamageListener implements Listener {
 
 				final Entity damager = ((EntityDamageByEntityEvent) e).getDamager();
 				if (damager instanceof Player) {
-					final IMember member = DataHandler.getMember(damager.getUniqueId());
+					final Member member = DataHandler.getMember(damager.getUniqueId());
 					if (member == null) return;
 					e.setCancelled(true);
 				}
@@ -52,12 +51,12 @@ public class DamageListener implements Listener {
 		if (victimUser == null) return;
 
 		if (victimUser instanceof Member) {
-			final IMember victimMember = (Member) victimUser;
+			final Member victimMember = (Member) victimUser;
 
 			Preconditions.checkNotNull(victimMember.getTeam(), victim.getPlayer() + " team cannot be null");
 			Preconditions.checkNotNull(victimMember.getTeam().getMatch(), victim.getPlayer() + "match cannot be null");
 
-			IMember attackerMember = null;
+			Member attackerMember = null;
 			if (e instanceof EntityDamageByEntityEvent) {
 
 				final Entity damager = ((EntityDamageByEntityEvent) e).getDamager();
@@ -75,7 +74,7 @@ public class DamageListener implements Listener {
 						return;
 					}
 
-					final IMatchSpectatorManager spectatorData = victimMember.getTeam().getMatch().getGameSpectatorManager();
+					final MatchSpectatorManager spectatorData = victimMember.getTeam().getMatch().getGameSpectatorManager();
 					if (spectatorData.isSpectator(victim) || spectatorData.isSpectator(attackerMember.getPlayer())) {
 						e.setCancelled(true);
 						//spectator protect
@@ -104,7 +103,7 @@ public class DamageListener implements Listener {
 		if (e.getEntity() instanceof Player && e.getDamager() instanceof Projectile) {
 			if (((Projectile) e.getDamager()).getShooter() instanceof Player) {
 				final Player attacker = (Player) ((Projectile) e.getDamager()).getShooter();
-				final IMember member = DataHandler.getMember(attacker.getUniqueId());
+				final Member member = DataHandler.getMember(attacker.getUniqueId());
 				if (member == null) return;
 				final double distance = MessageUtils.getFirstDigits(e.getEntity().getLocation().toVector().distance(attacker.getLocation().toVector()), 2);
 				MessageUtils.sendMessage(attacker, "arrow-hit-notify.message",

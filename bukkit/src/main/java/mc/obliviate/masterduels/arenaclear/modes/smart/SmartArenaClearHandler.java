@@ -1,10 +1,10 @@
 package mc.obliviate.masterduels.arenaclear.modes.smart;
 
 import mc.obliviate.masterduels.MasterDuels;
-import mc.obliviate.masterduels.api.arena.IMatch;
 import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.arenaclear.IArenaClearHandler;
 import mc.obliviate.masterduels.data.ConfigurationHandler;
+import mc.obliviate.masterduels.game.Match;
 import org.bukkit.Bukkit;
 
 import java.util.HashMap;
@@ -23,7 +23,7 @@ public class SmartArenaClearHandler implements IArenaClearHandler {
 		Bukkit.getPluginManager().registerEvents(new RollbackListener(plugin, ConfigurationHandler.getConfig().getBoolean("prevent-break-non-placed-blocks", true)), plugin);
 	}
 
-	public void add(IMatch match, MasterDuels plugin) {
+	public void add(Match match, MasterDuels plugin) {
 		arenaClearMap.put(match.getArena().getName(), new SmartArenaClear(plugin, (Arena) match.getArena()));
 	}
 

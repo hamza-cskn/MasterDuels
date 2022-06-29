@@ -1,14 +1,14 @@
 package mc.obliviate.masterduels.game.state;
 
-import mc.obliviate.masterduels.api.arena.MatchStateType;
-import mc.obliviate.masterduels.api.events.DuelMatchMemberLeaveEvent;
-import mc.obliviate.masterduels.api.user.IMember;
-import mc.obliviate.masterduels.api.user.ISpectator;
-import mc.obliviate.masterduels.api.user.ITeam;
+import mc.obliviate.masterduels.api.DuelMatchMemberLeaveEvent;
 import mc.obliviate.masterduels.arena.elements.Positions;
 import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.game.Match;
+import mc.obliviate.masterduels.game.MatchStateType;
+import mc.obliviate.masterduels.game.team.Team;
 import mc.obliviate.masterduels.kit.InventoryStorer;
+import mc.obliviate.masterduels.user.spectator.Spectator;
+import mc.obliviate.masterduels.user.team.Member;
 import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.Utils;
@@ -45,7 +45,7 @@ public class RoundStartingState implements MatchState {
 		//note, this state is prev of round start
 		roundStartTime = System.currentTimeMillis() + LOCK_DURATION.toMillis();
 
-		for (final ITeam team : match.getGameDataStorage().getGameTeamManager().getTeams()) {
+		for (final Team team : match.getGameDataStorage().getGameTeamManager().getTeams()) {
 			lockTeam(team);
 		}
 
@@ -58,7 +58,7 @@ public class RoundStartingState implements MatchState {
 	}
 
 	@Override
-	public void leave(final ISpectator spectator) {
+	public void leave(final Spectator spectator) {
 		match.getGameSpectatorManager().unspectate(spectator);
 		Match.RESET_WHEN_PLAYER_LEFT.reset(spectator.getPlayer());
 		MessageUtils.sendMessage(spectator.getPlayer(), "you-left-from-duel");
@@ -66,12 +66,12 @@ public class RoundStartingState implements MatchState {
 	}
 
 	@Override
-	public void leave(final IMember member) {
+	public void leave(final Member member) {
 		if (!member.getTeam().getMembers().contains(member)) return;
 
 		Bukkit.getPluginManager().callEvent(new DuelMatchMemberLeaveEvent(member));
 		DataHandler.getUsers().remove(member.getPlayer().getUniqueId());
-		member.getTeam().unregisterMember(member);
+		member.getMatch().getGameDataStorage().getGameTeamManager().unregisterMember(member);
 
 		if (member.getPlayer().isOnline()) {
 			if (!USE_PLAYER_INVENTORIES && !InventoryStorer.restore(member.getPlayer())) {
@@ -90,18 +90,18 @@ public class RoundStartingState implements MatchState {
 		}
 	}
 
-	private void lockTeam(final ITeam team) {
+	private void lockTeam(final Team team) {
 		updateLock(team, (int) (LOCK_FREQUENCY * LOCK_DURATION.toSeconds()));
 	}
 
-	private void teleportToLockPosition(final ITeam team) {
+	private void teleportToLockPosition(final Team team) {
 		int i = 1;
 		final Positions positions = match.getArena().getPositions().get("spawn-team-" + team.getTeamId());
 		if (positions == null) {
 			Logger.severe("Player could not teleported to lock position because location set is null.");
 			return;
 		}
-		for (final IMember member : team.getMembers()) {
+		for (final Member member : team.getMembers()) {
 			final Location loc = positions.getLocation(i++);
 			if (loc == null) {
 				Logger.severe("Player could not teleported to lock position because location is null.");
@@ -119,7 +119,7 @@ public class RoundStartingState implements MatchState {
 	 * @param team
 	 * @param updateNo
 	 */
-	public void updateLock(final ITeam team, final int updateNo) {
+	public void updateLock(final Team team, final int updateNo) {
 		if (updateNo <= 0) {
 			runNotifyActionForTeam(team);
 			return;
@@ -136,10 +136,10 @@ public class RoundStartingState implements MatchState {
 		}, 20 / LOCK_FREQUENCY);
 	}
 
-	private void runNotifyActionForTeam(ITeam team) {
+	private void runNotifyActionForTeam(Team team) {
 		NotifyActionStack notifyAction = getNotifyAction(Math.max(roundStartTime - System.currentTimeMillis(), 0));
 		if (notifyAction != null) {
-			for (IMember member : team.getMembers()) {
+			for (Member member : team.getMembers()) {
 				notifyAction.run(member.getPlayer());
 			}
 		}

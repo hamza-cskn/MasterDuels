@@ -1,7 +1,6 @@
 package mc.obliviate.masterduels.commands;
 
 import mc.obliviate.masterduels.MasterDuels;
-import mc.obliviate.masterduels.api.arena.IMatch;
 import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.game.Match;
@@ -138,7 +137,7 @@ public class DuelAdminCMD implements CommandExecutor {
 		gameBuilder.addPlayer(p1);
 		gameBuilder.addPlayer(p2);
 
-		final IMatch game = gameBuilder.build();
+		final Match game = gameBuilder.build();
 		if (game != null) {
 			game.start();
 		} else {

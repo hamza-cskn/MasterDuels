@@ -1,16 +1,15 @@
 package mc.obliviate.masterduels.game.spectator;
 
-import mc.obliviate.masterduels.api.arena.spectator.IMatchSpectatorManager;
-import mc.obliviate.masterduels.api.user.IMember;
-import mc.obliviate.masterduels.api.user.ISpectator;
 import mc.obliviate.masterduels.game.Match;
+import mc.obliviate.masterduels.user.spectator.Spectator;
+import mc.obliviate.masterduels.user.team.Member;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class MatchSpectatorManager implements IMatchSpectatorManager {
+public class MatchSpectatorManager {
 
 	private final SemiSpectatorStorage semiSpectatorStorage;
 	private final PureSpectatorStorage pureSpectatorStorage;
@@ -30,11 +29,11 @@ public class MatchSpectatorManager implements IMatchSpectatorManager {
 		return pureSpectatorStorage;
 	}
 
-	public void spectate(IMember member) {
+	public void spectate(Member member) {
 		semiSpectatorStorage.spectate(member.getPlayer());
 	}
 
-	public void spectate(ISpectator spectator) {
+	public void spectate(Spectator spectator) {
 		pureSpectatorStorage.spectate(spectator.getPlayer());
 	}
 
@@ -46,11 +45,11 @@ public class MatchSpectatorManager implements IMatchSpectatorManager {
 		pureSpectatorStorage.spectate(player);
 	}
 
-	public void unspectate(IMember member) {
+	public void unspectate(Member member) {
 		semiSpectatorStorage.unspectate(member.getPlayer());
 	}
 
-	public void unspectate(ISpectator spectator) {
+	public void unspectate(Spectator spectator) {
 		pureSpectatorStorage.unspectate(spectator.getPlayer());
 	}
 
@@ -62,8 +61,8 @@ public class MatchSpectatorManager implements IMatchSpectatorManager {
 		pureSpectatorStorage.unspectate(player);
 	}
 
-	public List<ISpectator> getAllSpectators() {
-		final List<ISpectator> spectators = new ArrayList<>(semiSpectatorStorage.getSpectatorList());
+	public List<Spectator> getAllSpectators() {
+		final List<Spectator> spectators = new ArrayList<>(semiSpectatorStorage.getSpectatorList());
 		spectators.addAll(pureSpectatorStorage.getSpectatorList());
 		return spectators;
 	}

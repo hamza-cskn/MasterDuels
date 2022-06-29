@@ -1,9 +1,9 @@
 package mc.obliviate.masterduels.listeners;
 
 import mc.obliviate.masterduels.MasterDuels;
-import mc.obliviate.masterduels.api.user.IMember;
 import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.user.DuelUser;
+import mc.obliviate.masterduels.user.team.Member;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -19,7 +19,7 @@ public class PlayerConnectionListener implements Listener {
 
 	@EventHandler
 	public void onDisconnect(PlayerQuitEvent event) {
-		final IMember member = DataHandler.getMember(event.getPlayer().getUniqueId());
+		final Member member = DataHandler.getMember(event.getPlayer().getUniqueId());
 		if (member != null) {
 			member.getTeam().getMatch().getMatchState().leave(member);
 		}

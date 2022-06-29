@@ -2,14 +2,10 @@ package mc.obliviate.masterduels.game;
 
 import com.google.common.base.Preconditions;
 import mc.obliviate.masterduels.MasterDuels;
-import mc.obliviate.masterduels.api.arena.GameRule;
-import mc.obliviate.masterduels.api.arena.IMatch;
-import mc.obliviate.masterduels.api.events.arena.DuelMatchStateChangeEvent;
-import mc.obliviate.masterduels.api.kit.IKit;
-import mc.obliviate.masterduels.api.user.IMember;
-import mc.obliviate.masterduels.api.user.ITeam;
+import mc.obliviate.masterduels.api.arena.DuelMatchStateChangeEvent;
 import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.data.ConfigurationHandler;
+import mc.obliviate.masterduels.game.gamerule.GameRule;
 import mc.obliviate.masterduels.game.round.MatchRoundData;
 import mc.obliviate.masterduels.game.spectator.MatchSpectatorManager;
 import mc.obliviate.masterduels.game.state.IdleState;
@@ -17,7 +13,9 @@ import mc.obliviate.masterduels.game.state.MatchEndingState;
 import mc.obliviate.masterduels.game.state.MatchState;
 import mc.obliviate.masterduels.game.state.MatchUninstallingState;
 import mc.obliviate.masterduels.game.task.MatchTaskManager;
+import mc.obliviate.masterduels.game.team.Team;
 import mc.obliviate.masterduels.kit.Kit;
+import mc.obliviate.masterduels.user.team.Member;
 import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.Utils;
@@ -35,7 +33,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public class Match implements IMatch {
+public class Match {
 
 	public static final PlayerReset PLAYER_RESET = new PlayerReset().excludeExp().excludeLevel().excludeInventory().excludeTitle();
 	public static final PlayerReset RESET_WHEN_PLAYER_LEFT = new PlayerReset().excludeExp().excludeLevel().excludeInventory();
@@ -58,7 +56,7 @@ public class Match implements IMatch {
 		gameState.next();
 	}
 
-	public IMember getMember(UUID playerUniqueId) {
+	public Member getMember(UUID playerUniqueId) {
 		return matchDataStorage.getGameTeamManager().getMember(playerUniqueId);
 	}
 
@@ -69,7 +67,7 @@ public class Match implements IMatch {
 	 * @param kit    kit of the player
 	 * @param teamNo team no of player
 	 */
-	public void addPlayer(Player player, IKit kit, int teamNo) {
+	public void addPlayer(Player player, Kit kit, int teamNo) {
 		matchDataStorage.getGameTeamManager().registerMember(player, kit, teamNo);
 	}
 
@@ -81,7 +79,7 @@ public class Match implements IMatch {
 	 * @param playerUniqueId
 	 */
 	public void removePlayer(UUID playerUniqueId) {
-		final IMember member = getMember(playerUniqueId);
+		final Member member = getMember(playerUniqueId);
 		if (member == null) return;
 		matchDataStorage.getGameTeamManager().unregisterMember(member);
 	}
@@ -111,7 +109,7 @@ public class Match implements IMatch {
 		return gameState;
 	}
 
-	public List<IMember> getAllMembers() {
+	public List<Member> getAllMembers() {
 		return matchDataStorage.getGameTeamManager().getAllMembers();
 	}
 
@@ -181,14 +179,14 @@ public class Match implements IMatch {
 	}
 
 	public void resetPlayers() {
-		for (final IMember member : matchDataStorage.getGameTeamManager().getAllMembers()) {
+		for (final Member member : matchDataStorage.getGameTeamManager().getAllMembers()) {
 			PLAYER_RESET.reset(member.getPlayer());
 			Kit.load((Kit) member.getKit(), member.getPlayer());
 		}
 	}
 
 	public void broadcastInGame(final String node, final PlaceholderUtil placeholderUtil) {
-		for (final IMember member : getAllMembers()) {
+		for (final Member member : getAllMembers()) {
 			MessageUtils.sendMessage(member.getPlayer(), node, placeholderUtil);
 		}
 	}
@@ -219,8 +217,8 @@ public class Match implements IMatch {
 		MatchRoundData roundData = matchDataStorage.getGameRoundData();
 		if (roundData.getTeamWins().isEmpty()) return;
 
-		final ITeam winnerTeam = roundData.getWinnerTeam();
-		final List<ITeam> loserTeams = matchDataStorage.getGameTeamManager().getTeams().stream().filter(team -> !team.equals(winnerTeam)).collect(Collectors.toList());
+		final Team winnerTeam = roundData.getWinnerTeam();
+		final List<Team> loserTeams = matchDataStorage.getGameTeamManager().getTeams().stream().filter(team -> !team.equals(winnerTeam)).collect(Collectors.toList());
 
 
 		if (roundData.getWinnerTeam().getSize() == 1) {
@@ -237,5 +235,6 @@ public class Match implements IMatch {
 			}
 		}
 	}
+
 
 }

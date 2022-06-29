@@ -1,11 +1,11 @@
 package mc.obliviate.masterduels.game.state;
 
-import mc.obliviate.masterduels.api.arena.MatchStateType;
-import mc.obliviate.masterduels.api.events.DuelMatchMemberLeaveEvent;
-import mc.obliviate.masterduels.api.events.arena.DuelMatchPreStartEvent;
-import mc.obliviate.masterduels.api.kit.IKit;
-import mc.obliviate.masterduels.api.user.IMember;
+import mc.obliviate.masterduels.api.DuelMatchMemberLeaveEvent;
+import mc.obliviate.masterduels.api.arena.DuelMatchPreStartEvent;
 import mc.obliviate.masterduels.game.Match;
+import mc.obliviate.masterduels.game.MatchStateType;
+import mc.obliviate.masterduels.kit.Kit;
+import mc.obliviate.masterduels.user.team.Member;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -24,13 +24,13 @@ public class IdleState implements MatchState {
 	}
 
 	@Override
-	public void leave(IMember member) {
+	public void leave(Member member) {
 		Bukkit.getPluginManager().callEvent(new DuelMatchMemberLeaveEvent(member));
 		match.removePlayer(member.getPlayer().getUniqueId());
 	}
 
 	@Override
-	public void join(Player player, IKit kit, int teamNo) {
+	public void join(Player player, Kit kit, int teamNo) {
 		match.addPlayer(player, kit, teamNo);
 	}
 

@@ -1,7 +1,6 @@
 package mc.obliviate.masterduels.gui.creator;
 
 import mc.obliviate.inventory.Icon;
-import mc.obliviate.masterduels.api.invite.InviteState;
 import mc.obliviate.masterduels.game.MatchCreator;
 import mc.obliviate.masterduels.gui.ConfigurableGui;
 import mc.obliviate.masterduels.invite.Invite;
@@ -42,7 +41,7 @@ public class DuelInvitesGUI extends ConfigurableGui {
 			int i = 9;
 			for (Invite invite : matchCreator.getInvites().values()) {
 				addItem(i++, new Icon(XMaterial.MAP.parseItem()).setName(Bukkit.getPlayer(invite.getRecipientUniqueId()).getName()).onClick(event2 -> {
-					invite.response(InviteState.ACCEPTED);
+					invite.response(Invite.InviteState.ACCEPTED);
 				}));
 			}
 		});

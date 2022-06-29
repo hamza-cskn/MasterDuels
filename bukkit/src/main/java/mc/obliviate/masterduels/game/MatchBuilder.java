@@ -1,13 +1,13 @@
 package mc.obliviate.masterduels.game;
 
-import mc.obliviate.masterduels.api.arena.GameRule;
-import mc.obliviate.masterduels.api.arena.ITeamBuilder;
-import mc.obliviate.masterduels.api.kit.IKit;
-import mc.obliviate.masterduels.api.user.IUser;
 import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.data.DataHandler;
+import mc.obliviate.masterduels.game.gamerule.GameRule;
+import mc.obliviate.masterduels.game.team.TeamBuilder;
 import mc.obliviate.masterduels.game.team.TeamBuilderManager;
+import mc.obliviate.masterduels.kit.Kit;
 import mc.obliviate.masterduels.user.DuelUser;
+import mc.obliviate.masterduels.user.IUser;
 import mc.obliviate.masterduels.user.team.Member;
 import org.bukkit.entity.Player;
 
@@ -59,12 +59,12 @@ public class MatchBuilder {
 		return game;
 	}
 
-	public Map<Integer, ITeamBuilder> getTeamBuilders() {
+	public Map<Integer, TeamBuilder> getTeamBuilders() {
 		return teamBuilderManager.getTeams();
 	}
 
-	public ITeamBuilder getTeamBuilder(Player player) {
-		for (final ITeamBuilder teamBuilder : getTeamBuilders().values()) {
+	public TeamBuilder getTeamBuilder(Player player) {
+		for (final TeamBuilder teamBuilder : getTeamBuilders().values()) {
 			if (teamBuilder.getMembers().contains(player)) return teamBuilder;
 		}
 		return null;
@@ -103,11 +103,11 @@ public class MatchBuilder {
 
 	}
 
-	public IKit getKit() {
+	public Kit getKit() {
 		return matchDataStorage.getKit();
 	}
 
-	public MatchBuilder setKit(IKit kit) {
+	public MatchBuilder setKit(Kit kit) {
 		matchDataStorage.setKit(kit);
 		return this;
 	}
@@ -176,7 +176,7 @@ public class MatchBuilder {
 			}
 		}
 
-		final ITeamBuilder team = getAvailableTeam();
+		final TeamBuilder team = getAvailableTeam();
 		if (team == null) return false;
 		duelUser.setMatchBuilder(this);
 		players.add(player);
@@ -185,8 +185,8 @@ public class MatchBuilder {
 		return true;
 	}
 
-	public ITeamBuilder getAvailableTeam() {
-		for (ITeamBuilder teamBuilder : teamBuilderManager.getTeams().values()) {
+	public TeamBuilder getAvailableTeam() {
+		for (TeamBuilder teamBuilder : teamBuilderManager.getTeams().values()) {
 			if (teamBuilder.getMembers().size() < teamBuilder.getSize()) return teamBuilder;
 		}
 		return null;

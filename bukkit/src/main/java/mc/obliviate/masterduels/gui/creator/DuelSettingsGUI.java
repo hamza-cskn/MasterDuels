@@ -1,8 +1,8 @@
 package mc.obliviate.masterduels.gui.creator;
 
 import mc.obliviate.inventory.Icon;
-import mc.obliviate.masterduels.api.arena.GameRule;
 import mc.obliviate.masterduels.game.MatchCreator;
+import mc.obliviate.masterduels.game.gamerule.GameRule;
 import mc.obliviate.masterduels.gui.ConfigurableGui;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.xmaterial.XMaterial;

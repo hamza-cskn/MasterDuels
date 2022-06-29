@@ -1,7 +1,7 @@
 package mc.obliviate.masterduels.game.state;
 
-import mc.obliviate.masterduels.api.arena.MatchStateType;
 import mc.obliviate.masterduels.game.Match;
+import mc.obliviate.masterduels.game.MatchStateType;
 
 public class RoundEndingState implements MatchState {
 

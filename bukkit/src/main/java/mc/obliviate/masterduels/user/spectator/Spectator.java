@@ -1,7 +1,7 @@
 package mc.obliviate.masterduels.user.spectator;
 
-import mc.obliviate.masterduels.api.user.ISpectator;
 import mc.obliviate.masterduels.game.Match;
+import mc.obliviate.masterduels.user.IUser;
 import org.bukkit.entity.Player;
 
 /**
@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
  * Spectator players from out of game,
  * not member.
  */
-public class Spectator implements ISpectator {
+public class Spectator implements IUser {
 
 	private final Match game;
 	private final Player player;
@@ -22,7 +22,6 @@ public class Spectator implements ISpectator {
 		this.player = player;
 	}
 
-	@Override
 	public Match getGame() {
 		return game;
 	}

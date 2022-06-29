@@ -1,8 +1,6 @@
 package mc.obliviate.masterduels.game.team;
 
-import mc.obliviate.masterduels.api.arena.IMatch;
-import mc.obliviate.masterduels.api.user.IMember;
-import mc.obliviate.masterduels.api.user.ITeam;
+import mc.obliviate.masterduels.game.Match;
 import mc.obliviate.masterduels.user.team.Member;
 import org.bukkit.entity.Player;
 
@@ -10,14 +8,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class Team implements ITeam {
+public class Team {
 
 	private final int teamId;
 	private final int size;
-	private final List<IMember> members = new ArrayList<>();
-	private final IMatch match;
+	private final List<Member> members = new ArrayList<>();
+	private final Match match;
 
-	protected Team(final int teamId, final int size, final List<Player> members, final IMatch match) {
+	protected Team(final int teamId, final int size, final List<Player> members, final Match match) {
 		this.teamId = teamId;
 		this.size = size;
 		this.match = match;
@@ -26,32 +24,26 @@ public class Team implements ITeam {
 		}
 	}
 
-	@Override
-	public IMatch getMatch() {
+	public Match getMatch() {
 		return match;
 	}
 
-	@Override
 	public int getSize() {
 		return size;
 	}
 
-	@Override
-	public List<IMember> getMembers() {
+	public List<Member> getMembers() {
 		return Collections.unmodifiableList(members);
 	}
 
-	@Override
-	public void unregisterMember(IMember member) {
+	public void unregisterMember(Member member) {
 		members.remove(member);
 	}
 
-	@Override
-	public void registerMember(IMember member) {
+	public void registerMember(Member member) {
 		members.remove(member);
 	}
 
-	@Override
 	public int getTeamId() {
 		return teamId;
 	}

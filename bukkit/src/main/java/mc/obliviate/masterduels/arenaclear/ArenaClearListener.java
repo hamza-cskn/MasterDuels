@@ -1,8 +1,8 @@
 package mc.obliviate.masterduels.arenaclear;
 
 import mc.obliviate.masterduels.MasterDuels;
-import mc.obliviate.masterduels.api.events.arena.DuelMatchStartEvent;
-import mc.obliviate.masterduels.api.events.arena.DuelMatchUninstallEvent;
+import mc.obliviate.masterduels.api.arena.DuelMatchStartEvent;
+import mc.obliviate.masterduels.api.arena.DuelMatchUninstallEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 

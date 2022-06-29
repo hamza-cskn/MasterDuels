@@ -1,20 +1,18 @@
 package mc.obliviate.masterduels.game.round;
 
-import mc.obliviate.masterduels.api.arena.IMatchRoundData;
-import mc.obliviate.masterduels.api.user.ITeam;
+import mc.obliviate.masterduels.game.team.Team;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class MatchRoundData implements IMatchRoundData {
+public class MatchRoundData {
 
-	private final Map<ITeam, Integer> teamWins = new HashMap<>();
-	private ITeam winnerTeam;
+	private final Map<Team, Integer> teamWins = new HashMap<>();
+	private Team winnerTeam;
 	private int round = 0;
 	private int totalRounds = 1;
 
-	@Override
-	public void addWin(final ITeam team) {
+	public void addWin(final Team team) {
 		final int wins = teamWins.getOrDefault(team, 0);
 		teamWins.put(team, wins + 1);
 	}
@@ -52,19 +50,19 @@ public class MatchRoundData implements IMatchRoundData {
 		this.totalRounds = totalRounds;
 	}
 
-	public int getWins(final ITeam team) {
+	public int getWins(final Team team) {
 		return teamWins.getOrDefault(team, 0);
 	}
 
-	public Map<ITeam, Integer> getTeamWins() {
+	public Map<Team, Integer> getTeamWins() {
 		return teamWins;
 	}
 
-	public ITeam getWinnerTeam() {
+	public Team getWinnerTeam() {
 		return winnerTeam;
 	}
 
-	public void setWinnerTeam(ITeam winnerTeam) {
+	public void setWinnerTeam(Team winnerTeam) {
 		this.winnerTeam = winnerTeam;
 	}
 }

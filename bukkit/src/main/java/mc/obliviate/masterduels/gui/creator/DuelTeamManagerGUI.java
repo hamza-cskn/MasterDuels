@@ -1,8 +1,8 @@
 package mc.obliviate.masterduels.gui.creator;
 
 import mc.obliviate.inventory.Icon;
-import mc.obliviate.masterduels.api.arena.ITeamBuilder;
 import mc.obliviate.masterduels.game.MatchCreator;
+import mc.obliviate.masterduels.game.team.TeamBuilder;
 import mc.obliviate.masterduels.gui.ConfigurableGui;
 import mc.obliviate.masterduels.utils.Utils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
@@ -54,7 +54,7 @@ public class DuelTeamManagerGUI extends ConfigurableGui {
 			for (int member = 0; member < matchCreator.getBuilder().getTeamSize(); member++) {
 				final int slot = ((team + 1) * 9 + 1 + member);
 
-				final ITeamBuilder teamBuilder = matchCreator.getBuilder().getTeamBuilders().get(team + 1);
+				final TeamBuilder teamBuilder = matchCreator.getBuilder().getTeamBuilders().get(team + 1);
 				if (teamBuilder.getMembers().size() <= member) {
 					addItem(slot, getNullMemberSlotIcon(teamBuilder));
 					continue;
@@ -95,8 +95,8 @@ public class DuelTeamManagerGUI extends ConfigurableGui {
 							final Player target = getOwner(e.getCurrentItem());
 
 							//and their teams
-							final ITeamBuilder requesterTeamBuilder = matchCreator.getBuilder().getTeamBuilder(requester);
-							final ITeamBuilder targetTeamBuilder = matchCreator.getBuilder().getTeamBuilder(target);
+							final TeamBuilder requesterTeamBuilder = matchCreator.getBuilder().getTeamBuilder(requester);
+							final TeamBuilder targetTeamBuilder = matchCreator.getBuilder().getTeamBuilder(target);
 
 							//swap!
 							targetTeamBuilder.remove(target);
@@ -128,7 +128,7 @@ public class DuelTeamManagerGUI extends ConfigurableGui {
 		return true;
 	}
 
-	private Icon getNullMemberSlotIcon(ITeamBuilder teamBuilder) {
+	private Icon getNullMemberSlotIcon(TeamBuilder teamBuilder) {
 		return new Icon(guiConfig.getEmptyIcon()).onClick(e -> {
 			if (!isValidPlayerHead(e.getCursor())) {
 				return;
@@ -139,7 +139,7 @@ public class DuelTeamManagerGUI extends ConfigurableGui {
 			if (target == null) {
 				return;
 			}
-			for (final ITeamBuilder builder : matchCreator.getBuilder().getTeamBuilders().values()) {
+			for (final TeamBuilder builder : matchCreator.getBuilder().getTeamBuilders().values()) {
 				builder.remove(target);
 			}
 			teamBuilder.add(target);

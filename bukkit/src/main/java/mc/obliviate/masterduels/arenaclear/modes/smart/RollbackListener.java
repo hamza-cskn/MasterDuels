@@ -1,10 +1,9 @@
 package mc.obliviate.masterduels.arenaclear.modes.smart;
 
 import mc.obliviate.masterduels.MasterDuels;
-import mc.obliviate.masterduels.api.arena.IArena;
-import mc.obliviate.masterduels.api.user.IMember;
 import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.data.DataHandler;
+import mc.obliviate.masterduels.user.team.Member;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -30,9 +29,9 @@ public class RollbackListener implements Listener {
 
 	@EventHandler
 	public void onBlockPlace(BlockPlaceEvent e) {
-		final IMember member = DataHandler.getMember(e.getPlayer().getUniqueId());
+		final Member member = DataHandler.getMember(e.getPlayer().getUniqueId());
 		if (member == null) return;
-		final IArena arena = member.getMatch().getArena();
+		final Arena arena = member.getMatch().getArena();
 		final Block block = e.getBlockPlaced();
 		final SmartArenaClear arenaClear = (SmartArenaClear) plugin.getArenaClearHandler().getArenaClear(arena.getName());
 		arenaClear.addBlock(block.getX(), block.getY(), block.getZ(), block.getWorld().getUID());
@@ -90,7 +89,7 @@ public class RollbackListener implements Listener {
 	@EventHandler
 	public void onBlockBreak(BlockBreakEvent e) {
 		if (preventNonPlacedBlocks) {
-			final IMember member = DataHandler.getMember(e.getPlayer().getUniqueId());
+			final Member member = DataHandler.getMember(e.getPlayer().getUniqueId());
 			if (member == null) return;
 			if (e.getBlock().getMetadata("placedByPlayer").isEmpty()) {
 				e.setCancelled(true);
@@ -101,9 +100,9 @@ public class RollbackListener implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onBucketEmpty(PlayerBucketEmptyEvent e) {
-		final IMember member = DataHandler.getMember(e.getPlayer().getUniqueId());
+		final Member member = DataHandler.getMember(e.getPlayer().getUniqueId());
 		if (member == null) return;
-		final IArena arena = member.getMatch().getArena();
+		final Arena arena = member.getMatch().getArena();
 		final Block block = e.getBlockClicked();
 		final BlockFace face = e.getBlockFace();
 		final SmartArenaClear arenaClear = (SmartArenaClear) plugin.getArenaClearHandler().getArenaClear(arena.getName());

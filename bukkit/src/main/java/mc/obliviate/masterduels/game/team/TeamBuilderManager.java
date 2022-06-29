@@ -1,6 +1,5 @@
 package mc.obliviate.masterduels.game.team;
 
-import mc.obliviate.masterduels.api.arena.ITeamBuilder;
 import mc.obliviate.masterduels.game.Match;
 import mc.obliviate.masterduels.game.MatchBuilder;
 import org.bukkit.entity.Player;
@@ -13,7 +12,7 @@ import java.util.UUID;
 @Deprecated
 public class TeamBuilderManager {
 
-	private final Map<Integer, ITeamBuilder> teams = new HashMap<>();
+	private final Map<Integer, TeamBuilder> teams = new HashMap<>();
 	private final MatchBuilder builder;
 
 	public TeamBuilderManager(final MatchBuilder builder) {
@@ -21,17 +20,17 @@ public class TeamBuilderManager {
 	}
 
 	public void registerTeamsIntoGame(final Match game) {
-		for (final ITeamBuilder teamBuilder : teams.values()) {
+		for (final TeamBuilder teamBuilder : teams.values()) {
 			registerTeamIntoGame(teamBuilder, game);
 		}
 	}
 
-	private void registerTeamIntoGame(ITeamBuilder builder, Match game) {
-		game.getGameDataStorage().getGameTeamManager().registerTeam(builder.build(game));
+	private void registerTeamIntoGame(TeamBuilder builder, Match match) {
+		match.getGameDataStorage().getGameTeamManager().registerTeam(builder.build(match));
 	}
 
-	public ITeamBuilder getTeam(UUID playerUniqueId) {
-		for (ITeamBuilder team : teams.values()) {
+	public TeamBuilder getTeam(UUID playerUniqueId) {
+		for (TeamBuilder team : teams.values()) {
 			for (Player member : team.getMembers()) {
 				if (member.getUniqueId().equals(playerUniqueId)) {
 					return team;
@@ -45,7 +44,7 @@ public class TeamBuilderManager {
 		return builder;
 	}
 
-	public Map<Integer, ITeamBuilder> getTeams() {
+	public Map<Integer, TeamBuilder> getTeams() {
 		return teams;
 	}
 
@@ -65,17 +64,17 @@ public class TeamBuilderManager {
 		builder.setTeamSize(teamSize);
 	}
 
-	public ITeamBuilder registerNewTeam() {
+	public TeamBuilder registerNewTeam() {
 		return registerNewTeam(null);
 	}
 
-	public ITeamBuilder registerNewTeam(final List<Player> players) {
+	public TeamBuilder registerNewTeam(final List<Player> players) {
 		if (teams.size() > getTeamAmount()) {
 			throw new IllegalStateException("Team amount limit is " + getTeamAmount() + ". All teams has created already. Team amount is " + teams.size());
 		}
 
 		final int id = teams.size() + 1;
-		final ITeamBuilder teamBuilder = new TeamBuilder(this, players, id);
+		final TeamBuilder teamBuilder = new TeamBuilder(this, players, id);
 		teams.put(id, teamBuilder);
 		return teamBuilder;
 	}

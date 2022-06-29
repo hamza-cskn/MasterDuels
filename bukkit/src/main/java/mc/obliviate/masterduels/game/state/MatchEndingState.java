@@ -1,14 +1,14 @@
 package mc.obliviate.masterduels.game.state;
 
-import mc.obliviate.masterduels.api.arena.MatchStateType;
-import mc.obliviate.masterduels.api.events.DuelMatchMemberLeaveEvent;
-import mc.obliviate.masterduels.api.events.arena.DuelMatchEndEvent;
-import mc.obliviate.masterduels.api.user.IMember;
-import mc.obliviate.masterduels.api.user.ITeam;
+import mc.obliviate.masterduels.api.DuelMatchMemberLeaveEvent;
+import mc.obliviate.masterduels.api.arena.DuelMatchEndEvent;
 import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.game.Match;
 import mc.obliviate.masterduels.game.MatchDataStorage;
+import mc.obliviate.masterduels.game.MatchStateType;
+import mc.obliviate.masterduels.game.team.Team;
 import mc.obliviate.masterduels.kit.InventoryStorer;
+import mc.obliviate.masterduels.user.team.Member;
 import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.Utils;
@@ -44,12 +44,12 @@ public class MatchEndingState implements MatchState {
 	}
 
 	@Override
-	public void leave(IMember member) {
+	public void leave(Member member) {
 		if (!member.getTeam().getMembers().contains(member)) return;
 
 		Bukkit.getPluginManager().callEvent(new DuelMatchMemberLeaveEvent(member));
 		DataHandler.getUsers().remove(member.getPlayer().getUniqueId());
-		member.getTeam().unregisterMember(member);
+		member.getMatch().getGameDataStorage().getGameTeamManager().unregisterMember(member);
 
 		if (!USE_PLAYER_INVENTORIES && !InventoryStorer.restore(member.getPlayer())) {
 			Logger.severe("inventory could not restored: " + member.getPlayer());
@@ -72,9 +72,9 @@ public class MatchEndingState implements MatchState {
 
 	public void dropItemsOfLosers(Location loc) {
 		if (!USE_PLAYER_INVENTORIES) return;
-		for (final ITeam team : match.getGameDataStorage().getGameTeamManager().getTeams()) {
+		for (final Team team : match.getGameDataStorage().getGameTeamManager().getTeams()) {
 			if (match.getGameDataStorage().getGameTeamManager().checkTeamEliminated(team)) {
-				for (final IMember member : team.getMembers()) {
+				for (final Member member : team.getMembers()) {
 					//fixme offline players inventory is not able to get.
 					match.dropItems(member.getPlayer(), loc);
 				}

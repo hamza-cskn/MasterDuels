@@ -2,14 +2,12 @@ package mc.obliviate.masterduels.invite;
 
 import com.google.common.base.Preconditions;
 import mc.obliviate.masterduels.MasterDuels;
-import mc.obliviate.masterduels.api.invite.IInvite;
-import mc.obliviate.masterduels.api.invite.InviteState;
 import org.bukkit.Bukkit;
 
 import java.util.UUID;
 import java.util.function.Consumer;
 
-public class Invite implements IInvite {
+public class Invite {
 
 	private final UUID sender;
 	private final UUID receiver;
@@ -165,6 +163,19 @@ public class Invite implements IInvite {
 	public enum InviteBuildState {
 		SUCCESS,
 		ERROR_ALREADY_INVITED,
+	}
+
+	/**
+	 * Purpose of this class is,
+	 * defining current state of invite.
+	 */
+	public enum InviteState {
+
+		PENDING,
+		ACCEPTED,
+		REJECTED,
+		EXPIRED,
+		CANCELLED
 	}
 
 }

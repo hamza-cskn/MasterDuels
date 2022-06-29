@@ -1,10 +1,8 @@
 package mc.obliviate.masterduels.game;
 
-import mc.obliviate.masterduels.MasterDuels;
-import mc.obliviate.masterduels.api.arena.GameRule;
-import mc.obliviate.masterduels.api.invite.InviteState;
 import mc.obliviate.masterduels.data.ConfigurationHandler;
 import mc.obliviate.masterduels.data.DataHandler;
+import mc.obliviate.masterduels.game.gamerule.GameRule;
 import mc.obliviate.masterduels.invite.Invite;
 import mc.obliviate.masterduels.invite.InviteUtils;
 import mc.obliviate.masterduels.kit.Kit;
@@ -40,12 +38,10 @@ public class MatchCreator {
 	private final Map<UUID, Invite> invites = new HashMap<>();
 	private final UUID ownerPlayer;
 	private final MatchBuilder builder;
-	private final MasterDuels plugin;
 
-	public MatchCreator(MasterDuels plugin, UUID ownerPlayer) {
+	public MatchCreator(UUID ownerPlayer) {
 		this.ownerPlayer = ownerPlayer;
 		this.builder = new MatchBuilder();
-		this.plugin = plugin;
 
 		//check: player uuid is not null
 		if (ownerPlayer == null) destroy();
@@ -137,7 +133,7 @@ public class MatchCreator {
 	public void destroy() {
 		GAME_CREATOR_MAP.remove(ownerPlayer);
 		for (final Invite invite : invites.values()) {
-			invite.response(InviteState.CANCELLED);
+			invite.response(Invite.InviteState.CANCELLED);
 		}
 	}
 

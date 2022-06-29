@@ -1,8 +1,7 @@
 package mc.obliviate.masterduels.queue;
 
-import mc.obliviate.masterduels.api.events.queue.DuelQueueJoinEvent;
-import mc.obliviate.masterduels.api.events.queue.DuelQueueLeaveEvent;
-import mc.obliviate.masterduels.api.queue.IDuelQueue;
+import mc.obliviate.masterduels.api.queue.DuelQueueJoinEvent;
+import mc.obliviate.masterduels.api.queue.DuelQueueLeaveEvent;
 import mc.obliviate.masterduels.game.Match;
 import mc.obliviate.masterduels.game.MatchBuilder;
 import mc.obliviate.masterduels.utils.Logger;
@@ -13,7 +12,7 @@ import org.bukkit.entity.Player;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DuelQueue implements IDuelQueue {
+public class DuelQueue {
 
 	private static final Map<DuelQueueTemplate, DuelQueue> availableQueues = new HashMap<>();
 	private boolean locked = false;

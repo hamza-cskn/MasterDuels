@@ -1,42 +1,38 @@
 package mc.obliviate.masterduels.user.team;
 
-import mc.obliviate.masterduels.api.arena.IMatch;
-import mc.obliviate.masterduels.api.kit.IKit;
-import mc.obliviate.masterduels.api.user.IMember;
-import mc.obliviate.masterduels.api.user.ITeam;
 import mc.obliviate.masterduels.data.DataHandler;
+import mc.obliviate.masterduels.game.Match;
+import mc.obliviate.masterduels.game.team.Team;
+import mc.obliviate.masterduels.kit.Kit;
+import mc.obliviate.masterduels.user.IUser;
 import org.bukkit.entity.Player;
 
-public class Member implements IMember {
+public class Member implements IUser {
 
 	private final Player player;
-	private final ITeam team;
-	private final IKit kit;
+	private final Team team;
+	private final Kit kit;
 
-	public Member(final Player player, final ITeam team, IKit kit) {
+	public Member(final Player player, final Team team, Kit kit) {
 		this.team = team;
 		this.player = player;
 		this.kit = kit;
 		DataHandler.getUsers().put(player.getUniqueId(), this);
 	}
 
-	@Override
 	public Player getPlayer() {
 		return player;
 	}
 
-	@Override
-	public ITeam getTeam() {
+	public Team getTeam() {
 		return team;
 	}
 
-	@Override
-	public IMatch getMatch() {
+	public Match getMatch() {
 		return team.getMatch();
 	}
 
-	@Override
-	public IKit getKit() {
+	public Kit getKit() {
 		return kit;
 	}
 

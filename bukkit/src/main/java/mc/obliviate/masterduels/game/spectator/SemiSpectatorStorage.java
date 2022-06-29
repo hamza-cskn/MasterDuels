@@ -1,10 +1,8 @@
 package mc.obliviate.masterduels.game.spectator;
 
-import mc.obliviate.masterduels.api.arena.spectator.ISpectatorStorage;
-import mc.obliviate.masterduels.api.user.IMember;
-import mc.obliviate.masterduels.api.user.ISpectator;
 import mc.obliviate.masterduels.game.Match;
 import mc.obliviate.masterduels.user.spectator.Spectator;
+import mc.obliviate.masterduels.user.team.Member;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.playerreset.PlayerReset;
 import org.bukkit.Bukkit;
@@ -13,11 +11,11 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SemiSpectatorStorage implements ISpectatorStorage {
+public class SemiSpectatorStorage implements SpectatorStorage {
 
 	protected static final PlayerReset playerReset = new PlayerReset().excludeExp().excludeLevel().excludeInventory().excludeTitle();
 	private final MatchSpectatorManager gsm;
-	private final List<ISpectator> spectators = new ArrayList<>();
+	private final List<Spectator> spectators = new ArrayList<>();
 	private final Match game;
 
 	public SemiSpectatorStorage(MatchSpectatorManager gsm, Match game) {
@@ -25,8 +23,8 @@ public class SemiSpectatorStorage implements ISpectatorStorage {
 		this.game = game;
 	}
 
-	private ISpectator findSpectator(Player player) {
-		for (final ISpectator spectator : spectators) {
+	private Spectator findSpectator(Player player) {
+		for (final Spectator spectator : spectators) {
 			if (spectator.getPlayer().equals(player)) {
 				return spectator;
 			}
@@ -35,21 +33,21 @@ public class SemiSpectatorStorage implements ISpectatorStorage {
 	}
 
 	@Override
-	public void unspectate(ISpectator spectator) {
+	public void unspectate(Spectator spectator) {
 		if (!spectators.remove(spectator)) return;
 
 		//Bukkit.getPluginManager().callEvent(new DuelGameSpectatorLeaveEvent(spectator));
 		Bukkit.broadcastMessage("omni spectator unspectate()");
 		playerReset.reset(spectator.getPlayer());
 
-		for (final IMember member : game.getAllMembers()) {
+		for (final Member member : game.getAllMembers()) {
 			member.getPlayer().showPlayer(spectator.getPlayer());
 		}
 	}
 
 	@Override
 	public void unspectate(Player player) {
-		final ISpectator spectator = findSpectator(player);
+		final Spectator spectator = findSpectator(player);
 		if (spectator == null) return;
 		unspectate(spectator);
 
@@ -57,7 +55,7 @@ public class SemiSpectatorStorage implements ISpectatorStorage {
 
 	@Override
 	public void spectate(Player player) {
-		final ISpectator spectator = findSpectator(player);
+		final Spectator spectator = findSpectator(player);
 		if (spectator != null) return;
 
 		spectators.add(new Spectator(null, player));
@@ -71,11 +69,11 @@ public class SemiSpectatorStorage implements ISpectatorStorage {
 
 		Bukkit.broadcastMessage("omni spectator spectate()");
 
-		for (final IMember member : game.getAllMembers()) {
+		for (final Member member : game.getAllMembers()) {
 			member.getPlayer().hidePlayer(player);
 		}
 
-		for (final ISpectator spec : gsm.getAllSpectators()) {
+		for (final Spectator spec : gsm.getAllSpectators()) {
 			spec.getPlayer().showPlayer(player);
 			player.showPlayer(spec.getPlayer());
 		}
@@ -94,7 +92,7 @@ public class SemiSpectatorStorage implements ISpectatorStorage {
 	}
 
 	@Override
-	public List<ISpectator> getSpectatorList() {
+	public List<Spectator> getSpectatorList() {
 		return spectators;
 	}
 }

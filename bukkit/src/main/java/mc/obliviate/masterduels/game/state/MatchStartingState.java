@@ -1,10 +1,10 @@
 package mc.obliviate.masterduels.game.state;
 
-import mc.obliviate.masterduels.api.arena.MatchStateType;
-import mc.obliviate.masterduels.api.events.DuelMatchMemberLeaveEvent;
-import mc.obliviate.masterduels.api.events.arena.DuelMatchStartEvent;
-import mc.obliviate.masterduels.api.user.IMember;
+import mc.obliviate.masterduels.api.DuelMatchMemberLeaveEvent;
+import mc.obliviate.masterduels.api.arena.DuelMatchStartEvent;
 import mc.obliviate.masterduels.game.Match;
+import mc.obliviate.masterduels.game.MatchStateType;
+import mc.obliviate.masterduels.user.team.Member;
 import mc.obliviate.masterduels.utils.Logger;
 import org.bukkit.Bukkit;
 
@@ -32,7 +32,7 @@ public class MatchStartingState implements MatchState {
 	}
 
 	@Override
-	public void leave(IMember member) {
+	public void leave(Member member) {
 		if (!member.getTeam().getMembers().contains(member)) return;
 
 		Bukkit.getPluginManager().callEvent(new DuelMatchMemberLeaveEvent(member));

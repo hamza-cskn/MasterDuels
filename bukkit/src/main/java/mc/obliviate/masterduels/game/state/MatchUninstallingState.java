@@ -1,13 +1,13 @@
 package mc.obliviate.masterduels.game.state;
 
-import mc.obliviate.masterduels.api.arena.MatchStateType;
-import mc.obliviate.masterduels.api.events.DuelMatchMemberLeaveEvent;
-import mc.obliviate.masterduels.api.events.arena.DuelMatchUninstallEvent;
-import mc.obliviate.masterduels.api.user.IMember;
-import mc.obliviate.masterduels.api.user.ISpectator;
+import mc.obliviate.masterduels.api.DuelMatchMemberLeaveEvent;
+import mc.obliviate.masterduels.api.arena.DuelMatchUninstallEvent;
 import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.game.Match;
+import mc.obliviate.masterduels.game.MatchStateType;
 import mc.obliviate.masterduels.kit.InventoryStorer;
+import mc.obliviate.masterduels.user.spectator.Spectator;
+import mc.obliviate.masterduels.user.team.Member;
 import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.Utils;
@@ -28,10 +28,10 @@ public class MatchUninstallingState implements MatchState {
 		Bukkit.getPluginManager().callEvent(new DuelMatchUninstallEvent(match, this));
 		match.broadcastInGame("game-finished");
 
-		for (final IMember member : match.getAllMembers()) {
+		for (final Member member : match.getAllMembers()) {
 			leave(member);
 		}
-		for (final ISpectator spectator : match.getGameSpectatorManager().getPureSpectatorStorage().getSpectatorList()) {
+		for (final Spectator spectator : match.getGameSpectatorManager().getPureSpectatorStorage().getSpectatorList()) {
 			leave(spectator);
 		}
 
@@ -46,12 +46,12 @@ public class MatchUninstallingState implements MatchState {
 	}
 
 	@Override
-	public void leave(IMember member) {
+	public void leave(Member member) {
 		if (!member.getTeam().getMembers().contains(member)) return;
 
 		Bukkit.getPluginManager().callEvent(new DuelMatchMemberLeaveEvent(member));
 		DataHandler.getUsers().remove(member.getPlayer().getUniqueId());
-		member.getTeam().unregisterMember(member);
+		member.getMatch().getGameDataStorage().getGameTeamManager().unregisterMember(member);
 
 		if (member.getPlayer().isOnline()) {
 			if (!USE_PLAYER_INVENTORIES && !InventoryStorer.restore(member.getPlayer())) {
