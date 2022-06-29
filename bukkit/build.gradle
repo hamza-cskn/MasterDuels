@@ -36,7 +36,7 @@ dependencies {
     implementation files('D:/Users/User/Desktop/Libraries/ObliviateInvs.jar')
     implementation 'com.github.Obliviated:BlokSQLiteAPI:1.0.7-b'
     implementation 'com.github.hakan-krgn.hCore:bukkit-primary:0.4.7'
-    implementation project(':api')
+    //implementation project(':api')
     compileOnly 'io.puharesource.mc:TitleManager:2.2.0'
     compileOnly 'me.neznamy:tab-api:3.0.1'
     compileOnly 'org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT'
@@ -47,6 +47,12 @@ group = 'mc.obliviate'
 version = '1.0-SNAPSHOT'
 description = 'MasterDuels'
 java.sourceCompatibility = JavaVersion.VERSION_11
+
+compileJava.options.encoding = 'UTF-8'
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
 
 project.setLibsDirName('D:/Users/User/Desktop/Local Servers & Setups/LOCAL 1.8/plugins')
 
