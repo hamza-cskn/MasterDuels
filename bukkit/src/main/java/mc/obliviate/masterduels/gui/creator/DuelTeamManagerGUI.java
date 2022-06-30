@@ -79,6 +79,14 @@ public class DuelTeamManagerGUI extends ConfigurableGui {
 
 				addItem(slot, new Icon(playerHead).onClick(e -> {
 					switch (e.getAction()) {
+						case DROP_ALL_SLOT:
+						case DROP_ONE_SLOT:
+							final Player player1 = getOwner(e.getCurrentItem());
+							if (matchCreator.getOwnerPlayer().equals(player1.getUniqueId()))
+								return; //owner cannot leave
+							matchBuilder.removePlayer(player1);
+							open();
+							break;
 						case PICKUP_HALF:
 						case PICKUP_ONE:
 						case PICKUP_ALL:
@@ -116,15 +124,13 @@ public class DuelTeamManagerGUI extends ConfigurableGui {
 							teamManager.unregisterPlayer(requesterMember);
 							teamManager.unregisterPlayer(targetMember);
 
-							teamManager.registerPlayer(requesterMember.getPlayer(), null, requesterTeam);
 							teamManager.registerPlayer(requesterMember.getPlayer(), null, targetTeam);
+							teamManager.registerPlayer(targetMember.getPlayer(), null, requesterTeam);
 
 
 							e.setCursor(null);
 							open();
 							break;
-						default:
-
 					}
 				}));
 			}
