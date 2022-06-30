@@ -3,12 +3,11 @@ package mc.obliviate.masterduels.listeners;
 import com.google.common.base.Preconditions;
 import com.hakan.core.HCore;
 import mc.obliviate.masterduels.MasterDuels;
-import mc.obliviate.masterduels.data.DataHandler;
-import mc.obliviate.masterduels.game.spectator.MatchSpectatorManager;
 import mc.obliviate.masterduels.game.state.MatchState;
 import mc.obliviate.masterduels.user.IUser;
-import mc.obliviate.masterduels.user.spectator.Spectator;
-import mc.obliviate.masterduels.user.team.Member;
+import mc.obliviate.masterduels.user.Member;
+import mc.obliviate.masterduels.user.Spectator;
+import mc.obliviate.masterduels.user.UserHandler;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
 import org.bukkit.entity.Entity;
@@ -36,7 +35,7 @@ public class DamageListener implements Listener {
 
 				final Entity damager = ((EntityDamageByEntityEvent) e).getDamager();
 				if (damager instanceof Player) {
-					final Member member = DataHandler.getMember(damager.getUniqueId());
+					final Member member = UserHandler.getMember(damager.getUniqueId());
 					if (member == null) return;
 					e.setCancelled(true);
 				}
@@ -47,7 +46,7 @@ public class DamageListener implements Listener {
 
 		final Player victim = (Player) e.getEntity();
 
-		final IUser victimUser = DataHandler.getUser(victim.getUniqueId());
+		final IUser victimUser = UserHandler.getUser(victim.getUniqueId());
 		if (victimUser == null) return;
 
 		if (victimUser instanceof Member) {
@@ -62,7 +61,7 @@ public class DamageListener implements Listener {
 				final Entity damager = ((EntityDamageByEntityEvent) e).getDamager();
 				if (damager instanceof Player) {
 
-					attackerMember = DataHandler.getMember(damager.getUniqueId());
+					attackerMember = UserHandler.getMember(damager.getUniqueId());
 					if (attackerMember == null) {
 						e.setCancelled(true);
 						return;
@@ -74,15 +73,15 @@ public class DamageListener implements Listener {
 						return;
 					}
 
-					final MatchSpectatorManager spectatorData = victimMember.getTeam().getMatch().getGameSpectatorManager();
-					if (spectatorData.isSpectator(victim) || spectatorData.isSpectator(attackerMember.getPlayer())) {
+
+					if (UserHandler.isSpectator(victim.getUniqueId()) || UserHandler.isSpectator(attackerMember.getPlayer().getUniqueId())) {
 						e.setCancelled(true);
 						//spectator protect
 					}
 				} else if (damager instanceof Projectile) {
 					final Projectile projectile = (Projectile) damager;
 					if (projectile.getShooter() instanceof Player) {
-						attackerMember = DataHandler.getMember(((Player) projectile.getShooter()).getUniqueId());
+						attackerMember = UserHandler.getMember(((Player) projectile.getShooter()).getUniqueId());
 					}
 				}
 			}
@@ -103,7 +102,7 @@ public class DamageListener implements Listener {
 		if (e.getEntity() instanceof Player && e.getDamager() instanceof Projectile) {
 			if (((Projectile) e.getDamager()).getShooter() instanceof Player) {
 				final Player attacker = (Player) ((Projectile) e.getDamager()).getShooter();
-				final Member member = DataHandler.getMember(attacker.getUniqueId());
+				final Member member = UserHandler.getMember(attacker.getUniqueId());
 				if (member == null) return;
 				final double distance = MessageUtils.getFirstDigits(e.getEntity().getLocation().toVector().distance(attacker.getLocation().toVector()), 2);
 				MessageUtils.sendMessage(attacker, "arrow-hit-notify.message",

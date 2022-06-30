@@ -1,8 +1,8 @@
 package mc.obliviate.masterduels.game.spectator;
 
 import mc.obliviate.masterduels.game.Match;
-import mc.obliviate.masterduels.user.spectator.Spectator;
-import mc.obliviate.masterduels.user.team.Member;
+import mc.obliviate.masterduels.user.Member;
+import mc.obliviate.masterduels.user.Spectator;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -16,9 +16,9 @@ public class MatchSpectatorManager {
 	private final Match match;
 
 	public MatchSpectatorManager(Match match) {
-		this.semiSpectatorStorage = new SemiSpectatorStorage(this, match);
-		this.pureSpectatorStorage = new PureSpectatorStorage(this, match);
 		this.match = match;
+		this.semiSpectatorStorage = new SemiSpectatorStorage(this);
+		this.pureSpectatorStorage = new PureSpectatorStorage(this);
 	}
 
 	public SemiSpectatorStorage getSemiSpectatorStorage() {
@@ -67,7 +67,7 @@ public class MatchSpectatorManager {
 		return spectators;
 	}
 
-	public boolean isSpectator(Player player) {
-		return semiSpectatorStorage.isSpectator(player) || pureSpectatorStorage.isSpectator(player);
+	protected Match getMatch() {
+		return match;
 	}
 }

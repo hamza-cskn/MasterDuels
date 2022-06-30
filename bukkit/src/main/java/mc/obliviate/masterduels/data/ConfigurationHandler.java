@@ -214,7 +214,7 @@ public class ConfigurationHandler {
 	private void registerQueues(final ConfigurationSection section) {
 		if (section != null && !section.getKeys(false).isEmpty()) {
 			for (final String key : section.getKeys(false)) {
-				DuelQueueTemplate.deserialize(plugin, section.getConfigurationSection(key));
+				DuelQueueTemplate.deserialize(section.getConfigurationSection(key));
 			}
 		}
 	}

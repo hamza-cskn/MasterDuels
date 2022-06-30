@@ -2,7 +2,6 @@ package mc.obliviate.masterduels.commands;
 
 import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.data.ConfigurationHandler;
-import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.game.Match;
 import mc.obliviate.masterduels.game.MatchBuilder;
 import mc.obliviate.masterduels.game.MatchCreator;
@@ -20,7 +19,8 @@ import mc.obliviate.masterduels.queue.DuelQueueTemplate;
 import mc.obliviate.masterduels.queue.gui.DuelQueueListGUI;
 import mc.obliviate.masterduels.statistics.DuelStatistic;
 import mc.obliviate.masterduels.user.IUser;
-import mc.obliviate.masterduels.user.team.Member;
+import mc.obliviate.masterduels.user.Member;
+import mc.obliviate.masterduels.user.UserHandler;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
 import mc.obliviate.masterduels.utils.timer.TimerUtils;
@@ -51,7 +51,7 @@ public class DuelCMD implements CommandExecutor {
 
 		final Player player = ((Player) sender).getPlayer();
 
-		final IUser user = DataHandler.getUser(player.getUniqueId());
+		final IUser user = UserHandler.getUser(player.getUniqueId());
 
 		if (args.length == 0) {
 			MessageUtils.sendMessage(player, "duel-command.usage", new PlaceholderUtil().add("{build-version}", plugin.getDescription().getVersion()));
@@ -73,16 +73,7 @@ public class DuelCMD implements CommandExecutor {
 		} else if (args[0].equalsIgnoreCase("top")) {
 			top(player, Arrays.asList(args));
 			return true;
-		}
-
-		//COMMANDS BELOW ARE BLOCKED FOR PLAYERS WHO IN DUEL
-
-		if (user instanceof Member) {
-			MessageUtils.sendMessage(player, "you-are-in-duel");
-			return false;
-		}
-
-		if (args[0].equalsIgnoreCase("toggle")) {
+		} else if (args[0].equalsIgnoreCase("toggle")) {
 			final boolean state = plugin.getSqlManager().toggleReceivesInvites(player.getUniqueId());
 			if (state) {
 				MessageUtils.sendMessage(player, "invite.toggle.turned-on");
@@ -93,7 +84,16 @@ public class DuelCMD implements CommandExecutor {
 		} else if (args[0].equalsIgnoreCase("stats")) {
 			stats(player, args);
 			return true;
-		} else if (ConfigurationHandler.getConfig().getBoolean("duel-arenas-gui.enabled") && args[0].equalsIgnoreCase("arenas")) {
+		}
+
+		//COMMANDS BELOW ARE BLOCKED FOR PLAYERS WHO IN DUEL
+
+		if (user instanceof Member) {
+			MessageUtils.sendMessage(player, "you-are-in-duel");
+			return false;
+		}
+
+		if (ConfigurationHandler.getConfig().getBoolean("duel-arenas-gui.enabled") && args[0].equalsIgnoreCase("arenas")) {
 			new DuelArenaListGUI(player).open();
 			return true;
 		} else if (args[0].equalsIgnoreCase("accept") || args[0].equalsIgnoreCase("decline")) {
@@ -104,9 +104,13 @@ public class DuelCMD implements CommandExecutor {
 		} else if (args[0].equalsIgnoreCase("queue") && DuelQueueHandler.enabled) {
 			queue(player, Arrays.asList(args));
 		} else if (args[0].equalsIgnoreCase("creator")) {
-			MatchCreator matchCreator = MatchCreator.getGameCreatorMap().get(player.getUniqueId());
-			if (matchCreator == null) matchCreator = new MatchCreator(player.getUniqueId());
-			new DuelMatchCreatorGUI(player, matchCreator).open();
+			if (!user.isInMatchBuilder()) {
+				MatchCreator matchCreator = MatchCreator.getGameCreatorMap().get(player.getUniqueId());
+				if (matchCreator == null) matchCreator = new MatchCreator(player.getUniqueId());
+				new DuelMatchCreatorGUI(player, matchCreator).open();
+			} else {
+				MessageUtils.sendMessage(player, "queue.you-are-in-queue");
+			}
 		} else if (args.length == 1 || args[0].equalsIgnoreCase("invite")) {
 			invite(player, args);
 		}
@@ -243,7 +247,7 @@ public class DuelCMD implements CommandExecutor {
 				return;
 			}
 
-			final Member member = DataHandler.getMember(target.getUniqueId());
+			final Member member = UserHandler.getMember(target.getUniqueId());
 			if (member == null) {
 				player.sendMessage("§cThis player is not in a duel.");
 				return;
@@ -273,7 +277,7 @@ public class DuelCMD implements CommandExecutor {
 		}
 
 		//check: target is not in duel
-		if (DataHandler.getMember(target.getUniqueId()) != null) {
+		if (UserHandler.getMember(target.getUniqueId()) != null) {
 			MessageUtils.sendMessage(player, "target-already-in-duel");
 			return;
 		}
@@ -284,8 +288,8 @@ public class DuelCMD implements CommandExecutor {
 			return;
 		}
 		//1v1
-		final MatchBuilder matchBuilder = new MatchBuilder();
-		matchBuilder.setTeamAmount(2).setTeamSize(1).setMatchDuration(Duration.ofMinutes(1)).setTotalRounds(1);
+		final MatchBuilder matchBuilder = Match.create();
+		matchBuilder.setTeamsAttributes(1, 2).setDuration(Duration.ofMinutes(1)).setTotalRounds(1);
 		matchBuilder.addPlayer(player);
 
 		final Invite.Builder inviteBuilder = Invite.create()

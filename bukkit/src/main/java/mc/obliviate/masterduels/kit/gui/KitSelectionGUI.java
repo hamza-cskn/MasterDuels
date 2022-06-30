@@ -48,8 +48,8 @@ public class KitSelectionGUI extends Gui {
 		for (final Kit kit : getAllowedKits()) {
 			final Icon icon = new Icon(kit.getIcon().clone()).onClick(e -> {
 				player.closeInventory();
-				builder.setKit(kit);
 				response.onSelected(kit);
+				//todo e :D
 			});
 
 			addItem(slot++, icon);

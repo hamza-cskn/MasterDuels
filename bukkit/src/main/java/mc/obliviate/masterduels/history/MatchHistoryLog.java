@@ -2,8 +2,8 @@ package mc.obliviate.masterduels.history;
 
 import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.game.Match;
-import mc.obliviate.masterduels.game.team.Team;
-import mc.obliviate.masterduels.user.team.Member;
+import mc.obliviate.masterduels.game.Team;
+import mc.obliviate.masterduels.user.Member;
 
 import java.util.ArrayList;
 import java.util.LinkedList;

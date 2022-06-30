@@ -29,16 +29,16 @@ public class DuelSettingsGUI extends ConfigurableGui {
 		int i = 9;
 		for (final GameRule rule : MatchCreator.ALLOWED_GAME_RULES) {
 			Icon icon;
-			if (matchCreator.getBuilder().getGameRules().contains(rule)) {
+			if (matchCreator.getBuilder().getRules().contains(rule)) {
 				icon = new Icon(XMaterial.LIME_DYE.parseItem()).setName(MessageUtils.parseColor("&a" + rule.name()));
 				icon.onClick(e -> {
-					matchCreator.getBuilder().removeGameRule(rule);
+					matchCreator.getBuilder().removeRule(rule);
 					open();
 				});
 			} else {
 				icon = new Icon(XMaterial.GRAY_DYE.parseItem()).setName(MessageUtils.parseColor("&c" + rule.name()));
 				icon.onClick(e -> {
-					matchCreator.getBuilder().addGameRule(rule);
+					matchCreator.getBuilder().addRule(rule);
 					open();
 				});
 			}

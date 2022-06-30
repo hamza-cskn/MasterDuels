@@ -5,7 +5,6 @@ import mc.obliviate.masterduels.data.ConfigurationHandler;
 import mc.obliviate.masterduels.game.Match;
 import mc.obliviate.masterduels.game.MatchCreator;
 import mc.obliviate.masterduels.gui.ConfigurableGui;
-import mc.obliviate.masterduels.kit.gui.KitSelectionGUI;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
 import mc.obliviate.masterduels.utils.timer.TimerUtils;
@@ -92,11 +91,13 @@ public class DuelMatchCreatorGUI extends ConfigurableGui {
 	}
 
 	private void putKitIcon() {
-		putIcon("kit", new PlaceholderUtil().add("{kit}", matchCreator.getBuilder().getKit() != null ? matchCreator.getBuilder().getKit().getKitName() : MessageUtils.parseColor(MessageUtils.getMessage("game-creator.none-kit-name"))), e -> {
+		/*putIcon("kit", new PlaceholderUtil().add("{kit}", matchCreator.getBuilder().getKit() != null ? matchCreator.getBuilder().getKit().getKitName() : MessageUtils.parseColor(MessageUtils.getMessage("game-creator.none-kit-name"))), e -> {
 			new KitSelectionGUI(player, matchCreator.getBuilder(), kit -> {
 				open();
 			}, MatchCreator.ALLOWED_KITS).open();
 		});
+
+		 */
 	}
 
 	private void putRoundAmountIcon() {
@@ -112,12 +113,12 @@ public class DuelMatchCreatorGUI extends ConfigurableGui {
 
 	private void putFinishTimeIcon() {
 		putIcon("game-time", new PlaceholderUtil()
-				.add("{game-timer}", TimerUtils.formatTimeAsTimer(matchCreator.getBuilder().getMatchDuration().toSeconds()))
-				.add("{game-time}", TimerUtils.formatTimeAsTime(matchCreator.getBuilder().getMatchDuration().toSeconds())), e -> {
+				.add("{game-timer}", TimerUtils.formatTimeAsTimer(matchCreator.getBuilder().getDuration().toSeconds()))
+				.add("{game-time}", TimerUtils.formatTimeAsTime(matchCreator.getBuilder().getDuration().toSeconds())), e -> {
 			if (e.isRightClick()) {
-				matchCreator.getBuilder().setMatchDuration(Duration.ofSeconds(Math.max(matchCreator.getBuilder().getMatchDuration().toSeconds() - 30, MatchCreator.MIN_GAME_TIME)));
+				matchCreator.getBuilder().setDuration(Duration.ofSeconds(Math.max(matchCreator.getBuilder().getDuration().toSeconds() - 30, MatchCreator.MIN_GAME_TIME)));
 			} else if (e.isLeftClick()) {
-				matchCreator.getBuilder().setMatchDuration(Duration.ofSeconds(Math.min(matchCreator.getBuilder().getMatchDuration().toSeconds() + 30, MatchCreator.MAX_GAME_TIME)));
+				matchCreator.getBuilder().setDuration(Duration.ofSeconds(Math.min(matchCreator.getBuilder().getDuration().toSeconds() + 30, MatchCreator.MAX_GAME_TIME)));
 			}
 			open();
 		});
@@ -125,10 +126,11 @@ public class DuelMatchCreatorGUI extends ConfigurableGui {
 
 	private void putTeamAmountIcon() {
 		putIcon("team-amount", new PlaceholderUtil().add("{team-amount}", matchCreator.getBuilder().getTeamAmount() + ""), e -> {
+			final int size = matchCreator.getBuilder().getTeamSize();
 			if (e.isRightClick()) {
-				matchCreator.getBuilder().setTeamAmount(Math.max(matchCreator.getBuilder().getTeamAmount() - 1, MatchCreator.MAX_TEAM_AMOUNT));
+				matchCreator.getBuilder().setTeamsAttributes(size, Math.max(matchCreator.getBuilder().getTeamAmount() - 1, MatchCreator.MAX_TEAM_AMOUNT));
 			} else if (e.isLeftClick()) {
-				matchCreator.getBuilder().setTeamAmount(Math.min(matchCreator.getBuilder().getTeamAmount() + 1, MatchCreator.MIN_TEAM_AMOUNT));
+				matchCreator.getBuilder().setTeamsAttributes(size, Math.min(matchCreator.getBuilder().getTeamAmount() + 1, MatchCreator.MIN_TEAM_AMOUNT));
 			}
 			open();
 		});
@@ -136,10 +138,11 @@ public class DuelMatchCreatorGUI extends ConfigurableGui {
 
 	private void putTeamSizeIcon() {
 		putIcon("team-size", new PlaceholderUtil().add("{team-size}", matchCreator.getBuilder().getTeamSize() + ""), e -> {
+			final int amount = matchCreator.getBuilder().getTeamAmount();
 			if (e.isRightClick()) {
-				matchCreator.getBuilder().setTeamSize(Math.max(matchCreator.getBuilder().getTeamSize() - 1, MatchCreator.MIN_TEAM_SIZE));
+				matchCreator.getBuilder().setTeamsAttributes(Math.max(matchCreator.getBuilder().getTeamSize() - 1, MatchCreator.MIN_TEAM_SIZE), amount);
 			} else if (e.isLeftClick()) {
-				matchCreator.getBuilder().setTeamSize(Math.min(matchCreator.getBuilder().getTeamSize() + 1, MatchCreator.MAX_TEAM_SIZE));
+				matchCreator.getBuilder().setTeamsAttributes(Math.min(matchCreator.getBuilder().getTeamSize() + 1, MatchCreator.MAX_TEAM_SIZE), amount);
 			}
 			open();
 		});

@@ -14,18 +14,19 @@ import java.util.Map;
 
 public class DuelQueue {
 
-	private static final Map<DuelQueueTemplate, DuelQueue> availableQueues = new HashMap<>();
 	private boolean locked = false;
+
+	private static final Map<DuelQueueTemplate, DuelQueue> availableQueues = new HashMap<>();
 	private final DuelQueueTemplate template;
 	private final MatchBuilder builder;
 
-	public DuelQueue(final DuelQueueTemplate template, final MatchBuilder builder) {
+	DuelQueue(final DuelQueueTemplate template, final MatchBuilder builder) {
 		this.builder = builder;
 		this.template = template;
 		final DuelQueue queue = availableQueues.get(template);
 		if (queue != null) {
 			queue.lock();
-			Logger.error("double queue creation found in same template.");
+			Logger.severe("double queue creation found in same template.");
 		}
 		availableQueues.put(template, this);
 	}
@@ -49,7 +50,9 @@ public class DuelQueue {
 		final DuelQueueJoinEvent event = new DuelQueueJoinEvent(this, player);
 		Bukkit.getPluginManager().callEvent(event);
 		if (event.isCancelled()) return; //api cancel
-		if (!builder.addPlayer(player)) MessageUtils.sendMessage(player, "queue.player-could-not-added");
+
+		Bukkit.broadcastMessage("adding");
+		builder.addPlayer(player);
 		if (builder.getPlayers().size() == builder.getTeamSize() * builder.getTeamAmount()) {
 			start();
 		}

@@ -1,7 +1,6 @@
 package mc.obliviate.masterduels.queue;
 
-import mc.obliviate.masterduels.MasterDuels;
-import mc.obliviate.masterduels.game.MatchBuilder;
+import mc.obliviate.masterduels.game.Match;
 import mc.obliviate.masterduels.game.MatchDataStorage;
 import mc.obliviate.masterduels.kit.Kit;
 import org.bukkit.configuration.ConfigurationSection;
@@ -12,23 +11,26 @@ import java.util.List;
 
 public class DuelQueueTemplate {
 
+	private static ConfigurationSection section = null; //default values section
 	private static final List<DuelQueueTemplate> queueTemplates = new LinkedList<>();
 	private final String queueTemplateName;
-	private final MasterDuels plugin;
 	private final MatchDataStorage matchDataStorage;
 
-	public DuelQueueTemplate(final MasterDuels plugin, final String queueTemplateName, MatchDataStorage matchDataStorage) {
+	private DuelQueueTemplate(final String queueTemplateName, MatchDataStorage matchDataStorage) {
 		this.queueTemplateName = queueTemplateName;
-		this.plugin = plugin;
 		this.matchDataStorage = matchDataStorage;
 		queueTemplates.add(this);
 		createNewQueue();
 	}
 
-	public static DuelQueueTemplate deserialize(final MasterDuels plugin, final ConfigurationSection section) {
+	public static DuelQueueTemplate deserialize(final ConfigurationSection section) {
+		DuelQueueTemplate.section = section;
+		return new DuelQueueTemplate(section.getName(), deserializeMatchDataStorage(section));
+	}
+
+	private static MatchDataStorage deserializeMatchDataStorage(final ConfigurationSection section) {
 		if (section == null) throw new IllegalArgumentException("Queue template section cannot be null!");
 
-		final String name = section.getName();
 		final String kitName = section.getString("kit");
 		Kit kit;
 		if (kitName == null) {
@@ -43,13 +45,10 @@ public class DuelQueueTemplate {
 		final int rounds = section.getInt("rounds", 1);
 
 		final MatchDataStorage matchDataStorage = new MatchDataStorage();
-		matchDataStorage.setKit(kit);
-		matchDataStorage.getGameTeamManager().setTeamAmount(teamAmount);
-		matchDataStorage.getGameTeamManager().setTeamSize(teamSize);
+		matchDataStorage.getGameTeamManager().setTeamsAttributes(teamSize, teamAmount);
 		matchDataStorage.setMatchDuration(Duration.ofSeconds(duration));
 		matchDataStorage.getGameRoundData().setTotalRounds(rounds);
-
-		return new DuelQueueTemplate(plugin, name, matchDataStorage);
+		return matchDataStorage;
 	}
 
 	public static List<DuelQueueTemplate> getQueueTemplates() {
@@ -71,7 +70,7 @@ public class DuelQueueTemplate {
 	}
 
 	public void createNewQueue() {
-		new DuelQueue(this, new MatchBuilder());
+		new DuelQueue(this, Match.create(deserializeMatchDataStorage(section)));
 	}
 
 	public String getName() {

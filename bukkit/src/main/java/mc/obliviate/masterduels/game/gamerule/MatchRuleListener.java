@@ -1,8 +1,8 @@
 package mc.obliviate.masterduels.game.gamerule;
 
 import mc.obliviate.masterduels.api.spectator.DuelMatchPreSpectatorJoinEvent;
-import mc.obliviate.masterduels.data.DataHandler;
-import mc.obliviate.masterduels.user.team.Member;
+import mc.obliviate.masterduels.user.Member;
+import mc.obliviate.masterduels.user.UserHandler;
 import mc.obliviate.masterduels.utils.xmaterial.XMaterial;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -31,7 +31,7 @@ public class MatchRuleListener implements Listener {
 		}
 
 		final Player player = (Player) e.getEntity();
-		final Member member = DataHandler.getMember(player.getUniqueId());
+		final Member member = UserHandler.getMember(player.getUniqueId());
 		if (member == null) return;
 		if (!member.getMatch().getGameDataStorage().getGameRules().contains(GameRule.NO_FIRE)) return;
 		e.setCancelled(true);
@@ -41,7 +41,7 @@ public class MatchRuleListener implements Listener {
 	@EventHandler
 	public void onConsume(PlayerItemConsumeEvent e) {
 		final Player player = e.getPlayer();
-		final Member member = DataHandler.getMember(player.getUniqueId());
+		final Member member = UserHandler.getMember(player.getUniqueId());
 		if (member == null) return;
 		if (e.getItem().getData().equals(XMaterial.ENCHANTED_GOLDEN_APPLE.parseItem().getData())) {
 			if (!member.getMatch().getGameDataStorage().getGameRules().contains(GameRule.NO_ENCHANTED_GOLDEN_APPLE))
@@ -61,7 +61,7 @@ public class MatchRuleListener implements Listener {
 		if (e.getItem() == null || e.getItem().getItemMeta() == null) return;
 		if (!(e.getItem().getItemMeta() instanceof PotionMeta)) return;
 
-		final Member member = DataHandler.getMember(e.getPlayer().getUniqueId());
+		final Member member = UserHandler.getMember(e.getPlayer().getUniqueId());
 		if (member == null) return;
 		if (!member.getMatch().getGameDataStorage().getGameRules().contains(GameRule.NO_POTION)) return;
 		e.setCancelled(true);
@@ -73,7 +73,7 @@ public class MatchRuleListener implements Listener {
 	public void onShoot(EntityShootBowEvent e) {
 		if (!(e.getEntity() instanceof Player)) return;
 		final Player player = (Player) e.getEntity();
-		final Member member = DataHandler.getMember(player.getUniqueId());
+		final Member member = UserHandler.getMember(player.getUniqueId());
 		if (member == null) return;
 		if (!member.getMatch().getGameDataStorage().getGameRules().contains(GameRule.NO_BOW)) return;
 		e.setCancelled(true);

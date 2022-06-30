@@ -7,7 +7,8 @@ import mc.obliviate.masterduels.api.DuelMatchMemberLeaveEvent;
 import mc.obliviate.masterduels.api.arena.DuelMatchStateChangeEvent;
 import mc.obliviate.masterduels.game.Match;
 import mc.obliviate.masterduels.game.MatchStateType;
-import mc.obliviate.masterduels.user.team.Member;
+import mc.obliviate.masterduels.user.Member;
+import mc.obliviate.masterduels.user.UserHandler;
 import mc.obliviate.masterduels.utils.Utils;
 import mc.obliviate.masterduels.utils.timer.TimerUtils;
 import org.bukkit.Bukkit;
@@ -60,7 +61,7 @@ public final class InternalScoreboardManager implements Listener {
 
 						if (!loopMember.getPlayer().isOnline()) {
 							line = formatConfig.getQuitOpponentFormat();
-						} else if (match.getGameSpectatorManager().isSpectator(loopMember.getPlayer())) {
+						} else if (UserHandler.isSpectator(loopMember.getPlayer().getUniqueId())) {
 							line = formatConfig.getDeadOpponentFormat();
 						} else {
 							line = formatConfig.getLiveOpponentFormat().replace("{health}", loopMember.getPlayer().getHealthScale() + "");

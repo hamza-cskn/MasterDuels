@@ -1,11 +1,18 @@
 package mc.obliviate.masterduels.game.round;
 
-import mc.obliviate.masterduels.game.team.Team;
+import com.google.common.base.Preconditions;
+import mc.obliviate.masterduels.game.Team;
 
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * this object uses locked field as lock
+ * when locked field is not null, match round data is locked.
+ **/
 public class MatchRoundData {
+
+	private boolean locked = false;
 
 	private final Map<Team, Integer> teamWins = new HashMap<>();
 	private Team winnerTeam;
@@ -47,6 +54,7 @@ public class MatchRoundData {
 	}
 
 	public void setTotalRounds(int totalRounds) {
+		Preconditions.checkState(!isLocked(), "this object is locked");
 		this.totalRounds = totalRounds;
 	}
 
@@ -64,5 +72,13 @@ public class MatchRoundData {
 
 	public void setWinnerTeam(Team winnerTeam) {
 		this.winnerTeam = winnerTeam;
+	}
+
+	public boolean isLocked() {
+		return locked;
+	}
+
+	public void lock() {
+		this.locked = true;
 	}
 }

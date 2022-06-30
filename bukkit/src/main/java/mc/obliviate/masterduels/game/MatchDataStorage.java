@@ -1,12 +1,12 @@
 package mc.obliviate.masterduels.game;
 
+import com.google.common.base.Preconditions;
 import mc.obliviate.masterduels.game.gamerule.GameRule;
 import mc.obliviate.masterduels.game.round.MatchRoundData;
-import mc.obliviate.masterduels.game.team.MatchTeamManager;
-import mc.obliviate.masterduels.kit.Kit;
 
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -16,7 +16,14 @@ import java.util.List;
  * Game builders and game creators objects has any dependents
  * GameDataStorage doesn't have.
  */
+
+/**
+ * this object uses locked field as lock
+ * when locked field is not null, match data storage is locked.
+ **/
 public class MatchDataStorage {
+
+	private boolean locked;
 
 	private final MatchRoundData gameRoundData = new MatchRoundData();
 	private final MatchTeamManager gameTeamManager = new MatchTeamManager();
@@ -24,10 +31,25 @@ public class MatchDataStorage {
 	private static Duration endDelay;
 	private long finishTime;
 	private Duration matchDuration = Duration.ofMinutes(1); //in millis
-	private Kit kit = null;
 
 	public List<GameRule> getGameRules() {
-		return gameRules;
+		return Collections.unmodifiableList(gameRules);
+	}
+
+	public void addRule(GameRule rule) {
+		Preconditions.checkState(!isLocked(), "this object is locked");
+		if (gameRules.contains(rule)) return;
+		gameRules.add(rule);
+	}
+
+	public void removeRule(GameRule rule) {
+		Preconditions.checkState(!isLocked(), "this object is locked");
+		gameRules.remove(rule);
+	}
+
+	public void clearRules() {
+		Preconditions.checkState(!isLocked(), "this object is locked");
+		gameRules.clear();
 	}
 
 	public MatchRoundData getGameRoundData() {
@@ -39,6 +61,7 @@ public class MatchDataStorage {
 	}
 
 	public void setMatchDuration(Duration duration) {
+		Preconditions.checkState(!isLocked(), "this object is locked");
 		this.matchDuration = duration;
 	}
 
@@ -48,14 +71,6 @@ public class MatchDataStorage {
 
 	public MatchTeamManager getGameTeamManager() {
 		return gameTeamManager;
-	}
-
-	public Kit getKit() {
-		return kit;
-	}
-
-	public void setKit(Kit kit) {
-		this.kit = kit;
 	}
 
 	public long getFinishTime() {
@@ -72,5 +87,15 @@ public class MatchDataStorage {
 
 	public static void setEndDelay(Duration endDelay) {
 		MatchDataStorage.endDelay = endDelay;
+	}
+
+	public boolean isLocked() {
+		return locked;
+	}
+
+	protected void lock(Match match) {
+		gameRoundData.lock();
+		gameTeamManager.lock(match);
+		this.locked = true;
 	}
 }

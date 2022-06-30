@@ -13,9 +13,8 @@ import mc.obliviate.masterduels.game.state.MatchEndingState;
 import mc.obliviate.masterduels.game.state.MatchState;
 import mc.obliviate.masterduels.game.state.MatchUninstallingState;
 import mc.obliviate.masterduels.game.task.MatchTaskManager;
-import mc.obliviate.masterduels.game.team.Team;
 import mc.obliviate.masterduels.kit.Kit;
-import mc.obliviate.masterduels.user.team.Member;
+import mc.obliviate.masterduels.user.Member;
 import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.Utils;
@@ -27,20 +26,19 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Match {
 
 	public static final PlayerReset PLAYER_RESET = new PlayerReset().excludeExp().excludeLevel().excludeInventory().excludeTitle();
 	public static final PlayerReset RESET_WHEN_PLAYER_LEFT = new PlayerReset().excludeExp().excludeLevel().excludeInventory();
+
 	private final Arena arena;
 	private final MatchDataStorage matchDataStorage;
 	private final MatchTaskManager gameTaskManager = new MatchTaskManager();
 	private final MatchSpectatorManager gameSpectatorManager = new MatchSpectatorManager(this);
+	private final List<Player> players;
 	//private final IBossBarManager bossBarManager = BossBarHandler.createBossBarManager();
 
 	private MatchState gameState = new IdleState(this);
@@ -48,7 +46,22 @@ public class Match {
 	public Match(Arena arena, MatchDataStorage matchDataStorage) {
 		this.arena = arena;
 		this.matchDataStorage = matchDataStorage;
+
+		final List<Player> players = new ArrayList<>();
+		for (final Member member : matchDataStorage.getGameTeamManager().getAllMembers()) {
+			players.add(member.getPlayer());
+		}
+		this.players = Collections.unmodifiableList(players);
 	}
+
+	public static MatchBuilder create() {
+		return new MatchBuilder();
+	}
+
+	public static MatchBuilder create(MatchDataStorage matchDataStorage) {
+		return new MatchBuilder(matchDataStorage);
+	}
+
 
 	public void start() {
 		if (!(gameState instanceof IdleState)) throw new IllegalStateException("this match has already started.");
@@ -68,19 +81,15 @@ public class Match {
 	 * @param teamNo team no of player
 	 */
 	public void addPlayer(Player player, Kit kit, int teamNo) {
-		matchDataStorage.getGameTeamManager().registerMember(player, kit, teamNo);
+		matchDataStorage.getGameTeamManager().registerPlayer(player, kit, teamNo);
 	}
 
 	/**
 	 * removes player from game
 	 * if game doesn't contains param player
 	 * the method would ignores it.
-	 *
-	 * @param playerUniqueId
-	 */
-	public void removePlayer(UUID playerUniqueId) {
-		final Member member = getMember(playerUniqueId);
-		if (member == null) return;
+	 **/
+	public void removeMember(Member member) {
 		matchDataStorage.getGameTeamManager().unregisterMember(member);
 	}
 
@@ -237,4 +246,7 @@ public class Match {
 	}
 
 
+	public List<Player> getPlayers() {
+		return players;
+	}
 }

@@ -1,9 +1,14 @@
 package mc.obliviate.masterduels.gui.creator;
 
+import com.google.common.base.Preconditions;
 import mc.obliviate.inventory.Icon;
+import mc.obliviate.masterduels.game.MatchBuilder;
 import mc.obliviate.masterduels.game.MatchCreator;
-import mc.obliviate.masterduels.game.team.TeamBuilder;
+import mc.obliviate.masterduels.game.MatchTeamManager;
+import mc.obliviate.masterduels.game.Team;
 import mc.obliviate.masterduels.gui.ConfigurableGui;
+import mc.obliviate.masterduels.user.IUser;
+import mc.obliviate.masterduels.user.UserHandler;
 import mc.obliviate.masterduels.utils.Utils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
 import mc.obliviate.masterduels.utils.serializer.SerializerUtils;
@@ -41,26 +46,29 @@ public class DuelTeamManagerGUI extends ConfigurableGui {
 			new DuelMatchCreatorGUI(player, matchCreator).open();
 		});
 
-		for (int team = 0; team < matchCreator.getBuilder().getTeamAmount(); team++) {
-			final Icon icon = new Icon(Utils.teamIcons.get(team).clone()).setName(guiConfig.teamIconName).setLore(guiConfig.teamIconLore);
-			final ItemStack item = SerializerUtils.applyPlaceholdersOnItemStack(icon.getItem(),
-					new PlaceholderUtil()
-							.add("{team-no}", (team + 1) + "")
-							.add("{team-players-amount}", matchCreator.getBuilder().getTeamBuilders().get(team + 1).getMembers().size() + "")
-							.add("{team-size}", matchCreator.getBuilder().getTeamAmount() + ""));
+		final MatchBuilder matchBuilder = matchCreator.getBuilder();
+		final MatchTeamManager matchTeamManager = matchBuilder.getData().getGameTeamManager();
 
-			addItem((team + 1) * 9, item);
+		event.getPlayer().sendMessage("Excepted: " + matchTeamManager.getTeamAmount() + ", Registered: " + matchTeamManager.getTeamBuilders().size());
 
-			for (int member = 0; member < matchCreator.getBuilder().getTeamSize(); member++) {
-				final int slot = ((team + 1) * 9 + 1 + member);
 
-				final TeamBuilder teamBuilder = matchCreator.getBuilder().getTeamBuilders().get(team + 1);
-				if (teamBuilder.getMembers().size() <= member) {
-					addItem(slot, getNullMemberSlotIcon(teamBuilder));
+		for (int teamNo = 0; teamNo < matchBuilder.getTeamAmount(); teamNo++) {
+
+			final Icon icon = new Icon(Utils.teamIcons.get(teamNo).clone()).setName(guiConfig.teamIconName).setLore(guiConfig.teamIconLore);
+			final ItemStack item = SerializerUtils.applyPlaceholdersOnItemStack(icon.getItem(), new PlaceholderUtil().add("{team-no}", (teamNo) + "").add("{team-players-amount}", matchTeamManager.getTeamBuilders().get(teamNo).getUsers().size() + "").add("{team-size}", matchBuilder.getTeamAmount() + ""));
+
+			addItem((teamNo + 1) * 9, item);
+
+			for (int member = 0; member < matchBuilder.getTeamSize(); member++) {
+				final int slot = ((teamNo + 1) * 9 + 1 + member);
+
+				final Team.Builder team = matchTeamManager.getTeamBuilders().get(teamNo);
+				if (team.getUsers().size() <= member) {
+					addItem(slot, getNullMemberSlotIcon(team));
 					continue;
 				}
 
-				final Player player = teamBuilder.getMembers().get(member);
+				final Player player = team.getUsers().get(member).getPlayer();
 				if (player == null) {
 					break;
 				}
@@ -86,6 +94,7 @@ public class DuelTeamManagerGUI extends ConfigurableGui {
 							}, 1);
 							e.setCancelled(false);
 							break;
+
 						case SWAP_WITH_CURSOR:
 							final ItemStack cursor = e.getCursor();
 							if (!isValidPlayerHead(cursor)) break;
@@ -94,16 +103,25 @@ public class DuelTeamManagerGUI extends ConfigurableGui {
 							final Player requester = getOwner(cursor);
 							final Player target = getOwner(e.getCurrentItem());
 
+							//and their users
+							final IUser requesterMember = UserHandler.getUser(requester.getUniqueId());
+							final IUser targetMember = UserHandler.getUser(target.getUniqueId());
+							Preconditions.checkNotNull(requesterMember);
+							Preconditions.checkNotNull(targetMember);
+
 							//and their teams
-							final TeamBuilder requesterTeamBuilder = matchCreator.getBuilder().getTeamBuilder(requester);
-							final TeamBuilder targetTeamBuilder = matchCreator.getBuilder().getTeamBuilder(target);
+							final int targetTeam = matchCreator.getBuilder().getData().getGameTeamManager().getTeamBuilder(target).getTeamId();
+							final int requesterTeam = matchCreator.getBuilder().getData().getGameTeamManager().getTeamBuilder(requester).getTeamId();
 
 							//swap!
-							targetTeamBuilder.remove(target);
-							targetTeamBuilder.add(requester);
+							MatchTeamManager teamManager = matchCreator.getBuilder().getData().getGameTeamManager();
 
-							requesterTeamBuilder.remove(requester);
-							requesterTeamBuilder.add(target);
+							teamManager.unregisterPlayer(requesterMember);
+							teamManager.unregisterPlayer(targetMember);
+
+							teamManager.registerPlayer(requesterMember.getPlayer(), null, requesterTeam);
+							teamManager.registerPlayer(requesterMember.getPlayer(), null, targetTeam);
+
 
 							e.setCursor(null);
 							open();
@@ -128,7 +146,7 @@ public class DuelTeamManagerGUI extends ConfigurableGui {
 		return true;
 	}
 
-	private Icon getNullMemberSlotIcon(TeamBuilder teamBuilder) {
+	private Icon getNullMemberSlotIcon(Team.Builder team) {
 		return new Icon(guiConfig.getEmptyIcon()).onClick(e -> {
 			if (!isValidPlayerHead(e.getCursor())) {
 				return;
@@ -139,10 +157,9 @@ public class DuelTeamManagerGUI extends ConfigurableGui {
 			if (target == null) {
 				return;
 			}
-			for (final TeamBuilder builder : matchCreator.getBuilder().getTeamBuilders().values()) {
-				builder.remove(target);
-			}
-			teamBuilder.add(target);
+
+			matchCreator.getBuilder().removePlayer(player);
+			matchCreator.getBuilder().addPlayer(target, null, team.getTeamId());
 			open();
 		});
 

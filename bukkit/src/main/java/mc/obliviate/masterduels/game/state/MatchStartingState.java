@@ -4,7 +4,7 @@ import mc.obliviate.masterduels.api.DuelMatchMemberLeaveEvent;
 import mc.obliviate.masterduels.api.arena.DuelMatchStartEvent;
 import mc.obliviate.masterduels.game.Match;
 import mc.obliviate.masterduels.game.MatchStateType;
-import mc.obliviate.masterduels.user.team.Member;
+import mc.obliviate.masterduels.user.Member;
 import mc.obliviate.masterduels.utils.Logger;
 import org.bukkit.Bukkit;
 

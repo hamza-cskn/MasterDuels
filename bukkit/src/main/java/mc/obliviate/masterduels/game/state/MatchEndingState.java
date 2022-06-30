@@ -2,13 +2,13 @@ package mc.obliviate.masterduels.game.state;
 
 import mc.obliviate.masterduels.api.DuelMatchMemberLeaveEvent;
 import mc.obliviate.masterduels.api.arena.DuelMatchEndEvent;
-import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.game.Match;
 import mc.obliviate.masterduels.game.MatchDataStorage;
 import mc.obliviate.masterduels.game.MatchStateType;
-import mc.obliviate.masterduels.game.team.Team;
+import mc.obliviate.masterduels.game.Team;
 import mc.obliviate.masterduels.kit.InventoryStorer;
-import mc.obliviate.masterduels.user.team.Member;
+import mc.obliviate.masterduels.user.Member;
+import mc.obliviate.masterduels.user.UserHandler;
 import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.Utils;
@@ -48,8 +48,8 @@ public class MatchEndingState implements MatchState {
 		if (!member.getTeam().getMembers().contains(member)) return;
 
 		Bukkit.getPluginManager().callEvent(new DuelMatchMemberLeaveEvent(member));
-		DataHandler.getUsers().remove(member.getPlayer().getUniqueId());
-		member.getMatch().getGameDataStorage().getGameTeamManager().unregisterMember(member);
+		UserHandler.switchUser(member);
+		member.getMatch().removeMember(member);
 
 		if (!USE_PLAYER_INVENTORIES && !InventoryStorer.restore(member.getPlayer())) {
 			Logger.severe("inventory could not restored: " + member.getPlayer());

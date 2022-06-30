@@ -2,7 +2,7 @@ package mc.obliviate.masterduels.api.spectator;
 
 import mc.obliviate.masterduels.api.arena.MatchEvent;
 import mc.obliviate.masterduels.game.Match;
-import mc.obliviate.masterduels.user.spectator.Spectator;
+import mc.obliviate.masterduels.user.Spectator;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
@@ -22,7 +22,7 @@ public class DuelMatchSpectatorSwitchEvent extends Event implements MatchEvent {
 
 	@Override
 	public Match getMatch() {
-		return spectator.getGame();
+		return spectator.getMatch();
 	}
 
 	@Override

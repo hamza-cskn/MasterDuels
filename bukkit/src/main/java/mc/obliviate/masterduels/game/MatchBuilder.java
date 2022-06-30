@@ -1,46 +1,42 @@
 package mc.obliviate.masterduels.game;
 
+import com.google.common.base.Preconditions;
 import mc.obliviate.masterduels.arena.Arena;
-import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.game.gamerule.GameRule;
-import mc.obliviate.masterduels.game.team.TeamBuilder;
-import mc.obliviate.masterduels.game.team.TeamBuilderManager;
 import mc.obliviate.masterduels.kit.Kit;
-import mc.obliviate.masterduels.user.DuelUser;
 import mc.obliviate.masterduels.user.IUser;
-import mc.obliviate.masterduels.user.team.Member;
+import mc.obliviate.masterduels.user.Member;
+import mc.obliviate.masterduels.user.UserHandler;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.time.Duration;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
+/**
+ * this object uses match field as lock
+ * when match field is not null, match builder is locked.
+ **/
 public class MatchBuilder {
 
-	public static final Map<UUID, MatchBuilder> GAME_BUILDER_MAP = new HashMap<>();
-	private final TeamBuilderManager teamBuilderManager = new TeamBuilderManager(this);
-	private final UUID id;
-	private final List<Player> players = new ArrayList<>();
-	private final MatchDataStorage matchDataStorage = new MatchDataStorage();
+	private static final List<MatchBuilder> MATCH_BUILDERS = new ArrayList<>();
+
 	private Match match = null;
+	private final List<Player> players = new ArrayList<>();
+	private final MatchDataStorage matchDataStorage;
 
-	public MatchBuilder() {
-		this.id = UUID.randomUUID();
-
-		createRandomizedTeams();
-
-		GAME_BUILDER_MAP.put(id, this);
+	protected MatchBuilder() {
+		this.matchDataStorage = new MatchDataStorage();
 	}
 
-	public void createTeam(Player... players) {
-		createTeam(Arrays.asList(players));
-	}
-
-	public void createTeam(List<Player> players) {
-		teamBuilderManager.registerNewTeam(players);
+	protected MatchBuilder(MatchDataStorage matchDataStorage) {
+		this.matchDataStorage = matchDataStorage;
 	}
 
 	public Match build() {
-		final Arena arena = Arena.findArena(getTeamSize(), getTeamAmount());
+		final Arena arena = Arena.findArena(matchDataStorage.getGameTeamManager().getTeamSize(), matchDataStorage.getGameTeamManager().getTeamAmount());
 
 		if (arena == null) {
 			//arena could not found
@@ -48,72 +44,115 @@ public class MatchBuilder {
 		}
 
 		if (match != null) {
-			throw new IllegalStateException("Game Builder already built before.");
+			throw new IllegalStateException("Match Builder already built before.");
 		}
 
-		final Match game = new Match(arena, new MatchDataStorage());
-		teamBuilderManager.registerTeamsIntoGame(game);
+		final Match match = new Match(arena, matchDataStorage);
+		matchDataStorage.lock(match);
+		Preconditions.checkState(matchDataStorage.getGameTeamManager().getAllMembers().size() > 0, "there is no any player");
 
-		this.match = game;
-		destroy();
-		return game;
-	}
-
-	public Map<Integer, TeamBuilder> getTeamBuilders() {
-		return teamBuilderManager.getTeams();
-	}
-
-	public TeamBuilder getTeamBuilder(Player player) {
-		for (final TeamBuilder teamBuilder : getTeamBuilders().values()) {
-			if (teamBuilder.getMembers().contains(player)) return teamBuilder;
-		}
-		return null;
-	}
-
-	public Match getMatch() {
+		this.match = match;
 		return match;
+	}
+
+	public void addPlayer(final Player player) {
+		addPlayer(player, null, -1);
+	}
+
+	public void addPlayer(final Player player, Kit kit) {
+		addPlayer(player, kit, -1);
+	}
+
+	public void addPlayer(final Player player, Kit kit, int teamNo) {
+		Preconditions.checkState(!isLocked(), "this object is locked");
+		Preconditions.checkArgument(player.isOnline(), "offline player couldn't add");
+
+		final IUser user = UserHandler.getUser(player.getUniqueId());
+		Preconditions.checkState(!(user instanceof Member), "this player already is in a duel game");
+
+		final int availableTeamNo = teamNo > 0 ? teamNo : getAvailableTeamNo();
+		Preconditions.checkState(availableTeamNo > 0, "any available team not found.");
+
+		if (user.isInMatchBuilder()) {
+			user.getMatchBuilder().removePlayer(user);
+		}
+
+		Bukkit.broadcastMessage("updated: " + user);
+		user.setMatchBuilder(this);
+
+		players.add(player);
+		matchDataStorage.getGameTeamManager().registerPlayer(player, kit, availableTeamNo);
+	}
+
+	public void removePlayer(IUser user) {
+		players.remove(user.getPlayer());
+		matchDataStorage.getGameTeamManager().unregisterPlayer(user);
+		user.exitMatchBuilder();
+		if (players.size() == 0) {
+			destroy();
+		}
+	}
+
+	public void removePlayer(Player player) {
+		final IUser user = UserHandler.getUser(player.getUniqueId());
+		removePlayer(user);
+	}
+
+	public List<Player> getPlayers() {
+		return Collections.unmodifiableList(players);
+	}
+
+	private void randomizeTeams() {
+		if (isLocked()) throw new IllegalStateException("this object is locked");
+
+		final int size = matchDataStorage.getGameTeamManager().getTeamSize();
+		final int amount = matchDataStorage.getGameTeamManager().getTeamAmount();
+
+		for (int teamNo = 1; teamNo <= amount; teamNo++) {
+			final List<Player> playerList = players.subList(Math.min(players.size(), (teamNo - 1) * size), Math.min(players.size(), teamNo * size));
+			for (Player player : playerList) {
+				matchDataStorage.getGameTeamManager().registerPlayer(player, null, teamNo);
+			}
+		}
+	}
+
+	public int getAvailableTeamNo() {
+		for (Team.Builder teamBuilder : matchDataStorage.getGameTeamManager().getTeamBuilders()) {
+			if (teamBuilder.getUsers().size() < matchDataStorage.getGameTeamManager().getTeamSize())
+				return teamBuilder.getTeamId();
+		}
+		return -1;
+	}
+
+	public Team getTeam(Player player) {
+		return matchDataStorage.getGameTeamManager().getTeam(player);
+	}
+
+	public MatchBuilder setTeamsAttributes(int size, int amount) {
+		matchDataStorage.getGameTeamManager().setTeamsAttributes(size, amount);
+		randomizeTeams();
+		return this;
 	}
 
 	public int getTeamSize() {
 		return matchDataStorage.getGameTeamManager().getTeamSize();
 	}
 
-	public MatchBuilder setTeamSize(int teamSize) {
-		matchDataStorage.getGameTeamManager().setTeamSize(teamSize);
-		createRandomizedTeams();
-		return this;
-	}
-
 	public int getTeamAmount() {
 		return matchDataStorage.getGameTeamManager().getTeamAmount();
 	}
 
-	public MatchBuilder setTeamAmount(int teamAmount) {
-		matchDataStorage.getGameTeamManager().setTeamAmount(teamAmount);
-		createRandomizedTeams();
+	public MatchBuilder setDuration(Duration duration) {
+		matchDataStorage.setMatchDuration(duration);
 		return this;
 	}
 
-	public void createRandomizedTeams() {
-		teamBuilderManager.getTeams().clear();
-		for (int i = 1; i <= getTeamAmount(); i++) {
-			final List<Player> playerList = players.subList(Math.min(players.size(), (i - 1) * getTeamSize()), Math.min(players.size(), i * getTeamSize()));
-			createTeam(playerList);
-		}
-
-	}
-
-	public Kit getKit() {
-		return matchDataStorage.getKit();
-	}
-
-	public MatchBuilder setKit(Kit kit) {
-		matchDataStorage.setKit(kit);
-		return this;
+	public Duration getDuration() {
+		return matchDataStorage.getMatchDuration();
 	}
 
 	public int getTotalRounds() {
-		return matchDataStorage.getGameRoundData().getTotalRounds();
+		return matchDataStorage.getRoundData().getTotalRounds();
 	}
 
 	public MatchBuilder setTotalRounds(int totalRounds) {
@@ -121,93 +160,39 @@ public class MatchBuilder {
 		return this;
 	}
 
-	public Duration getMatchDuration() {
-		return matchDataStorage.getMatchDuration();
-	}
-
-	public MatchBuilder setMatchDuration(Duration matchTime) {
-		matchDataStorage.setMatchDuration(matchTime);
+	public MatchBuilder addRule(GameRule rule) {
+		matchDataStorage.addRule(rule);
 		return this;
 	}
 
-	public List<GameRule> getGameRules() {
+	public List<GameRule> getRules() {
 		return matchDataStorage.getGameRules();
 	}
 
-	public void addGameRule(GameRule rule) {
-		if (getGameRules().contains(rule)) return;
-		getGameRules().add(rule);
+	public MatchBuilder removeRule(GameRule rule) {
+		matchDataStorage.removeRule(rule);
+		return this;
 	}
 
-
-	public void removeGameRule(GameRule rule) {
-		getGameRules().remove(rule);
+	public MatchBuilder clearRules() {
+		matchDataStorage.clearRules();
+		return this;
 	}
 
-	public List<Player> getPlayers() {
-		return players;
+	public MatchDataStorage getData() {
+		return matchDataStorage;
 	}
 
-	public boolean addPlayer(final Player player) {
-		final MatchBuilder playerMatchBuilder = GAME_BUILDER_MAP.get(player.getUniqueId());
-		if (playerMatchBuilder != null) {
-			playerMatchBuilder.destroy();
-		}
-
-		if (!player.isOnline()) {
-			return false;
-		}
-
-		DuelUser duelUser = DuelUser.getDuelUser(player.getUniqueId());
-		if (duelUser.isInMatchBuilder()) {
-			return false;
-		}
-
-		final IUser user = DataHandler.getUser(player.getUniqueId());
-
-		if (user instanceof Member) {
-			return false;
-		}
-
-		for (final MatchBuilder builder : GAME_BUILDER_MAP.values()) {
-			//todo try to join a game builder when you have a game creator.
-			if (builder.getPlayers().contains(player)) {
-				return false;
-			}
-		}
-
-		final TeamBuilder team = getAvailableTeam();
-		if (team == null) return false;
-		duelUser.setMatchBuilder(this);
-		players.add(player);
-		team.add(player);
-
-		return true;
-	}
-
-	public TeamBuilder getAvailableTeam() {
-		for (TeamBuilder teamBuilder : teamBuilderManager.getTeams().values()) {
-			if (teamBuilder.getMembers().size() < teamBuilder.getSize()) return teamBuilder;
-		}
-		return null;
-	}
-
-	public void removePlayer(Player player) {
-		DuelUser duelUser = DuelUser.getDuelUser(player.getUniqueId());
-		duelUser.exitMatchBuilder();
-		players.remove(player);
-		teamBuilderManager.getTeam(player.getUniqueId()).remove(player);
+	public boolean isLocked() {
+		return match != null;
 	}
 
 	public void destroy() {
 		//unregister game builder
-		for (Player player : players) {
+		MATCH_BUILDERS.remove(this);
+		for (Player player : new ArrayList<Player>(players)) {
 			removePlayer(player);
 		}
-		GAME_BUILDER_MAP.remove(id);
 	}
 
-	public UUID getId() {
-		return id;
-	}
 }

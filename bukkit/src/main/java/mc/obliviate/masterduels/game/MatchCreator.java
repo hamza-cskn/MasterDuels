@@ -1,18 +1,20 @@
 package mc.obliviate.masterduels.game;
 
 import mc.obliviate.masterduels.data.ConfigurationHandler;
-import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.game.gamerule.GameRule;
 import mc.obliviate.masterduels.invite.Invite;
 import mc.obliviate.masterduels.invite.InviteUtils;
 import mc.obliviate.masterduels.kit.Kit;
-import mc.obliviate.masterduels.user.DuelUser;
+import mc.obliviate.masterduels.user.IUser;
+import mc.obliviate.masterduels.user.Member;
+import mc.obliviate.masterduels.user.UserHandler;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
 import mc.obliviate.masterduels.utils.timer.TimerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.time.Duration;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -35,13 +37,14 @@ public class MatchCreator {
 	public static int MAX_ROUNDS;
 	public static int MIN_ROUNDS;
 
+	//invited player's uuid, invite
 	private final Map<UUID, Invite> invites = new HashMap<>();
 	private final UUID ownerPlayer;
 	private final MatchBuilder builder;
 
 	public MatchCreator(UUID ownerPlayer) {
 		this.ownerPlayer = ownerPlayer;
-		this.builder = new MatchBuilder();
+		this.builder = Match.create().setTeamsAttributes(1, 2).setDuration(Duration.ofMinutes(5)).setTotalRounds(1).setTotalRounds(1);
 
 		//check: player uuid is not null
 		if (ownerPlayer == null) destroy();
@@ -72,7 +75,6 @@ public class MatchCreator {
 		return invites;
 	}
 
-
 	public void trySendInvite(final Player sender, final Player target, final Consumer<Invite> response) {
 
 		//check: target is online
@@ -87,14 +89,15 @@ public class MatchCreator {
 			return;
 		}
 
+		IUser user = UserHandler.getUser(target.getUniqueId());
 		//check: target is not in duel
-		if (DataHandler.getMember(target.getUniqueId()) != null) {
+		if (user instanceof Member) {
 			MessageUtils.sendMessage(sender, "target-already-in-duel");
 			return;
 		}
 
 		//check: target accepts invites
-		if (!DuelUser.getDuelUser(sender.getUniqueId()).inviteReceiving()) {
+		if (!user.inviteReceiving()) {
 			MessageUtils.sendMessage(sender, "invite.toggle.you-can-not-invite", new PlaceholderUtil().add("{target}", target.getName()));
 			return;
 		}
@@ -135,6 +138,7 @@ public class MatchCreator {
 		for (final Invite invite : invites.values()) {
 			invite.response(Invite.InviteState.CANCELLED);
 		}
+		builder.destroy();
 	}
 
 	public Match create() {

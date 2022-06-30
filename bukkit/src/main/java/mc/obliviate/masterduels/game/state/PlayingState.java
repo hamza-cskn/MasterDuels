@@ -2,13 +2,13 @@ package mc.obliviate.masterduels.game.state;
 
 import mc.obliviate.masterduels.api.DuelMatchMemberDeathEvent;
 import mc.obliviate.masterduels.api.DuelMatchMemberLeaveEvent;
-import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.game.Match;
 import mc.obliviate.masterduels.game.MatchStateType;
-import mc.obliviate.masterduels.game.team.Team;
+import mc.obliviate.masterduels.game.Team;
 import mc.obliviate.masterduels.kit.InventoryStorer;
-import mc.obliviate.masterduels.user.spectator.Spectator;
-import mc.obliviate.masterduels.user.team.Member;
+import mc.obliviate.masterduels.user.Member;
+import mc.obliviate.masterduels.user.Spectator;
+import mc.obliviate.masterduels.user.UserHandler;
 import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.Utils;
@@ -37,8 +37,6 @@ public class PlayingState implements MatchState {
 
 	@Override
 	public void onDamage(EntityDamageEvent event, Member victim, Member attacker) {
-		if (attacker != null)
-			attacker.getPlayer().sendMessage("You hitted to " + victim.getPlayer().getName());
 		if (event.getFinalDamage() >= victim.getPlayer().getHealth()) {
 			event.setCancelled(true);
 			onDeath(event, victim, attacker);
@@ -78,8 +76,8 @@ public class PlayingState implements MatchState {
 		if (!member.getTeam().getMembers().contains(member)) return;
 
 		Bukkit.getPluginManager().callEvent(new DuelMatchMemberLeaveEvent(member));
-		DataHandler.getUsers().remove(member.getPlayer().getUniqueId());
-		member.getMatch().getGameDataStorage().getGameTeamManager().unregisterMember(member);
+		UserHandler.switchUser(member);
+		member.getMatch().removeMember(member);
 
 		if (!USE_PLAYER_INVENTORIES && !InventoryStorer.restore(member.getPlayer())) {
 			Logger.severe("inventory could not restored: " + member.getPlayer());

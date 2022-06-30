@@ -1,7 +1,7 @@
 package mc.obliviate.masterduels.api;
 
 import mc.obliviate.masterduels.game.Match;
-import mc.obliviate.masterduels.game.team.Team;
+import mc.obliviate.masterduels.game.Team;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 

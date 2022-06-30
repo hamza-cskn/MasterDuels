@@ -3,14 +3,22 @@ package mc.obliviate.masterduels.utils;
 import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.utils.xmaterial.XMaterial;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class Utils {
+
+	private static final Map<UUID, String> nickedNames = new HashMap<>();
+
+	public static void setNick(UUID playerUniqueId, String nick) {
+		nickedNames.put(playerUniqueId, nick);
+	}
+
+	public static void resetNick(UUID playerUniqueId) {
+		nickedNames.remove(playerUniqueId);
+	}
 
 	public static final List<ItemStack> teamIcons = Arrays.asList(
 			XMaterial.RED_STAINED_GLASS.parseItem(),
@@ -32,13 +40,8 @@ public class Utils {
 		}
 	}
 
-	public static String getDisplayName(OfflinePlayer player) {
-		if (player instanceof Player) return getDisplayName(player.getPlayer());
-		return player.getName();
-	}
-
 	public static String getDisplayName(Player player) {
-		return player.getDisplayName();
+		return nickedNames.getOrDefault(player.getUniqueId(), player.getDisplayName());
 	}
 
 	public static void teleportToLobby(final Player player) {

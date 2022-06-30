@@ -1,11 +1,11 @@
 package mc.obliviate.masterduels.game.spectator;
 
 import mc.obliviate.masterduels.game.Match;
-import mc.obliviate.masterduels.user.spectator.Spectator;
-import mc.obliviate.masterduels.user.team.Member;
+import mc.obliviate.masterduels.user.Member;
+import mc.obliviate.masterduels.user.Spectator;
+import mc.obliviate.masterduels.user.UserHandler;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.playerreset.PlayerReset;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -16,11 +16,11 @@ public class SemiSpectatorStorage implements SpectatorStorage {
 	protected static final PlayerReset playerReset = new PlayerReset().excludeExp().excludeLevel().excludeInventory().excludeTitle();
 	private final MatchSpectatorManager gsm;
 	private final List<Spectator> spectators = new ArrayList<>();
-	private final Match game;
+	private final Match match;
 
-	public SemiSpectatorStorage(MatchSpectatorManager gsm, Match game) {
+	public SemiSpectatorStorage(MatchSpectatorManager gsm) {
 		this.gsm = gsm;
-		this.game = game;
+		this.match = gsm.getMatch();
 	}
 
 	private Spectator findSpectator(Player player) {
@@ -37,10 +37,9 @@ public class SemiSpectatorStorage implements SpectatorStorage {
 		if (!spectators.remove(spectator)) return;
 
 		//Bukkit.getPluginManager().callEvent(new DuelGameSpectatorLeaveEvent(spectator));
-		Bukkit.broadcastMessage("omni spectator unspectate()");
 		playerReset.reset(spectator.getPlayer());
 
-		for (final Member member : game.getAllMembers()) {
+		for (final Member member : match.getAllMembers()) {
 			member.getPlayer().showPlayer(spectator.getPlayer());
 		}
 	}
@@ -58,7 +57,7 @@ public class SemiSpectatorStorage implements SpectatorStorage {
 		final Spectator spectator = findSpectator(player);
 		if (spectator != null) return;
 
-		spectators.add(new Spectator(null, player));
+		spectators.add(UserHandler.switchSpectator(UserHandler.getUser(player.getUniqueId()), match));
 
 		/*final DuelGamePreSpectatorJoinEvent duelGamePreSpectatorJoinEvent = new DuelGamePreSpectatorJoinEvent(player, game);
 		Bukkit.getPluginManager().callEvent(duelGamePreSpectatorJoinEvent);
@@ -67,9 +66,7 @@ public class SemiSpectatorStorage implements SpectatorStorage {
 
 		new PlayerReset().excludeGamemode().excludeInventory().excludeLevel().excludeExp().reset(player);
 
-		Bukkit.broadcastMessage("omni spectator spectate()");
-
-		for (final Member member : game.getAllMembers()) {
+		for (final Member member : match.getAllMembers()) {
 			member.getPlayer().hidePlayer(player);
 		}
 

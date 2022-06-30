@@ -2,12 +2,12 @@ package mc.obliviate.masterduels.game.state;
 
 import mc.obliviate.masterduels.api.DuelMatchMemberLeaveEvent;
 import mc.obliviate.masterduels.data.ConfigurationHandler;
-import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.game.Match;
 import mc.obliviate.masterduels.game.MatchStateType;
 import mc.obliviate.masterduels.kit.Kit;
-import mc.obliviate.masterduels.user.spectator.Spectator;
-import mc.obliviate.masterduels.user.team.Member;
+import mc.obliviate.masterduels.user.Member;
+import mc.obliviate.masterduels.user.Spectator;
+import mc.obliviate.masterduels.user.UserHandler;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
 import org.bukkit.Bukkit;
@@ -24,7 +24,7 @@ public interface MatchState {
 	}
 
 	default void onCommand(PlayerCommandPreprocessEvent event) {
-		final Member member = DataHandler.getMember(event.getPlayer().getUniqueId());
+		final Member member = UserHandler.getMember(event.getPlayer().getUniqueId());
 		if (member == null || event.getPlayer().isOp()) return;
 		if (event.getMessage().startsWith("/")) {
 			if (!ConfigurationHandler.getConfig().getStringList("executable-commands-by-player." + getMatchStateType()).contains(event.getMessage())) {
@@ -42,7 +42,7 @@ public interface MatchState {
 		getMatch().getGameSpectatorManager().unspectate(spectator);
 	}
 
-	default void join(Player player, Kit kit, int teamNo) {
+	default void rejoin(Player player, Kit kit, int teamNo) {
 		player.sendMessage("You cannot join to game in this state.");
 	}
 

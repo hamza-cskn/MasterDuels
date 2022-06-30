@@ -2,58 +2,15 @@ package mc.obliviate.masterduels.data;
 
 import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.game.Match;
-import mc.obliviate.masterduels.game.team.Team;
-import mc.obliviate.masterduels.user.IUser;
-import mc.obliviate.masterduels.user.spectator.Spectator;
-import mc.obliviate.masterduels.user.team.Member;
 import org.bukkit.Location;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 public class DataHandler {
 
-	private static final Map<UUID, IUser> users = new HashMap<>();
 	private static final Map<Arena, Match> arenas = new HashMap<>();
-	public static int LOCK_TIME_IN_SECONDS = 3;
 	private static Location lobbyLocation = null;
-
-	public static Team getTeam(final UUID uuid) {
-		final Member member = getMember(uuid);
-		if (member == null) return null;
-		return member.getTeam();
-	}
-
-	public static Match getGame(final UUID uuid) {
-		final Team team = getTeam(uuid);
-		if (team == null) return null;
-		return team.getMatch();
-	}
-
-	public static Member getMember(final UUID uuid) {
-		final IUser user = users.get(uuid);
-		if (user instanceof Member) {
-			return (Member) user;
-		}
-		return null;
-	}
-
-	public static Spectator getSpectator(final UUID uuid) {
-		final IUser user = users.get(uuid);
-		if (user instanceof Spectator) {
-			return (Spectator) user;
-		}
-		return null;
-	}
-
-	public static IUser getUser(final UUID uuid) {
-		return users.get(uuid);
-	}
-
-	public static Map<UUID, IUser> getUsers() {
-		return users;
-	}
 
 	public static Map<Arena, Match> getArenas() {
 		return arenas;

@@ -9,7 +9,7 @@ import mc.obliviate.masterduels.api.arena.DuelMatchStateChangeEvent;
 import mc.obliviate.masterduels.game.Match;
 import mc.obliviate.masterduels.game.MatchDataStorage;
 import mc.obliviate.masterduels.game.MatchStateType;
-import mc.obliviate.masterduels.user.team.Member;
+import mc.obliviate.masterduels.user.Member;
 import mc.obliviate.masterduels.utils.Utils;
 import mc.obliviate.masterduels.utils.timer.TimerUtils;
 import org.bukkit.Bukkit;

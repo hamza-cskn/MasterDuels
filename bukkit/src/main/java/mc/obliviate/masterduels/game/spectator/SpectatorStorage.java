@@ -1,6 +1,6 @@
 package mc.obliviate.masterduels.game.spectator;
 
-import mc.obliviate.masterduels.user.spectator.Spectator;
+import mc.obliviate.masterduels.user.Spectator;
 import org.bukkit.entity.Player;
 
 import java.util.List;

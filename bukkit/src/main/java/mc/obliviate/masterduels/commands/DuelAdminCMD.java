@@ -1,6 +1,7 @@
 package mc.obliviate.masterduels.commands;
 
 import mc.obliviate.masterduels.MasterDuels;
+import mc.obliviate.masterduels.VaultUtil;
 import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.game.Match;
@@ -9,6 +10,7 @@ import mc.obliviate.masterduels.kit.Kit;
 import mc.obliviate.masterduels.kit.gui.KitListEditorGUI;
 import mc.obliviate.masterduels.setup.ArenaSetup;
 import mc.obliviate.masterduels.utils.MessageUtils;
+import mc.obliviate.masterduels.utils.Utils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
 import mc.obliviate.masterduels.utils.serializer.SerializerUtils;
 import org.bukkit.Bukkit;
@@ -37,7 +39,7 @@ public class DuelAdminCMD implements CommandExecutor {
 
 		final Player player = ((Player) sender).getPlayer();
 
-		if (!player.isOp()) return false;
+		if (!VaultUtil.checkPermission(player, "masterduels.admin")) return false;
 
 		if (args.length == 0) {
 			MessageUtils.sendMessage(player, "duel-command.admin.usage");
@@ -67,7 +69,6 @@ public class DuelAdminCMD implements CommandExecutor {
 			SerializerUtils.serializeLocationYAML(plugin.getConfigurationHandler().getData().createSection("lobby-location"), player.getLocation());
 			plugin.getConfigurationHandler().saveDataFile();
 			MessageUtils.sendMessage(player, "duel-command.admin.lobby-set");
-
 		} else if (args[0].equalsIgnoreCase("kit")) {
 			if (args.length == 1) {
 				MessageUtils.sendMessage(player, "kit.usage");
@@ -78,7 +79,6 @@ public class DuelAdminCMD implements CommandExecutor {
 			} else if (args[1].equalsIgnoreCase("save")) {
 				kitSave(player, Arrays.asList(args));
 			}
-
 		} else if (args[0].equalsIgnoreCase("arena")) {
 			if (args.length == 1) {
 				MessageUtils.sendMessage(player, "duel-command.arena.usage");
@@ -96,7 +96,15 @@ public class DuelAdminCMD implements CommandExecutor {
 		} else if (args[0].equalsIgnoreCase("teststart")) {
 			testStart(player, Arrays.asList(args));
 			return true;
-
+		} else if (args[0].equalsIgnoreCase("nick")) {
+			if (args.length == 1) {
+				Utils.resetNick(player.getUniqueId());
+				MessageUtils.sendMessage(player, "duel-command.admin.nick.reset");
+			} else {
+				Utils.setNick(player.getUniqueId(), args[1]);
+				MessageUtils.sendMessage(player, "duel-command.admin.nick.change", new PlaceholderUtil().add("{nick}", args[1]));
+			}
+			return true;
 		}
 		return true;
 	}
@@ -133,9 +141,9 @@ public class DuelAdminCMD implements CommandExecutor {
 			return;
 		}
 
-		final MatchBuilder gameBuilder = new MatchBuilder().setTeamSize(1).setTeamAmount(2).setMatchDuration(Duration.ofSeconds(1440));
-		gameBuilder.addPlayer(p1);
-		gameBuilder.addPlayer(p2);
+		final MatchBuilder gameBuilder = Match.create().setTeamsAttributes(1, 2).setDuration(Duration.ofSeconds(1440));
+		gameBuilder.addPlayer(p1, null);
+		gameBuilder.addPlayer(p2, null);
 
 		final Match game = gameBuilder.build();
 		if (game != null) {

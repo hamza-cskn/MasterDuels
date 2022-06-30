@@ -84,6 +84,7 @@ duel-command:
       &7 /dueladmin kit save <kit name> &8- &9saves your current inventory as new kit
       &7 /dueladmin kit editor &8- &9opens kit editor gui 
       &7 /dueladmin setlobby &8- &9sets lobby location to teleport players after duel games 
+      &7 /dueladmin nick [nickname] &8- &9changes display name for MasterDuels 
       &7 /dueladmin teststart <player 1> <player 2> [arena] &8- &9instantly starts a duel game between two players without invite.
     arena:
       disabled: '&7Arena &f{arena} &7successfully &cdisabled.'
@@ -92,6 +93,9 @@ duel-command:
         enable: '&cCorrect usage: /dueladmin arena enable <arena name>'
         disable: '&cCorrect usage: /dueladmin arena disable <arena name>'
     lobby-set: '&aThis location successfully saved as lobby.'
+    nick:
+      reset: '&7Your nick has been reset.'
+      change: '&7Your nick updated as &b{nick}&7.'
 
 no-arena-found-with-this-name: '&cNo arenas with this name found.'
 queue:
@@ -108,6 +112,7 @@ queue:
     &7 /duel queue join <queue name> &8- &9joins a duel queue
     &7 /duel queue leave &8- &9leaves a duel queue
   you-are-not-in-queue: '&cYou are not in queue.'
+  you-are-in-queue: '&cYou cannot do that while you''re in a queue'
 game-creator:
   none-kit-name: '&cNone'
 top:

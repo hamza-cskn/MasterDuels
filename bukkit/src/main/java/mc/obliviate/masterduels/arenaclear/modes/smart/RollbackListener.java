@@ -2,8 +2,8 @@ package mc.obliviate.masterduels.arenaclear.modes.smart;
 
 import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.arena.Arena;
-import mc.obliviate.masterduels.data.DataHandler;
-import mc.obliviate.masterduels.user.team.Member;
+import mc.obliviate.masterduels.user.Member;
+import mc.obliviate.masterduels.user.UserHandler;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -29,7 +29,7 @@ public class RollbackListener implements Listener {
 
 	@EventHandler
 	public void onBlockPlace(BlockPlaceEvent e) {
-		final Member member = DataHandler.getMember(e.getPlayer().getUniqueId());
+		final Member member = UserHandler.getMember(e.getPlayer().getUniqueId());
 		if (member == null) return;
 		final Arena arena = member.getMatch().getArena();
 		final Block block = e.getBlockPlaced();
@@ -89,7 +89,7 @@ public class RollbackListener implements Listener {
 	@EventHandler
 	public void onBlockBreak(BlockBreakEvent e) {
 		if (preventNonPlacedBlocks) {
-			final Member member = DataHandler.getMember(e.getPlayer().getUniqueId());
+			final Member member = UserHandler.getMember(e.getPlayer().getUniqueId());
 			if (member == null) return;
 			if (e.getBlock().getMetadata("placedByPlayer").isEmpty()) {
 				e.setCancelled(true);
@@ -100,7 +100,7 @@ public class RollbackListener implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onBucketEmpty(PlayerBucketEmptyEvent e) {
-		final Member member = DataHandler.getMember(e.getPlayer().getUniqueId());
+		final Member member = UserHandler.getMember(e.getPlayer().getUniqueId());
 		if (member == null) return;
 		final Arena arena = member.getMatch().getArena();
 		final Block block = e.getBlockClicked();
