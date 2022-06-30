@@ -249,10 +249,14 @@ duel-creator:
         lore:
           - ''
           - '&7Put a player''s head here'
-          - '&7to add him to team.'
+          - '&7to switch team.'
       player-slot:
         material: PLAYER_HEAD
         display-name: '&e{player}'
+        lore:
+          - ''
+          - '&7Put another slot to switch team'
+          - '&7Press Q to kick player'
       team-slot:
         dynamic-materials:
           - RED_STAINED_GLASS
