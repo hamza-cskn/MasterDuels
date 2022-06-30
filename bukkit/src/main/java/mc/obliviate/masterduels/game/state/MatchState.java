@@ -1,6 +1,5 @@
 package mc.obliviate.masterduels.game.state;
 
-import mc.obliviate.masterduels.api.DuelMatchMemberLeaveEvent;
 import mc.obliviate.masterduels.data.ConfigurationHandler;
 import mc.obliviate.masterduels.game.Match;
 import mc.obliviate.masterduels.game.MatchStateType;
@@ -10,7 +9,6 @@ import mc.obliviate.masterduels.user.Spectator;
 import mc.obliviate.masterduels.user.UserHandler;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
@@ -34,9 +32,7 @@ public interface MatchState {
 		}
 	}
 
-	default void leave(Member member) {
-		Bukkit.getPluginManager().callEvent(new DuelMatchMemberLeaveEvent(member));
-	}
+	void leave(Member member);
 
 	default void leave(Spectator spectator) {
 		getMatch().getGameSpectatorManager().unspectate(spectator);

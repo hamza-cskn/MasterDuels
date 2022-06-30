@@ -31,4 +31,10 @@ public class Spectator extends User {
 	public Player getPlayer() {
 		return player;
 	}
+
+	@Override
+	public void exitMatchBuilder() {
+		super.exitMatchBuilder();
+		UserHandler.switchUser(this);
+	}
 }

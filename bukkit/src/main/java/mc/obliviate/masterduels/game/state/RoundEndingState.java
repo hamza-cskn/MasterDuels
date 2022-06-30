@@ -2,6 +2,7 @@ package mc.obliviate.masterduels.game.state;
 
 import mc.obliviate.masterduels.game.Match;
 import mc.obliviate.masterduels.game.MatchStateType;
+import mc.obliviate.masterduels.user.Member;
 
 public class RoundEndingState implements MatchState {
 
@@ -20,6 +21,11 @@ public class RoundEndingState implements MatchState {
 	@Override
 	public void next() {
 		match.setGameState(new RoundStartingState(match));
+	}
+
+	@Override
+	public void leave(Member member) {
+		//todo unleavable state
 	}
 
 	@Override

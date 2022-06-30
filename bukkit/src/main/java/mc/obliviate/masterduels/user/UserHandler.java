@@ -44,21 +44,18 @@ public class UserHandler {
 	}
 
 	public static Member switchMember(IUser user, Team team, Kit kit) {
-		if (user instanceof Member) return (Member) user;
 		final Member member = new Member(user.getPlayer(), team, kit, user.inviteReceiving(), user.getStatistic());
 		registerUser(user.getPlayer().getUniqueId(), member);
 		return member;
 	}
 
 	public static User switchUser(IUser user) {
-		if (user instanceof User) return (User) user;
 		final User rUser = new User(user.getPlayer(), user.inviteReceiving(), user.getStatistic());
 		registerUser(user.getPlayer().getUniqueId(), rUser);
 		return rUser;
 	}
 
 	public static Spectator switchSpectator(IUser user, Match match) {
-		if (user instanceof Spectator) return (Spectator) user;
 		final Spectator spectator = new Spectator(user.getPlayer(), match, user.inviteReceiving(), user.getStatistic());
 		registerUser(user.getPlayer().getUniqueId(), spectator);
 		return spectator;

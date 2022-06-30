@@ -8,7 +8,6 @@ import mc.obliviate.masterduels.game.MatchStateType;
 import mc.obliviate.masterduels.kit.InventoryStorer;
 import mc.obliviate.masterduels.user.Member;
 import mc.obliviate.masterduels.user.Spectator;
-import mc.obliviate.masterduels.user.UserHandler;
 import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.Utils;
@@ -51,7 +50,6 @@ public class MatchUninstallingState implements MatchState {
 		if (!member.getTeam().getMembers().contains(member)) return;
 
 		Bukkit.getPluginManager().callEvent(new DuelMatchMemberLeaveEvent(member));
-		UserHandler.switchUser(member);
 		member.getMatch().removeMember(member);
 
 		if (member.getPlayer().isOnline()) {

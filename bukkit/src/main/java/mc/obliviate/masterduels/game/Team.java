@@ -45,6 +45,7 @@ public class Team {
 
 	protected void unregisterMember(Member member) {
 		members.remove(member);
+		member.exitMatchBuilder();
 	}
 
 	public Match getMatch() {

@@ -35,4 +35,9 @@ public class Member extends User implements IUser {
 		return kit;
 	}
 
+	@Override
+	public void exitMatchBuilder() {
+		super.exitMatchBuilder();
+		UserHandler.switchUser(this);
+	}
 }
