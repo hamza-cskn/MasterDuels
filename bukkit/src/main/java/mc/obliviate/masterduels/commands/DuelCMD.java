@@ -104,7 +104,7 @@ public class DuelCMD implements CommandExecutor {
 		} else if (args[0].equalsIgnoreCase("queue") && DuelQueueHandler.enabled) {
 			queue(player, Arrays.asList(args));
 		} else if (args[0].equalsIgnoreCase("creator")) {
-			if (!user.isInMatchBuilder()) {
+			if (DuelQueue.findQueueOfPlayer(player) == null) {
 				MatchCreator matchCreator = MatchCreator.getGameCreatorMap().get(player.getUniqueId());
 				if (matchCreator == null) matchCreator = new MatchCreator(player.getUniqueId());
 				new DuelMatchCreatorGUI(player, matchCreator).open();
