@@ -49,9 +49,6 @@ public class DuelTeamManagerGUI extends ConfigurableGui {
 		final MatchBuilder matchBuilder = matchCreator.getBuilder();
 		final MatchTeamManager matchTeamManager = matchBuilder.getData().getGameTeamManager();
 
-		event.getPlayer().sendMessage("Excepted: " + matchTeamManager.getTeamAmount() + ", Registered: " + matchTeamManager.getTeamBuilders().size());
-
-
 		for (int teamNo = 0; teamNo < matchBuilder.getTeamAmount(); teamNo++) {
 
 			final Icon icon = new Icon(Utils.teamIcons.get(teamNo).clone()).setName(guiConfig.teamIconName).setLore(guiConfig.teamIconLore);

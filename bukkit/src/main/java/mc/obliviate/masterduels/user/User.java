@@ -3,7 +3,6 @@ package mc.obliviate.masterduels.user;
 import mc.obliviate.masterduels.data.SQLManager;
 import mc.obliviate.masterduels.game.MatchBuilder;
 import mc.obliviate.masterduels.statistics.DuelStatistic;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.sql.ResultSet;
@@ -24,19 +23,16 @@ public class User implements IUser {
 	}
 
 	protected static User loadDuelUser(SQLManager sqlManager, Player player) {
-		Bukkit.broadcastMessage("user loading process started.");
 		if (sqlManager.getPlayerDataTable().exist(player.getUniqueId())) {
 			ResultSet rs = sqlManager.getPlayerDataTable().select(player.getUniqueId().toString());
 			DuelStatistic statistic = SQLManager.deserializeStatistic(rs, false);
 			try {
 				boolean receivesInvites = rs.getBoolean("receivesInvites");
-				Bukkit.getLogger().info("[MasterDuels] Player " + player.getName() + " duel user data found. Loading.");
 				return new User(player, receivesInvites, statistic);
 			} catch (SQLException e) {
 				throw new RuntimeException(e);
 			}
 		} else {
-			Bukkit.getLogger().info("[MasterDuels] Player " + player.getName() + " duel user data could not find. New data creating.");
 			return new User(player, true, DuelStatistic.createDefaultInstance(player.getUniqueId()));
 		}
 	}
@@ -50,8 +46,6 @@ public class User implements IUser {
 	}
 
 	public void exitMatchBuilder() {
-		Bukkit.broadcastMessage("exiting");
-		UserHandler.switchUser(this);
 		setMatchBuilder(null);
 	}
 

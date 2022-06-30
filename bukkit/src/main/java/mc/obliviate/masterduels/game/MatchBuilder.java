@@ -7,7 +7,6 @@ import mc.obliviate.masterduels.kit.Kit;
 import mc.obliviate.masterduels.user.IUser;
 import mc.obliviate.masterduels.user.Member;
 import mc.obliviate.masterduels.user.UserHandler;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.time.Duration;
@@ -77,7 +76,6 @@ public class MatchBuilder {
 			user.getMatchBuilder().removePlayer(user);
 		}
 
-		Bukkit.broadcastMessage("updated: " + user);
 		user.setMatchBuilder(this);
 
 		players.add(player);

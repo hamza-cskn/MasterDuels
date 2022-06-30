@@ -7,7 +7,6 @@ import mc.obliviate.masterduels.user.IUser;
 import mc.obliviate.masterduels.user.Member;
 import mc.obliviate.masterduels.user.Spectator;
 import mc.obliviate.masterduels.user.UserHandler;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -107,7 +106,6 @@ public class MatchTeamManager {
 		Preconditions.checkState(!isLocked(), "this object is locked");
 		if (teamBuilders.size() < teamAmount) {
 			teamBuilders.add(new Team.Builder(teamBuilders.size() + 1, teamSize));
-			Bukkit.broadcastMessage("team registered: " + teamBuilders.size());
 		} else {
 			throw new IllegalStateException("team amount limit is " + getTeamAmount() + ". all teams has created already. team amount is " + teams.size());
 		}
