@@ -32,8 +32,9 @@ public class DuelInvitesGUI extends ConfigurableGui {
 		putIcon("invite", new PlaceholderUtil().add("{players-amount}", matchCreator.getBuilder().getPlayers().size() + "").add("{pending-invites-amount}", matchCreator.getInvites().size() + ""), e -> {
 			player.closeInventory();
 			new ChatEntry(player.getUniqueId(), getPlugin()).onResponse(chatEvent -> {
-				matchCreator.trySendInvite(player, Bukkit.getPlayer(chatEvent.getMessage()), response -> {
-					matchCreator.getBuilder().addPlayer(Bukkit.getPlayer(chatEvent.getMessage()));
+				final Player receiver = Bukkit.getPlayer(chatEvent.getMessage());
+				matchCreator.trySendInvite(player, receiver, response -> {
+					matchCreator.getBuilder().addPlayer(receiver);
 				});
 				open();
 			});
