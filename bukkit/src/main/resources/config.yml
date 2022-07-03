@@ -44,15 +44,22 @@ execute-console-commands:
   #- this_command_will_be_executed_by_console_when_a_duel_game_ended
 # placeholders are unsupported yet.
 
-executable-commands-by-player:
-  PLAYING:
-  #- this_command_is_executable_in_battle
-  ROUND_STARTING:
-  #- this_command_is_executable_before_game_start
-  MATCH_ENDING:
-  #- this_command_is_executable_after_victim_dead
-  #- this_command_is_executable_after_victim_dead_too
-  #empty lists means all commands should be blocked.
+soup-regeneration-amount: 3.5
+
+action-limitations:
+  # DISALLOW -> disallows item dropping (pressing Q)
+  # FRIENDLY -> players cannot pickup items which is dropped (pressing Q) by their opponents
+  # ALLOW -> players can drop and pickup all items
+  item-pickup: DISALLOW
+  executable-commands-during-match:
+    #PLAYING:
+    #ROUND_STARTING:
+    #ROUND_ENDING:
+    MATCH_ENDING:
+      - enderchest
+      - ec
+      - pv
+      - chest
 
 duel-game-lock:
   lock-duration: 7 #in seconds
