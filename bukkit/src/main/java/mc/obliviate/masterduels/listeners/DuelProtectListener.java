@@ -48,10 +48,15 @@ public class DuelProtectListener implements Listener {
 
 	@EventHandler
 	public void onInteract(final PlayerInteractEvent e) {
-		if (isUser(e.getPlayer())) {
-			if (e.getAction() == Action.PHYSICAL || (e.getClickedBlock() != null && (e.getClickedBlock().getState() instanceof InventoryHolder || e.getClickedBlock().getType().equals(Material.WOOD_BUTTON) || e.getClickedBlock().getType().equals(Material.STONE_BUTTON)))) {
+		final IUser user = UserHandler.getUser(e.getPlayer().getUniqueId());
+		if (user instanceof Spectator) {
+			e.setCancelled(true);
+		} else if (user instanceof Member) {
+			if (e.getAction() == Action.PHYSICAL || (e.getClickedBlock() != null && (e.getClickedBlock().getState() instanceof InventoryHolder))) {
 				e.setCancelled(true);
-			} else if (e.getClickedBlock() != null) {
+				return;
+			}
+			if (e.getClickedBlock() != null) {
 				switch (e.getClickedBlock().getType()) {
 					case WORKBENCH:
 					case ANVIL:
