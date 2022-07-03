@@ -18,27 +18,33 @@ import static mc.obliviate.masterduels.kit.Kit.USE_PLAYER_INVENTORIES;
 
 public class MatchEndingState implements MatchState {
 
+	private final boolean naturalEnding;
 	private final Match match;
 
 	public MatchEndingState(Match match) {
+		this(match, true);
+	}
+
+	public MatchEndingState(Match match, boolean naturalEnding) {
+		this.naturalEnding = naturalEnding;
 		this.match = match;
 		init();
 	}
 
 	private void init() {
-		Bukkit.getPluginManager().callEvent(new DuelMatchEndEvent(match, this));
+		Bukkit.getPluginManager().callEvent(new DuelMatchEndEvent(match, this, naturalEnding));
 
 		match.getGameTaskManager().cancelTask("REMAINING_TIME");
 
 		match.getGameDataStorage().setFinishTime(System.currentTimeMillis() + MatchDataStorage.getEndDelay().toMillis());
-		match.getGameTaskManager().delayedTask("uninstall", match::uninstall, MatchDataStorage.getEndDelay().toSeconds() * 20);
+		match.getGameTaskManager().delayedTask("uninstall", this::next, MatchDataStorage.getEndDelay().toSeconds() * 20);
 
 		match.broadcastGameEnd();
-		Logger.debug(Logger.DebugPart.GAME, "finish game - process finished");
 	}
 
 	@Override
 	public void next() {
+		if (!match.getMatchState().equals(this)) return;
 		match.setGameState(new MatchUninstallingState(match));
 	}
 
@@ -82,7 +88,7 @@ public class MatchEndingState implements MatchState {
 
 	@Override
 	public Match getMatch() {
-		return null;
+		return match;
 	}
 
 }

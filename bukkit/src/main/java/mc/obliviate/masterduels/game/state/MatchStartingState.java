@@ -28,6 +28,7 @@ public class MatchStartingState implements MatchState {
 
 	@Override
 	public void next() {
+		if (!match.getMatchState().equals(this)) return;
 		match.setGameState(new RoundStartingState(match));
 	}
 
@@ -47,6 +48,6 @@ public class MatchStartingState implements MatchState {
 
 	@Override
 	public Match getMatch() {
-		return null;
+		return match;
 	}
 }

@@ -1,23 +1,15 @@
 package mc.obliviate.masterduels.gui;
 
-import mc.obliviate.inventory.Icon;
-import mc.obliviate.masterduels.history.MatchHistoryLog;
-import mc.obliviate.masterduels.utils.MessageUtils;
-import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
-import mc.obliviate.masterduels.utils.timer.TimerUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryOpenEvent;
-import org.bukkit.inventory.ItemStack;
-
-import java.util.*;
 
 public class DuelHistoryLogGUI extends ConfigurableGui {
+	public DuelHistoryLogGUI(Player player, String id) {
+		super(player, id);
+	}
 
-	public static Config guiConfig;
+	//public static Config guiConfig;
 
-	public DuelHistoryLogGUI(Player player) {
+	/*public DuelHistoryLogGUI(Player player) {
 		super(player, "duel-history-log-gui");
 		getPaginationManager().getSlots().addAll(guiConfig.pageSlots);
 		for (final MatchHistoryLog log : MatchHistoryLog.historyCache) {
@@ -34,15 +26,18 @@ public class DuelHistoryLogGUI extends ConfigurableGui {
 		putDysfunctionalIcons();
 	}
 
+	 */
+
 	@Override
 	public String getSectionPath() {
 		return "game-history-gui";
 	}
-
+/*
 	private enum HistoryIconType {
 		SOLO,
 		NON_SOLO
 	}
+
 
 	public static class Config {
 
@@ -98,4 +93,6 @@ public class DuelHistoryLogGUI extends ConfigurableGui {
 			return icon;
 		}
 	}
+
+	 */
 }

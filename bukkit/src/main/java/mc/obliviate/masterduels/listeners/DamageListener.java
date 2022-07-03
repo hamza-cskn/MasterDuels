@@ -86,8 +86,7 @@ public class DamageListener implements Listener {
 				}
 			}
 
-			//todo find another way which is makes it without cast
-			MatchState gameState = (MatchState) victimMember.getTeam().getMatch().getMatchState();
+			MatchState gameState = victimMember.getTeam().getMatch().getMatchState();
 			gameState.onDamage(e, victimMember, attackerMember);
 
 		} else if (victim instanceof Spectator) {

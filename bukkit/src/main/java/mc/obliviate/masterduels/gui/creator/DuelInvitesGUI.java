@@ -3,12 +3,17 @@ package mc.obliviate.masterduels.gui.creator;
 import mc.obliviate.inventory.Icon;
 import mc.obliviate.masterduels.game.MatchCreator;
 import mc.obliviate.masterduels.gui.ConfigurableGui;
-import mc.obliviate.masterduels.invite.Invite;
+import mc.obliviate.masterduels.queue.DuelQueue;
 import mc.obliviate.masterduels.setup.chatentry.ChatEntry;
+import mc.obliviate.masterduels.user.IUser;
+import mc.obliviate.masterduels.user.Member;
+import mc.obliviate.masterduels.user.UserHandler;
 import mc.obliviate.masterduels.utils.MessageUtils;
+import mc.obliviate.masterduels.utils.Utils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
 import mc.obliviate.masterduels.utils.xmaterial.XMaterial;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 
@@ -39,13 +44,22 @@ public class DuelInvitesGUI extends ConfigurableGui {
 				open();
 			});
 			MessageUtils.sendMessage(player, "enter-player-name-to-invite");
-			int i = 9;
-			for (Invite invite : matchCreator.getInvites().values()) {
-				addItem(i++, new Icon(XMaterial.MAP.parseItem()).setName(Bukkit.getPlayer(invite.getRecipientUniqueId()).getName()).onClick(event2 -> {
-					invite.response(Invite.InviteState.ACCEPTED);
-				}));
-			}
+
 		});
+		int i = 9;
+		for (Player loopPlayer : Bukkit.getOnlinePlayers()) {
+			if (matchCreator.getBuilder().getPlayers().contains(loopPlayer.getUniqueId())) return;
+			if (matchCreator.getInvites().containsKey(loopPlayer.getUniqueId())) return;
+			final IUser user = UserHandler.getUser(loopPlayer.getUniqueId());
+			if (user instanceof Member) return;
+			if (DuelQueue.findQueueOfPlayer(loopPlayer) != null) return;
+
+			addItem(i++, new Icon(XMaterial.PLAYER_HEAD.parseItem()).setName(ChatColor.GRAY + Utils.getDisplayName(loopPlayer)).setLore("", ChatColor.YELLOW + "Click to invite").onClick(ev -> {
+				matchCreator.trySendInvite(this.player, loopPlayer, response -> {
+					matchCreator.getBuilder().addPlayer(loopPlayer);
+				});
+			}));
+		}
 	}
 
 	@Override

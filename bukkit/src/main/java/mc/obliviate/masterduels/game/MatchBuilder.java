@@ -7,12 +7,14 @@ import mc.obliviate.masterduels.kit.Kit;
 import mc.obliviate.masterduels.user.IUser;
 import mc.obliviate.masterduels.user.Member;
 import mc.obliviate.masterduels.user.UserHandler;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * this object uses match field as lock
@@ -20,10 +22,8 @@ import java.util.List;
  **/
 public class MatchBuilder {
 
-	private static final List<MatchBuilder> MATCH_BUILDERS = new ArrayList<>();
-
 	private Match match = null;
-	private final List<Player> players = new ArrayList<>();
+	private final List<UUID> players = new ArrayList<>();
 	private final MatchDataStorage matchDataStorage;
 
 	protected MatchBuilder() {
@@ -78,12 +78,12 @@ public class MatchBuilder {
 
 		user.setMatchBuilder(this);
 
-		players.add(player);
+		players.add(player.getUniqueId());
 		matchDataStorage.getGameTeamManager().registerPlayer(player, kit, availableTeamNo);
 	}
 
 	public void removePlayer(IUser user) {
-		players.remove(user.getPlayer());
+		players.remove(user.getPlayer().getUniqueId());
 		matchDataStorage.getGameTeamManager().unregisterPlayer(user);
 		user.exitMatchBuilder();
 		if (players.size() == 0) {
@@ -96,7 +96,7 @@ public class MatchBuilder {
 		removePlayer(user);
 	}
 
-	public List<Player> getPlayers() {
+	public List<UUID> getPlayers() {
 		return Collections.unmodifiableList(players);
 	}
 
@@ -107,8 +107,10 @@ public class MatchBuilder {
 		final int amount = matchDataStorage.getGameTeamManager().getTeamAmount();
 
 		for (int teamNo = 1; teamNo <= amount; teamNo++) {
-			final List<Player> playerList = players.subList(Math.min(players.size(), (teamNo - 1) * size), Math.min(players.size(), teamNo * size));
-			for (Player player : playerList) {
+			final List<UUID> playerList = players.subList(Math.min(players.size(), (teamNo - 1) * size), Math.min(players.size(), teamNo * size));
+			for (UUID uuid : playerList) {
+				final Player player = Bukkit.getPlayer(uuid);
+				Preconditions.checkNotNull(player, "player cannot be offline");
 				matchDataStorage.getGameTeamManager().registerPlayer(player, null, teamNo);
 			}
 		}
@@ -187,8 +189,9 @@ public class MatchBuilder {
 
 	public void destroy() {
 		//unregister game builder
-		MATCH_BUILDERS.remove(this);
-		for (Player player : new ArrayList<Player>(players)) {
+		for (UUID uuid : new ArrayList<UUID>(players)) {
+			Player player = Bukkit.getPlayer(uuid);
+			if (player == null) continue;
 			removePlayer(player);
 		}
 	}

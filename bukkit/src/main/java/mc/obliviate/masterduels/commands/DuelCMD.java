@@ -6,9 +6,7 @@ import mc.obliviate.masterduels.game.Match;
 import mc.obliviate.masterduels.game.MatchBuilder;
 import mc.obliviate.masterduels.game.MatchCreator;
 import mc.obliviate.masterduels.gui.DuelArenaListGUI;
-import mc.obliviate.masterduels.gui.DuelHistoryLogGUI;
 import mc.obliviate.masterduels.gui.creator.DuelMatchCreatorGUI;
-import mc.obliviate.masterduels.history.MatchHistoryLog;
 import mc.obliviate.masterduels.invite.Invite;
 import mc.obliviate.masterduels.invite.InviteRecipient;
 import mc.obliviate.masterduels.invite.InviteUtils;
@@ -58,10 +56,11 @@ public class DuelCMD implements CommandExecutor {
 			return false;
 		}
 
-		if (MatchHistoryLog.GAME_HISTORY_LOG_ENABLED && args[0].equalsIgnoreCase("history")) {
+		/*if (MatchHistoryLog.GAME_HISTORY_LOG_ENABLED && args[0].equalsIgnoreCase("history")) {
 			new DuelHistoryLogGUI(player).open();
 			return true;
-		} else if (args[0].equalsIgnoreCase("leave")) {
+		} else */
+		if (args[0].equalsIgnoreCase("leave")) {
 			if (user instanceof Member) {
 				final Member member = ((Member) user);
 				member.getMatch().getMatchState().leave(member); //todo add methods of game states to game.class
@@ -104,17 +103,23 @@ public class DuelCMD implements CommandExecutor {
 		} else if (args[0].equalsIgnoreCase("queue") && DuelQueueHandler.enabled) {
 			queue(player, Arrays.asList(args));
 		} else if (args[0].equalsIgnoreCase("creator")) {
-			if (DuelQueue.findQueueOfPlayer(player) == null) {
-				MatchCreator matchCreator = MatchCreator.getGameCreatorMap().get(player.getUniqueId());
-				if (matchCreator == null) matchCreator = new MatchCreator(player.getUniqueId());
-				new DuelMatchCreatorGUI(player, matchCreator).open();
-			} else {
-				MessageUtils.sendMessage(player, "queue.you-are-in-queue");
-			}
+			creator(player, Arrays.asList(args));
 		} else if (args.length == 1 || args[0].equalsIgnoreCase("invite")) {
 			invite(player, args);
 		}
 		return true;
+	}
+
+	private void creator(final Player player, List<String> args) {
+		if (DuelQueue.findQueueOfPlayer(player) == null) {
+			MatchCreator matchCreator = MatchCreator.getCreator(player.getUniqueId());
+			if (matchCreator == null) {
+				matchCreator = new MatchCreator(player.getUniqueId());
+			}
+			new DuelMatchCreatorGUI(player, matchCreator).open();
+		} else {
+			MessageUtils.sendMessage(player, "queue.you-are-in-queue");
+		}
 	}
 
 	private void queue(final Player player, List<String> args) {
@@ -278,7 +283,7 @@ public class DuelCMD implements CommandExecutor {
 
 		//check: target is not in duel
 		if (UserHandler.getMember(target.getUniqueId()) != null) {
-			MessageUtils.sendMessage(player, "target-already-in-duel");
+			MessageUtils.sendMessage(player, "target-already-in-duel", new PlaceholderUtil().add("{target}", target.getName()));
 			return;
 		}
 

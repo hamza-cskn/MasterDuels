@@ -131,7 +131,6 @@ public class MasterDuels extends JavaPlugin {
 	}
 
 	private void setupHandlers() {
-		new TABManager().init();
 		configurationHandler.init();
 		inventoryAPI.init();
 		new TABManager().init(this);
@@ -175,9 +174,11 @@ public class MasterDuels extends JavaPlugin {
 	}
 
 	private void setupTimers() {
-		if (MatchHistoryLog.GAME_HISTORY_LOG_ENABLED) {
+		/*if (MatchHistoryLog.GAME_HISTORY_LOG_ENABLED) {
 			new GameHistoryCacheTimer().init(this);
 		}
+
+		 */
 	}
 
 	private void registerCommands() {
@@ -204,6 +205,7 @@ public class MasterDuels extends JavaPlugin {
 		Bukkit.getPluginManager().registerEvents(new MatchRuleListener(), this);
 		Bukkit.getPluginManager().registerEvents(new DeveloperCMD(this), this);
 		Bukkit.getPluginManager().registerEvents(new CMDExecutorListener(), this);
+		Bukkit.getPluginManager().registerEvents(new HistoryListener(), this);
 	}
 
 	private void loadKits() {

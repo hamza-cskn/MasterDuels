@@ -13,25 +13,32 @@ import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.Utils;
 import org.bukkit.Bukkit;
 
+import java.util.ArrayList;
+
 import static mc.obliviate.masterduels.kit.Kit.USE_PLAYER_INVENTORIES;
 
 public class MatchUninstallingState implements MatchState {
 
 	private final Match match;
+	private final boolean naturalUninstall;
 
-	public MatchUninstallingState(Match match) {
+	public MatchUninstallingState(Match match, boolean naturalUninstall) {
 		this.match = match;
+		this.naturalUninstall = naturalUninstall;
 		init();
 	}
 
-	private void init() {
-		Bukkit.getPluginManager().callEvent(new DuelMatchUninstallEvent(match, this));
-		match.broadcastInGame("game-finished");
+	public MatchUninstallingState(Match match) {
+		this(match, true);
+	}
 
+	private void init() {
+		Bukkit.getPluginManager().callEvent(new DuelMatchUninstallEvent(match, this, naturalUninstall));
+		match.broadcastInGame("game-finished");
 		for (final Member member : match.getAllMembers()) {
 			leave(member);
 		}
-		for (final Spectator spectator : match.getGameSpectatorManager().getPureSpectatorStorage().getSpectatorList()) {
+		for (final Spectator spectator : new ArrayList<>(match.getGameSpectatorManager().getPureSpectatorStorage().getSpectatorList())) {
 			leave(spectator);
 		}
 
@@ -66,7 +73,7 @@ public class MatchUninstallingState implements MatchState {
 
 	@Override
 	public Match getMatch() {
-		return null;
+		return match;
 	}
 
 	@Override

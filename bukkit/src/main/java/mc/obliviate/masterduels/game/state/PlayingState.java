@@ -27,6 +27,7 @@ public class PlayingState implements MatchState {
 
 	@Override
 	public void next() {
+		if (!match.getMatchState().equals(this)) return;
 		if (match.getGameDataStorage().getRoundData().nextRound()) {
 			match.setGameState(new RoundEndingState(match));
 		} else {
@@ -65,7 +66,6 @@ public class PlayingState implements MatchState {
 		if (lastSurvivedTeam != null) {
 			match.getGameDataStorage().getGameRoundData().addWin(lastSurvivedTeam);
 			match.getGameDataStorage().getGameRoundData().setWinnerTeam(lastSurvivedTeam);
-
 			next();
 		}
 	}

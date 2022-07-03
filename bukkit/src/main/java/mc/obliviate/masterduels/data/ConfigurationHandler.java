@@ -11,9 +11,7 @@ import mc.obliviate.masterduels.game.MatchStateType;
 import mc.obliviate.masterduels.game.gamerule.GameRule;
 import mc.obliviate.masterduels.game.state.RoundStartingState;
 import mc.obliviate.masterduels.gui.DuelArenaListGUI;
-import mc.obliviate.masterduels.gui.DuelHistoryLogGUI;
 import mc.obliviate.masterduels.gui.creator.DuelTeamManagerGUI;
-import mc.obliviate.masterduels.history.MatchHistoryLog;
 import mc.obliviate.masterduels.kit.Kit;
 import mc.obliviate.masterduels.queue.DuelQueueHandler;
 import mc.obliviate.masterduels.queue.DuelQueueTemplate;
@@ -105,7 +103,7 @@ public class ConfigurationHandler {
 		RoundStartingState.setLockDuration(Duration.ofSeconds(config.getInt("duel-game-lock.lock-duration")));
 		RoundStartingState.setLockFrequency(config.getInt("duel-game-lock.teleport-frequency"));
 		TimerUtils.DATE_FORMAT = new SimpleDateFormat(MessageUtils.getMessageConfig().getString("time-format.date-format"));
-		MatchHistoryLog.GAME_HISTORY_LOG_ENABLED = config.getBoolean("game-history.enabled", true);
+		//MatchHistoryLog.GAME_HISTORY_LOG_ENABLED = config.getBoolean("game-history.enabled", true);
 		Kit.USE_PLAYER_INVENTORIES = config.getBoolean("use-player-inventories", false);
 		SmartArenaClear.REMOVE_ENTITIES = getConfig().getBoolean("arena-regeneration.remove-entities", true);
 
@@ -291,7 +289,7 @@ public class ConfigurationHandler {
 	}
 
 	private void registerHistoryGui() {
-		DuelHistoryLogGUI.guiConfig = new DuelHistoryLogGUI.Config(getMenusSection("game-history-gui"));
+		//DuelHistoryLogGUI.guiConfig = new DuelHistoryLogGUI.Config(getMenusSection("game-history-gui"));
 	}
 
 	private void registerArenas() {

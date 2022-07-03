@@ -9,11 +9,13 @@ public class DuelMatchEndEvent extends Event implements MatchEvent {
 
 	private final Match match;
 	private final MatchState state;
+	private final boolean naturalEnding;
 	private static final HandlerList handlers = new HandlerList();
 
-	public DuelMatchEndEvent(Match match, MatchState state) {
+	public DuelMatchEndEvent(Match match, MatchState state, boolean naturalEnding) {
 		this.match = match;
 		this.state = state;
+		this.naturalEnding = naturalEnding;
 	}
 
 	public static HandlerList getHandlerList() {
@@ -23,6 +25,10 @@ public class DuelMatchEndEvent extends Event implements MatchEvent {
 	@Override
 	public HandlerList getHandlers() {
 		return handlers;
+	}
+
+	public boolean isNaturalEnding() {
+		return naturalEnding;
 	}
 
 	public MatchState getState() {

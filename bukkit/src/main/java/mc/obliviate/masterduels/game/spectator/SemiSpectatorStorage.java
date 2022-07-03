@@ -1,6 +1,7 @@
 package mc.obliviate.masterduels.game.spectator;
 
 import mc.obliviate.masterduels.game.Match;
+import mc.obliviate.masterduels.game.Team;
 import mc.obliviate.masterduels.user.Member;
 import mc.obliviate.masterduels.user.Spectator;
 import mc.obliviate.masterduels.user.UserHandler;
@@ -37,6 +38,8 @@ public class SemiSpectatorStorage implements SpectatorStorage {
 		if (!spectators.remove(spectator)) return;
 
 		//Bukkit.getPluginManager().callEvent(new DuelGameSpectatorLeaveEvent(spectator));
+		Team team = match.getGameDataStorage().getGameTeamManager().getTeam(spectator.getPlayer());
+		UserHandler.switchMember(spectator, team, null);
 		playerReset.reset(spectator.getPlayer());
 
 		for (final Member member : match.getAllMembers()) {

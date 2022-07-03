@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class DuelQueue {
 
@@ -37,7 +38,7 @@ public class DuelQueue {
 
 	public static DuelQueue findQueueOfPlayer(Player player) { //fixme change that usage
 		for (DuelQueue queue : availableQueues.values()) {
-			if (queue.builder.getPlayers().contains(player)) return queue;
+			if (queue.builder.getPlayers().contains(player.getUniqueId())) return queue;
 		}
 		return null;
 	}
@@ -51,7 +52,6 @@ public class DuelQueue {
 		Bukkit.getPluginManager().callEvent(event);
 		if (event.isCancelled()) return; //api cancel
 
-		Bukkit.broadcastMessage("adding");
 		builder.addPlayer(player);
 		if (builder.getPlayers().size() == builder.getTeamSize() * builder.getTeamAmount()) {
 			start();
@@ -66,7 +66,9 @@ public class DuelQueue {
 	public void start() {
 		final Match game = builder.build();
 		if (game == null) {
-			for (final Player player : builder.getPlayers()) {
+			for (final UUID uuid : builder.getPlayers()) {
+				Player player = Bukkit.getPlayer(uuid);
+				if (player == null) continue;
 				MessageUtils.sendMessage(player, "queue.queue-could-not-started");
 			}
 			return;

@@ -53,6 +53,7 @@ public class RoundStartingState implements MatchState {
 
 	@Override
 	public void next() {
+		if (!match.getMatchState().equals(this)) return;
 		match.setGameState(new PlayingState(match));
 	}
 
@@ -72,21 +73,21 @@ public class RoundStartingState implements MatchState {
 
 		member.getMatch().removeMember(member);
 
-		if (member.getPlayer().isOnline()) {
-			if (!USE_PLAYER_INVENTORIES && !InventoryStorer.restore(member.getPlayer())) {
-				Logger.severe("inventory could not restored: " + member.getPlayer());
-			}
-
-			match.showAll(member.getPlayer());
-			Match.RESET_WHEN_PLAYER_LEFT.reset(member.getPlayer());
-			Utils.teleportToLobby(member.getPlayer());
-			MessageUtils.sendMessage(member.getPlayer(), "you-left-from-duel");
-
-			if (member.getTeam().getMembers().size() == 0 && match.getAllMembers().size() > 0) {
-				Logger.debug(Logger.DebugPart.GAME, "Game finishing...");
-				match.finish();
-			}
+		if (!member.getPlayer().isOnline()) return;
+		if (!USE_PLAYER_INVENTORIES && !InventoryStorer.restore(member.getPlayer())) {
+			Logger.severe("inventory could not restored: " + member.getPlayer());
 		}
+
+		match.showAll(member.getPlayer());
+		Match.RESET_WHEN_PLAYER_LEFT.reset(member.getPlayer());
+		Utils.teleportToLobby(member.getPlayer());
+		MessageUtils.sendMessage(member.getPlayer(), "you-left-from-duel");
+
+		if (match.getAllMembers().size() > 0) {
+			Logger.debug(Logger.DebugPart.GAME, "Game finishing...");
+			match.finish();
+		}
+
 	}
 
 	private void lockTeam(final Team team) {

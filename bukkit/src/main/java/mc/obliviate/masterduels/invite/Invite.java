@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import mc.obliviate.masterduels.MasterDuels;
 import org.bukkit.Bukkit;
 
+import java.util.ArrayList;
 import java.util.UUID;
 import java.util.function.Consumer;
 
@@ -46,7 +47,7 @@ public class Invite {
 
 		public InviteBuildResult build() {
 			InviteRecipient inviteRecipient = InviteRecipient.getInviteRecipient(receiver);
-			for (Invite invite : inviteRecipient.getInvites()) {
+			for (Invite invite : new ArrayList<>(inviteRecipient.getInvites())) {
 				if (invite.sender.equals(sender)) {
 					if (invite.expireOutTime < System.currentTimeMillis()) {
 						return new InviteBuildResult(null, InviteBuildState.ERROR_ALREADY_INVITED);

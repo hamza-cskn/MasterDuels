@@ -9,15 +9,21 @@ public class DuelMatchUninstallEvent extends Event implements MatchEvent {
 
 	private final Match match;
 	private final MatchState state;
+	private final boolean naturalUninstall;
 	private static final HandlerList handlers = new HandlerList();
 
-	public DuelMatchUninstallEvent(Match match, MatchState state) {
+	public DuelMatchUninstallEvent(Match match, MatchState state, boolean naturalUninstall) {
 		this.match = match;
 		this.state = state;
+		this.naturalUninstall = naturalUninstall;
 	}
 
 	public static HandlerList getHandlerList() {
 		return handlers;
+	}
+
+	public boolean isNaturalUninstall() {
+		return naturalUninstall;
 	}
 
 	@Override

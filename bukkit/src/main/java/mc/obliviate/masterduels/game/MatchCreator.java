@@ -67,10 +67,6 @@ public class MatchCreator {
 		GAME_CREATOR_MAP.put(ownerPlayer, this);
 	}
 
-	public static Map<UUID, MatchCreator> getGameCreatorMap() {
-		return GAME_CREATOR_MAP;
-	}
-
 	public Map<UUID, Invite> getInvites() {
 		return invites;
 	}
@@ -138,11 +134,26 @@ public class MatchCreator {
 		for (final Invite invite : invites.values()) {
 			invite.response(Invite.InviteState.CANCELLED);
 		}
-		builder.destroy();
 	}
 
 	public Match create() {
 		destroy();
 		return builder.build();
+	}
+
+	public static Map<UUID, MatchCreator> getGameCreatorMap() {
+		return Collections.unmodifiableMap(GAME_CREATOR_MAP);
+	}
+
+	public static MatchCreator getCreator(UUID playerUniqueId) {
+		MatchCreator matchCreator = GAME_CREATOR_MAP.get(playerUniqueId);
+		if (matchCreator != null) return matchCreator;
+
+		for (MatchCreator creator : GAME_CREATOR_MAP.values()) {
+			if (creator.getBuilder().getPlayers().contains(playerUniqueId)) {
+				return creator;
+			}
+		}
+		return null;
 	}
 }
