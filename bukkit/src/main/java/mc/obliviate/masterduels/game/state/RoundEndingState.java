@@ -14,12 +14,16 @@ public class RoundEndingState implements MatchState {
 	}
 
 	private void init() {
-		match.getGameSpectatorManager().getSemiSpectatorStorage().unspectateAll();
-		match.resetPlayers();
+		match.getGameTaskManager().delayedTask("next-round-delay", () -> {
+			match.getGameSpectatorManager().getSemiSpectatorStorage().unspectateAll();
+			match.resetPlayers();
+			next();
+		}, 10 * 20);
 	}
 
 	@Override
 	public void next() {
+		if (!match.getMatchState().equals(this)) return;
 		match.setGameState(new RoundStartingState(match));
 	}
 
