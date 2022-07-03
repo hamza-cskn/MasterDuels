@@ -34,14 +34,17 @@ use-player-inventories: false
 # SERVER_WIDE - sends game end message to all players on the server
 # SPECTATORS_AND_MEMBERS - sends game end message to all players in the duel game
 # DISABLED - no message send
-game-end-broadcast-mode: 'SERVER_WIDE'
+game-end-broadcast-mode: SERVER_WIDE
 
 top:
   top-wins:
     calculation-limit: 10
+
 execute-console-commands:
   when-duel-ended:
-  #- this_command_will_be_executed_by_console_when_a_duel_game_ended
+  #- say duel finished
+  when-duel-started:
+  #- say duel started
 # placeholders are unsupported yet.
 
 soup-regeneration-amount: 3.5
@@ -93,7 +96,7 @@ duel-game-lock:
         title: ''
         subtitle: '&a&l2'
         fadein: 0
-    fiveth-action:
+    fifth-action:
       remaining-time: 1
       sound: NOTE_BASS
       title:
@@ -131,6 +134,18 @@ scoreboards: #Requires TitleManager plugin
       - ''
       - '&ewww.yourserver.net'
   ROUND_STARTING:
+    title: '&e&lDUELS'
+    live-opponent-format: '&a{name} &c{health}❤'
+    dead-opponent-format: '&a{name} &cDEAD'
+    quit-opponent-format: '&a{name} &cQUIT'
+    lines:
+      - '&fRound: &e#{round}'
+      - '&fMap: &e{map}'
+      - ''
+      - '&fStarting: &a{timer}'
+      - ''
+      - '&ewww.yourserver.net'
+  ROUND_ENDING:
     title: '&e&lDUELS'
     live-opponent-format: '&a{name} &c{health}❤'
     dead-opponent-format: '&a{name} &cDEAD'
@@ -182,6 +197,7 @@ boss-bars:
   mode: AUTO
   in-battle: 'Remaining Time: {time}' #also, you can use {timer} placeholder
   arena-closing: 'Arena Closing in: {time}'
+
 game-history:
   enabled: true
   max-amount-of-histories-in-storage: 50
