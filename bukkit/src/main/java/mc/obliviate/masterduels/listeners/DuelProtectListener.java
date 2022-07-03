@@ -1,5 +1,6 @@
 package mc.obliviate.masterduels.listeners;
 
+import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.data.ConfigurationHandler;
 import mc.obliviate.masterduels.user.IUser;
@@ -19,13 +20,19 @@ import org.bukkit.event.block.BlockMultiPlaceEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.FixedMetadataValue;
 
 public class DuelProtectListener implements Listener {
 
 	private final boolean teleportBackWhenLimitViolate;
+	private final PickupAction pickupAction;
+	private final double soupRegenAmount;
 
 	public DuelProtectListener() {
-		teleportBackWhenLimitViolate = ConfigurationHandler.getConfig().getBoolean("teleport-back-when-arena-cuboid-violated", false);
+		this.teleportBackWhenLimitViolate = ConfigurationHandler.getConfig().getBoolean("teleport-back-when-arena-cuboid-violated", false);
+		this.pickupAction = PickupAction.valueOf(ConfigurationHandler.getConfig().getString("action-limitations.item-pickup", "DISALLOW"));
+		this.soupRegenAmount = ConfigurationHandler.getConfig().getDouble("soup-regeneration-amount", 3.5d);
 	}
 
 	private boolean isUser(final Player player) {
@@ -91,9 +98,32 @@ public class DuelProtectListener implements Listener {
 	}
 
 	@EventHandler
+	public void onDrop(final PlayerDropItemEvent e) {
+		IUser user = UserHandler.getUser(e.getPlayer().getUniqueId());
+		if (user instanceof Member) {
+			switch (this.pickupAction) {
+				case DISALLOW:
+					e.setCancelled(true);
+				case ALLOW:
+					e.getItemDrop().setMetadata("team", new FixedMetadataValue(MasterDuels.getInstance(), -1));
+				case FRIENDLY:
+					e.getItemDrop().setMetadata("team", new FixedMetadataValue(MasterDuels.getInstance(), ((Member) user).getTeam().getTeamId()));
+			}
+		} else if (user instanceof Spectator) {
+			e.setCancelled(true);
+		}
+	}
+
+	@EventHandler
 	public void onPickup(final PlayerPickupItemEvent e) {
-		if (UserHandler.getSpectator(e.getPlayer().getUniqueId()) == null) return;
-		e.setCancelled(true);
+		IUser user = UserHandler.getUser(e.getPlayer().getUniqueId());
+		if (user instanceof Member) {
+			final int meta = e.getItem().getMetadata("team").get(0).asInt();
+			if (meta < 0 || meta == ((Member) user).getTeam().getTeamId()) return;
+			e.setCancelled(true);
+		} else if (user instanceof Spectator) {
+			e.setCancelled(true);
+		}
 	}
 
 	@EventHandler
@@ -106,12 +136,12 @@ public class DuelProtectListener implements Listener {
 	public void onCommand(final PlayerCommandPreprocessEvent e) {
 		final Member member = UserHandler.getMember(e.getPlayer().getUniqueId());
 		if (member == null || e.getPlayer().isOp()) return;
-		if (e.getMessage().startsWith("/")) {
-			if (!ConfigurationHandler.getConfig().getStringList("executable-commands-by-player." + member.getTeam().getMatch().getMatchState().getMatchStateType().name()).contains(e.getMessage())) {
-				e.setCancelled(true);
-				MessageUtils.sendMessage(e.getPlayer(), "command-is-blocked", new PlaceholderUtil().add("{command}", e.getMessage()));
-			}
+		if (!e.getMessage().startsWith("/")) return;
+		if (!ConfigurationHandler.getConfig().getStringList("action-limitations.executable-commands-during-match." + member.getTeam().getMatch().getMatchState().getMatchStateType().name()).contains(e.getMessage())) {
+			e.setCancelled(true);
+			MessageUtils.sendMessage(e.getPlayer(), "command-is-blocked", new PlaceholderUtil().add("{command}", e.getMessage()));
 		}
+
 	}
 
 	@EventHandler
@@ -158,6 +188,12 @@ public class DuelProtectListener implements Listener {
 			e.setCancelled(true);
 			MessageUtils.sendMessage(e.getPlayer(), "you-can-not-break");
 		}
+	}
+
+	private enum PickupAction {
+		DISALLOW,
+		FRIENDLY,
+		ALLOW
 	}
 
 	//todo victim is in duel
