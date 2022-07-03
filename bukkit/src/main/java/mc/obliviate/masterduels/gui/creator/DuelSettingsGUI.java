@@ -12,10 +12,12 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 public class DuelSettingsGUI extends ConfigurableGui {
 
 	private final MatchCreator matchCreator;
+	private final boolean isOwner;
 
 	public DuelSettingsGUI(final Player player, final MatchCreator matchCreator) {
 		super(player, "duel-rules-gui");
 		this.matchCreator = matchCreator;
+		this.isOwner = matchCreator.getOwnerPlayer().equals(player.getUniqueId());
 	}
 
 	@Override
@@ -31,16 +33,20 @@ public class DuelSettingsGUI extends ConfigurableGui {
 			Icon icon;
 			if (matchCreator.getBuilder().getRules().contains(rule)) {
 				icon = new Icon(XMaterial.LIME_DYE.parseItem()).setName(MessageUtils.parseColor("&a" + rule.name()));
-				icon.onClick(e -> {
-					matchCreator.getBuilder().removeRule(rule);
-					open();
-				});
+				if (isOwner) {
+					icon.onClick(e -> {
+						matchCreator.getBuilder().removeRule(rule);
+						open();
+					});
+				}
 			} else {
 				icon = new Icon(XMaterial.GRAY_DYE.parseItem()).setName(MessageUtils.parseColor("&c" + rule.name()));
-				icon.onClick(e -> {
-					matchCreator.getBuilder().addRule(rule);
-					open();
-				});
+				if (isOwner) {
+					icon.onClick(e -> {
+						matchCreator.getBuilder().addRule(rule);
+						open();
+					});
+				}
 			}
 			addItem(i++, icon);
 		}

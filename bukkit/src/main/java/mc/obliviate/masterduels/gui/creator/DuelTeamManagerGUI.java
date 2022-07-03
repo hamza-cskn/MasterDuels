@@ -27,10 +27,12 @@ public class DuelTeamManagerGUI extends ConfigurableGui {
 
 	private static Config guiConfig;
 	private final MatchCreator matchCreator;
+	private final boolean isOwner;
 
 	public DuelTeamManagerGUI(Player player, MatchCreator matchCreator) {
 		super(player, "duel-team-manage-gui");
 		this.matchCreator = matchCreator;
+		this.isOwner = matchCreator.getOwnerPlayer().equals(player.getUniqueId());
 		setSize((matchCreator.getBuilder().getTeamAmount() + 1) * 9);
 	}
 
@@ -52,7 +54,7 @@ public class DuelTeamManagerGUI extends ConfigurableGui {
 		for (int teamNo = 0; teamNo < matchBuilder.getTeamAmount(); teamNo++) {
 
 			final Icon icon = new Icon(Utils.teamIcons.get(teamNo).clone()).setName(guiConfig.teamIconName).setLore(guiConfig.teamIconLore);
-			final ItemStack item = SerializerUtils.applyPlaceholdersOnItemStack(icon.getItem(), new PlaceholderUtil().add("{team-no}", (teamNo) + "").add("{team-players-amount}", matchTeamManager.getTeamBuilders().get(teamNo).getUsers().size() + "").add("{team-size}", matchBuilder.getTeamAmount() + ""));
+			final ItemStack item = SerializerUtils.applyPlaceholdersOnItemStack(icon.getItem(), new PlaceholderUtil().add("{team-no}", (teamNo + 1) + "").add("{team-players-amount}", matchTeamManager.getTeamBuilders().get(teamNo).getUsers().size() + "").add("{team-size}", matchBuilder.getTeamAmount() + ""));
 
 			addItem((teamNo + 1) * 9, item);
 
@@ -77,62 +79,66 @@ public class DuelTeamManagerGUI extends ConfigurableGui {
 
 				final ItemStack playerHead = guiConfig.getPlayerSlotIcon(player);
 
-				addItem(slot, new Icon(playerHead).onClick(e -> {
-					switch (e.getAction()) {
-						case DROP_ALL_SLOT:
-						case DROP_ONE_SLOT:
-							final Player player1 = getOwner(e.getCurrentItem());
-							if (matchCreator.getOwnerPlayer().equals(player1.getUniqueId()))
-								return; //owner cannot leave
-							matchBuilder.removePlayer(player1);
-							open();
-							break;
-						case PICKUP_HALF:
-						case PICKUP_ONE:
-						case PICKUP_ALL:
-						case PICKUP_SOME:
-							Bukkit.getScheduler().runTaskLater(getPlugin(), () -> {
-								addItem(slot, new Icon(guiConfig.getEmptyIcon()).onClick(ev -> {
-									ev.setCursor(null);
-									open();
-								}));
-							}, 1);
-							e.setCancelled(false);
-							break;
+				final Icon playerHeadIcon = new Icon(playerHead);
+				if (isOwner) {
+					playerHeadIcon.onClick(e -> {
+						switch (e.getAction()) {
+							case DROP_ALL_SLOT:
+							case DROP_ONE_SLOT:
+								final Player player1 = getOwner(e.getCurrentItem());
+								if (matchCreator.getOwnerPlayer().equals(player1.getUniqueId()))
+									return; //owner cannot leave
+								matchBuilder.removePlayer(player1);
+								open();
+								break;
+							case PICKUP_HALF:
+							case PICKUP_ONE:
+							case PICKUP_ALL:
+							case PICKUP_SOME:
+								Bukkit.getScheduler().runTaskLater(getPlugin(), () -> {
+									addItem(slot, new Icon(guiConfig.getEmptyIcon()).onClick(ev -> {
+										ev.setCursor(null);
+										open();
+									}));
+								}, 1);
+								e.setCancelled(false);
+								break;
 
-						case SWAP_WITH_CURSOR:
-							final ItemStack cursor = e.getCursor();
-							if (!isValidPlayerHead(cursor)) break;
+							case SWAP_WITH_CURSOR:
+								final ItemStack cursor = e.getCursor();
+								if (!isValidPlayerHead(cursor)) break;
 
-							//get players that will swap
-							final Player requester = getOwner(cursor);
-							final Player target = getOwner(e.getCurrentItem());
+								//get players that will swap
+								final Player requester = getOwner(cursor);
+								final Player target = getOwner(e.getCurrentItem());
 
-							//and their users
-							final IUser requesterMember = UserHandler.getUser(requester.getUniqueId());
-							final IUser targetMember = UserHandler.getUser(target.getUniqueId());
-							Preconditions.checkNotNull(requesterMember);
-							Preconditions.checkNotNull(targetMember);
+								//and their users
+								final IUser requesterMember = UserHandler.getUser(requester.getUniqueId());
+								final IUser targetMember = UserHandler.getUser(target.getUniqueId());
+								Preconditions.checkNotNull(requesterMember);
+								Preconditions.checkNotNull(targetMember);
 
-							//and their teams
-							final int targetTeam = matchCreator.getBuilder().getData().getGameTeamManager().getTeamBuilder(target).getTeamId();
-							final int requesterTeam = matchCreator.getBuilder().getData().getGameTeamManager().getTeamBuilder(requester).getTeamId();
+								//and their teams
+								final int targetTeam = matchCreator.getBuilder().getData().getGameTeamManager().getTeamBuilder(target).getTeamId();
+								final int requesterTeam = matchCreator.getBuilder().getData().getGameTeamManager().getTeamBuilder(requester).getTeamId();
 
-							//swap!
-							MatchTeamManager teamManager = matchCreator.getBuilder().getData().getGameTeamManager();
+								//swap!
+								MatchTeamManager teamManager = matchCreator.getBuilder().getData().getGameTeamManager();
 
-							teamManager.unregisterPlayer(requesterMember);
-							teamManager.unregisterPlayer(targetMember);
+								teamManager.unregisterPlayer(requesterMember);
+								teamManager.unregisterPlayer(targetMember);
 
-							teamManager.registerPlayer(requesterMember.getPlayer(), null, targetTeam);
-							teamManager.registerPlayer(targetMember.getPlayer(), null, requesterTeam);
+								teamManager.registerPlayer(requesterMember.getPlayer(), null, targetTeam);
+								teamManager.registerPlayer(targetMember.getPlayer(), null, requesterTeam);
 
 
-							e.setCursor(null);
-							open();
-							break;
-					}
-				}));
+								e.setCursor(null);
+								open();
+								break;
+						}
+					});
+				}
+				addItem(slot, playerHeadIcon);
 			}
 		}
 	}

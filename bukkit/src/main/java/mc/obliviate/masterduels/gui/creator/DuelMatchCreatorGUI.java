@@ -16,11 +16,13 @@ import java.time.Duration;
 public class DuelMatchCreatorGUI extends ConfigurableGui {
 
 	private final MatchCreator matchCreator;
+	private final boolean isOwner;
 
 	//todo open team manager gui to non-owners
 	public DuelMatchCreatorGUI(Player player, MatchCreator matchCreator) {
 		super(player, "duel-match-creator-gui");
 		this.matchCreator = matchCreator;
+		isOwner = player.getUniqueId().equals(matchCreator.getOwnerPlayer());
 	}
 
 	@Override
@@ -51,7 +53,8 @@ public class DuelMatchCreatorGUI extends ConfigurableGui {
 			putFinishTimeIcon();
 
 		putInvitesIcon();
-		putStartGameIcon();
+		if (isOwner)
+			putStartGameIcon();
 	}
 
 	private void putStartGameIcon() {
@@ -102,6 +105,7 @@ public class DuelMatchCreatorGUI extends ConfigurableGui {
 
 	private void putRoundAmountIcon() {
 		putIcon("round-amount", new PlaceholderUtil().add("{round-amount}", matchCreator.getBuilder().getTotalRounds() + ""), e -> {
+			if (!isOwner) return;
 			if (e.isRightClick()) {
 				matchCreator.getBuilder().setTotalRounds(Math.max(matchCreator.getBuilder().getTotalRounds() - 2, MatchCreator.MIN_ROUNDS));
 			} else if (e.isLeftClick()) {
@@ -115,6 +119,7 @@ public class DuelMatchCreatorGUI extends ConfigurableGui {
 		putIcon("game-time", new PlaceholderUtil()
 				.add("{game-timer}", TimerUtils.formatTimeAsTimer(matchCreator.getBuilder().getDuration().toSeconds()))
 				.add("{game-time}", TimerUtils.formatTimeAsTime(matchCreator.getBuilder().getDuration().toSeconds())), e -> {
+			if (!isOwner) return;
 			if (e.isRightClick()) {
 				matchCreator.getBuilder().setDuration(Duration.ofSeconds(Math.max(matchCreator.getBuilder().getDuration().toSeconds() - 30, MatchCreator.MIN_GAME_TIME)));
 			} else if (e.isLeftClick()) {
@@ -126,6 +131,7 @@ public class DuelMatchCreatorGUI extends ConfigurableGui {
 
 	private void putTeamAmountIcon() {
 		putIcon("team-amount", new PlaceholderUtil().add("{team-amount}", matchCreator.getBuilder().getTeamAmount() + ""), e -> {
+			if (!isOwner) return;
 			final int size = matchCreator.getBuilder().getTeamSize();
 			if (e.isRightClick()) {
 				matchCreator.getBuilder().setTeamsAttributes(size, Math.max(matchCreator.getBuilder().getTeamAmount() - 1, MatchCreator.MAX_TEAM_AMOUNT));
@@ -138,6 +144,7 @@ public class DuelMatchCreatorGUI extends ConfigurableGui {
 
 	private void putTeamSizeIcon() {
 		putIcon("team-size", new PlaceholderUtil().add("{team-size}", matchCreator.getBuilder().getTeamSize() + ""), e -> {
+			if (!isOwner) return;
 			final int amount = matchCreator.getBuilder().getTeamAmount();
 			if (e.isRightClick()) {
 				matchCreator.getBuilder().setTeamsAttributes(Math.max(matchCreator.getBuilder().getTeamSize() - 1, MatchCreator.MIN_TEAM_SIZE), amount);
