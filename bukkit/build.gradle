@@ -34,6 +34,7 @@ repositories {
 dependencies {
     //implementation 'com.github.Obliviated:ObliviateInvs:3.2.0'
     implementation files('D:/Users/User/Desktop/Libraries/ObliviateInvs.jar')
+    implementation files('D:/Users/User/Desktop/Local Servers & Setups/LOCAL 1.8/plugins/Replay.jar')
     implementation 'com.github.Obliviated:BlokSQLiteAPI:1.0.7-b'
     implementation 'com.github.hakan-krgn.hCore:bukkit-primary:0.4.7'
     //implementation project(':api')

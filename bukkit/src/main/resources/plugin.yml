@@ -9,6 +9,7 @@ softdepend:
   - TitleManager
   - TAB
   - Vault
+  - AdvancedReplay
 commands:
   duel:
   dueladmin:

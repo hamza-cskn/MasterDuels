@@ -14,16 +14,16 @@ import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.data.SQLManager;
 import mc.obliviate.masterduels.game.Match;
 import mc.obliviate.masterduels.game.gamerule.MatchRuleListener;
-import mc.obliviate.masterduels.history.MatchHistoryLog;
+import mc.obliviate.masterduels.history.HistoryListener;
 import mc.obliviate.masterduels.kit.serializer.KitSerializer;
 import mc.obliviate.masterduels.listeners.*;
 import mc.obliviate.masterduels.queue.DuelQueueHandler;
 import mc.obliviate.masterduels.scoreboard.InternalScoreboardManager;
 import mc.obliviate.masterduels.utils.Logger;
+import mc.obliviate.masterduels.utils.advancedreplay.AdvancedReplayManager;
 import mc.obliviate.masterduels.utils.metrics.Metrics;
 import mc.obliviate.masterduels.utils.optimization.ArenaWorldOptimizerHandler;
 import mc.obliviate.masterduels.utils.tab.TABManager;
-import mc.obliviate.masterduels.utils.timer.GameHistoryCacheTimer;
 import mc.obliviate.masterduels.utils.versioncontroller.ServerVersionController;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
@@ -134,6 +134,8 @@ public class MasterDuels extends JavaPlugin {
 		new TABManager().init();
 		configurationHandler.init();
 		inventoryAPI.init();
+		new TABManager().init(this);
+		new AdvancedReplayManager().init(this);
 		setupArenaClearHandler();
 		HCore.initialize(this);
 		if (ConfigurationHandler.getConfig().getBoolean("scoreboards.enabled", true))

@@ -151,6 +151,20 @@ scoreboards: #Requires TitleManager plugin
       - ''
       - '&ewww.yourserver.net'
 
+# requires AdvancedReplay (https://www.spigotmc.org/resources/advancedreplay-1-8-1-18.52849/)
+# this module automatically records duel matches to replay after.
+advanced-replay:
+  enabled: true
+
+# requires TAB (https://github.com/NEZNAMY/TAB/releases)
+tab-nametags:
+  #how spectators should see members
+  third-person-prefix: '&7&k'
+  #how players should see teammates
+  friend-prefix: '&a'
+  #how players should see opponents
+  opponent-prefix: '&c&k'
+
 boss-bars:
   enabled: true
   # MasterDuels can use TAB's boss bar API or its own boss bar manager.
