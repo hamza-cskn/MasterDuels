@@ -13,13 +13,17 @@ import mc.obliviate.masterduels.game.state.MatchEndingState;
 import mc.obliviate.masterduels.game.state.MatchState;
 import mc.obliviate.masterduels.game.state.MatchUninstallingState;
 import mc.obliviate.masterduels.game.task.MatchTaskManager;
+import mc.obliviate.masterduels.history.MatchHistoryLog;
+import mc.obliviate.masterduels.history.PlayerHistoryLog;
 import mc.obliviate.masterduels.kit.Kit;
+import mc.obliviate.masterduels.user.IUser;
 import mc.obliviate.masterduels.user.Member;
 import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.Utils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
 import mc.obliviate.masterduels.utils.playerreset.PlayerReset;
+import mc.obliviate.masterduels.utils.timer.TimerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -35,6 +39,7 @@ public class Match {
 	public static final PlayerReset RESET_WHEN_PLAYER_LEFT = new PlayerReset().excludeExp().excludeLevel().excludeInventory();
 
 	private final Arena arena;
+	private final UUID uuid = UUID.randomUUID();
 	private final MatchDataStorage matchDataStorage;
 	private final MatchTaskManager gameTaskManager = new MatchTaskManager();
 	private final MatchSpectatorManager gameSpectatorManager = new MatchSpectatorManager(this);
@@ -48,10 +53,13 @@ public class Match {
 		this.matchDataStorage = matchDataStorage;
 
 		final List<Player> players = new ArrayList<>();
-		for (final Member member : matchDataStorage.getGameTeamManager().getAllMembers()) {
-			players.add(member.getPlayer());
+		for (final Team.Builder teamBuilder : matchDataStorage.getGameTeamManager().getTeamBuilders()) {
+			for (IUser user : teamBuilder.getUsers()) {
+				players.add(user.getPlayer());
+			}
 		}
 		this.players = Collections.unmodifiableList(players);
+
 	}
 
 	public static MatchBuilder create() {
@@ -154,7 +162,7 @@ public class Match {
 			return;
 		}
 
-		setGameState(new MatchEndingState(this));
+		setGameState(new MatchEndingState(this, false));
 	}
 
 	/**
@@ -229,12 +237,14 @@ public class Match {
 		final Team winnerTeam = roundData.getWinnerTeam();
 		final List<Team> loserTeams = matchDataStorage.getGameTeamManager().getTeams().stream().filter(team -> !team.equals(winnerTeam)).collect(Collectors.toList());
 
-
 		if (roundData.getWinnerTeam().getSize() == 1) {
 			final Player winner = roundData.getWinnerTeam().getMembers().get(0).getPlayer();
-			final String loserName = loserTeams.size() == 0 || loserTeams.get(0).getSize() == 0 ? "" : Utils.getDisplayName(loserTeams.get(0).getMembers().get(0).getPlayer());
+			final Player loser = loserTeams.size() == 0 || loserTeams.get(0).getSize() == 0 ? null : loserTeams.get(0).getMembers().get(0).getPlayer();
 			for (final Player player : receivers) {
-				MessageUtils.sendMessage(player, "game-end-broadcast.solo", new PlaceholderUtil().add("{winner}", Utils.getDisplayName(winner)).add("{loser}", loserName).add("{winner-health}", "" + winner.getHealthScale()));
+				MessageUtils.sendMessage(player, "game-end-broadcast.solo", new PlaceholderUtil().add("{winner}", Utils.getDisplayName(winner)).add("{loser}", Utils.getDisplayName(loser)).add("{winner-health}", "" + winner.getHealthScale()));
+			}
+			for (final Member member : getAllMembers()) {
+				sendSoloMatchSummary(member.getPlayer(), winner, loser);
 			}
 		} else {
 			final Player winner = winnerTeam.getMembers().get(0).getPlayer();
@@ -242,11 +252,118 @@ public class Match {
 			for (final Player player : receivers) {
 				MessageUtils.sendMessage(player, "game-end-broadcast.non-solo", new PlaceholderUtil().add("{winner}", Utils.getDisplayName(winner)).add("{loser}", loserName));
 			}
+			for (final Member member : getAllMembers()) {
+				sendNonSoloMatchSummary(member.getPlayer());
+			}
 		}
+	}
+
+	private void sendNonSoloMatchSummary(Player receiver) {
+		final PlayerHistoryLog playerLog = MatchHistoryLog.getPlayerHistory(receiver);
+
+		PlaceholderUtil generalPlaceholders = new PlaceholderUtil()
+				.add("{match-time}", TimerUtils.formatTimeUntilThenAsTime(matchDataStorage.getFinishTime()) + "")
+				.add("{match-timer}", TimerUtils.formatTimeUntilThenAsTimer(matchDataStorage.getFinishTime()) + "");
+
+		PlaceholderUtil playerPlaceholders = getPlaceholders(playerLog);
+
+		receiver.sendMessage(MessageUtils.parseColor("&a") + "▬".repeat(72));
+		receiver.sendMessage("                          " + MessageUtils.parseColor(generalPlaceholders.apply("&f&lClassic Duel &7- &a&l{match-timer}")));
+		receiver.sendMessage("");
+		receiver.sendMessage("                  " + MessageUtils.parseColor(generalPlaceholders.apply("&7{own}&7  {opponent}"))); //todo wont work
+		receiver.sendMessage("");
+		receiver.sendMessage("                   " + MessageUtils.parseColor(playerPlaceholders.apply("&f&lDamage Dealt&7: &a{damage-dealt}&c❤")));
+		receiver.sendMessage("                  " + MessageUtils.parseColor(playerPlaceholders.apply("&f&lMelee Accuracy&7: &a{melee-accuracy}%")));
+		receiver.sendMessage("                    " + MessageUtils.parseColor(playerPlaceholders.apply("&f&lBow Accuracy&7: &a{bow-accuracy}%")));
+		receiver.sendMessage("                    " + MessageUtils.parseColor(playerPlaceholders.apply("&f&lFish Hook Accuracy&7: &a{fish-hook-accuracy}%")));
+		receiver.sendMessage("               " + MessageUtils.parseColor(playerPlaceholders.apply("&f&lHealth Regenerated&7: &a{regenerated-health}&c❤")));
+		receiver.sendMessage("                  " + MessageUtils.parseColor(playerPlaceholders.apply("&f&lBlocks Placed&7: &a{placed-blocks} blocks")));
+		receiver.sendMessage("                   " + MessageUtils.parseColor(playerPlaceholders.apply("&f&lBlocks Broken&7: &a{broken-blocks} blocks")));
+		receiver.sendMessage("                       " + MessageUtils.parseColor(playerPlaceholders.apply("&f&lMeters Sprint&7: &a{sprint}m")));
+		receiver.sendMessage("");
+		receiver.sendMessage(MessageUtils.parseColor("&a") + "▬".repeat(72));
+	}
+
+
+	private void sendSoloMatchSummary(Player receiver, Player winner, Player loser) {
+		final PlayerHistoryLog winnerLog = MatchHistoryLog.getPlayerHistory(winner);
+		final PlayerHistoryLog loserLog = MatchHistoryLog.getPlayerHistory(loser);
+
+		PlaceholderUtil generalPlaceholders = new PlaceholderUtil()
+				.add("{match-time}", TimerUtils.formatTimeUntilThenAsTime(matchDataStorage.getFinishTime()) + "")
+				.add("{match-timer}", TimerUtils.formatTimeUntilThenAsTimer(matchDataStorage.getFinishTime()) + "");
+
+		PlaceholderUtil ownPlaceholders;
+		PlaceholderUtil opponentPlaceholders;
+		boolean winnerSide = winner.equals(receiver);
+		if (winnerSide) {
+			generalPlaceholders.add("{own}", Utils.getDisplayName(winner) + " &e&lWINNER!");
+			generalPlaceholders.add("{opponent}", Utils.getDisplayName(loser));
+			ownPlaceholders = getPlaceholders(winnerLog);
+			opponentPlaceholders = getPlaceholders(loserLog);
+		} else {
+			generalPlaceholders.add("{own}", Utils.getDisplayName(loser));
+			generalPlaceholders.add("{opponent}", Utils.getDisplayName(winner) + " &e&lWINNER!");
+			ownPlaceholders = getPlaceholders(loserLog);
+			opponentPlaceholders = getPlaceholders(winnerLog);
+		}
+
+		receiver.sendMessage(MessageUtils.parseColor("&a") + "▬".repeat(72));
+		receiver.sendMessage("                          " + MessageUtils.parseColor(generalPlaceholders.apply("&f&lClassic Duel &7- &a&l{match-timer}")));
+		receiver.sendMessage("");
+		receiver.sendMessage("                  " + MessageUtils.parseColor(generalPlaceholders.apply("&7{own}&7  {opponent}")));
+		receiver.sendMessage("");
+		receiver.sendMessage("                   " + MessageUtils.parseColor(ownPlaceholders.apply("&a{damage-dealt}&c❤ &7- &f&lDamage Dealt &7- ") + opponentPlaceholders.apply("&a{damage-dealt}&c❤")));
+		receiver.sendMessage("                  " + MessageUtils.parseColor(ownPlaceholders.apply("&a{melee-accuracy}% &7- &f&lMelee Accuracy &7- ") + opponentPlaceholders.apply("&a{melee-accuracy}%")));
+		receiver.sendMessage("                    " + MessageUtils.parseColor(ownPlaceholders.apply("&a{bow-accuracy}% &7- &f&lBow Accuracy &7- ") + opponentPlaceholders.apply("&a{bow-accuracy}%")));
+		receiver.sendMessage("                    " + MessageUtils.parseColor(ownPlaceholders.apply("&a{fish-hook-accuracy}% &7- &f&lFish Hook Accuracy &7- ") + opponentPlaceholders.apply("&a{fish-hook-accuracy}%")));
+		receiver.sendMessage("               " + MessageUtils.parseColor(ownPlaceholders.apply("&a{regenerated-health}&c❤ &7- &f&lHealth Regenerated &7- ") + opponentPlaceholders.apply("&a{regenerated-health}&c❤")));
+		receiver.sendMessage("                  " + MessageUtils.parseColor(ownPlaceholders.apply("&a{placed-blocks} blocks &7- &f&lBlocks Placed &7- ") + opponentPlaceholders.apply("&a{placed-blocks} blocks")));
+		receiver.sendMessage("                   " + MessageUtils.parseColor(ownPlaceholders.apply("&a{broken-blocks} blocks &7- &f&lBlocks Broken &7- ") + opponentPlaceholders.apply("&a{broken-blocks} blocks")));
+		receiver.sendMessage("                       " + MessageUtils.parseColor(ownPlaceholders.apply("&a{sprint}m &7- &f&lMeters Sprint &7- ") + opponentPlaceholders.apply("&a{sprint}m")));
+		receiver.sendMessage("");
+		receiver.sendMessage(MessageUtils.parseColor("&a") + "▬".repeat(72));
+	}
+
+	private PlaceholderUtil getPlaceholders(PlayerHistoryLog log) {
+		if (log == null) {
+			return new PlaceholderUtil()
+					.add("{placed-blocks}", "??")
+					.add("{broken-blocks}", "??")
+					.add("{damage-dealt}", "??")
+					.add("{damage-taken}", "??")
+					.add("{jump}", "??")
+					.add("{fall}", "??")
+					.add("{sprint}", "??")
+					.add("{click}", "??")
+					.add("{hit-click}", "??")
+					.add("{fish-hook-accuracy}", "??")
+					.add("{melee-accuracy}", "??")
+					.add("{bow-accuracy}", "??")
+					.add("{regenerated-health}", "??");
+		}
+		return new PlaceholderUtil()
+				.add("{placed-blocks}", log.getPlacedBlocks() + "")
+				.add("{broken-blocks}", log.getBrokenBlocks() + "")
+				.add("{damage-dealt}", (log.getDamageDealt() / 5d) + "")
+				.add("{damage-taken}", (log.getDamageTaken() / 5d) + "")
+				.add("{jump}", (log.getJump() / 100d) + "")
+				.add("{fall}", (log.getFall() / 100d) + "")
+				.add("{sprint}", (log.getSprint() / 100d) + "")
+				.add("{click}", log.getClick() + "")
+				.add("{hit-click}", log.getHitClick() + "")
+				.add("{fish-hook-accuracy}", MessageUtils.getPercentage(log.getFishHook().getThrew(), log.getFishHook().getHit()) + "")
+				.add("{melee-accuracy}", MessageUtils.getPercentage(log.getClick(), log.getHitClick()) + "")
+				.add("{bow-accuracy}", MessageUtils.getPercentage(log.getArrow().getThrew(), log.getArrow().getHit()) + "")
+				.add("{regenerated-health}", log.getRegeneratedHealth() + "");
 	}
 
 
 	public List<Player> getPlayers() {
 		return players;
+	}
+
+	public UUID getId() {
+		return uuid;
 	}
 }
