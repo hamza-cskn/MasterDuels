@@ -1,15 +1,14 @@
 package mc.obliviate.masterduels.utils.timer;
 
 import mc.obliviate.masterduels.MasterDuels;
-import mc.obliviate.masterduels.data.ConfigurationHandler;
-import mc.obliviate.masterduels.history.MatchHistoryLog;
-import org.bukkit.Bukkit;
-
-import java.sql.SQLException;
 
 public class GameHistoryCacheTimer implements Timer {
+	@Override
+	public void init(MasterDuels plugin) {
 
+	}
 
+	/*
 	@Override
 	public void init(final MasterDuels plugin) {
 		Bukkit.getScheduler().runTaskTimerAsynchronously(plugin,() -> {
@@ -26,6 +25,8 @@ public class GameHistoryCacheTimer implements Timer {
 		}, 0, ConfigurationHandler.getConfig().getInt("game-history.cache-refresh"));
 
 	}
+
+	 */
 
 
 }

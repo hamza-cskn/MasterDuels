@@ -1,6 +1,5 @@
 package mc.obliviate.masterduels.utils.serializer;
 
-import mc.obliviate.masterduels.history.MatchHistoryLog;
 import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
@@ -12,8 +11,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -109,7 +106,7 @@ public class SerializerUtils {
 		return item;
 	}
 
-	public static MatchHistoryLog deserializeGameHistoryLog(ResultSet rs) throws SQLException {
+	/*public static MatchHistoryLog deserializeGameHistoryLog(ResultSet rs) throws SQLException {
 		final String uuid = rs.getString("uuid");
 		final String serializedWinners = rs.getString("winners");
 		final String serializedLosers = rs.getString("losers");
@@ -119,5 +116,7 @@ public class SerializerUtils {
 		return new MatchHistoryLog(UUID.fromString(uuid), startTime, endTime, SerializerUtils.deserializeUUIDList(serializedWinners), SerializerUtils.deserializeUUIDList(serializedLosers));
 
 	}
+
+	 */
 
 }

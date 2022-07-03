@@ -5,10 +5,7 @@ import mc.obliviate.bloksqliteapi.sqlutils.DataType;
 import mc.obliviate.bloksqliteapi.sqlutils.SQLTable;
 import mc.obliviate.bloksqliteapi.sqlutils.SQLUpdateColumn;
 import mc.obliviate.masterduels.MasterDuels;
-import mc.obliviate.masterduels.history.MatchHistoryLog;
 import mc.obliviate.masterduels.statistics.DuelStatistic;
-import mc.obliviate.masterduels.utils.Logger;
-import mc.obliviate.masterduels.utils.serializer.SerializerUtils;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -64,7 +61,7 @@ public class SQLManager extends SQLHandler {
 		return null;
 	}
 
-	public void appendDuelHistory(final MatchHistoryLog log) {
+	/*public void appendDuelHistory(final MatchHistoryLog log) {
 		final SQLUpdateColumn update = historyTable.createUpdate(log.getUuid())
 				.putData("uuid", log.getUuid())
 				.putData("winners", SerializerUtils.serializeStringConvertableList(log.getWinners()))
@@ -104,6 +101,8 @@ public class SQLManager extends SQLHandler {
 		}
 		return logs;
 	}
+
+	 */
 
 	public boolean getReceivesInvites(final UUID uuid) {
 		final Integer value = playerDataTable.getInteger(uuid.toString(), "receivesInvites");
