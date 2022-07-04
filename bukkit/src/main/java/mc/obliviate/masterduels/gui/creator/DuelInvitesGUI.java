@@ -48,12 +48,14 @@ public class DuelInvitesGUI extends ConfigurableGui {
 		});
 		int i = 9;
 		for (Player loopPlayer : Bukkit.getOnlinePlayers()) {
-			if (matchCreator.getBuilder().getPlayers().contains(loopPlayer.getUniqueId())) return;
-			if (matchCreator.getInvites().containsKey(loopPlayer.getUniqueId())) return;
+			if (matchCreator.getBuilder().getPlayers().contains(loopPlayer.getUniqueId())) break;
+			if (matchCreator.getInvites().containsKey(loopPlayer.getUniqueId())) break;
 			final IUser user = UserHandler.getUser(loopPlayer.getUniqueId());
-			if (user instanceof Member) return;
-			if (DuelQueue.findQueueOfPlayer(loopPlayer) != null) return;
+			if (user instanceof Member) break;
+			if (user.inviteReceiving()) break;
+			if (DuelQueue.findQueueOfPlayer(loopPlayer) != null) break;
 
+			if (i >= getSize()) return;
 			addItem(i++, new Icon(XMaterial.PLAYER_HEAD.parseItem()).setName(ChatColor.GRAY + Utils.getDisplayName(loopPlayer)).setLore("", ChatColor.YELLOW + "Click to invite").onClick(ev -> {
 				matchCreator.trySendInvite(this.player, loopPlayer, response -> {
 					matchCreator.getBuilder().addPlayer(loopPlayer);

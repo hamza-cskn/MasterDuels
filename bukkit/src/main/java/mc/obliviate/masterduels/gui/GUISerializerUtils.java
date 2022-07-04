@@ -8,7 +8,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class GUISerializerUtils {
 
-	public static void putDysfunctionalIcons(Gui gui, ConfigurationSection iconsSection) {
+	public static void putDysfunctionalIcons(Gui gui, ConfigurationSection iconsSection, PlaceholderUtil placeholderUtil) {
 		if (iconsSection == null) throw new IllegalArgumentException("null configuration section given!");
 		for (String sectionName : iconsSection.getKeys(false)) {
 			final ConfigurationSection section = iconsSection.getConfigurationSection(sectionName);
@@ -16,7 +16,7 @@ public class GUISerializerUtils {
 			if (!section.isSet("slot")) continue;
 			final int slotNo = section.getInt("slot", -1);
 			if (slotNo != -1) {
-				gui.addItem(slotNo, getConfigItem(iconsSection.getConfigurationSection(sectionName)));
+				gui.addItem(slotNo, getConfigItem(iconsSection.getConfigurationSection(sectionName), placeholderUtil));
 				return;
 			}
 
@@ -33,7 +33,7 @@ public class GUISerializerUtils {
 				}
 				if (from > to) continue;
 				for (; from <= to; from++) {
-					gui.addItem(from, getConfigItem(iconsSection.getConfigurationSection(sectionName)));
+					gui.addItem(from, getConfigItem(iconsSection.getConfigurationSection(sectionName), placeholderUtil));
 				}
 				return;
 			} else if (slotString.contains(",")) {
@@ -42,7 +42,7 @@ public class GUISerializerUtils {
 
 				for (final String slotText : slots) {
 					try {
-						gui.addItem(Integer.parseInt(slotText), getConfigItem(iconsSection.getConfigurationSection(sectionName)));
+						gui.addItem(Integer.parseInt(slotText), getConfigItem(iconsSection.getConfigurationSection(sectionName), placeholderUtil));
 					} catch (NumberFormatException ignore) {
 					}
 				}
