@@ -2,7 +2,9 @@ package mc.obliviate.masterduels.history;
 
 import com.google.common.base.Preconditions;
 import mc.obliviate.masterduels.game.Match;
+import mc.obliviate.masterduels.user.IUser;
 import mc.obliviate.masterduels.user.Member;
+import mc.obliviate.masterduels.user.Spectator;
 import mc.obliviate.masterduels.user.UserHandler;
 import org.bukkit.Statistic;
 import org.bukkit.entity.Player;
@@ -82,10 +84,17 @@ public class MatchHistoryLog {
 	}
 
 	public static PlayerHistoryLog getPlayerHistory(Player player) {
-		final Member member = UserHandler.getMember(player.getUniqueId());
-		if (member == null) return null;
+		final IUser user = UserHandler.getUser(player.getUniqueId());
+		Match match;
+		if (user instanceof Member) {
+			match = ((Member) user).getMatch();
+		} else if (user instanceof Spectator) {
+			match = ((Spectator) user).getMatch();
+		} else {
+			return null;
+		}
 
-		final MatchHistoryLog log = SAVING_MATCH_HISTORY_LOGS.get(member.getMatch());
+		final MatchHistoryLog log = SAVING_MATCH_HISTORY_LOGS.get(match);
 		if (log == null) return null;
 		return log.getPlayerHistoryLogMap().get(player.getUniqueId());
 	}

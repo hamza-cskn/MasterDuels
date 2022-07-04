@@ -7,7 +7,6 @@ import mc.obliviate.masterduels.game.MatchStateType;
 import mc.obliviate.masterduels.game.Team;
 import mc.obliviate.masterduels.kit.InventoryStorer;
 import mc.obliviate.masterduels.user.Member;
-import mc.obliviate.masterduels.user.Spectator;
 import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.Utils;
@@ -55,14 +54,6 @@ public class RoundStartingState implements MatchState {
 	public void next() {
 		if (!match.getMatchState().equals(this)) return;
 		match.setGameState(new PlayingState(match));
-	}
-
-	@Override
-	public void leave(final Spectator spectator) {
-		match.getGameSpectatorManager().unspectate(spectator);
-		Match.RESET_WHEN_PLAYER_LEFT.reset(spectator.getPlayer());
-		MessageUtils.sendMessage(spectator.getPlayer(), "you-left-from-duel");
-		Utils.teleportToLobby(spectator.getPlayer());
 	}
 
 	@Override

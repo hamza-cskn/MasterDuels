@@ -7,7 +7,6 @@ import mc.obliviate.masterduels.game.MatchStateType;
 import mc.obliviate.masterduels.game.Team;
 import mc.obliviate.masterduels.kit.InventoryStorer;
 import mc.obliviate.masterduels.user.Member;
-import mc.obliviate.masterduels.user.Spectator;
 import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.Utils;
@@ -92,11 +91,6 @@ public class PlayingState implements MatchState {
 				match.finish();
 			}
 		}
-
-	}
-
-	@Override
-	public void leave(Spectator player) {
 
 	}
 

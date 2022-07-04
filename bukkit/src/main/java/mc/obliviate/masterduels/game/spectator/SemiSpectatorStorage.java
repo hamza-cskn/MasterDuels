@@ -6,6 +6,7 @@ import mc.obliviate.masterduels.user.Member;
 import mc.obliviate.masterduels.user.Spectator;
 import mc.obliviate.masterduels.user.UserHandler;
 import mc.obliviate.masterduels.utils.MessageUtils;
+import mc.obliviate.masterduels.utils.Utils;
 import mc.obliviate.masterduels.utils.playerreset.PlayerReset;
 import org.bukkit.entity.Player;
 
@@ -41,6 +42,8 @@ public class SemiSpectatorStorage implements SpectatorStorage {
 		Team team = match.getGameDataStorage().getGameTeamManager().getTeam(spectator.getPlayer());
 		UserHandler.switchMember(spectator, team, null);
 		playerReset.reset(spectator.getPlayer());
+		MessageUtils.sendMessage(spectator.getPlayer(), "you-left-from-duel");
+		Utils.teleportToLobby(spectator.getPlayer());
 
 		for (final Member member : match.getAllMembers()) {
 			member.getPlayer().showPlayer(spectator.getPlayer());
@@ -52,7 +55,6 @@ public class SemiSpectatorStorage implements SpectatorStorage {
 		final Spectator spectator = findSpectator(player);
 		if (spectator == null) return;
 		unspectate(spectator);
-
 	}
 
 	@Override

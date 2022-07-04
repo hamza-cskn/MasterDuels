@@ -19,7 +19,6 @@ public class DuelMatchCreatorGUI extends ConfigurableGui {
 	private final MatchCreator matchCreator;
 	private final boolean isOwner;
 
-	//todo open team manager gui to non-owners
 	public DuelMatchCreatorGUI(Player player, MatchCreator matchCreator) {
 		super(player, "duel-match-creator-gui");
 		this.matchCreator = matchCreator;

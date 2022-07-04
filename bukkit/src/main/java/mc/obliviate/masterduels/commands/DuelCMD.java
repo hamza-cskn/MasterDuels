@@ -18,6 +18,7 @@ import mc.obliviate.masterduels.queue.gui.DuelQueueListGUI;
 import mc.obliviate.masterduels.statistics.DuelStatistic;
 import mc.obliviate.masterduels.user.IUser;
 import mc.obliviate.masterduels.user.Member;
+import mc.obliviate.masterduels.user.Spectator;
 import mc.obliviate.masterduels.user.UserHandler;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.Utils;
@@ -65,6 +66,11 @@ public class DuelCMD implements CommandExecutor {
 			if (user instanceof Member) {
 				final Member member = ((Member) user);
 				member.getMatch().getMatchState().leave(member); //todo add methods of game states to game.class
+				return true;
+
+			} else if (user instanceof Spectator) {
+				final Spectator spectator = ((Spectator) user);
+				spectator.getMatch().getMatchState().leave(spectator);
 				return true;
 			} else {
 				MessageUtils.sendMessage(player, "you-are-not-in-duel");

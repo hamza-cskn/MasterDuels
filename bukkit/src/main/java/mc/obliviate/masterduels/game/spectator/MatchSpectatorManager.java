@@ -33,10 +33,6 @@ public class MatchSpectatorManager {
 		semiSpectatorStorage.spectate(member.getPlayer());
 	}
 
-	public void spectate(Spectator spectator) {
-		pureSpectatorStorage.spectate(spectator.getPlayer());
-	}
-
 	public void spectate(Player player) {
 		if (match.getGameDataStorage().getGameTeamManager().getMember(player.getUniqueId()) != null) {
 			semiSpectatorStorage.spectate(player);
@@ -45,20 +41,12 @@ public class MatchSpectatorManager {
 		pureSpectatorStorage.spectate(player);
 	}
 
-	public void unspectate(Member member) {
-		semiSpectatorStorage.unspectate(member.getPlayer());
-	}
-
 	public void unspectate(Spectator spectator) {
-		pureSpectatorStorage.unspectate(spectator.getPlayer());
-	}
-
-	public void unspectate(Player player) {
-		if (match.getGameDataStorage().getGameTeamManager().isMember(player.getUniqueId())) {
-			semiSpectatorStorage.unspectate(player);
-			return;
+		if (match.getPlayers().contains(spectator.getPlayer())) {
+			semiSpectatorStorage.unspectate(spectator.getPlayer());
+		} else {
+			pureSpectatorStorage.unspectate(spectator.getPlayer());
 		}
-		pureSpectatorStorage.unspectate(player);
 	}
 
 	public List<Spectator> getAllSpectators() {

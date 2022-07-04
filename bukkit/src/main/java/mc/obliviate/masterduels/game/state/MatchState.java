@@ -5,6 +5,8 @@ import mc.obliviate.masterduels.game.MatchStateType;
 import mc.obliviate.masterduels.kit.Kit;
 import mc.obliviate.masterduels.user.Member;
 import mc.obliviate.masterduels.user.Spectator;
+import mc.obliviate.masterduels.utils.MessageUtils;
+import mc.obliviate.masterduels.utils.Utils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 
@@ -19,7 +21,12 @@ public interface MatchState {
 	void leave(Member member);
 
 	default void leave(Spectator spectator) {
+		spectator.getPlayer().sendMessage("unspectating");
 		getMatch().getGameSpectatorManager().unspectate(spectator);
+		Match.RESET_WHEN_PLAYER_LEFT.reset(spectator.getPlayer());
+		MessageUtils.sendMessage(spectator.getPlayer(), "you-left-from-duel");
+		Utils.teleportToLobby(spectator.getPlayer());
+
 	}
 
 	default void rejoin(Player player, Kit kit, int teamNo) {
