@@ -27,7 +27,7 @@ public class Logger {
 	}
 
 	public static void error(String message) {
-		Bukkit.getConsoleSender().sendMessage("[MasterDuels] [ERROR INFO] " + fixLength(message));
+		Bukkit.getConsoleSender().sendMessage("[MasterDuels] [ERROR] " + fixLength(message));
 	}
 
 	private static String fixLength(String string) {

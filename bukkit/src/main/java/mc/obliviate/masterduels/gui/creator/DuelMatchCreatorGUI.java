@@ -1,5 +1,6 @@
 package mc.obliviate.masterduels.gui.creator;
 
+import com.google.common.base.Preconditions;
 import mc.obliviate.masterduels.VaultUtil;
 import mc.obliviate.masterduels.data.ConfigurationHandler;
 import mc.obliviate.masterduels.game.Match;
@@ -35,7 +36,17 @@ public class DuelMatchCreatorGUI extends ConfigurableGui {
 
 	@Override
 	public void onOpen(InventoryOpenEvent event) {
-		putDysfunctionalIcons();
+		Preconditions.checkState(matchCreator.getBuilder().getPlayers().size() > 0, "no player found");
+		putDysfunctionalIcons(new PlaceholderUtil()
+				.add("{mode}", MessageUtils.convertMode(matchCreator.getBuilder().getTeamSize(), matchCreator.getBuilder().getTeamAmount()))
+				.add("{invited-players}", matchCreator.getInvites().size() + "")
+				.add("{total-players}", matchCreator.getBuilder().getPlayers().size() + "")
+				.add("{round-amount}", matchCreator.getBuilder().getTotalRounds() + "")
+				.add("{game-timer}", TimerUtils.formatTimeAsTimer(matchCreator.getBuilder().getDuration().toSeconds()))
+				.add("{game-time}", TimerUtils.formatTimeAsTime(matchCreator.getBuilder().getDuration().toSeconds()))
+				.add("{team-amount}", matchCreator.getBuilder().getTeamAmount() + "")
+				.add("{team-size}", matchCreator.getBuilder().getTeamSize() + "")
+		);
 
 		if (VaultUtil.checkPermission(player, "masterduels.duelcreator.set.teamsize"))
 			putTeamSizeIcon();
@@ -53,8 +64,9 @@ public class DuelMatchCreatorGUI extends ConfigurableGui {
 			putFinishTimeIcon();
 
 		putInvitesIcon();
-		if (isOwner)
+		if (isOwner) {
 			putStartGameIcon();
+		}
 	}
 
 	private void putStartGameIcon() {

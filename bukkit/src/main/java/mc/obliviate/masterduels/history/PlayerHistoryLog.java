@@ -18,11 +18,8 @@ public class PlayerHistoryLog {
 
 	private final ProjectileLogEntry<Arrow> arrow = new ProjectileLogEntry<>();
 	private final ProjectileLogEntry<Snowball> snowball = new ProjectileLogEntry<>();
-	;
 	private final ProjectileLogEntry<FishHook> fishHook = new ProjectileLogEntry<>();
-	;
 	private final ProjectileLogEntry<Egg> egg = new ProjectileLogEntry<>();
-	;
 	//todo TRIDENT and SPECTRAL ARROW support
 
 	public int getPlacedBlocks() {
