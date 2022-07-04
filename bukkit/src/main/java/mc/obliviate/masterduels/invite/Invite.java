@@ -50,10 +50,9 @@ public class Invite {
 			for (Invite invite : new ArrayList<>(inviteRecipient.getInvites())) {
 				if (invite.sender.equals(sender)) {
 					if (invite.expireOutTime < System.currentTimeMillis()) {
-						return new InviteBuildResult(null, InviteBuildState.ERROR_ALREADY_INVITED);
-					} else {
 						inviteRecipient.removeInvite(invite);
 					}
+					return new InviteBuildResult(null, InviteBuildState.ERROR_ALREADY_INVITED);
 				}
 			}
 
