@@ -131,6 +131,17 @@ duel-creator:
         material: BLACK_STAINED_GLASS_PANE
         slot: 45-53
         display-name: '&r'
+      information-icon:
+        material: BOOKSHELF
+        slot: 50
+        display-name: '&9Information'
+        lore:
+          - ''
+          - '&7Mode: &b{mode}'
+          - '&7Total players: &a{total-players} players'
+          - '&7Max Time: &a{game-time}'
+          - '&7Round: &a{round-amount} round(s)'
+          - ''
       team-size:
         material: PLAYER_HEAD
         slot: 11
@@ -252,11 +263,11 @@ duel-creator:
           - '&7to switch team.'
       player-slot:
         material: PLAYER_HEAD
-        display-name: '&e{player}'
+        display-name: '&b{player}'
         lore:
           - ''
-          - '&7Put another slot to switch team'
-          - '&7Press Q to kick player'
+          - '&ePut another slot to switch team'
+          - '&ePress Q to kick player'
       team-slot:
         dynamic-materials:
           - RED_STAINED_GLASS
