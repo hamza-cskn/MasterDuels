@@ -37,7 +37,11 @@ public abstract class ConfigurableGui extends Gui {
 	}
 
 	public void putDysfunctionalIcons() {
-		GUISerializerUtils.putDysfunctionalIcons(this, ConfigurationHandler.getMenusSection(getIconsSectionPath()));
+		GUISerializerUtils.putDysfunctionalIcons(this, ConfigurationHandler.getMenusSection(getIconsSectionPath()), null);
+	}
+
+	public void putDysfunctionalIcons(PlaceholderUtil placeholderUtil) {
+		GUISerializerUtils.putDysfunctionalIcons(this, ConfigurationHandler.getMenusSection(getIconsSectionPath()), placeholderUtil);
 	}
 
 	public void putIcon(String configName, Consumer<InventoryClickEvent> click) {
