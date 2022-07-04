@@ -137,32 +137,53 @@ invite:
   you-dont-have-invite: '&cYou don''t have any duel invite :('
   you-cannot-invite-yourself: '&cYou cannot invite yourself.'
   already-invited: '&cYou already invited this player.'
-  invite-expired-inviter: '&7Duel invite that is sent by &f{target}&7 to you, has expired.'
-  invite-expired-target: '&7Invite that is came from &f{inviter}&7, has expired.'
-  target-has-invited: '&7You sent a duel invite to &f{target}&7. The invite will be expired after &f{expire-time} seconds&7.'
-  target-declined-the-invite: '&7{target}, &cdeclined&7 your duel invite.'
-  successfully-declined: '&7You &cdeclined &f{inviter}&7''s duel invite.'
-  target-accepted-the-invite: '&f{target} &7accepted your duel invite.'
-  successfully-accepted: '&7You have accepted &f{inviter}&7''s invite.'
-  button:
-    accept-button:
-      hover: '&aClick to accept duel request!'
-      text: '&a&l[ACCEPT]'
-    decline-button:
-      hover: '&cClick to decline duel request!'
-      text: '&c&l[DECLINE]'
-  normal-invite-text:
-    - '    &5&m                 &r       &d&lDUEL REQUEST       &5&m                 &r    '
-    - '            &f{inviter}&7 is challenging to you in a duel game!'
-    - '                  &7Do you want accept the invite?'
-    - '&f'
-    - '                    {accept-button}    &r{decline-button}'
-  game-creator-invite-text:
-    - '    &5&m                 &r       &5&lDUEL ROOM INVITE       &5&m                 &r    '
-    - '               &f{inviter}&7 invited you to joining their duel room!'
-    - '       &7if you accept it, {inviter} can start a duel game that is managed by him.'
-    - '&f'
-    - '                    {accept-button}    &r{decline-button}'
+  normal-invite:
+    text:
+      - '    &5&m                 &r       &d&lDUEL REQUEST       &5&m                 &r    '
+      - '            &f{inviter}&7 is challenging to you in a duel game!'
+      - '                  &7Do you want accept the invite?'
+      - '&f'
+      - '                    {accept-button}    &r{decline-button}'
+    button:
+      accept-button:
+        hover: '&aClick to accept duel request!'
+        text: '&a&l[ACCEPT]'
+      decline-button:
+        hover: '&cClick to decline duel request!'
+        text: '&c&l[DECLINE]'
+    target-declined-the-invite: '&7{target}, &cdeclined&7 your duel invite.'
+    target-accepted-the-invite: '&f{target} &7accepted your duel invite.'
+    successfully-declined: '&7You &cdeclined &f{inviter}&7''s duel invite.'
+    successfully-accepted: '&7You have accepted &f{inviter}&7''s invite.'
+    target-has-invited: '&7You sent a duel invite to &f{target}&7. The invite will be expired after &f{expire-time} seconds&7.'
+    invite-expired-inviter: '&7Your duel invite to &f{target}&7 has expired.'
+    invite-expired-target: '&7Duel invite sent by &f{inviter}&7 has timed out.'
+  game-creator-invite:
+    text:
+      - '    &5&m                 &r       &5&lDUEL ROOM INVITE       &5&m                 &r    '
+      - '               &f{inviter}&7 invited you to joining own duel room!'
+      - '       &7if you accept it, {inviter} can start a duel game that is managed by him.'
+      - '&f'
+      - '                    {accept-button}    &r{decline-button}'
+    button:
+      accept-button:
+        hover: '&aClick to accept joining the room!'
+        text: '&a&l[JOIN ROOM]'
+      decline-button:
+        hover: '&cClick to decline joining the room!'
+        text: '&c&l[DECLINE]'
+    target-declined-the-invite: '&7{target}, &cdeclined&7 your duel room invite.'
+    target-accepted-the-invite: '&f{target} &7accepted your duel room invite.'
+    successfully-declined: '&7You &cdeclined &f{inviter}&7''s duel room invite.'
+    successfully-accepted: '&7You have accepted &f{inviter}&7''s room invite.'
+    target-has-invited: '&7You sent a duel room invite to &f{target}&7. The invite will be expired after &f{expire-time} seconds&7.'
+    invite-expired-inviter: '&7Your duel invite to &f{target}&7 has expired.'
+    invite-expired-target: '&7Duel invite sent by &f{inviter}&7 has timed out.'
+    all-teams-are-full-target: '&cYour invite could not accept because this room is full.'
+    all-teams-are-full-inviter: '&cInvite that is sent to {target} could not accept because the room is full.'
+    player-already-in-creator: '&c{target} is already in the room.'
+
+
 
 statistics: |-
   [DISABLE_PREFIX]&6&lDuel Statistics
