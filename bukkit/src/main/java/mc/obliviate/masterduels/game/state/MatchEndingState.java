@@ -61,7 +61,6 @@ public class MatchEndingState implements MatchState {
 
 		if (member.getPlayer().isOnline()) {
 			match.showAll(member.getPlayer());
-			match.showAll(member.getPlayer());
 			Match.RESET_WHEN_PLAYER_LEFT.reset(member.getPlayer());
 			Utils.teleportToLobby(member.getPlayer());
 			MessageUtils.sendMessage(member.getPlayer(), "you-left-from-duel");

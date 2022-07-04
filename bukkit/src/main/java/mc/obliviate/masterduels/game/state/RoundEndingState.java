@@ -23,7 +23,7 @@ public class RoundEndingState implements MatchState {
 
 	private void init() {
 		match.getGameTaskManager().delayedTask("next-round-delay", () -> {
-			match.getGameSpectatorManager().getSemiSpectatorStorage().unspectateAll();
+			match.getGameSpectatorManager().getSemiSpectatorStorage().unsepctate();
 			match.resetPlayers();
 			next();
 		}, 10 * 20);

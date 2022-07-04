@@ -4,7 +4,6 @@ import mc.obliviate.masterduels.api.spectator.DuelMatchPreSpectatorJoinEvent;
 import mc.obliviate.masterduels.api.spectator.DuelMatchSpectatorLeaveEvent;
 import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.game.Match;
-import mc.obliviate.masterduels.game.Team;
 import mc.obliviate.masterduels.kit.InventoryStorer;
 import mc.obliviate.masterduels.user.Member;
 import mc.obliviate.masterduels.user.Spectator;
@@ -88,10 +87,8 @@ public class PureSpectatorStorage implements SpectatorStorage {
 
 		new PlayerReset().excludeGamemode().excludeInventory().excludeLevel().excludeExp().reset(player);
 
-		for (final Team team : match.getGameDataStorage().getGameTeamManager().getTeams()) {
-			for (final Member m : team.getMembers()) {
-				m.getPlayer().hidePlayer(player);
-			}
+		for (final Member member : match.getAllMembers()) {
+			member.getPlayer().hidePlayer(player);
 		}
 
 		for (final Spectator spec : gsm.getAllSpectators()) {

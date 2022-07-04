@@ -4,6 +4,8 @@ import com.hakan.core.HCore;
 import mc.obliviate.masterduels.api.arena.DuelMatchEndEvent;
 import mc.obliviate.masterduels.api.arena.DuelMatchStartEvent;
 import mc.obliviate.masterduels.data.ConfigurationHandler;
+import mc.obliviate.masterduels.user.IUser;
+import mc.obliviate.masterduels.user.UserHandler;
 import mc.obliviate.masterduels.utils.timer.TimerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -28,6 +30,7 @@ public class CMDExecutorListener implements Listener {
 				+ ChatColor.GREEN + ChatColor.BOLD + " TEAMS AMOUNT"
 				+ ChatColor.AQUA + ChatColor.BOLD + " REMAINING TIME");
 		event.getMatch().getGameTaskManager().repeatTask("debug", () -> {
+			IUser user = UserHandler.getUser(player.getUniqueId());
 			HCore.sendActionBar(player, ChatColor.RED + ChatColor.BOLD.toString() + event.getMatch().getMatchState().getMatchStateType()
 					+ ChatColor.GOLD + ChatColor.BOLD + " " + event.getMatch().getAllMembers().size()
 					+ ChatColor.GREEN + ChatColor.BOLD + " " + event.getMatch().getGameDataStorage().getGameTeamManager().getTeams().size()

@@ -36,11 +36,19 @@ public class SemiSpectatorStorage implements SpectatorStorage {
 
 	@Override
 	public void unspectate(Spectator spectator) {
+		unspectate(spectator, true);
+	}
+
+	public void unspectate(Spectator spectator, boolean toMember) {
 		if (!spectators.remove(spectator)) return;
 
 		//Bukkit.getPluginManager().callEvent(new DuelGameSpectatorLeaveEvent(spectator));
 		Team team = match.getGameDataStorage().getGameTeamManager().getTeam(spectator.getPlayer());
-		UserHandler.switchMember(spectator, team, null);
+		if (toMember) {
+			UserHandler.switchMember(spectator, team, null);
+		} else {
+			UserHandler.switchUser(spectator);
+		}
 		playerReset.reset(spectator.getPlayer());
 		MessageUtils.sendMessage(spectator.getPlayer(), "you-left-from-duel");
 		Utils.teleportToLobby(spectator.getPlayer());
@@ -64,11 +72,6 @@ public class SemiSpectatorStorage implements SpectatorStorage {
 
 		spectators.add(UserHandler.switchSpectator(UserHandler.getUser(player.getUniqueId()), match));
 
-		/*final DuelGamePreSpectatorJoinEvent duelGamePreSpectatorJoinEvent = new DuelGamePreSpectatorJoinEvent(player, game);
-		Bukkit.getPluginManager().callEvent(duelGamePreSpectatorJoinEvent);
-		if (duelGamePreSpectatorJoinEvent.isCancelled()) return;
-		 */
-
 		new PlayerReset().excludeGamemode().excludeInventory().excludeLevel().excludeExp().reset(player);
 
 		for (final Member member : match.getAllMembers()) {
@@ -90,7 +93,10 @@ public class SemiSpectatorStorage implements SpectatorStorage {
 
 	@Override
 	public boolean isSpectator(Player player) {
-		return spectators.contains(player);
+		for (Spectator spectator : spectators) {
+			if (spectator.getPlayer().equals(player)) return true;
+		}
+		return false;
 	}
 
 	@Override

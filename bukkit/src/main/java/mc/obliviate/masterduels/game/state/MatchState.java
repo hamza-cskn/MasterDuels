@@ -21,8 +21,11 @@ public interface MatchState {
 	void leave(Member member);
 
 	default void leave(Spectator spectator) {
-		spectator.getPlayer().sendMessage("unspectating");
-		getMatch().getGameSpectatorManager().unspectate(spectator);
+		if (getMatch().getPlayers().contains(spectator.getPlayer())) {
+			getMatch().getGameSpectatorManager().getSemiSpectatorStorage().unspectate(spectator, false);
+		} else {
+			getMatch().getGameSpectatorManager().getPureSpectatorStorage().unspectate(spectator);
+		}
 		Match.RESET_WHEN_PLAYER_LEFT.reset(spectator.getPlayer());
 		MessageUtils.sendMessage(spectator.getPlayer(), "you-left-from-duel");
 		Utils.teleportToLobby(spectator.getPlayer());

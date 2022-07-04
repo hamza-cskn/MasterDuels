@@ -35,7 +35,7 @@ public class MatchUninstallingState implements MatchState {
 	private void init() {
 		Bukkit.getPluginManager().callEvent(new DuelMatchUninstallEvent(match, this, naturalUninstall));
 		match.broadcastInGame("game-finished");
-		for (final Member member : match.getAllMembers()) {
+		for (final Member member : new ArrayList<>(match.getAllMembers())) {
 			leave(member);
 		}
 		for (final Spectator spectator : new ArrayList<>(match.getGameSpectatorManager().getPureSpectatorStorage().getSpectatorList())) {

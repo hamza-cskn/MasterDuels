@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public interface SpectatorStorage {
+
 	void unspectate(Spectator spectator);
 
 	void unspectate(Player player);
@@ -15,7 +16,7 @@ public interface SpectatorStorage {
 
 	boolean isSpectator(Player player);
 
-	default void unspectateAll() {
+	default void unsepctate() {
 		for (final Spectator spectator : new ArrayList<>(getSpectatorList())) {
 			unspectate(spectator);
 		}
