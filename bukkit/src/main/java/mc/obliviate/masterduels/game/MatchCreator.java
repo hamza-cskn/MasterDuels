@@ -9,6 +9,7 @@ import mc.obliviate.masterduels.user.IUser;
 import mc.obliviate.masterduels.user.Member;
 import mc.obliviate.masterduels.user.UserHandler;
 import mc.obliviate.masterduels.utils.MessageUtils;
+import mc.obliviate.masterduels.utils.Utils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
 import mc.obliviate.masterduels.utils.timer.TimerUtils;
 import org.bukkit.Bukkit;
@@ -20,7 +21,7 @@ import java.util.function.Consumer;
 
 /**
  * Game Creator classes are player based game builders.
- * they stores and manages invites, owners additional.
+ * they store and manages invites, owners additional.
  */
 public class MatchCreator {
 
@@ -47,23 +48,25 @@ public class MatchCreator {
 		this.builder = Match.create().setTeamsAttributes(1, 2).setDuration(Duration.ofMinutes(5)).setTotalRounds(1).setTotalRounds(1);
 
 		//check: player uuid is not null
-		if (ownerPlayer == null) destroy();
-
-		//check: is game creator already exist
-		final MatchCreator matchCreator = GAME_CREATOR_MAP.get(ownerPlayer);
-		if (matchCreator != null) {
-			matchCreator.destroy();
+		if (ownerPlayer == null) {
+			destroy();
+			return;
 		}
 
-		//check: is player online and is uuid valid.
+		//check: are player online and uuid, valid.
 		final Player player = Bukkit.getPlayer(ownerPlayer);
 		if (player == null) {
 			destroy();
 			return;
 		}
 
-		builder.addPlayer(player);
+		//check: is game creator already exist
+		final MatchCreator matchCreator = getCreator(ownerPlayer);
+		if (matchCreator != null) {
+			matchCreator.destroy();
+		}
 
+		builder.addPlayer(player);
 		GAME_CREATOR_MAP.put(ownerPlayer, this);
 	}
 
@@ -98,23 +101,56 @@ public class MatchCreator {
 			return;
 		}
 
+		//check: target is already in
+		if (builder.getPlayers().contains(target.getUniqueId())) {
+			MessageUtils.sendMessage(sender, "invite.game-creator-invite.player-already-in-creator", new PlaceholderUtil().add("{target}", target.getName()));
+			return;
+		}
+
 		final Invite.InviteBuildResult buildResult = Invite.create()
 				.setExpireTimeLater(ConfigurationHandler.getConfig().getInt("invite-timeout") * 1000L)
 				.setReceiver(target.getUniqueId())
-				.setSender(sender.getUniqueId())
+				.setSender(ownerPlayer)
 				.onResponse(invite -> {
-					this.removeInvite(target.getUniqueId());
+					this.removeInvite(invite.getRecipientUniqueId());
+					switch (invite.getState()) {
+						case ACCEPTED:
+							MessageUtils.sendMessage(target, "invite.game-creator-invite.successfully-accepted", new PlaceholderUtil().add("{inviter}", Utils.getDisplayName(target)));
+							MessageUtils.sendMessage(sender, "invite.game-creator-invite.target-accepted-the-invite", new PlaceholderUtil().add("{target}", Utils.getDisplayName(sender)));
+							break;
+						case REJECTED:
+							MessageUtils.sendMessage(target, "invite.game-creator-invite.successfully-declined", new PlaceholderUtil().add("{inviter}", Utils.getDisplayName(target)));
+							MessageUtils.sendMessage(sender, "invite.game-creator-invite.target-declined-the-invite", new PlaceholderUtil().add("{target}", Utils.getDisplayName(sender)));
+							break;
+						case EXPIRED:
+							MessageUtils.sendMessage(target, "invite.game-creator-invite.invite-expired-target", new PlaceholderUtil().add("{inviter}", Utils.getDisplayName(target)));
+							MessageUtils.sendMessage(sender, "invite.game-creator-invite.invite-expired-inviter", new PlaceholderUtil().add("{target}", Utils.getDisplayName(sender)));
+							break;
+					}
+
+					final MatchCreator creator = getCreator(target.getUniqueId());
+					if (creator != null) creator.destroy();
+					if (builder.getData().getGameTeamManager().areAllTeamsFull()) {
+						MessageUtils.sendMessage(target, "invite.game-creator-invite.all-teams-are-full-target");
+						MessageUtils.sendMessage(sender, "invite.game-creator-invite.all-teams-are-full-inviter");
+						return;
+					}
+
 					response.accept(invite);
 				}).build();
 
 		if (buildResult.getInviteBuildState().equals(Invite.InviteBuildState.ERROR_ALREADY_INVITED)) {
 			MessageUtils.sendMessage(sender, "invite.already-invited", new PlaceholderUtil().add("{target}", target.getName()));
-
-		} else if (buildResult.getInviteBuildState().equals(Invite.InviteBuildState.SUCCESS)) {
-			MessageUtils.sendMessage(sender, "invite.target-has-invited", new PlaceholderUtil().add("{target}", target.getName()).add("{expire-time}", TimerUtils.formatTimeUntilThenAsTimer(buildResult.getInvite().getExpireOutTime()) + ""));
-			InviteUtils.sendInviteMessage(buildResult.getInvite(), MessageUtils.getMessageConfig().getStringList("invite.game-creator-invite-text"));
-			invites.put(target.getUniqueId(), buildResult.getInvite());
+			return;
 		}
+
+
+		if (!buildResult.getInviteBuildState().equals(Invite.InviteBuildState.SUCCESS)) return;
+
+		MessageUtils.sendMessage(sender, "invite.game-creator-invite.target-has-invited", new PlaceholderUtil().add("{target}", target.getName()).add("{expire-time}", TimerUtils.formatTimeUntilThenAsTimer(buildResult.getInvite().getExpireOutTime()) + ""));
+		InviteUtils.sendInviteMessage(buildResult.getInvite(), MessageUtils.getMessageConfig().getConfigurationSection("invite.game-creator-invite"));
+		invites.put(target.getUniqueId(), buildResult.getInvite());
+
 	}
 
 	public void removeInvite(final UUID uuid) {

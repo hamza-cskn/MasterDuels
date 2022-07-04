@@ -20,6 +20,7 @@ import mc.obliviate.masterduels.user.IUser;
 import mc.obliviate.masterduels.user.Member;
 import mc.obliviate.masterduels.user.UserHandler;
 import mc.obliviate.masterduels.utils.MessageUtils;
+import mc.obliviate.masterduels.utils.Utils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
 import mc.obliviate.masterduels.utils.timer.TimerUtils;
 import org.bukkit.Bukkit;
@@ -302,6 +303,22 @@ public class DuelCMD implements CommandExecutor {
 				.setSender(player.getUniqueId())
 				.setReceiver(target.getUniqueId())
 				.onResponse(invite -> {
+
+					switch (invite.getState()) {
+						case ACCEPTED:
+							MessageUtils.sendMessage(target, "invite.normal-invite.successfully-accepted", new PlaceholderUtil().add("{inviter}", Utils.getDisplayName(target)));
+							MessageUtils.sendMessage(player, "invite.normal-invite.target-accepted-the-invite", new PlaceholderUtil().add("{target}", Utils.getDisplayName(player)));
+							break;
+						case REJECTED:
+							MessageUtils.sendMessage(target, "invite.normal-invite.successfully-declined", new PlaceholderUtil().add("{inviter}", Utils.getDisplayName(target)));
+							MessageUtils.sendMessage(player, "invite.normal-invite.target-declined-the-invite", new PlaceholderUtil().add("{target}", Utils.getDisplayName(player)));
+							break;
+						case EXPIRED:
+							MessageUtils.sendMessage(target, "invite.normal-invite.invite-expired-target", new PlaceholderUtil().add("{inviter}", Utils.getDisplayName(target)));
+							MessageUtils.sendMessage(player, "invite.normal-invite.invite-expired-inviter", new PlaceholderUtil().add("{target}", Utils.getDisplayName(player)));
+							break;
+					}
+
 					if (invite.getState().equals(Invite.InviteState.ACCEPTED)) {
 						matchBuilder.addPlayer(target);
 						Match game = matchBuilder.build();
@@ -322,8 +339,8 @@ public class DuelCMD implements CommandExecutor {
 				MessageUtils.sendMessage(player, "invite.already-invited", new PlaceholderUtil().add("{target}", target.getName()));
 
 			} else if (buildResult.getInviteBuildState().equals(Invite.InviteBuildState.SUCCESS)) {
-				MessageUtils.sendMessage(player, "invite.target-has-invited", new PlaceholderUtil().add("{target}", target.getName()).add("{expire-time}", TimerUtils.formatTimeUntilThenAsTimer(buildResult.getInvite().getExpireOutTime()) + ""));
-				InviteUtils.sendInviteMessage(buildResult.getInvite(), MessageUtils.getMessageConfig().getStringList("invite.normal-invite-text"));
+				MessageUtils.sendMessage(player, "invite.normal-invite.target-has-invited", new PlaceholderUtil().add("{target}", target.getName()).add("{expire-time}", TimerUtils.formatTimeUntilThenAsTimer(buildResult.getInvite().getExpireOutTime()) + ""));
+				InviteUtils.sendInviteMessage(buildResult.getInvite(), MessageUtils.getMessageConfig().getConfigurationSection("invite.normal-invite"));
 			}
 		}).open();
 
