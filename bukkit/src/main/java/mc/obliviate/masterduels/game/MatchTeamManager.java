@@ -28,7 +28,7 @@ public class MatchTeamManager {
 	private int teamAmount = 2;
 	private int teamSize = 1;
 
-	public boolean isAllTeamsFull() {
+	public boolean areAllTeamsFull() {
 		if (teams.size() != teamAmount) return false;
 
 		for (Team team : teams) {
