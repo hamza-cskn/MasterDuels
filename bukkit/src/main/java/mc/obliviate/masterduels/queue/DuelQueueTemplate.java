@@ -6,6 +6,7 @@ import mc.obliviate.masterduels.kit.Kit;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.time.Duration;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -15,21 +16,24 @@ public class DuelQueueTemplate {
 	private static final List<DuelQueueTemplate> queueTemplates = new LinkedList<>();
 	private final String queueTemplateName;
 	private final MatchDataStorage matchDataStorage;
+	private final Kit kit;
 
-	private DuelQueueTemplate(final String queueTemplateName, MatchDataStorage matchDataStorage) {
+	/**
+	 * When allowed maps list is empty, all maps are valid for the queue.
+	 */
+	private final List<String> allowedMaps;
+
+	private DuelQueueTemplate(final String queueTemplateName, MatchDataStorage matchDataStorage, Kit kit, List<String> allowedMaps) {
 		this.queueTemplateName = queueTemplateName;
 		this.matchDataStorage = matchDataStorage;
+		this.kit = kit;
+		this.allowedMaps = allowedMaps;
 		queueTemplates.add(this);
 		createNewQueue();
 	}
 
 	public static DuelQueueTemplate deserialize(final ConfigurationSection section) {
 		DuelQueueTemplate.section = section;
-		return new DuelQueueTemplate(section.getName(), deserializeMatchDataStorage(section));
-	}
-
-	private static MatchDataStorage deserializeMatchDataStorage(final ConfigurationSection section) {
-		if (section == null) throw new IllegalArgumentException("Queue template section cannot be null!");
 
 		final String kitName = section.getString("kit");
 		Kit kit;
@@ -38,6 +42,17 @@ public class DuelQueueTemplate {
 		} else {
 			kit = Kit.getKits().get(kitName);
 		}
+
+		final List<String> allowedMaps = section.getStringList("maps");
+		if (allowedMaps.contains("*")) {
+			allowedMaps.clear();
+		}
+
+		return new DuelQueueTemplate(section.getName(), deserializeMatchDataStorage(section), kit, allowedMaps);
+	}
+
+	private static MatchDataStorage deserializeMatchDataStorage(final ConfigurationSection section) {
+		if (section == null) throw new IllegalArgumentException("Queue template section cannot be null!");
 
 		final int teamAmount = section.getInt("team-amount", 2);
 		final int teamSize = section.getInt("team-size", 1);
@@ -71,6 +86,14 @@ public class DuelQueueTemplate {
 
 	public void createNewQueue() {
 		new DuelQueue(this, Match.create(deserializeMatchDataStorage(section)));
+	}
+
+	public Kit getKit() {
+		return kit;
+	}
+
+	public List<String> getAllowedMaps() {
+		return Collections.unmodifiableList(allowedMaps);
 	}
 
 	public String getName() {

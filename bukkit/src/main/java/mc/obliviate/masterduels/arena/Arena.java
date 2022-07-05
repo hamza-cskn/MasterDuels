@@ -10,6 +10,7 @@ import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static mc.obliviate.masterduels.arena.BasicArenaState.*;
@@ -48,10 +49,11 @@ public class Arena {
 		return null;
 	}
 
-	public static Arena findArena(int teamSize, int teamAmount) {
+	public static Arena findArena(int teamSize, int teamAmount, List<String> allowedMaps) {
 		for (final Map.Entry<Arena, Match> entry : DataHandler.getArenas().entrySet()) {
 			if (entry.getKey().getTeamAmount() >= teamAmount && entry.getKey().getTeamSize() >= teamSize) {
 				if (!entry.getKey().isEnabled()) continue;
+				if (!allowedMaps.isEmpty() && !allowedMaps.contains(entry.getKey().getMapName())) continue;
 				if (entry.getValue() == null) return entry.getKey();
 			}
 		}

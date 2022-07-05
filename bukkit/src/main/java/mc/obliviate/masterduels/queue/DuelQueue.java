@@ -52,7 +52,7 @@ public class DuelQueue {
 		Bukkit.getPluginManager().callEvent(event);
 		if (event.isCancelled()) return; //api cancel
 
-		builder.addPlayer(player);
+		builder.addPlayer(player, template.getKit());
 		if (builder.getPlayers().size() == builder.getTeamSize() * builder.getTeamAmount()) {
 			start();
 		}
@@ -64,7 +64,7 @@ public class DuelQueue {
 	}
 
 	public void start() {
-		final Match game = builder.build();
+		final Match game = builder.build(template.getAllowedMaps());
 		if (game == null) {
 			for (final UUID uuid : builder.getPlayers()) {
 				Player player = Bukkit.getPlayer(uuid);
