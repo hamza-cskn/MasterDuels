@@ -22,6 +22,9 @@ import org.bukkit.event.player.*;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.metadata.MetadataValue;
+
+import java.util.List;
 
 public class DuelProtectListener implements Listener {
 
@@ -110,8 +113,6 @@ public class DuelProtectListener implements Listener {
 			switch (this.pickupAction) {
 				case DISALLOW:
 					e.setCancelled(true);
-				case ALLOW:
-					e.getItemDrop().setMetadata("team", new FixedMetadataValue(MasterDuels.getInstance(), -1));
 				case FRIENDLY:
 					e.getItemDrop().setMetadata("team", new FixedMetadataValue(MasterDuels.getInstance(), ((Member) user).getTeam().getTeamId()));
 			}
@@ -124,8 +125,9 @@ public class DuelProtectListener implements Listener {
 	public void onPickup(final PlayerPickupItemEvent e) {
 		IUser user = UserHandler.getUser(e.getPlayer().getUniqueId());
 		if (user instanceof Member) {
-			final int meta = e.getItem().getMetadata("team").get(0).asInt();
-			if (meta < 0 || meta == ((Member) user).getTeam().getTeamId()) return;
+			List<MetadataValue> metas = e.getItem().getMetadata("team");
+			final int mode = metas.size() == 0 ? -1 : metas.get(0).asInt();
+			if (mode < 0 || mode == ((Member) user).getTeam().getTeamId()) return;
 			e.setCancelled(true);
 		} else if (user instanceof Spectator) {
 			e.setCancelled(true);
@@ -147,7 +149,6 @@ public class DuelProtectListener implements Listener {
 			e.setCancelled(true);
 			MessageUtils.sendMessage(e.getPlayer(), "command-is-blocked", new PlaceholderUtil().add("{command}", e.getMessage()));
 		}
-
 	}
 
 	@EventHandler

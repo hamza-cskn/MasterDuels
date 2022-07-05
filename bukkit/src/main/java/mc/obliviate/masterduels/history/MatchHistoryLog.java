@@ -9,9 +9,10 @@ import mc.obliviate.masterduels.user.UserHandler;
 import org.bukkit.Statistic;
 import org.bukkit.entity.Player;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class MatchHistoryLog {
+public class MatchHistoryLog implements Serializable {
 
 	//active listening logs
 	private static final Map<Match, MatchHistoryLog> SAVING_MATCH_HISTORY_LOGS = new HashMap<>();
@@ -20,16 +21,24 @@ public class MatchHistoryLog {
 	private long startTime = -1;
 	private long finishTime = -1;
 	private List<UUID> winners;
-	private final Match match;
+	private transient final Match match;
+
+	public MatchHistoryLog(Map<UUID, PlayerHistoryLog> playerHistoryLogMap, long startTime, long finishTime, List<UUID> winners) {
+		this.playerHistoryLogMap = playerHistoryLogMap;
+		this.startTime = startTime;
+		this.finishTime = finishTime;
+		this.winners = winners;
+		this.match = null;
+	}
 
 	public MatchHistoryLog(final Match match) {
 		this.match = match;
 		this.playerHistoryLogMap = new HashMap<>();
-
 	}
 
 	public void start() {
 		Preconditions.checkState(startTime < 0, "histories cannot be started two times.");
+		Preconditions.checkState(match != null, "match cannot be null.");
 		this.startTime = System.currentTimeMillis();
 		SAVING_MATCH_HISTORY_LOGS.put(match, this);
 
@@ -111,4 +120,7 @@ public class MatchHistoryLog {
 		return finishTime;
 	}
 
+	public Match getMatch() {
+		return match;
+	}
 }

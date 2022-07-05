@@ -1,8 +1,10 @@
 package mc.obliviate.masterduels.history;
 
+import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.api.arena.DuelMatchEndEvent;
 import mc.obliviate.masterduels.api.arena.DuelMatchStartEvent;
 import mc.obliviate.masterduels.api.arena.DuelMatchUninstallEvent;
+import mc.obliviate.masterduels.data.SQLManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -22,6 +24,12 @@ import static mc.obliviate.masterduels.history.MatchHistoryLog.getPlayerHistory;
 
 @SuppressWarnings("rawtypes")
 public class HistoryListener implements Listener {
+
+	private final MasterDuels plugin;
+
+	public HistoryListener(MasterDuels plugin) {
+		this.plugin = plugin;
+	}
 
 	@EventHandler
 	public void onMatchStart(DuelMatchStartEvent event) {
@@ -45,6 +53,7 @@ public class HistoryListener implements Listener {
 	public void onMatchUninstall(DuelMatchUninstallEvent event) {
 		final MatchHistoryLog log = MatchHistoryLog.getSavingMatchHistoryLogs().get(event.getMatch());
 		log.uninstall(event.isNaturalUninstall());
+		SQLManager.saveDuelHistory(log);
 	}
 
 	@EventHandler

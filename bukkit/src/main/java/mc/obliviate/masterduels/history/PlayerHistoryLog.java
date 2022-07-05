@@ -2,7 +2,9 @@ package mc.obliviate.masterduels.history;
 
 import org.bukkit.entity.*;
 
-public class PlayerHistoryLog {
+import java.io.Serializable;
+
+public class PlayerHistoryLog implements Serializable {
 
 	private int hitClick;
 	private int click;
@@ -16,11 +18,37 @@ public class PlayerHistoryLog {
 	private int sprint;
 	private int fall;
 
-	private final ProjectileLogEntry<Arrow> arrow = new ProjectileLogEntry<>();
-	private final ProjectileLogEntry<Snowball> snowball = new ProjectileLogEntry<>();
-	private final ProjectileLogEntry<FishHook> fishHook = new ProjectileLogEntry<>();
-	private final ProjectileLogEntry<Egg> egg = new ProjectileLogEntry<>();
+	private final ProjectileLogEntry<Arrow> arrow;
+	private final ProjectileLogEntry<Snowball> snowball;
+	private final ProjectileLogEntry<FishHook> fishHook;
+	private final ProjectileLogEntry<Egg> egg;
 	//todo TRIDENT and SPECTRAL ARROW support
+
+	public PlayerHistoryLog(int hitClick, int click, int placedBlocks, int brokenBlocks, int damageTaken, int damageDealt, double regeneratedHealth, int jump, int walk, int sprint, int fall, ProjectileLogEntry<Arrow> arrow, ProjectileLogEntry<Snowball> snowball, ProjectileLogEntry<FishHook> fishHook, ProjectileLogEntry<Egg> egg) {
+		this.hitClick = hitClick;
+		this.click = click;
+		this.placedBlocks = placedBlocks;
+		this.brokenBlocks = brokenBlocks;
+		this.damageTaken = damageTaken;
+		this.damageDealt = damageDealt;
+		this.regeneratedHealth = regeneratedHealth;
+		this.jump = jump;
+		this.walk = walk;
+		this.sprint = sprint;
+		this.fall = fall;
+		this.arrow = arrow;
+		this.snowball = snowball;
+		this.fishHook = fishHook;
+		this.egg = egg;
+	}
+
+	public PlayerHistoryLog() {
+		this.arrow = new ProjectileLogEntry<>();
+		this.snowball = new ProjectileLogEntry<>();
+		this.fishHook = new ProjectileLogEntry<>();
+		this.egg = new ProjectileLogEntry<>();
+
+	}
 
 	public int getPlacedBlocks() {
 		return placedBlocks;

@@ -2,7 +2,9 @@ package mc.obliviate.masterduels.history;
 
 import org.bukkit.entity.Projectile;
 
-public class ProjectileLogEntry<T extends Projectile> {
+import java.io.Serializable;
+
+public class ProjectileLogEntry<T extends Projectile> implements Serializable {
 
 	private int hit;
 	private int threw;

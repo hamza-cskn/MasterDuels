@@ -1,21 +1,25 @@
 package mc.obliviate.masterduels.data;
 
+import com.hakan.core.HCore;
 import mc.obliviate.bloksqliteapi.SQLHandler;
 import mc.obliviate.bloksqliteapi.sqlutils.DataType;
 import mc.obliviate.bloksqliteapi.sqlutils.SQLTable;
 import mc.obliviate.bloksqliteapi.sqlutils.SQLUpdateColumn;
 import mc.obliviate.masterduels.MasterDuels;
+import mc.obliviate.masterduels.history.MatchHistoryLog;
 import mc.obliviate.masterduels.statistics.DuelStatistic;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.UUID;
 
 public class SQLManager extends SQLHandler {
 
-	private final SQLTable playerDataTable;
-	private final SQLTable historyTable;
+	private static SQLTable playerDataTable;
+	private static SQLTable historyTable;
 
 	public SQLManager(MasterDuels plugin) {
 		super(plugin.getDataFolder().getPath());
@@ -28,10 +32,7 @@ public class SQLManager extends SQLHandler {
 
 		historyTable = new SQLTable("history", "uuid")
 				.addField("uuid", DataType.TEXT)
-				.addField("winners", DataType.TEXT)
-				.addField("losers", DataType.TEXT)
-				.addField("startTime", DataType.INTEGER)
-				.addField("endTime", DataType.INTEGER);
+				.addField("log", DataType.TEXT);
 	}
 
 	public void init() {
@@ -103,6 +104,26 @@ public class SQLManager extends SQLHandler {
 	}
 
 	 */
+
+	public static List<MatchHistoryLog> loadDuelHistories() {
+		final List<MatchHistoryLog> list = new ArrayList<>();
+		try {
+			ResultSet rs = historyTable.selectAll();
+			while (rs.next()) {
+				MatchHistoryLog log = HCore.deserialize(rs.getString("log"), MatchHistoryLog.class);
+				list.add(log);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return list;
+	}
+
+	public static void saveDuelHistory(MatchHistoryLog log) {
+		UUID uuid = log.getMatch() == null ? log.getMatch().getId() : UUID.randomUUID();
+		SQLUpdateColumn update = historyTable.createUpdate(uuid).putData("uuid", uuid).putData("log", HCore.serialize(log));
+		historyTable.insert(update);
+	}
 
 	public boolean getReceivesInvites(final UUID uuid) {
 		final Integer value = playerDataTable.getInteger(uuid.toString(), "receivesInvites");

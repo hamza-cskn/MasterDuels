@@ -1,98 +1,51 @@
 package mc.obliviate.masterduels.gui;
 
+import mc.obliviate.inventory.Icon;
+import mc.obliviate.masterduels.history.MatchHistoryLog;
+import mc.obliviate.masterduels.history.PlayerHistoryLog;
+import mc.obliviate.masterduels.utils.MessageUtils;
+import mc.obliviate.masterduels.utils.Utils;
+import mc.obliviate.masterduels.utils.timer.TimerUtils;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryOpenEvent;
+
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import static mc.obliviate.masterduels.data.SQLManager.loadDuelHistories;
 
 public class DuelHistoryLogGUI extends ConfigurableGui {
-	public DuelHistoryLogGUI(Player player, String id) {
-		super(player, id);
-	}
 
-	//public static Config guiConfig;
-
-	/*public DuelHistoryLogGUI(Player player) {
+	public DuelHistoryLogGUI(Player player) {
 		super(player, "duel-history-log-gui");
-		getPaginationManager().getSlots().addAll(guiConfig.pageSlots);
-		for (final MatchHistoryLog log : MatchHistoryLog.historyCache) {
-			HistoryIconType type = HistoryIconType.SOLO;
-			if (log.getLosers().size() > 1) {
-				type = HistoryIconType.NON_SOLO;
-			}
-			getPaginationManager().addIcon(guiConfig.deserializeIcon(type, log));
-		}
 	}
 
 	@Override
 	public void onOpen(InventoryOpenEvent event) {
-		putDysfunctionalIcons();
+		List<MatchHistoryLog> logs = loadDuelHistories(); //todo cache it
+		int i = 9;
+		for (MatchHistoryLog log : logs) {
+			Icon icon = new Icon(Material.TNT).setAmount(i - 8).setName(ChatColor.DARK_PURPLE + TimerUtils.formatDate(log.getStartTime()))
+					.setLore(ChatColor.GRAY + "Duel Time: " + ChatColor.LIGHT_PURPLE + TimerUtils.formatTimeDifferenceAsTimer(log.getStartTime(), log.getFinishTime()), "");
+			for (Map.Entry<UUID, PlayerHistoryLog> entry : log.getPlayerHistoryLogMap().entrySet()) {
+				if (log.getWinners().contains(entry.getKey()))
+					icon.appendLore(ChatColor.GREEN + Utils.getDisplayName(Bukkit.getOfflinePlayer(entry.getKey())) + ChatColor.YELLOW + ChatColor.BOLD + " WINNER");
+				else
+					icon.appendLore(ChatColor.RED + Utils.getDisplayName(Bukkit.getOfflinePlayer(entry.getKey())));
+				icon.appendLore(ChatColor.GRAY + "Damage Dealt: " + ChatColor.WHITE + entry.getValue().getDamageDealt() + ChatColor.RED + "❤");
+				icon.appendLore(ChatColor.GRAY + "Bow Accuracy: " + ChatColor.WHITE + MessageUtils.getPercentage(entry.getValue().getArrow().getThrew(), entry.getValue().getArrow().getHit()) + "%");
+				icon.appendLore("");
+			}
+			addItem(i++, icon);
+		}
 	}
-
-	 */
 
 	@Override
 	public String getSectionPath() {
 		return "game-history-gui";
 	}
-/*
-	private enum HistoryIconType {
-		SOLO,
-		NON_SOLO
-	}
-
-
-	public static class Config {
-
-		private final Map<HistoryIconType, ItemStack> historyIconItemStacks = new HashMap<>();
-		private final List<Integer> pageSlots = new ArrayList<>();
-		private final String winnersFormat;
-		private final String losersFormat;
-
-		public Config(ConfigurationSection guiSection) {
-			for (final String slotText : guiSection.getString("page-slots").split(",")) {
-				try {
-					pageSlots.add(Integer.parseInt(slotText));
-				} catch (NumberFormatException ignore) {
-				}
-			}
-			historyIconItemStacks.put(HistoryIconType.SOLO, GUISerializerUtils.getConfigItem(guiSection.getConfigurationSection("icons.solo-games-icon")));
-			historyIconItemStacks.put(HistoryIconType.NON_SOLO, GUISerializerUtils.getConfigItem(guiSection.getConfigurationSection("icons.non-solo-games-icon")));
-			winnersFormat = guiSection.getString("winners-format");
-			losersFormat = guiSection.getString("losers-format");
-		}
-
-		private Icon deserializeIcon(final HistoryIconType type, MatchHistoryLog log) {
-			final Icon icon = new Icon(historyIconItemStacks.get(type).clone());
-			List<String> description = icon.getItem().getItemMeta().getLore(); //raw-placeholder lore
-			if (description == null) description = new ArrayList<>();
-			icon.setLore(new ArrayList<>());
-
-			final PlaceholderUtil placeholderUtil = new PlaceholderUtil().add("{time}", TimerUtils.formatTimeDifferenceAsTime(log.getStartTime(), log.getEndTime()))
-					.add("{played-date}", TimerUtils.formatDate(log.getStartTime()));
-			if (log.getWinners().size() == 1) {
-				placeholderUtil.add("{winner}", Bukkit.getOfflinePlayer(log.getWinners().get(0)).getName());
-			}
-			if (log.getLosers().size() == 1) {
-				placeholderUtil.add("{loser}", Bukkit.getOfflinePlayer(log.getLosers().get(0)).getName());
-			}
-			for (final String line : description) {
-				if (line.equalsIgnoreCase("{+winners}")) {
-					for (final UUID uuid : log.getWinners()) {
-						icon.appendLore(MessageUtils.parseColor(MessageUtils.applyPlaceholders(winnersFormat, new PlaceholderUtil().add("{winner}", Bukkit.getOfflinePlayer(uuid).getName()))));
-					}
-					continue;
-				} else if (line.equalsIgnoreCase("{+losers}")) {
-					for (final UUID uuid : log.getLosers()) {
-						icon.appendLore(MessageUtils.parseColor(MessageUtils.applyPlaceholders(losersFormat, new PlaceholderUtil().add("{loser}", Bukkit.getOfflinePlayer(uuid).getName()))));
-					}
-					continue;
-				}
-				icon.appendLore(MessageUtils.parseColor(MessageUtils.applyPlaceholders(line, placeholderUtil)));
-			}
-
-			icon.setName(MessageUtils.parseColor(MessageUtils.applyPlaceholders(icon.getItem().getItemMeta().getDisplayName(), placeholderUtil)));
-
-			return icon;
-		}
-	}
-
-	 */
 }

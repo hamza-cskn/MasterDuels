@@ -6,6 +6,7 @@ import mc.obliviate.masterduels.game.Match;
 import mc.obliviate.masterduels.game.MatchBuilder;
 import mc.obliviate.masterduels.game.MatchCreator;
 import mc.obliviate.masterduels.gui.DuelArenaListGUI;
+import mc.obliviate.masterduels.gui.DuelHistoryLogGUI;
 import mc.obliviate.masterduels.gui.creator.DuelMatchCreatorGUI;
 import mc.obliviate.masterduels.invite.Invite;
 import mc.obliviate.masterduels.invite.InviteRecipient;
@@ -58,11 +59,10 @@ public class DuelCMD implements CommandExecutor {
 			return false;
 		}
 
-		/*if (MatchHistoryLog.GAME_HISTORY_LOG_ENABLED && args[0].equalsIgnoreCase("history")) {
+		if (args[0].equalsIgnoreCase("history")) {
 			new DuelHistoryLogGUI(player).open();
 			return true;
-		} else */
-		if (args[0].equalsIgnoreCase("leave")) {
+		} else if (args[0].equalsIgnoreCase("leave")) {
 			if (user instanceof Member) {
 				final Member member = ((Member) user);
 				member.getMatch().getMatchState().leave(member); //todo add methods of game states to game.class

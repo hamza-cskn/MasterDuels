@@ -205,7 +205,7 @@ public class MasterDuels extends JavaPlugin {
 		Bukkit.getPluginManager().registerEvents(new MatchRuleListener(), this);
 		Bukkit.getPluginManager().registerEvents(new DeveloperCMD(this), this);
 		Bukkit.getPluginManager().registerEvents(new CMDExecutorListener(), this);
-		Bukkit.getPluginManager().registerEvents(new HistoryListener(), this);
+		Bukkit.getPluginManager().registerEvents(new HistoryListener(this), this);
 	}
 
 	private void loadKits() {
