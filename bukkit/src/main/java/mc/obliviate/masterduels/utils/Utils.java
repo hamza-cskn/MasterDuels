@@ -3,6 +3,7 @@ package mc.obliviate.masterduels.utils;
 import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.utils.xmaterial.XMaterial;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -38,6 +39,10 @@ public class Utils {
 		} catch (NumberFormatException e) {
 			return 0;
 		}
+	}
+
+	public static String getDisplayName(OfflinePlayer player) {
+		return nickedNames.getOrDefault(player.getUniqueId(), player.getName());
 	}
 
 	public static String getDisplayName(Player player) {
