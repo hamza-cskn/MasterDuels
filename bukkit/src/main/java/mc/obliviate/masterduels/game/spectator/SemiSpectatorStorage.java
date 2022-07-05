@@ -42,12 +42,12 @@ public class SemiSpectatorStorage implements SpectatorStorage {
 	public void unspectate(Spectator spectator, boolean toMember) {
 		if (!spectators.remove(spectator)) return;
 
-		//Bukkit.getPluginManager().callEvent(new DuelGameSpectatorLeaveEvent(spectator));
-		Team team = match.getGameDataStorage().getGameTeamManager().getTeam(spectator.getPlayer());
 		if (toMember) {
+			Team team = match.getGameDataStorage().getGameTeamManager().getTeam(spectator.getPlayer());
 			UserHandler.switchMember(spectator, team, null);
 		} else {
 			UserHandler.switchUser(spectator);
+			match.removeMember(match.getMember(spectator.getPlayer().getUniqueId()));
 		}
 		playerReset.reset(spectator.getPlayer());
 		MessageUtils.sendMessage(spectator.getPlayer(), "you-left-from-duel");
