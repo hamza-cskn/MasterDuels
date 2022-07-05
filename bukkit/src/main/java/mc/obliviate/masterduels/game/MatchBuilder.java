@@ -35,7 +35,11 @@ public class MatchBuilder {
 	}
 
 	public Match build() {
-		final Arena arena = Arena.findArena(matchDataStorage.getGameTeamManager().getTeamSize(), matchDataStorage.getGameTeamManager().getTeamAmount());
+		return build(new ArrayList<>());
+	}
+
+	public Match build(List<String> allowedMaps) {
+		final Arena arena = Arena.findArena(matchDataStorage.getGameTeamManager().getTeamSize(), matchDataStorage.getGameTeamManager().getTeamAmount(), allowedMaps);
 
 		if (arena == null) {
 			//arena could not found
@@ -118,7 +122,7 @@ public class MatchBuilder {
 
 	public int getAvailableTeamNo() {
 		for (Team.Builder teamBuilder : matchDataStorage.getGameTeamManager().getTeamBuilders()) {
-			if (teamBuilder.getUsers().size() < matchDataStorage.getGameTeamManager().getTeamSize())
+			if (teamBuilder.getMemberBuilders().size() < matchDataStorage.getGameTeamManager().getTeamSize())
 				return teamBuilder.getTeamId();
 		}
 		return -1;

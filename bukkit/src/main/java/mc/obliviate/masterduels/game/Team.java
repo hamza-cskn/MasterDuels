@@ -2,10 +2,7 @@ package mc.obliviate.masterduels.game;
 
 import com.google.common.base.Preconditions;
 import mc.obliviate.masterduels.kit.Kit;
-import mc.obliviate.masterduels.user.IUser;
-import mc.obliviate.masterduels.user.Member;
-import mc.obliviate.masterduels.user.Spectator;
-import mc.obliviate.masterduels.user.UserHandler;
+import mc.obliviate.masterduels.user.*;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -19,12 +16,12 @@ public class Team {
 	private final List<Member> members = new ArrayList<>();
 	private final Match match;
 
-	private Team(final int teamId, final int size, Match match, List<IUser> users) {
+	private Team(final int teamId, final int size, Match match, List<Member.Builder> users) {
 		this.teamId = teamId;
 		this.size = size;
 		this.match = match;
-		for (IUser user : users) {
-			members.add(UserHandler.switchMember(user, this, null));
+		for (Member.Builder memberBuilder : users) {
+			members.add(memberBuilder.buildAndSwitch(this));
 		}
 	}
 
@@ -68,7 +65,7 @@ public class Team {
 
 		private final int teamId;
 		private final int size;
-		private final List<IUser> users = new ArrayList<>();
+		private final List<Member.Builder> memberBuilders = new ArrayList<>();
 
 		Builder(int teamId, int size) {
 			this.teamId = teamId;
@@ -76,7 +73,7 @@ public class Team {
 		}
 
 		protected void registerPlayer(Player player, Kit kit) {
-			Preconditions.checkState(users.size() < size, "team is full");
+			Preconditions.checkState(memberBuilders.size() < size, "team is full");
 
 			final IUser user = UserHandler.getUser(player.getUniqueId());
 			if (user instanceof Member)
@@ -84,11 +81,11 @@ public class Team {
 			if (user instanceof Spectator)
 				throw new IllegalStateException("the player " + player.getName() + "is spectating.");
 
-			users.add(user);
+			memberBuilders.add(new Member.Builder((User) user, kit));
 		}
 
 		protected void unregisterPlayer(IUser user) {
-			users.remove(user);
+			memberBuilders.remove(user);
 		}
 
 		public int getSize() {
@@ -99,14 +96,12 @@ public class Team {
 			return teamId;
 		}
 
-		public List<IUser> getUsers() {
-			return users;
+		public List<Member.Builder> getMemberBuilders() {
+			return memberBuilders;
 		}
 
 		public Team build(Match match) {
-			return new Team(teamId, size, match, users);
+			return new Team(teamId, size, match, memberBuilders);
 		}
-
-
 	}
 }

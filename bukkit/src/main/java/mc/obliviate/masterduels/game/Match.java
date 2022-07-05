@@ -16,7 +16,6 @@ import mc.obliviate.masterduels.game.task.MatchTaskManager;
 import mc.obliviate.masterduels.history.MatchHistoryLog;
 import mc.obliviate.masterduels.history.PlayerHistoryLog;
 import mc.obliviate.masterduels.kit.Kit;
-import mc.obliviate.masterduels.user.IUser;
 import mc.obliviate.masterduels.user.Member;
 import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.MessageUtils;
@@ -54,8 +53,8 @@ public class Match {
 
 		final List<Player> players = new ArrayList<>();
 		for (final Team.Builder teamBuilder : matchDataStorage.getGameTeamManager().getTeamBuilders()) {
-			for (IUser user : teamBuilder.getUsers()) {
-				players.add(user.getPlayer());
+			for (Member.Builder memberBuilder : teamBuilder.getMemberBuilders()) {
+				players.add(memberBuilder.getPlayer());
 			}
 		}
 		this.players = Collections.unmodifiableList(players);

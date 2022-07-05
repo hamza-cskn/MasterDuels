@@ -72,8 +72,11 @@ public class MatchTeamManager {
 
 	public void unregisterPlayer(IUser user) {
 		for (Team.Builder builder : teamBuilders) {
-			if (builder.getUsers().contains(user)) {
-				builder.unregisterPlayer(user);
+			for (Member.Builder memberBuilder : builder.getMemberBuilders()) {
+				if (user.equals(memberBuilder.getUser())) {
+					builder.unregisterPlayer(user);
+					return;
+				}
 			}
 		}
 	}
@@ -122,8 +125,8 @@ public class MatchTeamManager {
 
 	public Team.Builder getTeamBuilder(Player player) {
 		for (final Team.Builder teamBuilder : teamBuilders) {
-			for (IUser user : teamBuilder.getUsers()) {
-				if (user.getPlayer().equals(player)) return teamBuilder;
+			for (Member.Builder builder : teamBuilder.getMemberBuilders()) {
+				if (builder.getPlayer().equals(player)) return teamBuilder;
 			}
 		}
 		return null;

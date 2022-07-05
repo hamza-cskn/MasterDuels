@@ -40,4 +40,31 @@ public class Member extends User implements IUser {
 		super.exitMatchBuilder();
 		UserHandler.switchUser(this);
 	}
+
+	public static class Builder {
+
+		private User user;
+		private Kit kit;
+
+		public Builder(User user, Kit kit) {
+			this.user = user;
+			this.kit = kit;
+		}
+
+		public Member buildAndSwitch(Team team) {
+			return UserHandler.switchMember(user, team, kit);
+		}
+
+		public Player getPlayer() {
+			return user.getPlayer();
+		}
+
+		public User getUser() {
+			return user;
+		}
+
+		public Kit getKit() {
+			return kit;
+		}
+	}
 }
