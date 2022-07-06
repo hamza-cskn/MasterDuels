@@ -35,6 +35,7 @@ public class SerializerUtils {
 
 	public static Location deserializeLocationYAML(final ConfigurationSection section) {
 		if (section == null) return null;
+		if (!(section.isSet("world") && section.isSet("x") && section.isSet("y") && section.isSet("x"))) return null;
 		final World world = Bukkit.getWorld(section.getString("world"));
 		if (world == null) {
 			Logger.error("world could not found (yaml loc deserializing): " + section.getString("world"));
