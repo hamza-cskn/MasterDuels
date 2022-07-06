@@ -1,6 +1,8 @@
-package mc.obliviate.masterduels.game;
+package mc.obliviate.masterduels.game.creator;
 
 import mc.obliviate.masterduels.data.ConfigurationHandler;
+import mc.obliviate.masterduels.game.Match;
+import mc.obliviate.masterduels.game.MatchBuilder;
 import mc.obliviate.masterduels.game.gamerule.GameRule;
 import mc.obliviate.masterduels.invite.Invite;
 import mc.obliviate.masterduels.invite.InviteUtils;
@@ -41,6 +43,7 @@ public class MatchCreator {
 	//invited player's uuid, invite
 	private final Map<UUID, Invite> invites = new HashMap<>();
 	private final UUID ownerPlayer;
+	private final CreatorKitManager creatorKitManager = new CreatorKitManager(this);
 	private final MatchBuilder builder;
 
 	public MatchCreator(UUID ownerPlayer) {
@@ -115,22 +118,22 @@ public class MatchCreator {
 					this.removeInvite(invite.getRecipientUniqueId());
 					switch (invite.getState()) {
 						case ACCEPTED:
-							MessageUtils.sendMessage(target, "invite.game-creator-invite.successfully-accepted", new PlaceholderUtil().add("{inviter}", Utils.getDisplayName(target)));
-							MessageUtils.sendMessage(sender, "invite.game-creator-invite.target-accepted-the-invite", new PlaceholderUtil().add("{target}", Utils.getDisplayName(sender)));
+							MessageUtils.sendMessage(target, "invite.game-creator-invite.successfully-accepted", new PlaceholderUtil().add("{inviter}", Utils.getDisplayName(sender)));
+							MessageUtils.sendMessage(sender, "invite.game-creator-invite.target-accepted-the-invite", new PlaceholderUtil().add("{target}", Utils.getDisplayName(target)));
 							break;
 						case REJECTED:
-							MessageUtils.sendMessage(target, "invite.game-creator-invite.successfully-declined", new PlaceholderUtil().add("{inviter}", Utils.getDisplayName(target)));
-							MessageUtils.sendMessage(sender, "invite.game-creator-invite.target-declined-the-invite", new PlaceholderUtil().add("{target}", Utils.getDisplayName(sender)));
+							MessageUtils.sendMessage(target, "invite.game-creator-invite.successfully-declined", new PlaceholderUtil().add("{inviter}", Utils.getDisplayName(sender)));
+							MessageUtils.sendMessage(sender, "invite.game-creator-invite.target-declined-the-invite", new PlaceholderUtil().add("{target}", Utils.getDisplayName(target)));
 							break;
 						case EXPIRED:
-							MessageUtils.sendMessage(target, "invite.game-creator-invite.invite-expired-target", new PlaceholderUtil().add("{inviter}", Utils.getDisplayName(target)));
-							MessageUtils.sendMessage(sender, "invite.game-creator-invite.invite-expired-inviter", new PlaceholderUtil().add("{target}", Utils.getDisplayName(sender)));
+							MessageUtils.sendMessage(target, "invite.game-creator-invite.invite-expired-target", new PlaceholderUtil().add("{inviter}", Utils.getDisplayName(sender)));
+							MessageUtils.sendMessage(sender, "invite.game-creator-invite.invite-expired-inviter", new PlaceholderUtil().add("{target}", Utils.getDisplayName(target)));
 							break;
 					}
 
 					final MatchCreator creator = getCreator(target.getUniqueId());
 					if (creator != null) creator.destroy();
-					if (builder.getData().getGameTeamManager().areAllTeamsFull()) {
+					if (builder.getData().getGameTeamManager().areAllTeamBuildersFull()) {
 						MessageUtils.sendMessage(target, "invite.game-creator-invite.all-teams-are-full-target");
 						MessageUtils.sendMessage(sender, "invite.game-creator-invite.all-teams-are-full-inviter");
 						return;
@@ -181,6 +184,10 @@ public class MatchCreator {
 		return Collections.unmodifiableMap(GAME_CREATOR_MAP);
 	}
 
+	public CreatorKitManager getCreatorKitManager() {
+		return creatorKitManager;
+	}
+
 	public static MatchCreator getCreator(UUID playerUniqueId) {
 		MatchCreator matchCreator = GAME_CREATOR_MAP.get(playerUniqueId);
 		if (matchCreator != null) return matchCreator;
@@ -192,4 +199,6 @@ public class MatchCreator {
 		}
 		return null;
 	}
+
+
 }

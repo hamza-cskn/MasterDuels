@@ -28,11 +28,9 @@ public class MatchTeamManager {
 	private int teamAmount = 2;
 	private int teamSize = 1;
 
-	public boolean areAllTeamsFull() {
-		if (teams.size() != teamAmount) return false;
-
-		for (Team team : teams) {
-			if (team.getMembers().size() != teamSize) {
+	public boolean areAllTeamBuildersFull() {
+		for (Team.Builder team : teamBuilders) {
+			if (team.getMemberBuilders().size() != teamSize) {
 				return false;
 			}
 		}
@@ -45,6 +43,25 @@ public class MatchTeamManager {
 			members.addAll(team.getMembers());
 		}
 		return members;
+	}
+
+	public List<Member.Builder> getAllMemberBuilders() {
+		final List<Member.Builder> members = new ArrayList<>();
+		for (Team.Builder team : teamBuilders) {
+			members.addAll(team.getMemberBuilders());
+		}
+		return members;
+	}
+
+	public Member.Builder getMemberBuilder(UUID playerUniqueId) {
+		for (Team.Builder team : teamBuilders) {
+			for (Member.Builder member : team.getMemberBuilders()) {
+				if (member.getPlayer().getUniqueId().equals(playerUniqueId)) {
+					return member;
+				}
+			}
+		}
+		return null;
 	}
 
 	public Member getMember(UUID playerUniqueId) {
@@ -74,7 +91,7 @@ public class MatchTeamManager {
 		for (Team.Builder builder : teamBuilders) {
 			for (Member.Builder memberBuilder : builder.getMemberBuilders()) {
 				if (user.equals(memberBuilder.getUser())) {
-					builder.unregisterPlayer(user);
+					builder.unregisterPlayer(memberBuilder);
 					return;
 				}
 			}
@@ -95,22 +112,25 @@ public class MatchTeamManager {
 	}
 
 	public void createAllTeams() {
+		final List<Member.Builder> membersCopy = getAllMemberBuilders();
+
 		unregisterAllTeams();
 		int safe = 0;
+		int memberIndex = 0;
 		while (teamBuilders.size() < teamAmount) {
 			if (safe++ > 20) {
 				throw new IllegalStateException(safe + " teams created. probably team create task repeated infinitely");
 			}
-			createNewTeam();
-		}
-	}
 
-	private void createNewTeam() {
-		Preconditions.checkState(!isLocked(), "this object is locked");
-		if (teamBuilders.size() < teamAmount) {
-			teamBuilders.add(new Team.Builder(teamBuilders.size() + 1, teamSize));
-		} else {
-			throw new IllegalStateException("team amount limit is " + getTeamAmount() + ". all teams has created already. team amount is " + teams.size());
+			//create team
+			Team.Builder builder = new Team.Builder(teamBuilders.size() + 1, teamSize);
+			teamBuilders.add(builder);
+			for (int index = teamSize; index > 0; index--) {
+				if (memberIndex < membersCopy.size()) {
+					Member.Builder memBuilder = membersCopy.get(memberIndex++);
+					builder.registerPlayer(memBuilder.getPlayer(), memBuilder.getKit());
+				}
+			}
 		}
 	}
 

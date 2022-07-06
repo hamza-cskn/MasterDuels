@@ -28,13 +28,15 @@ public class CMDExecutorListener implements Listener {
 		player.sendMessage(ChatColor.RED + ChatColor.BOLD.toString() + "TYPE"
 				+ ChatColor.GOLD + ChatColor.BOLD + " MEMBERS AMOUNT"
 				+ ChatColor.GREEN + ChatColor.BOLD + " TEAMS AMOUNT"
-				+ ChatColor.AQUA + ChatColor.BOLD + " REMAINING TIME");
+				+ ChatColor.AQUA + ChatColor.BOLD + " REMAINING TIME"
+				+ ChatColor.LIGHT_PURPLE + ChatColor.BOLD + " USER TYPE");
 		event.getMatch().getGameTaskManager().repeatTask("debug", () -> {
 			IUser user = UserHandler.getUser(player.getUniqueId());
 			HCore.sendActionBar(player, ChatColor.RED + ChatColor.BOLD.toString() + event.getMatch().getMatchState().getMatchStateType()
 					+ ChatColor.GOLD + ChatColor.BOLD + " " + event.getMatch().getAllMembers().size()
 					+ ChatColor.GREEN + ChatColor.BOLD + " " + event.getMatch().getGameDataStorage().getGameTeamManager().getTeams().size()
 					+ ChatColor.AQUA + ChatColor.BOLD + " " + TimerUtils.formatTimeUntilThenAsTimer(event.getMatch().getGameDataStorage().getFinishTime())
+					+ ChatColor.LIGHT_PURPLE + ChatColor.BOLD + " " + user.getClass().getSimpleName()
 			);
 		}, null, 0, 1);
 	}

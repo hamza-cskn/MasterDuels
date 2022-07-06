@@ -133,6 +133,7 @@ public class MasterDuels extends JavaPlugin {
 	private void setupHandlers() {
 		configurationHandler.init();
 		inventoryAPI.init();
+		loadKits();
 		new TABManager().init(this);
 		new AdvancedReplayManager().init(this);
 		setupArenaClearHandler();

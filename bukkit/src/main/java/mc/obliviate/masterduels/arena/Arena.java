@@ -128,7 +128,7 @@ public class Arena {
 		final int teamAmount = section.getInt("team-amount");
 
 		Location spectatorLocation;
-		if (section.isSet("spectator-position")) {
+		if (section.isConfigurationSection("spectator-position")) {
 			spectatorLocation = SerializerUtils.deserializeLocationYAML(section.getConfigurationSection("spectator-position"));
 		} else {
 			spectatorLocation = positions.get("spawn-team-1").getLocation(1);

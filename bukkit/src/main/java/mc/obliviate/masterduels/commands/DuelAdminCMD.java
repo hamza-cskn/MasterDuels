@@ -57,9 +57,9 @@ public class DuelAdminCMD implements CommandExecutor {
 			}
 
 			player.sendMessage("§e§l- SETUPING AN ARENA -");
-			player.sendMessage("§6§lINFO: §7Use blaze rod to select cuboid.");
-			player.sendMessage("§6§lINFO: §7Use blaze powder to open arena setup gui.");
-			player.sendMessage("§6§lINFO: §7Selected blocks will be redstone block at client-side");
+			player.sendMessage("§6§lTIP: §7Use blaze rod to select cuboid.");
+			player.sendMessage("§6§lTIP: §7Use blaze powder to open arena setup gui.");
+			player.sendMessage("§6§lTIP: §7Selected blocks will be redstone block at client-side");
 
 			player.getInventory().addItem(new ItemStack(Material.BLAZE_POWDER));
 			player.getInventory().addItem(new ItemStack(Material.BLAZE_ROD));

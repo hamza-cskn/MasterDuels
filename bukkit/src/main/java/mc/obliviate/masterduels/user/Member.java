@@ -43,8 +43,9 @@ public class Member extends User implements IUser {
 
 	public static class Builder {
 
-		private User user;
+		private final User user;
 		private Kit kit;
+		private Kit defaultKit; //its ugly but i'll do it.
 
 		public Builder(User user, Kit kit) {
 			this.user = user;
@@ -63,7 +64,16 @@ public class Member extends User implements IUser {
 			return user;
 		}
 
+		public void setDefaultKit(Kit kit) {
+			this.kit = kit;
+		}
+
+		public void setKit(Kit kit) {
+			this.kit = kit;
+		}
+
 		public Kit getKit() {
+			if (kit == null) return defaultKit;
 			return kit;
 		}
 	}

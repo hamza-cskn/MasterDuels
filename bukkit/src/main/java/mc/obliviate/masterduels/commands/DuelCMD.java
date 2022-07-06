@@ -4,7 +4,7 @@ import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.data.ConfigurationHandler;
 import mc.obliviate.masterduels.game.Match;
 import mc.obliviate.masterduels.game.MatchBuilder;
-import mc.obliviate.masterduels.game.MatchCreator;
+import mc.obliviate.masterduels.game.creator.MatchCreator;
 import mc.obliviate.masterduels.gui.DuelArenaListGUI;
 import mc.obliviate.masterduels.gui.DuelHistoryLogGUI;
 import mc.obliviate.masterduels.gui.creator.DuelMatchCreatorGUI;
@@ -51,7 +51,6 @@ public class DuelCMD implements CommandExecutor {
 		if (!(sender instanceof Player)) return false;
 
 		final Player player = ((Player) sender).getPlayer();
-
 		final IUser user = UserHandler.getUser(player.getUniqueId());
 
 		if (args.length == 0) {
@@ -98,7 +97,7 @@ public class DuelCMD implements CommandExecutor {
 			return false;
 		}
 
-		if (ConfigurationHandler.getConfig().getBoolean("duel-arenas-gui.enabled") && args[0].equalsIgnoreCase("arenas")) {
+		if (ConfigurationHandler.getMenus().getBoolean("duel-arenas-gui.enabled") && args[0].equalsIgnoreCase("arenas")) {
 			new DuelArenaListGUI(player).open();
 			return true;
 		} else if (args[0].equalsIgnoreCase("accept") || args[0].equalsIgnoreCase("decline")) {
@@ -302,44 +301,40 @@ public class DuelCMD implements CommandExecutor {
 		//1v1
 		final MatchBuilder matchBuilder = Match.create();
 		matchBuilder.setTeamsAttributes(1, 2).setDuration(Duration.ofMinutes(1)).setTotalRounds(1);
-		matchBuilder.addPlayer(player);
-
-		final Invite.Builder inviteBuilder = Invite.create()
-				.setExpireTimeLater(ConfigurationHandler.getConfig().getInt("invite-timeout") * 1000L)
-				.setSender(player.getUniqueId())
-				.setReceiver(target.getUniqueId())
-				.onResponse(invite -> {
-
-					switch (invite.getState()) {
-						case ACCEPTED:
-							MessageUtils.sendMessage(target, "invite.normal-invite.successfully-accepted", new PlaceholderUtil().add("{inviter}", Utils.getDisplayName(target)));
-							MessageUtils.sendMessage(player, "invite.normal-invite.target-accepted-the-invite", new PlaceholderUtil().add("{target}", Utils.getDisplayName(player)));
-							break;
-						case REJECTED:
-							MessageUtils.sendMessage(target, "invite.normal-invite.successfully-declined", new PlaceholderUtil().add("{inviter}", Utils.getDisplayName(target)));
-							MessageUtils.sendMessage(player, "invite.normal-invite.target-declined-the-invite", new PlaceholderUtil().add("{target}", Utils.getDisplayName(player)));
-							break;
-						case EXPIRED:
-							MessageUtils.sendMessage(target, "invite.normal-invite.invite-expired-target", new PlaceholderUtil().add("{inviter}", Utils.getDisplayName(target)));
-							MessageUtils.sendMessage(player, "invite.normal-invite.invite-expired-inviter", new PlaceholderUtil().add("{target}", Utils.getDisplayName(player)));
-							break;
-					}
-
-					if (invite.getState().equals(Invite.InviteState.ACCEPTED)) {
-						matchBuilder.addPlayer(target);
-						Match game = matchBuilder.build();
-						if (game == null) {
-							MessageUtils.sendMessage(player, "no-arena-found");
-							return;
-						}
-						game.start();
-					} else {
-						matchBuilder.destroy();
-					}
-				});
 
 		new KitSelectionGUI(player, matchBuilder, selectedKit -> {
-			Invite.InviteBuildResult buildResult = inviteBuilder.build();
+			Invite.InviteBuildResult buildResult = Invite.create()
+					.setExpireTimeLater(ConfigurationHandler.getConfig().getInt("invite-timeout") * 1000L)
+					.setSender(player.getUniqueId())
+					.setReceiver(target.getUniqueId())
+					.onResponse(invite -> {
+						switch (invite.getState()) {
+							case ACCEPTED:
+								MessageUtils.sendMessage(target, "invite.normal-invite.successfully-accepted", new PlaceholderUtil().add("{inviter}", Utils.getDisplayName(player)));
+								MessageUtils.sendMessage(player, "invite.normal-invite.target-accepted-the-invite", new PlaceholderUtil().add("{target}", Utils.getDisplayName(target)));
+								break;
+							case REJECTED:
+								MessageUtils.sendMessage(target, "invite.normal-invite.successfully-declined", new PlaceholderUtil().add("{inviter}", Utils.getDisplayName(player)));
+								MessageUtils.sendMessage(player, "invite.normal-invite.target-declined-the-invite", new PlaceholderUtil().add("{target}", Utils.getDisplayName(target)));
+								break;
+							case EXPIRED:
+								MessageUtils.sendMessage(target, "invite.normal-invite.invite-expired-target", new PlaceholderUtil().add("{inviter}", Utils.getDisplayName(player)));
+								MessageUtils.sendMessage(player, "invite.normal-invite.invite-expired-inviter", new PlaceholderUtil().add("{target}", Utils.getDisplayName(target)));
+								break;
+						}
+						if (invite.getState().equals(Invite.InviteState.ACCEPTED)) {
+							matchBuilder.addPlayer(target, selectedKit);
+
+							Match game = matchBuilder.build();
+							if (game == null) {
+								MessageUtils.sendMessage(player, "no-arena-found");
+								return;
+							}
+							game.start();
+						} else {
+							matchBuilder.destroy();
+						}
+					}).build();
 
 			if (buildResult.getInviteBuildState().equals(Invite.InviteBuildState.ERROR_ALREADY_INVITED)) {
 				MessageUtils.sendMessage(player, "invite.already-invited", new PlaceholderUtil().add("{target}", target.getName()));
@@ -347,6 +342,8 @@ public class DuelCMD implements CommandExecutor {
 			} else if (buildResult.getInviteBuildState().equals(Invite.InviteBuildState.SUCCESS)) {
 				MessageUtils.sendMessage(player, "invite.normal-invite.target-has-invited", new PlaceholderUtil().add("{target}", target.getName()).add("{expire-time}", TimerUtils.formatTimeUntilThenAsTimer(buildResult.getInvite().getExpireOutTime()) + ""));
 				InviteUtils.sendInviteMessage(buildResult.getInvite(), MessageUtils.getMessageConfig().getConfigurationSection("invite.normal-invite"));
+
+				matchBuilder.addPlayer(player, selectedKit);
 			}
 		}).open();
 

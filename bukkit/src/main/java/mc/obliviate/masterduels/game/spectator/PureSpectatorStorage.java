@@ -87,13 +87,13 @@ public class PureSpectatorStorage implements SpectatorStorage {
 
 		new PlayerReset().excludeGamemode().excludeInventory().excludeLevel().excludeExp().reset(player);
 
-		for (final Member member : match.getAllMembers()) {
-			member.getPlayer().hidePlayer(player);
-		}
-
 		for (final Spectator spec : gsm.getAllSpectators()) {
 			spec.getPlayer().showPlayer(player);
 			player.showPlayer(spec.getPlayer());
+		}
+
+		for (final Member member : match.getAllMembers()) {
+			member.getPlayer().hidePlayer(player);
 		}
 
 		player.setAllowFlight(true);

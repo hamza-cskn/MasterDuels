@@ -1,7 +1,7 @@
 package mc.obliviate.masterduels.gui.creator;
 
 import mc.obliviate.inventory.Icon;
-import mc.obliviate.masterduels.game.MatchCreator;
+import mc.obliviate.masterduels.game.creator.MatchCreator;
 import mc.obliviate.masterduels.gui.ConfigurableGui;
 import mc.obliviate.masterduels.queue.DuelQueue;
 import mc.obliviate.masterduels.setup.chatentry.ChatEntry;

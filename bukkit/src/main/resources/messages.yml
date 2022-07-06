@@ -72,7 +72,7 @@ duel-command:
     &7 /duel queue menu &8- &9opens duel queues menu
     &7 /duel queue join <queue name>&8- &9joins a duel queue
     &7 /duel queue leave &8- &9leaves from duel queue
-    &7 /duel creator &c&l[BETA] &8- &9opens match builder menu
+    &7 /duel creator &c&l[BETA] &8- &9opens an advanced match builder
     &f&nMasterDuels&f {build-version}
   admin:
     usage: |-
@@ -105,7 +105,6 @@ queue:
   deleted: '&7Successfully &cdeleted&7 new queue template: &b{queue-name}'
   player-could-not-added: '&cAn error occurred during joining a queue.'
   queue-not-found: '&cNo queue found that is named &4''{entry}''&c.'
-  queue-could-not-started: '&cAn error occurred! Queue game couldn''t started.'
   no-queue-name: '&cPlease enter a queue name to join.'
   usage: |-
     [DISABLE_PREFIX]&7 /duel queue menu &8- &9opens duel queues menu

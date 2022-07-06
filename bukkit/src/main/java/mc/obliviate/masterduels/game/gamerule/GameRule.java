@@ -1,6 +1,8 @@
 package mc.obliviate.masterduels.game.gamerule;
 
-public enum GameRule {
+import java.io.Serializable;
+
+public enum GameRule implements Serializable {
 
 	NO_FIRE,//done
 	NO_CHORUS_FRUIT,//done

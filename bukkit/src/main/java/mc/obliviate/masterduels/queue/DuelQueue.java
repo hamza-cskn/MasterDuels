@@ -69,7 +69,7 @@ public class DuelQueue {
 			for (final UUID uuid : builder.getPlayers()) {
 				Player player = Bukkit.getPlayer(uuid);
 				if (player == null) continue;
-				MessageUtils.sendMessage(player, "queue.queue-could-not-started");
+				MessageUtils.sendMessage(player, "no-arena-found");
 			}
 			return;
 		}

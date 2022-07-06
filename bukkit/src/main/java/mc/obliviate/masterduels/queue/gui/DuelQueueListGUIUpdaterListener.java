@@ -30,10 +30,10 @@ public class DuelQueueListGUIUpdaterListener implements Listener {
 	private void updateGuis() {
 		if (taskGiven) return;
 		taskGiven = true;
+		for (Gui gui : DuelQueueListGUI.OPENED_DUEL_QUEUE_LIST_GUI_LIST) {
+			gui.open();
+		}
 		Bukkit.getScheduler().runTaskLater(plugin, () -> {
-			for (Gui gui : DuelQueueListGUI.OPENED_DUEL_QUEUE_LIST_GUI_LIST) {
-				gui.open();
-			}
 			taskGiven = false;
 		}, 5);
 	}

@@ -17,6 +17,7 @@ import mc.obliviate.masterduels.history.MatchHistoryLog;
 import mc.obliviate.masterduels.history.PlayerHistoryLog;
 import mc.obliviate.masterduels.kit.Kit;
 import mc.obliviate.masterduels.user.Member;
+import mc.obliviate.masterduels.user.Spectator;
 import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.Utils;
@@ -196,8 +197,12 @@ public class Match {
 
 	public void resetPlayers() {
 		for (final Member member : matchDataStorage.getGameTeamManager().getAllMembers()) {
+			showAll(member.getPlayer());
+			for (Spectator spectator : gameSpectatorManager.getPureSpectatorStorage().getSpectatorList()) {
+				member.getPlayer().hidePlayer(spectator.getPlayer());
+			}
 			PLAYER_RESET.reset(member.getPlayer());
-			Kit.load((Kit) member.getKit(), member.getPlayer());
+			Kit.load(member.getKit(), member.getPlayer());
 		}
 	}
 
@@ -236,7 +241,7 @@ public class Match {
 		final Team winnerTeam = roundData.getWinnerTeam();
 		final List<Team> loserTeams = matchDataStorage.getGameTeamManager().getTeams().stream().filter(team -> !team.equals(winnerTeam)).collect(Collectors.toList());
 
-		if (roundData.getWinnerTeam().getSize() == 1) {
+		if (roundData.getWinnerTeam().getMembers().size() == 1) {
 			final Player winner = roundData.getWinnerTeam().getMembers().get(0).getPlayer();
 			final Player loser = loserTeams.size() == 0 || loserTeams.get(0).getSize() == 0 ? null : loserTeams.get(0).getMembers().get(0).getPlayer();
 			for (final Player player : receivers) {

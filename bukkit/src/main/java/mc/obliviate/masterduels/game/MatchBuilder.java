@@ -115,7 +115,8 @@ public class MatchBuilder {
 			for (UUID uuid : playerList) {
 				final Player player = Bukkit.getPlayer(uuid);
 				Preconditions.checkNotNull(player, "player cannot be offline");
-				matchDataStorage.getGameTeamManager().registerPlayer(player, null, teamNo);
+				Member.Builder memberBuilder = matchDataStorage.getGameTeamManager().getMemberBuilder(player.getUniqueId());
+				matchDataStorage.getGameTeamManager().registerPlayer(player, memberBuilder.getKit(), teamNo);
 			}
 		}
 	}
@@ -134,7 +135,7 @@ public class MatchBuilder {
 
 	public MatchBuilder setTeamsAttributes(int size, int amount) {
 		matchDataStorage.getGameTeamManager().setTeamsAttributes(size, amount);
-		randomizeTeams();
+		//randomizeTeams();
 		return this;
 	}
 

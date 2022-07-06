@@ -45,11 +45,11 @@ public abstract class ConfigurableGui extends Gui {
 	}
 
 	public void putIcon(String configName, Consumer<InventoryClickEvent> click) {
-		addItem(getConfigSlot(configName), new Icon(getConfigItem(configName)).onClick(click));
+		addItem(getConfigSlot(configName), new Icon(getConfigItem(configName)).hideFlags().onClick(click));
 	}
 
 	public void putIcon(String configName, PlaceholderUtil placeholderUtil, Consumer<InventoryClickEvent> click) {
-		addItem(getConfigSlot(configName), new Icon(getConfigItem(configName, placeholderUtil)).onClick(click));
+		addItem(getConfigSlot(configName), new Icon(getConfigItem(configName, placeholderUtil)).hideFlags().onClick(click));
 	}
 
 }

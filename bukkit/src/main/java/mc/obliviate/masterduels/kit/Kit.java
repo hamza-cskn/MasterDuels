@@ -36,10 +36,6 @@ public class Kit {
 		return kits;
 	}
 
-	public static boolean storeKits(final Player player) {
-		if (USE_PLAYER_INVENTORIES) return true;
-		return InventoryStorer.store(player) != null;
-	}
 
 	public static void load(final Kit kit, final Player player) {
 		if (USE_PLAYER_INVENTORIES) return;
@@ -75,6 +71,11 @@ public class Kit {
 	public ItemStack getIcon() {
 		if (icon == null || icon.getType().equals(Material.AIR)) return new ItemStack(Material.DIAMOND_CHESTPLATE);
 		return icon.clone();
+	}
+
+	@Override
+	public String toString() {
+		return kitName;
 	}
 
 	public void setIcon(ItemStack icon) {

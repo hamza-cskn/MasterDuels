@@ -84,8 +84,8 @@ public class Team {
 			memberBuilders.add(new Member.Builder((User) user, kit));
 		}
 
-		protected void unregisterPlayer(IUser user) {
-			memberBuilders.remove(user);
+		protected void unregisterPlayer(Member.Builder builder) {
+			memberBuilders.remove(builder);
 		}
 
 		public int getSize() {

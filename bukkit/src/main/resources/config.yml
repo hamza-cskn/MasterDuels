@@ -205,16 +205,16 @@ game-history:
 
 duel-creator:
   data-limits:
-    max-team-size: 8
+    max-team-size: 5
     min-team-size: 1
-    max-team-amount: 2
-    min-team-amount: 10
+    max-team-amount: 4
+    min-team-amount: 2
     max-rounds: 5
     min-rounds: 1
     max-game-time: 600 #in seconds
     min-game-time: 60 #in seconds
     allowed-kits: #these kits are selectable
       - '*'
-    allowed-game-rules: #these game rules are setable
+    allowed-game-rules: #these game rules are toggleable
       - '*'
       #- NO_BOW

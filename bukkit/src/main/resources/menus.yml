@@ -30,6 +30,7 @@ game-history-gui:
         - '&8Game played at: {played-date}'
 
 duel-arenas-gui:
+  enabled: true # this gui can be disabled
   title: 'Duel Arenas'
   size: 6
   page-slots: 9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53
@@ -121,6 +122,14 @@ queues-gui:
           - ''
           - '&eClick to join queue!'
         # only display-name will become from 'default' section.
+kit-selection-gui:
+  title: 'Select a kit'
+  size: 4
+  page-slots: 9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53
+  icons:
+    fill-icon:
+      material: BLACK_STAINED_GLASS_PANE
+      slot: 0-8
 
 duel-creator:
   gui:
@@ -193,7 +202,7 @@ duel-creator:
           - '&7'
           - '&7Game rules of game.'
           - '&7'
-          - '&eClick to open gui'
+          - '&eClick to open menu'
       round-amount:
         material: LADDER
         slot: 15
@@ -258,14 +267,18 @@ duel-creator:
           - '&7'
           - '&7Manage members of teams.'
           - '&7'
-          - '&eClick to increase'
+          - '&eClick to open menu'
       start-game:
         material: EMERALD_BLOCK
         slot: 49
-        display-name: '&9Start Game!'
+        display-name: '&2Start Game!'
         lore:
           - '&7'
-          - '&eClick to start duel game.'
+          - '&7&oAre you for this'
+          - '&7&oAre you for this &8&o2x'
+          - '&7&oHere we go!'
+          - '&7'
+          - '&aClick to start duel game!'
   manage-teams-gui:
     title: Manage Teams
     #the size of gui is dynamic

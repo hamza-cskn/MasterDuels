@@ -93,7 +93,7 @@ public class DuelProtectListener implements Listener {
 		if (!(e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK))) return;
 		final IUser user = UserHandler.getUser(e.getPlayer().getUniqueId());
 		if (user instanceof Member) {
-			if (e.getItem().getType().equals(Material.MUSHROOM_SOUP)) {
+			if (e.getItem() != null && e.getItem().getType().equals(Material.MUSHROOM_SOUP)) {
 				e.getPlayer().setHealth(Math.min(e.getPlayer().getMaxHealth(), e.getPlayer().getHealth() + soupRegenAmount));
 				e.getPlayer().setItemInHand(new ItemStack(Material.BOWL));
 			}

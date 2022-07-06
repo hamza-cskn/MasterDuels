@@ -2,6 +2,7 @@ package mc.obliviate.masterduels.history;
 
 import com.google.common.base.Preconditions;
 import mc.obliviate.masterduels.game.Match;
+import mc.obliviate.masterduels.game.gamerule.GameRule;
 import mc.obliviate.masterduels.user.IUser;
 import mc.obliviate.masterduels.user.Member;
 import mc.obliviate.masterduels.user.Spectator;
@@ -23,6 +24,11 @@ public class MatchHistoryLog implements Serializable {
 	private List<UUID> winners;
 	private transient final Match match;
 
+	private int playedRound;
+	private int maxRound;
+
+	private List<GameRule> rules;
+
 	public MatchHistoryLog(Map<UUID, PlayerHistoryLog> playerHistoryLogMap, long startTime, long finishTime, List<UUID> winners) {
 		this.playerHistoryLogMap = playerHistoryLogMap;
 		this.startTime = startTime;
@@ -41,6 +47,9 @@ public class MatchHistoryLog implements Serializable {
 		Preconditions.checkState(match != null, "match cannot be null.");
 		this.startTime = System.currentTimeMillis();
 		SAVING_MATCH_HISTORY_LOGS.put(match, this);
+
+		maxRound = match.getGameDataStorage().getGameRoundData().getTotalRounds();
+		rules = match.getGameDataStorage().getGameRules();
 
 		for (final Member member : match.getAllMembers()) {
 			final PlayerHistoryLog playerLog = new PlayerHistoryLog();
@@ -64,12 +73,15 @@ public class MatchHistoryLog implements Serializable {
 		this.finishTime = System.currentTimeMillis();
 		this.winners = winners;
 
+		playedRound = match.getGameDataStorage().getGameRoundData().getCurrentRound();
+
 		for (final Member member : match.getAllMembers()) {
 			final PlayerHistoryLog playerLog = playerHistoryLogMap.get(member.getPlayer().getUniqueId());
 
 			if (playerLog == null) continue;
 			final Player player = member.getPlayer();
 
+			playerLog.setKitName(member.getKit() + "");
 			playerLog.setJump(playerLog.getJump() + player.getStatistic(Statistic.JUMP));
 			playerLog.setFall(playerLog.getFall() + player.getStatistic(Statistic.FALL_ONE_CM));
 			playerLog.setSprint(playerLog.getSprint() + player.getStatistic(Statistic.SPRINT_ONE_CM));
@@ -106,6 +118,18 @@ public class MatchHistoryLog implements Serializable {
 		final MatchHistoryLog log = SAVING_MATCH_HISTORY_LOGS.get(match);
 		if (log == null) return null;
 		return log.getPlayerHistoryLogMap().get(player.getUniqueId());
+	}
+
+	public int getMaxRound() {
+		return maxRound;
+	}
+
+	public int getPlayedRound() {
+		return playedRound;
+	}
+
+	public List<GameRule> getRules() {
+		return rules;
 	}
 
 	public List<UUID> getWinners() {

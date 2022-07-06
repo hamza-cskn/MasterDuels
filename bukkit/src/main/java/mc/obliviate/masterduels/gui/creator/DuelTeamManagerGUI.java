@@ -3,11 +3,12 @@ package mc.obliviate.masterduels.gui.creator;
 import com.google.common.base.Preconditions;
 import mc.obliviate.inventory.Icon;
 import mc.obliviate.masterduels.game.MatchBuilder;
-import mc.obliviate.masterduels.game.MatchCreator;
 import mc.obliviate.masterduels.game.MatchTeamManager;
 import mc.obliviate.masterduels.game.Team;
+import mc.obliviate.masterduels.game.creator.MatchCreator;
 import mc.obliviate.masterduels.gui.ConfigurableGui;
 import mc.obliviate.masterduels.user.IUser;
+import mc.obliviate.masterduels.user.Member;
 import mc.obliviate.masterduels.user.UserHandler;
 import mc.obliviate.masterduels.utils.Utils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
@@ -67,17 +68,17 @@ public class DuelTeamManagerGUI extends ConfigurableGui {
 					continue;
 				}
 
-				final Player player = team.getMemberBuilders().get(member).getPlayer();
-				if (player == null) {
+				final Member.Builder builder = team.getMemberBuilders().get(member);
+				if (builder == null) {
 					break;
 				}
 
 				if (slot >= getSize()) {
-					player.sendMessage("§cThere are toooo many member!");
+					builder.getPlayer().sendMessage("§cThere are toooo many member!");
 					return;
 				}
 
-				final ItemStack playerHead = guiConfig.getPlayerSlotIcon(player);
+				final ItemStack playerHead = guiConfig.getPlayerSlotIcon(builder);
 
 				final Icon playerHeadIcon = new Icon(playerHead);
 				if (isOwner) {
@@ -216,11 +217,11 @@ public class DuelTeamManagerGUI extends ConfigurableGui {
 			return emptySlotIcon.clone();
 		}
 
-		private ItemStack getPlayerSlotIcon(Player player) {
-			final ItemStack item = SerializerUtils.applyPlaceholdersOnItemStack(playerSlotIcon.clone(), new PlaceholderUtil().add("{player}", Utils.getDisplayName(player)));
+		private ItemStack getPlayerSlotIcon(Member.Builder builder) {
+			final ItemStack item = SerializerUtils.applyPlaceholdersOnItemStack(playerSlotIcon.clone(), new PlaceholderUtil().add("{player}", Utils.getDisplayName(builder.getPlayer())).add("{kit}", builder.getKit() == null ? "" : builder.getKit().getKitName()));
 			if (item.getItemMeta() instanceof SkullMeta) {
 				final SkullMeta skullMeta = (SkullMeta) item.getItemMeta();
-				skullMeta.setOwner(player.getName());
+				skullMeta.setOwner(builder.getPlayer().getName());
 				item.setItemMeta(skullMeta);
 			}
 			return item;

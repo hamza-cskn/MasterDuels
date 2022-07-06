@@ -85,7 +85,7 @@ public class DuelQueueTemplate {
 	}
 
 	public void createNewQueue() {
-		new DuelQueue(this, Match.create(deserializeMatchDataStorage(section)));
+		new DuelQueue(this, Match.create(matchDataStorage));
 	}
 
 	public Kit getKit() {
