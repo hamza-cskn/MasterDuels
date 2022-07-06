@@ -80,12 +80,12 @@ duel-command:
       &7 /dueladmin create &8- &9enables arena setup mode
       &7 /dueladmin arena disable <arena name>&8- &9disables an arena
       &7 /dueladmin arena enable <arena name> &8- &9enables an arena
-      &7 /dueladmin arena cancel <arena name> &8- &9forces an game to finish
       &7 /dueladmin kit save <kit name> &8- &9saves your current inventory as new kit
       &7 /dueladmin kit editor &8- &9opens kit editor gui 
       &7 /dueladmin setlobby &8- &9sets lobby location to teleport players after duel games 
       &7 /dueladmin nick [nickname] &8- &9changes display name for MasterDuels 
       &7 /dueladmin teststart <player 1> <player 2> [arena] &8- &9instantly starts a duel game between two players without invite.
+      &7 /dueladmin cancel <arena name> &8- &9forces an game to finish
     arena:
       disabled: '&7Arena &f{arena} &7successfully &cdisabled.'
       enabled: '&7Arena &f{arena} &7successfully &aenabled.'

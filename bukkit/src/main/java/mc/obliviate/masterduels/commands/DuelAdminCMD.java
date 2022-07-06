@@ -88,11 +88,10 @@ public class DuelAdminCMD implements CommandExecutor {
 				toggleArena(player, Arrays.asList(args), false);
 			} else if (args[1].equalsIgnoreCase("enable")) {
 				toggleArena(player, Arrays.asList(args), true);
-			} else if (args[1].equalsIgnoreCase("cancel")) {
-				cancelCmd(player, Arrays.asList(args));
 			}
 			return true;
-
+		} else if (args[0].equalsIgnoreCase("cancel")) {
+			cancelCmd(player, Arrays.asList(args));
 		} else if (args[0].equalsIgnoreCase("teststart")) {
 			testStart(player, Arrays.asList(args));
 			return true;
@@ -110,12 +109,12 @@ public class DuelAdminCMD implements CommandExecutor {
 	}
 
 	private void cancelCmd(final Player player, final List<String> args) {
-		if (args.size() == 2) {
+		if (args.size() == 1) {
 			//dueladmin arena cancel arena1 -all
 			MessageUtils.sendMessage(player, "");
-		} else if (args.size() == 3) {
-			cancelGame(DataHandler.getArenaFromName(args.get(2)));
-		} else if (args.get(3).equalsIgnoreCase("-all")) {
+		} else if (args.size() == 2) {
+			cancelGame(DataHandler.getArenaFromName(args.get(1)));
+		} else if (args.get(2).equalsIgnoreCase("-all")) {
 			for (final Arena arena : DataHandler.getArenas().keySet()) {
 				cancelGame(arena);
 			}
