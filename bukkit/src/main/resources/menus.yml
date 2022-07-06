@@ -209,15 +209,35 @@ duel-creator:
           - '&7'
           - '&eLeft click to increase'
           - '&eRight click to decrease'
-      kit:
+      kit-mutual-mode:
         material: IRON_CHESTPLATE
         slot: 20
         display-name: '&9Kit'
         lore:
           - '&7'
-          - '&7Currently: &f{kit}'
+          - '&7Kit: &f{kit}'
           - '&7'
-          - '&eClick to choose kit.'
+          - '&7Each player will fight with'
+          - '&7this kit.'
+          - '&7'
+          - '&eLeft Click to choose kit.'
+          - '&eRight click to switch various mode.'
+      kit-various-mode:
+        material: GOLDEN_CHESTPLATE
+        slot: 20
+        display-name: '&9Kit &6&lVARIOUS MODE'
+        lore:
+          - '&7'
+          - '&7Your Kit: &f{your-kit}'
+          - '&7'
+          - '&7Each player will fight with'
+          - '&7kit they want.'
+          - ''
+          - '&7In default, players will get'
+          - '&7kit you selected.'
+          - '&7'
+          - '&eLeft click to choose kit.'
+          - '&eRight click to switch mutual mode.'
       game-time:
         material: CLOCK
         slot: 21
@@ -265,6 +285,8 @@ duel-creator:
         material: PLAYER_HEAD
         display-name: '&b{player}'
         lore:
+          - ''
+          - '&7Kit: &a{kit}'
           - ''
           - '&ePut another slot to switch team'
           - '&ePress Q to kick player'

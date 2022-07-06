@@ -4,8 +4,10 @@ import com.google.common.base.Preconditions;
 import mc.obliviate.masterduels.VaultUtil;
 import mc.obliviate.masterduels.data.ConfigurationHandler;
 import mc.obliviate.masterduels.game.Match;
-import mc.obliviate.masterduels.game.MatchCreator;
+import mc.obliviate.masterduels.game.creator.CreatorKitManager;
+import mc.obliviate.masterduels.game.creator.MatchCreator;
 import mc.obliviate.masterduels.gui.ConfigurableGui;
+import mc.obliviate.masterduels.kit.gui.KitSelectionGUI;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
 import mc.obliviate.masterduels.utils.timer.TimerUtils;
@@ -105,13 +107,33 @@ public class DuelMatchCreatorGUI extends ConfigurableGui {
 	}
 
 	private void putKitIcon() {
-		/*putIcon("kit", new PlaceholderUtil().add("{kit}", matchCreator.getBuilder().getKit() != null ? matchCreator.getBuilder().getKit().getKitName() : MessageUtils.parseColor(MessageUtils.getMessage("game-creator.none-kit-name"))), e -> {
-			new KitSelectionGUI(player, matchCreator.getBuilder(), kit -> {
-				open();
-			}, MatchCreator.ALLOWED_KITS).open();
-		});
-
-		 */
+		if (matchCreator.getCreatorKitManager().getKitMode().equals(CreatorKitManager.KitMode.VARIOUS)) {
+			PlaceholderUtil placeholderUtil = new PlaceholderUtil().add("{your-kit}", matchCreator.getCreatorKitManager().getDefaultKit() == null ? "" : matchCreator.getCreatorKitManager().getDefaultKit().getKitName());
+			putIcon("kit-various-mode", placeholderUtil, e -> {
+				if (e.isLeftClick()) {
+					new KitSelectionGUI(player, matchCreator.getBuilder(), kit -> {
+						matchCreator.getCreatorKitManager().setDefaultKit(kit);
+						open();
+					}, MatchCreator.ALLOWED_KITS).open();
+				} else if (e.isRightClick()) {
+					matchCreator.getCreatorKitManager().setKitMode(CreatorKitManager.KitMode.MUTUAL);
+					open();
+				}
+			});
+		} else {
+			PlaceholderUtil placeholderUtil = new PlaceholderUtil().add("{kit}", matchCreator.getCreatorKitManager().getDefaultKit() == null ? "" : matchCreator.getCreatorKitManager().getDefaultKit().getKitName());
+			putIcon("kit-mutual-mode", placeholderUtil, e -> {
+				if (e.isLeftClick()) {
+					new KitSelectionGUI(player, matchCreator.getBuilder(), kit -> {
+						matchCreator.getCreatorKitManager().setDefaultKit(kit);
+						open();
+					}, MatchCreator.ALLOWED_KITS).open();
+				} else if (e.isRightClick()) {
+					matchCreator.getCreatorKitManager().setKitMode(CreatorKitManager.KitMode.VARIOUS);
+					open();
+				}
+			});
+		}
 	}
 
 	private void putRoundAmountIcon() {
