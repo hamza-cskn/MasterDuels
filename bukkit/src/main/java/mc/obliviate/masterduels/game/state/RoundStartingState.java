@@ -43,6 +43,8 @@ public class RoundStartingState implements MatchState {
 		//note, this state is prev of round start
 		roundStartTime = System.currentTimeMillis() + LOCK_DURATION.toMillis();
 
+		match.resetPlayers();
+
 		for (final Team team : match.getGameDataStorage().getGameTeamManager().getTeams()) {
 			lockTeam(team);
 		}
@@ -61,7 +63,7 @@ public class RoundStartingState implements MatchState {
 		if (!member.getTeam().getMembers().contains(member)) return;
 
 		Bukkit.getPluginManager().callEvent(new DuelMatchMemberLeaveEvent(member));
-
+		InventoryStorer.restore(member.getPlayer());
 		member.getMatch().removeMember(member);
 
 		if (!member.getPlayer().isOnline()) return;
