@@ -95,7 +95,7 @@ public class MasterDuels extends JavaPlugin {
 					registerListeners();
 					registerCommands();
 					setupTimers();
-					loadKits();
+
 
 					shutdownMode = false;
 					startMetrics();
