@@ -57,6 +57,7 @@ public class MatchUninstallingState implements MatchState {
 		if (!member.getTeam().getMembers().contains(member)) return;
 
 		Bukkit.getPluginManager().callEvent(new DuelMatchMemberLeaveEvent(member));
+		InventoryStorer.restore(member.getPlayer());
 		member.getMatch().removeMember(member);
 
 		if (member.getPlayer().isOnline()) {
