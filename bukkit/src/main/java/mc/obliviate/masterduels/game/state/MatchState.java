@@ -2,6 +2,7 @@ package mc.obliviate.masterduels.game.state;
 
 import mc.obliviate.masterduels.game.Match;
 import mc.obliviate.masterduels.game.MatchStateType;
+import mc.obliviate.masterduels.kit.InventoryStorer;
 import mc.obliviate.masterduels.kit.Kit;
 import mc.obliviate.masterduels.user.Member;
 import mc.obliviate.masterduels.user.Spectator;
@@ -23,6 +24,7 @@ public interface MatchState {
 		if (!getMatch().getGameSpectatorManager().getAllSpectators().contains(spectator)) return;
 		if (getMatch().getPlayers().contains(spectator.getPlayer())) {
 			getMatch().getGameSpectatorManager().getSemiSpectatorStorage().unspectate(spectator, false);
+			InventoryStorer.restore(spectator.getPlayer());
 		} else {
 			getMatch().getGameSpectatorManager().getPureSpectatorStorage().unspectate(spectator);
 		}
