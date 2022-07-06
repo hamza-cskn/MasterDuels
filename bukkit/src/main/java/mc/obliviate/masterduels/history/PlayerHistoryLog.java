@@ -17,6 +17,7 @@ public class PlayerHistoryLog implements Serializable {
 	private int walk;
 	private int sprint;
 	private int fall;
+	private String kitName;
 
 	private final ProjectileLogEntry<Arrow> arrow;
 	private final ProjectileLogEntry<Snowball> snowball;
@@ -24,7 +25,7 @@ public class PlayerHistoryLog implements Serializable {
 	private final ProjectileLogEntry<Egg> egg;
 	//todo TRIDENT and SPECTRAL ARROW support
 
-	public PlayerHistoryLog(int hitClick, int click, int placedBlocks, int brokenBlocks, int damageTaken, int damageDealt, double regeneratedHealth, int jump, int walk, int sprint, int fall, ProjectileLogEntry<Arrow> arrow, ProjectileLogEntry<Snowball> snowball, ProjectileLogEntry<FishHook> fishHook, ProjectileLogEntry<Egg> egg) {
+	public PlayerHistoryLog(int hitClick, int click, int placedBlocks, int brokenBlocks, int damageTaken, int damageDealt, double regeneratedHealth, int jump, int walk, int sprint, int fall, String kitName, ProjectileLogEntry<Arrow> arrow, ProjectileLogEntry<Snowball> snowball, ProjectileLogEntry<FishHook> fishHook, ProjectileLogEntry<Egg> egg) {
 		this.hitClick = hitClick;
 		this.click = click;
 		this.placedBlocks = placedBlocks;
@@ -36,6 +37,7 @@ public class PlayerHistoryLog implements Serializable {
 		this.walk = walk;
 		this.sprint = sprint;
 		this.fall = fall;
+		this.kitName = kitName;
 		this.arrow = arrow;
 		this.snowball = snowball;
 		this.fishHook = fishHook;
@@ -168,5 +170,13 @@ public class PlayerHistoryLog implements Serializable {
 			return fishHook;
 		}
 		return null;
+	}
+
+	public String getKitName() {
+		return kitName;
+	}
+
+	public void setKitName(String kitName) {
+		this.kitName = kitName;
 	}
 }
