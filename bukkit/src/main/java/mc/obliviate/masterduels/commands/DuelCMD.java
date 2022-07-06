@@ -67,7 +67,6 @@ public class DuelCMD implements CommandExecutor {
 				final Member member = ((Member) user);
 				member.getMatch().getMatchState().leave(member); //todo add methods of game states to game.class
 				return true;
-
 			} else if (user instanceof Spectator) {
 				final Spectator spectator = ((Spectator) user);
 				spectator.getMatch().getMatchState().leave(spectator);
@@ -141,6 +140,7 @@ public class DuelCMD implements CommandExecutor {
 				MessageUtils.sendMessage(player, "queue.no-queue-name");
 				return;
 			}
+
 			final DuelQueue queue = DuelQueue.getAvailableQueues().get(DuelQueueTemplate.getQueueTemplateFromName(args.get(2)));
 			if (queue == null) {
 				MessageUtils.sendMessage(player, "queue.queue-not-found", new PlaceholderUtil().add("{entry}", args.get(2)));

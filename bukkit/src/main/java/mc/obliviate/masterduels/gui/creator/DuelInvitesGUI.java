@@ -44,8 +44,8 @@ public class DuelInvitesGUI extends ConfigurableGui {
 				open();
 			});
 			MessageUtils.sendMessage(player, "enter-player-name-to-invite");
-
 		});
+
 		int i = 9;
 		for (Player loopPlayer : Bukkit.getOnlinePlayers()) {
 			if (matchCreator.getBuilder().getPlayers().contains(loopPlayer.getUniqueId())) break;

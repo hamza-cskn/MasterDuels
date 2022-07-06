@@ -52,6 +52,7 @@ public final class InternalScoreboardManager implements Listener {
 
 		final Match match = member.getMatch();
 		scoreboard.update(hScoreboard -> {
+
 			int lineNo = 0;
 			for (String line : formatConfig.getLines()) {
 
