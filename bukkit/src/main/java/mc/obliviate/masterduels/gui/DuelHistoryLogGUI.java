@@ -30,13 +30,16 @@ public class DuelHistoryLogGUI extends ConfigurableGui {
 		int i = 9;
 		for (MatchHistoryLog log : logs) {
 			Icon icon = new Icon(Material.TNT).setAmount(i - 8).setName(ChatColor.DARK_PURPLE + TimerUtils.formatDate(log.getStartTime()))
-					.setLore(ChatColor.GRAY + "Duel Time: " + ChatColor.LIGHT_PURPLE + TimerUtils.formatTimeDifferenceAsTimer(log.getStartTime(), log.getFinishTime()), "");
+					.appendLore(ChatColor.GRAY + "Duel Time: " + ChatColor.LIGHT_PURPLE + TimerUtils.formatTimeDifferenceAsTimer(log.getStartTime(), log.getFinishTime()))
+					.appendLore(ChatColor.WHITE.toString() + log.getPlayedRound() + ChatColor.GRAY + "/" + log.getMaxRound() + " rounds played.")
+					.appendLore("");
 			for (Map.Entry<UUID, PlayerHistoryLog> entry : log.getPlayerHistoryLogMap().entrySet()) {
 				if (log.getWinners().contains(entry.getKey()))
 					icon.appendLore(ChatColor.GREEN + Utils.getDisplayName(Bukkit.getOfflinePlayer(entry.getKey())) + ChatColor.YELLOW + ChatColor.BOLD + " WINNER");
 				else
 					icon.appendLore(ChatColor.RED + Utils.getDisplayName(Bukkit.getOfflinePlayer(entry.getKey())));
-				icon.appendLore(ChatColor.GRAY + "Damage Dealt: " + ChatColor.WHITE + entry.getValue().getDamageDealt() + ChatColor.RED + "❤");
+				icon.appendLore(ChatColor.GRAY + "Kit: " + ChatColor.WHITE + entry.getValue().getKitName());
+				icon.appendLore(ChatColor.GRAY + "Damage Dealt: " + ChatColor.WHITE + entry.getValue().getDamageDealt() / 5d + ChatColor.RED + "❤");
 				icon.appendLore(ChatColor.GRAY + "Bow Accuracy: " + ChatColor.WHITE + MessageUtils.getPercentage(entry.getValue().getArrow().getThrew(), entry.getValue().getArrow().getHit()) + "%");
 				icon.appendLore("");
 			}
