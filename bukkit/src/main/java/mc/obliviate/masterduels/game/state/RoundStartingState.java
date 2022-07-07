@@ -15,6 +15,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
 import java.time.Duration;
+import java.util.ArrayList;
 
 import static mc.obliviate.masterduels.kit.Kit.USE_PLAYER_INVENTORIES;
 
@@ -94,7 +95,7 @@ public class RoundStartingState implements MatchState {
 			Logger.severe("Player could not teleported to lock position because location set is null.");
 			return;
 		}
-		for (final Member member : team.getMembers()) {
+		for (final Member member : new ArrayList<>(team.getMembers())) {
 			final Location loc = positions.getLocation(i++);
 			if (loc == null) {
 				Logger.severe("Player could not teleported to lock position because location is null.");
