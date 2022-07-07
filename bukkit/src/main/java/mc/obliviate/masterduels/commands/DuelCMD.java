@@ -121,7 +121,11 @@ public class DuelCMD implements CommandExecutor {
 			if (matchCreator == null) {
 				matchCreator = new MatchCreator(player.getUniqueId());
 			}
-			new DuelMatchCreatorGUI(player, matchCreator).open();
+			if (matchCreator.getOwnerPlayer().equals(player.getUniqueId())) {
+				new DuelMatchCreatorGUI(player, matchCreator).open();
+			} else {
+				new DuelMatchCreatorNonOwnerGUI(player, matchCreator).open();
+			}
 		} else {
 			MessageUtils.sendMessage(player, "queue.you-are-in-queue");
 		}

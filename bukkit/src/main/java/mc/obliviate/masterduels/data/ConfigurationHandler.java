@@ -11,15 +11,17 @@ import mc.obliviate.masterduels.game.creator.MatchCreator;
 import mc.obliviate.masterduels.game.gamerule.GameRule;
 import mc.obliviate.masterduels.game.state.RoundStartingState;
 import mc.obliviate.masterduels.gui.DuelArenaListGUI;
+import mc.obliviate.masterduels.gui.DuelHistoryLogGUI;
+import mc.obliviate.masterduels.gui.creator.DuelMatchCreatorNonOwnerGUI;
 import mc.obliviate.masterduels.gui.creator.DuelTeamManagerGUI;
 import mc.obliviate.masterduels.kit.Kit;
+import mc.obliviate.masterduels.kit.gui.KitSelectionGUI;
 import mc.obliviate.masterduels.queue.DuelQueueHandler;
 import mc.obliviate.masterduels.queue.DuelQueueTemplate;
 import mc.obliviate.masterduels.queue.gui.DuelQueueListGUI;
 import mc.obliviate.masterduels.scoreboard.ScoreboardFormatConfig;
 import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.MessageUtils;
-import mc.obliviate.masterduels.utils.Utils;
 import mc.obliviate.masterduels.utils.notify.NotifyActionStack;
 import mc.obliviate.masterduels.utils.serializer.SerializerUtils;
 import mc.obliviate.masterduels.utils.tab.TABManager;
@@ -95,10 +97,12 @@ public class ConfigurationHandler {
 		registerBossBars();
 		registerTimerFormats();
 		registerGameCreatorLimits(config.getConfigurationSection("duel-creator.data-limits"));
-		registerHistoryGui();
+		registerHistoryGui(menus.getConfigurationSection("game-history-gui"));
+		registerKitSelectionGUIConfig(menus.getConfigurationSection("kit-selection-gui"));
 		registerDuelListGUIConfig(menus.getConfigurationSection("duel-arenas-gui"));
 		registerNotifyActions(config.getConfigurationSection("duel-game-lock.notify-actions"));
-		loadTeamManagerConfig();
+		registerTeamManagerConfig(menus.getConfigurationSection("duel-creator.manage-teams-gui"));
+		registerDuelMatchCreatorNonOwnerGUIConfig(menus.getConfigurationSection("duel-creator.non-owner-gui"));
 
 		RoundStartingState.setLockDuration(Duration.ofSeconds(config.getInt("duel-game-lock.lock-duration")));
 		RoundStartingState.setLockFrequency(config.getInt("duel-game-lock.teleport-frequency"));
@@ -107,21 +111,6 @@ public class ConfigurationHandler {
 		Kit.USE_PLAYER_INVENTORIES = config.getBoolean("use-player-inventories", false);
 		SmartArenaClear.REMOVE_ENTITIES = getConfig().getBoolean("arena-regeneration.remove-entities", true);
 
-	}
-
-	private void loadTeamManagerConfig() {
-		DuelTeamManagerGUI.setGuiConfig(new DuelTeamManagerGUI.Config(
-				SerializerUtils.deserializeItemStack(menus.getConfigurationSection("duel-creator.manage-teams-gui.icons.empty-player-slot"), null),
-				SerializerUtils.deserializeItemStack(menus.getConfigurationSection("duel-creator.manage-teams-gui.icons.player-slot"), null),
-				menus.getString("duel-creator.manage-teams-gui.icons.team-slot.display-name"),
-				menus.getStringList("duel-creator.manage-teams-gui.icons.team-slot.lore")));
-
-		int i = 0;
-		for (String materialName : menus.getStringList("duel-creator.manage-teams-gui.team-slot.dynamic-materials")) {
-			final int index = i;
-			i++;
-			XMaterial.matchXMaterial(materialName).ifPresent(mat -> Utils.teamIcons.set(index, mat.parseItem()));
-		}
 	}
 
 	private void registerNotifyActions(ConfigurationSection section) {
@@ -264,8 +253,49 @@ public class ConfigurationHandler {
 
 		final int zeroAmount = section.getBoolean("use-zero-amount", false) ? 0 : 1;
 
-		DuelQueueListGUI.guiConfig = new DuelQueueListGUI.Config(zeroAmount, section.getInt("size", 6), section.getString("title", "Queues"), iconItemStacks, section.getConfigurationSection("icons"));
+		new DuelQueueListGUI.Config(zeroAmount, section.getInt("size", 6), section.getString("title", "Queues"), iconItemStacks, section.getConfigurationSection("icons"));
 
+	}
+
+	private List<Integer> parseStringAsIntegerList(String str) {
+		final List<Integer> pageSlots = new ArrayList<>();
+		final String[] slotStrings = str.split(",");
+
+		for (final String slotText : slotStrings) {
+			try {
+				pageSlots.add(Integer.parseInt(slotText));
+			} catch (NumberFormatException ignore) {
+			}
+		}
+		return pageSlots;
+	}
+
+	private void registerKitSelectionGUIConfig(final ConfigurationSection section) {
+		new KitSelectionGUI.Config(parseStringAsIntegerList(section.getString("page-slots")));
+	}
+
+	private List<ItemStack> parseItemStackList(final List<String> list) {
+		final List<ItemStack> teamIcons = new ArrayList<>();
+		for (String materialName : list) {
+			XMaterial.matchXMaterial(materialName).ifPresent(mat -> teamIcons.add(mat.parseItem()));
+		}
+		return teamIcons;
+	}
+
+	private void registerDuelMatchCreatorNonOwnerGUIConfig(final ConfigurationSection section) {
+		new DuelMatchCreatorNonOwnerGUI.Config(
+				SerializerUtils.deserializeItemStack(section.getConfigurationSection("icons.empty-player-slot"), null),
+				SerializerUtils.deserializeItemStack(section.getConfigurationSection("icons.player-slot"), null),
+				section.getString("icons.team-slot.display-name"),
+				section.getStringList("icons.team-slot.lore"), parseItemStackList(menus.getStringList("duel-creator.manage-teams-gui.icons.team-slot.dynamic-materials")));
+	}
+
+	private void registerTeamManagerConfig(final ConfigurationSection section) {
+		new DuelTeamManagerGUI.Config(
+				SerializerUtils.deserializeItemStack(section.getConfigurationSection("icons.empty-player-slot"), null),
+				SerializerUtils.deserializeItemStack(section.getConfigurationSection("icons.player-slot"), null),
+				section.getString("icons.team-slot.display-name"),
+				section.getStringList("icons.team-slot.lore"), parseItemStackList(menus.getStringList("duel-creator.non-owner-gui.icons.team-slot.dynamic-materials")));
 	}
 
 	private void registerDuelListGUIConfig(final ConfigurationSection section) {
@@ -274,22 +304,13 @@ public class ConfigurationHandler {
 			icons.put(state, SerializerUtils.deserializeItemStack(section.getConfigurationSection("icons." + state.name()), null));
 		}
 
-		// parse integer list
-		final List<Integer> pageSlots = new ArrayList<>();
-		final String[] slotsString = section.getString("page-slots").split(",");
+		final List<Integer> pageSlots = parseStringAsIntegerList(section.getString("page-slots"));
 
-		for (final String slotText : slotsString) {
-			try {
-				pageSlots.add(Integer.parseInt(slotText));
-			} catch (NumberFormatException ignore) {
-			}
-		}
-
-		DuelArenaListGUI.guiConfig = new DuelArenaListGUI.Config(icons, pageSlots, section.getString("title", "Duel Arenas"));
+		new DuelArenaListGUI.Config(icons, pageSlots);
 	}
 
-	private void registerHistoryGui() {
-		//DuelHistoryLogGUI.guiConfig = new DuelHistoryLogGUI.Config(getMenusSection("game-history-gui"));
+	private void registerHistoryGui(final ConfigurationSection section) {
+		new DuelHistoryLogGUI.Config(parseStringAsIntegerList(section.getString("page-slots")));
 	}
 
 	private void registerArenas() {
@@ -315,7 +336,7 @@ public class ConfigurationHandler {
 			final ConfigurationSection section = config.getConfigurationSection("scoreboards." + gameState.name());
 			ScoreboardFormatConfig scoreboardFormatConfig;
 			if (section == null) {
-				new ScoreboardFormatConfig(gameState, MessageUtils.parseColor("{name} &c{health}HP"), MessageUtils.parseColor("{name} &cDEAD"), MessageUtils.parseColor("{name} &cQUIT"), MessageUtils.parseColor("&e&lDuels"), MessageUtils.parseColor(Arrays.asList("{+opponents}", "", "&4&lERROR: &8" + gameState, "&cNo Lines Found")));
+				new ScoreboardFormatConfig(gameState, MessageUtils.parseColor("{name} &c{health}HP"), MessageUtils.parseColor("{name} &cDEAD"), MessageUtils.parseColor("{name} &cQUIT"), MessageUtils.parseColor("&e&lDuels"), MessageUtils.parseColor(Arrays.asList("{+opponents}", "", "&4&lERROR: &c" + gameState, "&7No Lines Found")));
 			} else {
 				new ScoreboardFormatConfig(gameState, MessageUtils.parseColor(section.getString("live-opponent-format")), MessageUtils.parseColor(section.getString("dead-opponent-format")), MessageUtils.parseColor(section.getString("quit-opponent-format")), MessageUtils.parseColor(section.getString("title")), MessageUtils.parseColor(section.getStringList("lines")));
 			}
