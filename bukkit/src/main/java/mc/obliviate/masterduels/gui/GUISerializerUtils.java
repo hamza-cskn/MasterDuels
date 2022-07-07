@@ -17,7 +17,7 @@ public class GUISerializerUtils {
 			final int slotNo = section.getInt("slot", -1);
 			if (slotNo != -1) {
 				gui.addItem(slotNo, getConfigItem(iconsSection.getConfigurationSection(sectionName), placeholderUtil));
-				return;
+				continue;
 			}
 
 			final String slotString = section.getString("slot", "");
@@ -35,7 +35,7 @@ public class GUISerializerUtils {
 				for (; from <= to; from++) {
 					gui.addItem(from, getConfigItem(iconsSection.getConfigurationSection(sectionName), placeholderUtil));
 				}
-				return;
+				continue;
 			} else if (slotString.contains(",")) {
 				final String[] slots = slotString.split(",");
 				if (slots.length < 2) continue;
