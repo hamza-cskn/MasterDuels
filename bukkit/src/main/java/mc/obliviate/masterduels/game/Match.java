@@ -33,6 +33,8 @@ import org.bukkit.inventory.ItemStack;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static mc.obliviate.masterduels.utils.Utils.getPlaceholders;
+
 public class Match {
 
 	public static final PlayerReset PLAYER_RESET = new PlayerReset().excludeExp().excludeLevel().excludeInventory().excludeTitle();
@@ -322,44 +324,11 @@ public class Match {
 		receiver.sendMessage("                    " + MessageUtils.parseColor(ownPlaceholders.apply("&a{bow-accuracy}% &7- &f&lBow Accuracy &7- ") + opponentPlaceholders.apply("&a{bow-accuracy}%")));
 		receiver.sendMessage("                    " + MessageUtils.parseColor(ownPlaceholders.apply("&a{fish-hook-accuracy}% &7- &f&lFish Hook Accuracy &7- ") + opponentPlaceholders.apply("&a{fish-hook-accuracy}%")));
 		receiver.sendMessage("               " + MessageUtils.parseColor(ownPlaceholders.apply("&a{regenerated-health}&c❤ &7- &f&lHealth Regenerated &7- ") + opponentPlaceholders.apply("&a{regenerated-health}&c❤")));
-		receiver.sendMessage("                  " + MessageUtils.parseColor(ownPlaceholders.apply("&a{placed-blocks} blocks &7- &f&lBlocks Placed &7- ") + opponentPlaceholders.apply("&a{placed-blocks} blocks")));
-		receiver.sendMessage("                   " + MessageUtils.parseColor(ownPlaceholders.apply("&a{broken-blocks} blocks &7- &f&lBlocks Broken &7- ") + opponentPlaceholders.apply("&a{broken-blocks} blocks")));
-		receiver.sendMessage("                       " + MessageUtils.parseColor(ownPlaceholders.apply("&a{sprint}m &7- &f&lMeters Sprint &7- ") + opponentPlaceholders.apply("&a{sprint}m")));
+		receiver.sendMessage("               " + MessageUtils.parseColor(ownPlaceholders.apply("&a{placed-blocks} blocks &7- &f&lBlocks Placed &7- ") + opponentPlaceholders.apply("&a{placed-blocks} blocks")));
+		receiver.sendMessage("               " + MessageUtils.parseColor(ownPlaceholders.apply("&a{broken-blocks} blocks &7- &f&lBlocks Broken &7- ") + opponentPlaceholders.apply("&a{broken-blocks} blocks")));
+		receiver.sendMessage("                 " + MessageUtils.parseColor(ownPlaceholders.apply("&a{sprint}m &7- &f&lMeters Sprint &7- ") + opponentPlaceholders.apply("&a{sprint}m")));
 		receiver.sendMessage("");
 		receiver.sendMessage(MessageUtils.parseColor("&a") + "▬".repeat(72));
-	}
-
-	private PlaceholderUtil getPlaceholders(PlayerHistoryLog log) {
-		if (log == null) {
-			return new PlaceholderUtil()
-					.add("{placed-blocks}", "??")
-					.add("{broken-blocks}", "??")
-					.add("{damage-dealt}", "??")
-					.add("{damage-taken}", "??")
-					.add("{jump}", "??")
-					.add("{fall}", "??")
-					.add("{sprint}", "??")
-					.add("{click}", "??")
-					.add("{hit-click}", "??")
-					.add("{fish-hook-accuracy}", "??")
-					.add("{melee-accuracy}", "??")
-					.add("{bow-accuracy}", "??")
-					.add("{regenerated-health}", "??");
-		}
-		return new PlaceholderUtil()
-				.add("{placed-blocks}", log.getPlacedBlocks() + "")
-				.add("{broken-blocks}", log.getBrokenBlocks() + "")
-				.add("{damage-dealt}", (log.getDamageDealt() / 5d) + "")
-				.add("{damage-taken}", (log.getDamageTaken() / 5d) + "")
-				.add("{jump}", (log.getJump() / 100d) + "")
-				.add("{fall}", (log.getFall() / 100d) + "")
-				.add("{sprint}", (log.getSprint() / 100d) + "")
-				.add("{click}", log.getClick() + "")
-				.add("{hit-click}", log.getHitClick() + "")
-				.add("{fish-hook-accuracy}", MessageUtils.getPercentage(log.getFishHook().getThrew(), log.getFishHook().getHit()) + "")
-				.add("{melee-accuracy}", MessageUtils.getPercentage(log.getClick(), log.getHitClick()) + "")
-				.add("{bow-accuracy}", MessageUtils.getPercentage(log.getArrow().getThrew(), log.getArrow().getHit()) + "")
-				.add("{regenerated-health}", log.getRegeneratedHealth() + "");
 	}
 
 

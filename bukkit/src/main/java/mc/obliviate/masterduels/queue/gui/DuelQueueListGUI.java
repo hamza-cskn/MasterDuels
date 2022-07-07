@@ -42,7 +42,6 @@ public class DuelQueueListGUI extends ConfigurableGui {
 						player.closeInventory();
 					}));
 		}
-
 	}
 
 	@Override
@@ -69,6 +68,7 @@ public class DuelQueueListGUI extends ConfigurableGui {
 			this.title = title;
 			this.iconItemStacks = iconItemStacks;
 			this.iconsSection = iconsSection;
+			DuelQueueListGUI.guiConfig = this;
 		}
 
 		protected ItemStack getIconOfTemplate(String templateName, MatchBuilder builder) {

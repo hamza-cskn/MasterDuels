@@ -27,7 +27,7 @@ public class KitListEditorGUI extends Gui {
 			final Icon icon = new Icon(kit.getIcon().clone());
 
 			final List<String> lore = new ArrayList<>();
-			icon.appendLore("", MessageUtils.parseColor("&eClick to edit this kit!"));
+			icon.appendLore(MessageUtils.parseColor("&eClick to edit this kit!"));
 			icon.setName(MessageUtils.parseColor("&d&l" + kit.getKitName()));
 
 			icon.onClick(e -> {

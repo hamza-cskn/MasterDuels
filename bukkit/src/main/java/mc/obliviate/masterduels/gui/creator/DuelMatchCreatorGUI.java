@@ -31,7 +31,6 @@ public class DuelMatchCreatorGUI extends ConfigurableGui {
 	public void open() {
 		setTitle(MessageUtils.parseColor(MessageUtils.applyPlaceholders(ConfigurationHandler.getMenus().getString(getSectionPath() + ".title"),
 				new PlaceholderUtil().add("{mode}", MessageUtils.convertMode(matchCreator.getBuilder().getTeamSize(), matchCreator.getBuilder().getTeamAmount())))));
-		setSize(ConfigurationHandler.getMenus().getInt(getSectionPath() + ".size", 5) * 9);
 		super.open();
 	}
 
@@ -167,9 +166,9 @@ public class DuelMatchCreatorGUI extends ConfigurableGui {
 			if (!isOwner) return;
 			final int size = matchCreator.getBuilder().getTeamSize();
 			if (e.isRightClick()) {
-				matchCreator.getBuilder().setTeamsAttributes(size, Math.max(matchCreator.getBuilder().getTeamAmount() - 1, MatchCreator.MAX_TEAM_AMOUNT));
+				matchCreator.getBuilder().setTeamsAttributes(size, Math.max(matchCreator.getBuilder().getTeamAmount() - 1, MatchCreator.MIN_TEAM_AMOUNT));
 			} else if (e.isLeftClick()) {
-				matchCreator.getBuilder().setTeamsAttributes(size, Math.min(matchCreator.getBuilder().getTeamAmount() + 1, MatchCreator.MIN_TEAM_AMOUNT));
+				matchCreator.getBuilder().setTeamsAttributes(size, Math.min(matchCreator.getBuilder().getTeamAmount() + 1, MatchCreator.MAX_TEAM_AMOUNT));
 			}
 			open();
 		});

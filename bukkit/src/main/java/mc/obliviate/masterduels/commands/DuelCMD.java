@@ -8,6 +8,7 @@ import mc.obliviate.masterduels.game.creator.MatchCreator;
 import mc.obliviate.masterduels.gui.DuelArenaListGUI;
 import mc.obliviate.masterduels.gui.DuelHistoryLogGUI;
 import mc.obliviate.masterduels.gui.creator.DuelMatchCreatorGUI;
+import mc.obliviate.masterduels.gui.creator.DuelMatchCreatorNonOwnerGUI;
 import mc.obliviate.masterduels.invite.Invite;
 import mc.obliviate.masterduels.invite.InviteRecipient;
 import mc.obliviate.masterduels.invite.InviteUtils;

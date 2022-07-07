@@ -62,7 +62,6 @@ public class KitEditGUI extends Gui {
 		final AdvancedSlot advancedSlot = addAdvancedIcon(slot, icon).onPreClick((e, item) -> {
 			if (e != null) {
 				armors[armorPieceIndex] = item;
-			} else {
 			}
 			return false;
 		}).onPickup(e -> {

@@ -37,10 +37,6 @@ public class DuelTeamManagerGUI extends ConfigurableGui {
 		setSize((matchCreator.getBuilder().getTeamAmount() + 1) * 9);
 	}
 
-	public static void setGuiConfig(Config guiConfig) {
-		DuelTeamManagerGUI.guiConfig = guiConfig;
-	}
-
 	@Override
 	public void onOpen(final InventoryOpenEvent event) {
 		putDysfunctionalIcons();
@@ -54,7 +50,7 @@ public class DuelTeamManagerGUI extends ConfigurableGui {
 
 		for (int teamNo = 0; teamNo < matchBuilder.getTeamAmount(); teamNo++) {
 
-			final Icon icon = new Icon(Utils.teamIcons.get(teamNo).clone()).setName(guiConfig.teamIconName).setLore(guiConfig.teamIconLore);
+			final Icon icon = new Icon(guiConfig.teamIcons.get(Math.min(teamNo, guiConfig.teamIcons.size() - 1)).clone()).setName(guiConfig.teamIconName).setLore(guiConfig.teamIconLore);
 			final ItemStack item = SerializerUtils.applyPlaceholdersOnItemStack(icon.getItem(), new PlaceholderUtil().add("{team-no}", (teamNo + 1) + "").add("{team-players-amount}", matchTeamManager.getTeamBuilders().get(teamNo).getMemberBuilders().size() + "").add("{team-size}", matchBuilder.getTeamAmount() + ""));
 
 			addItem((teamNo + 1) * 9, item);
@@ -168,11 +164,10 @@ public class DuelTeamManagerGUI extends ConfigurableGui {
 				return;
 			}
 
-			matchCreator.getBuilder().removePlayer(player);
+			matchCreator.getBuilder().removePlayer(target);
 			matchCreator.getBuilder().addPlayer(target, null, team.getTeamId());
 			open();
 		});
-
 	}
 
 	@Override
@@ -206,11 +201,15 @@ public class DuelTeamManagerGUI extends ConfigurableGui {
 		private final String teamIconName;
 		private final List<String> teamIconLore;
 
-		public Config(ItemStack emptySlotIcon, ItemStack playerSlotIcon, String teamIconName, List<String> teamIconLore) {
+		private final List<ItemStack> teamIcons;
+
+		public Config(ItemStack emptySlotIcon, ItemStack playerSlotIcon, String teamIconName, List<String> teamIconLore, List<ItemStack> teamIcons) {
 			this.emptySlotIcon = emptySlotIcon;
 			this.playerSlotIcon = playerSlotIcon;
 			this.teamIconName = teamIconName;
 			this.teamIconLore = teamIconLore;
+			this.teamIcons = teamIcons;
+			DuelTeamManagerGUI.guiConfig = this;
 		}
 
 		private ItemStack getEmptyIcon() {

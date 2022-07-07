@@ -4,6 +4,7 @@ import mc.obliviate.inventory.Gui;
 import mc.obliviate.inventory.Icon;
 import mc.obliviate.masterduels.data.ConfigurationHandler;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
@@ -24,16 +25,20 @@ public abstract class ConfigurableGui extends Gui {
 		return getSectionPath() + ".icons";
 	}
 
+	public ConfigurationSection getIconsSection(String sectionName) {
+		return ConfigurationHandler.getMenusSection(getIconsSectionPath() + "." + sectionName);
+	}
+
 	public int getConfigSlot(String sectionName) {
-		return GUISerializerUtils.getConfigSlot(ConfigurationHandler.getMenusSection(getIconsSectionPath() + "." + sectionName));
+		return GUISerializerUtils.getConfigSlot(getIconsSection(sectionName));
 	}
 
 	public ItemStack getConfigItem(String sectionName) {
-		return GUISerializerUtils.getConfigItem((ConfigurationHandler.getMenusSection(getIconsSectionPath() + "." + sectionName)));
+		return GUISerializerUtils.getConfigItem((getIconsSection(sectionName)));
 	}
 
 	public ItemStack getConfigItem(String sectionName, PlaceholderUtil placeholderUtil) {
-		return GUISerializerUtils.getConfigItem((ConfigurationHandler.getMenusSection(getIconsSectionPath() + "." + sectionName)), placeholderUtil);
+		return GUISerializerUtils.getConfigItem(getIconsSection(sectionName), placeholderUtil);
 	}
 
 	public void putDysfunctionalIcons() {

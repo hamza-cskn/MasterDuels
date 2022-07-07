@@ -17,11 +17,10 @@ import java.util.Map;
 
 public class DuelArenaListGUI extends ConfigurableGui {
 
-	public static Config guiConfig;
+	private static Config guiConfig;
 
 	public DuelArenaListGUI(Player player) {
 		super(player, "duel-games-list-gui");
-		setTitle(guiConfig.guiTitle);
 		getPaginationManager().getSlots().addAll(guiConfig.pageSlots);
 		for (final Map.Entry<Arena, Match> entry : DataHandler.getArenas().entrySet()) {
 			getPaginationManager().addIcon(getGameIcon(entry.getKey()));
@@ -80,12 +79,11 @@ public class DuelArenaListGUI extends ConfigurableGui {
 
 		private final Map<BasicArenaState, ItemStack> icons;
 		private final List<Integer> pageSlots;
-		private final String guiTitle;
 
-		public Config(final Map<BasicArenaState, ItemStack> icons, List<Integer> pageSlots, final String guiTitle) {
+		public Config(final Map<BasicArenaState, ItemStack> icons, List<Integer> pageSlots) {
 			this.icons = icons;
 			this.pageSlots = pageSlots;
-			this.guiTitle = guiTitle;
+			DuelArenaListGUI.guiConfig = this;
 		}
 
 		private ItemStack getIcon(final BasicArenaState state, final PlaceholderUtil placeholderUtil) {
