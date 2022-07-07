@@ -95,6 +95,9 @@ public class DuelAdminCMD implements CommandExecutor {
 		} else if (args[0].equalsIgnoreCase("teststart")) {
 			testStart(player, Arrays.asList(args));
 			return true;
+		} else if (args[0].equalsIgnoreCase("reload")) {
+			reload(player, Arrays.asList(args));
+			return true;
 		} else if (args[0].equalsIgnoreCase("nick")) {
 			if (args.length == 1) {
 				Utils.resetNick(player.getUniqueId());
@@ -119,6 +122,10 @@ public class DuelAdminCMD implements CommandExecutor {
 				cancelGame(arena);
 			}
 		}
+	}
+
+	private void reload(final Player player, final List<String> args) {
+		plugin.getConfigurationHandler().init();
 	}
 
 	private void cancelGame(Arena arena) {

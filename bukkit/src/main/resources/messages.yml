@@ -78,6 +78,7 @@ duel-command:
     usage: |-
       [DISABLE_PREFIX]&c&lAdmin&c Commands
       &7 /dueladmin create &8- &9enables arena setup mode
+      &7 /dueladmin reload &8- &9reloads configuration files. &c(May break the scoreboards, boss bars etc. temporarily.)
       &7 /dueladmin arena disable <arena name>&8- &9disables an arena
       &7 /dueladmin arena enable <arena name> &8- &9enables an arena
       &7 /dueladmin kit save <kit name> &8- &9saves your current inventory as new kit
