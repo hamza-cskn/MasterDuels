@@ -8,26 +8,50 @@ game-history-gui:
       slot: 0-8
     solo-games-icon:
       material: PAPER
-      display-name: '&dGame Duration: &7{time}'
+      display-name: '&5{played-date}'
       lore:
+        - '&7Duel Time: &d{match-duration-timer}' #{match-duration-time} supported
+        - '&7Rounds Played: &f{played-rounds}'
         - ''
-        - '&a{winner} &8⚔ &c{loser}'
+        - '{+player-1}' #winner/loser info formats will insert here
         - ''
-        - '&8Game played at: {played-date}'
+        - '{+player-2}'
+        - ''
+      winner-info-format:
+        - '&a{player}&e&l WINNER'
+        - '&7Damage Dealt: &f{damage-dealt}&c❤'
+        - '&7Bow Accuracy: &f{bow-accuracy}%'
+      loser-info-format:
+        - '&c{player}'
+        - '&7Damage Dealt: &f{damage-dealt}&c❤'
+        - '&7Bow Accuracy: &f{bow-accuracy}%'
+        # supported placeholders:
+        #{placed-blocks}
+        #{broken-blocks}
+        #{damage-dealt} # in heart (players has 20 heart)
+        #{damage-taken} # in heart
+        #{jump}
+        #{fall} #in meters
+        #{sprint} #in meters
+        #{click}
+        #{hit-click}
+        #{fish-hook-accuracy}
+        #{melee-accuracy}
+        #{bow-accuracy}
+        #{regenerated-health}
     non-solo-games-icon:
-      winners-format: ' &a{winner}!'
-      losers-format: ' &c{loser}'
       material: PAPER
-      display-name: '&dGame Duration: &7{time}'
+      display-name: '&d{played-date}'
       lore:
+        - '&7Duel Time: &d{match-duration}'
+        - '&7Rounds Played: &f{played-rounds}'
         - ''
-        - '&aWinners:'
-        - ' {+winners}'
+        - '{+players}' #all winner/loser info formats will insert here
         - ''
-        - '&cLosers:'
-        - ' {+losers}'
-        - ''
-        - '&8Game played at: {played-date}'
+      winner-info-format:
+        - '&a{player}&e&l WINNER TEAM'
+      loser-info-format:
+        - '&c{player}'
 
 duel-arenas-gui:
   enabled: true # this gui can be disabled
@@ -87,6 +111,17 @@ duel-arenas-gui:
         - ''
         - '&4Error'
         - ''
+    fill-icon:
+      material: BLACK_STAINED_GLASS_PANE
+      slot: 0-8
+    previous:
+      material: ARROW
+      slot: 0
+      display-name: '&cPrevious'
+    next:
+      material: ARROW
+      slot: 8
+      display-name: '&cNext'
 
 queues-gui:
   title: 'Queues'
@@ -122,6 +157,7 @@ queues-gui:
           - ''
           - '&eClick to join queue!'
         # only display-name will become from 'default' section.
+
 kit-selection-gui:
   title: 'Select a kit'
   size: 4
@@ -130,6 +166,14 @@ kit-selection-gui:
     fill-icon:
       material: BLACK_STAINED_GLASS_PANE
       slot: 0-8
+    previous:
+      material: ARROW
+      slot: 0
+      display-name: '&cPrevious'
+    next:
+      material: ARROW
+      slot: 8
+      display-name: '&cNext'
 
 duel-creator:
   gui:
@@ -151,6 +195,15 @@ duel-creator:
           - '&7Max Time: &a{game-time}'
           - '&7Round: &a{round-amount} round(s)'
           - ''
+          # supported placeholders
+          #	{mode}
+          #	{invited-players}
+          #	{total-players}
+          # {round-amount}
+          # {game-timer}
+          #	{game-time}
+          #	{team-amount}
+          #	{team-size}
       team-size:
         material: PLAYER_HEAD
         slot: 11
