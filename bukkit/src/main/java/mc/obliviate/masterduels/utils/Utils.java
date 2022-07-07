@@ -2,6 +2,8 @@ package mc.obliviate.masterduels.utils;
 
 import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.data.DataHandler;
+import mc.obliviate.masterduels.history.PlayerHistoryLog;
+import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
 import mc.obliviate.masterduels.utils.xmaterial.XMaterial;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -61,4 +63,39 @@ public class Utils {
 			}
 		}
 	}
+
+	public static PlaceholderUtil getPlaceholders(PlayerHistoryLog log) {
+		if (log == null) {
+			return new PlaceholderUtil()
+					.add("{placed-blocks}", "??")
+					.add("{broken-blocks}", "??")
+					.add("{damage-dealt}", "??")
+					.add("{damage-taken}", "??")
+					.add("{jump}", "??")
+					.add("{fall}", "??")
+					.add("{sprint}", "??")
+					.add("{click}", "??")
+					.add("{hit-click}", "??")
+					.add("{fish-hook-accuracy}", "??")
+					.add("{melee-accuracy}", "??")
+					.add("{bow-accuracy}", "??")
+					.add("{regenerated-health}", "??");
+		}
+		return new PlaceholderUtil()
+				.add("{placed-blocks}", log.getPlacedBlocks() + "")
+				.add("{broken-blocks}", log.getBrokenBlocks() + "")
+				.add("{damage-dealt}", (log.getDamageDealt() / 5d) + "")
+				.add("{damage-taken}", (log.getDamageTaken() / 5d) + "")
+				.add("{jump}", log.getJump() + "")
+				.add("{fall}", (log.getFall() / 100d) + "")
+				.add("{sprint}", (log.getSprint() / 100d) + "")
+				.add("{click}", log.getClick() + "")
+				.add("{hit-click}", log.getHitClick() + "")
+				.add("{fish-hook-accuracy}", MessageUtils.getPercentage(log.getFishHook().getThrew(), log.getFishHook().getHit()) + "")
+				.add("{melee-accuracy}", MessageUtils.getPercentage(log.getClick(), log.getHitClick()) + "")
+				.add("{bow-accuracy}", MessageUtils.getPercentage(log.getArrow().getThrew(), log.getArrow().getHit()) + "")
+				.add("{regenerated-health}", log.getRegeneratedHealth() + "");
+	}
+
+
 }
