@@ -13,6 +13,7 @@ import java.util.List;
 
 public class KitSelectionGUI extends ConfigurableGui {
 
+	private static KitSelectionGUI.Config guiConfig;
 	private final MatchBuilder builder;
 	private final KitSelectResponse response;
 	private final List<Kit> allowedKits;
@@ -26,6 +27,16 @@ public class KitSelectionGUI extends ConfigurableGui {
 		this.builder = builder;
 		this.response = response;
 		this.allowedKits = allowedKits;
+
+		for (final Kit kit : getAllowedKits()) {
+			final Icon icon = new Icon(kit.getIcon().clone()).setName(ChatColor.YELLOW + kit.getKitName()).onClick(e -> {
+				player.closeInventory();
+				response.onSelected(kit);
+			});
+
+			getPaginationManager().addIcon(icon);
+		}
+		getPaginationManager().getSlots().addAll(guiConfig.pageSlots);
 	}
 
 	private Collection<Kit> getAllowedKits() {
@@ -44,15 +55,20 @@ public class KitSelectionGUI extends ConfigurableGui {
 
 	@Override
 	public void onOpen(InventoryOpenEvent event) {
-		int slot = 0;
-		for (final Kit kit : getAllowedKits()) {
-			final Icon icon = new Icon(kit.getIcon().clone()).setName(ChatColor.YELLOW + kit.getKitName()).onClick(e -> {
-				player.closeInventory();
-				response.onSelected(kit);
+		putDysfunctionalIcons();
+		if (getPaginationManager().getPage() != getPaginationManager().getLastPage()) {
+			putIcon("previous", e -> {
+				getPaginationManager().previousPage();
+				getPaginationManager().update();
 			});
-
-			addItem(slot++, icon);
 		}
+		if (getPaginationManager().getPage() != 0) {
+			putIcon("next", e -> {
+				getPaginationManager().nextPage();
+				getPaginationManager().update();
+			});
+		}
+		getPaginationManager().update();
 	}
 
 	@Override
@@ -64,6 +80,16 @@ public class KitSelectionGUI extends ConfigurableGui {
 
 		void onSelected(Kit kit);
 
+	}
+
+	public static class Config {
+
+		private final List<Integer> pageSlots;
+
+		public Config(List<Integer> pageSlots) {
+			this.pageSlots = pageSlots;
+			KitSelectionGUI.guiConfig = this;
+		}
 	}
 
 }
