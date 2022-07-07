@@ -97,6 +97,9 @@ duel-command:
     nick:
       reset: '&7Your nick has been reset.'
       change: '&7Your nick updated as &b{nick}&7.'
+    reload:
+      process-start: '&aAll configuration files of MasterDuels reloading...'
+      process-finish: '&aReload completed in {delay}ms.'
 
 no-arena-found-with-this-name: '&cNo arenas with this name found.'
 queue:

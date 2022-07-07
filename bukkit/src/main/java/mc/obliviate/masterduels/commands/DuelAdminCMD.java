@@ -125,7 +125,10 @@ public class DuelAdminCMD implements CommandExecutor {
 	}
 
 	private void reload(final Player player, final List<String> args) {
+		final long start = System.currentTimeMillis();
+		MessageUtils.sendMessage(player, "duel-command.admin.reload.process-start");
 		plugin.getConfigurationHandler().init();
+		MessageUtils.sendMessage(player, "duel-command.admin.reload.process-finish", new PlaceholderUtil().add("{delay}", (System.currentTimeMillis() - start) + ""));
 	}
 
 	private void cancelGame(Arena arena) {
