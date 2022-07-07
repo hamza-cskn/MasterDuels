@@ -140,6 +140,8 @@ public class MatchCreator {
 					}
 
 					response.accept(invite);
+					creatorKitManager.setDefaultKit(creatorKitManager.getDefaultKit());
+
 				}).build();
 
 		if (buildResult.getInviteBuildState().equals(Invite.InviteBuildState.ERROR_ALREADY_INVITED)) {
