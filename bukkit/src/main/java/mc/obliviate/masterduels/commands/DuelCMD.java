@@ -72,6 +72,12 @@ public class DuelCMD implements CommandExecutor {
 				spectator.getMatch().getMatchState().leave(spectator);
 				return true;
 			} else {
+				final DuelQueue queue = DuelQueue.findQueueOfPlayer(player);
+				if (queue != null) {
+					leaveQueue(player, queue);
+					return true;
+				}
+
 				MessageUtils.sendMessage(player, "you-are-not-in-duel");
 				return false;
 			}
@@ -172,9 +178,13 @@ public class DuelCMD implements CommandExecutor {
 				MessageUtils.sendMessage(player, "queue.you-are-not-in-queue");
 				return;
 			}
-			queue.removePlayer(player);
-			MessageUtils.sendMessage(player, "queue.left", new PlaceholderUtil().add("{queue-name}", queue.getName()));
+			leaveQueue(player, queue);
 		}
+	}
+
+	private void leaveQueue(final Player player, final DuelQueue queue) {
+		queue.removePlayer(player);
+		MessageUtils.sendMessage(player, "queue.left", new PlaceholderUtil().add("{queue-name}", queue.getName()));
 	}
 
 	private void top(final Player player, List<String> args) {
