@@ -2,6 +2,7 @@ package mc.obliviate.masterduels.game;
 
 import com.google.common.base.Preconditions;
 import mc.obliviate.masterduels.arena.Arena;
+import mc.obliviate.masterduels.game.creator.MatchCreator;
 import mc.obliviate.masterduels.game.gamerule.GameRule;
 import mc.obliviate.masterduels.kit.Kit;
 import mc.obliviate.masterduels.user.IUser;
@@ -78,6 +79,7 @@ public class MatchBuilder {
 
 		if (user.isInMatchBuilder()) {
 			user.getMatchBuilder().removePlayer(user);
+			MatchCreator.cleanKillCreator(player.getUniqueId());
 		}
 
 		user.setMatchBuilder(this);
@@ -90,9 +92,6 @@ public class MatchBuilder {
 		players.remove(user.getPlayer().getUniqueId());
 		matchDataStorage.getGameTeamManager().unregisterPlayer(user);
 		user.exitMatchBuilder();
-		if (players.size() == 0) {
-			destroy();
-		}
 	}
 
 	public void removePlayer(Player player) {
@@ -194,10 +193,9 @@ public class MatchBuilder {
 
 	public void destroy() {
 		//unregister game builder
-		for (UUID uuid : new ArrayList<UUID>(players)) {
-			Player player = Bukkit.getPlayer(uuid);
-			if (player == null) continue;
-			removePlayer(player);
+		for (UUID uuid : new ArrayList<>(players)) {
+			UserHandler.getUser(uuid).exitMatchBuilder();
+
 		}
 	}
 

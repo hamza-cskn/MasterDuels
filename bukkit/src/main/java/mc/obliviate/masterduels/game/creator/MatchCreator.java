@@ -177,6 +177,13 @@ public class MatchCreator {
 		}
 	}
 
+	public void cleanKill() {
+		for (UUID uuid : builder.getPlayers()) {
+			builder.removePlayer(Bukkit.getPlayer(uuid));
+		}
+		destroy();
+	}
+
 	public Match create() {
 		destroy();
 		return builder.build();
