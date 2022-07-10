@@ -81,7 +81,7 @@ public class MatchCreator {
 
 		//check: target is online
 		if (target == null) {
-			MessageUtils.sendMessage(sender, "target-is-not-online");
+			MessageUtils.sendMessage(sender, "target-is-not-online", new PlaceholderUtil().add("{target}", target.getName()));
 			return;
 		}
 
@@ -94,7 +94,7 @@ public class MatchCreator {
 		IUser user = UserHandler.getUser(target.getUniqueId());
 		//check: target is not in duel
 		if (user instanceof Member) {
-			MessageUtils.sendMessage(sender, "target-already-in-duel");
+			MessageUtils.sendMessage(sender, "target-already-in-duel", new PlaceholderUtil().add("{target}", target.getName()));
 			return;
 		}
 
