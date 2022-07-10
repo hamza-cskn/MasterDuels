@@ -113,10 +113,10 @@ public class DuelAdminCMD implements CommandExecutor {
 
 	private void cancelCmd(final Player player, final List<String> args) {
 		if (args.size() == 1) {
-			//dueladmin arena cancel arena1 -all
-			MessageUtils.sendMessage(player, "");
+			MessageUtils.sendMessage(player, "duel-command.admin.cancel.usage");
 		} else if (args.size() == 2) {
 			cancelGame(DataHandler.getArenaFromName(args.get(1)));
+			MessageUtils.sendMessage(player, "duel-command.admin.cancel.cancel", new PlaceholderUtil().add("{arena}", args.get(1)));
 		} else if (args.get(2).equalsIgnoreCase("-all")) {
 			for (final Arena arena : DataHandler.getArenas().keySet()) {
 				cancelGame(arena);
@@ -165,18 +165,18 @@ public class DuelAdminCMD implements CommandExecutor {
 
 	private void toggleArena(Player player, List<String> args, boolean toggleState) {
 		if (args.size() < 3) {
-			MessageUtils.sendMessage(player, "duel-command.arena.toggle.usage." + (toggleState ? "enable" : "disable"));
+			MessageUtils.sendMessage(player, "duel-command.admin.arena.usage." + (toggleState ? "enable" : "disable"));
 			return;
 		}
 
 		final Arena arena = DataHandler.getArenaFromName(args.get(2));
 		if (arena == null) {
-			MessageUtils.sendMessage(player, "duel-command.no-arena-found-with-this-name");
+			MessageUtils.sendMessage(player, "duel-command.no-arena-found-with-this-name", new PlaceholderUtil().add("{arena}", args.get(2)));
 			return;
 		}
 
 		arena.setEnabled(toggleState);
-		MessageUtils.sendMessage(player, "duel-command.arena-toggle." + (toggleState ? "enabled" : "disabled"));
+		MessageUtils.sendMessage(player, "duel-command.admin.arena." + (toggleState ? "enabled" : "disabled"), new PlaceholderUtil().add("{arena}", args.get(2)));
 
 	}
 

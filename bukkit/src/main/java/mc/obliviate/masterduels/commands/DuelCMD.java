@@ -282,7 +282,7 @@ public class DuelCMD implements CommandExecutor {
 
 		//check: target is online
 		if (target == null) {
-			MessageUtils.sendMessage(player, "target-is-not-online");
+			MessageUtils.sendMessage(player, "target-is-not-online", new PlaceholderUtil().add("{target}", target.getName()));
 			return;
 		}
 
