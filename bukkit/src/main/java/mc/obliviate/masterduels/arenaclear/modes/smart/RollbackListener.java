@@ -69,11 +69,11 @@ public class RollbackListener implements Listener {
 			@Override
 			public void run() {
 				switch (block.getType()) {
-					case OBSIDIAN:
-					case COBBLESTONE:
-					case STONE:
-						break;
-					default:
+					case AIR:
+					case WATER:
+					case STATIONARY_WATER:
+					case LAVA:
+					case STATIONARY_LAVA:
 						return;
 				}
 				arenaClear.addBlock(block.getX(), block.getY(), block.getZ(), block.getWorld().getUID());
@@ -83,7 +83,6 @@ public class RollbackListener implements Listener {
 
 			}
 		}.runTaskLater(plugin, 1);
-
 	}
 
 	@EventHandler
