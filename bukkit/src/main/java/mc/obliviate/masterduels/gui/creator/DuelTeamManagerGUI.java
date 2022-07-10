@@ -10,6 +10,7 @@ import mc.obliviate.masterduels.gui.ConfigurableGui;
 import mc.obliviate.masterduels.user.IUser;
 import mc.obliviate.masterduels.user.Member;
 import mc.obliviate.masterduels.user.UserHandler;
+import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.Utils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
 import mc.obliviate.masterduels.utils.serializer.SerializerUtils;
@@ -217,7 +218,7 @@ public class DuelTeamManagerGUI extends ConfigurableGui {
 		}
 
 		private ItemStack getPlayerSlotIcon(Member.Builder builder) {
-			final ItemStack item = SerializerUtils.applyPlaceholdersOnItemStack(playerSlotIcon.clone(), new PlaceholderUtil().add("{player}", Utils.getDisplayName(builder.getPlayer())).add("{kit}", builder.getKit() == null ? "" : builder.getKit().getKitName()));
+			final ItemStack item = SerializerUtils.applyPlaceholdersOnItemStack(playerSlotIcon.clone(), new PlaceholderUtil().add("{player}", Utils.getDisplayName(builder.getPlayer())).add("{kit}", builder.getKit() == null ? MessageUtils.parseColor(MessageUtils.getMessage("kit.none-kit-name")) : builder.getKit().getKitName()));
 			if (item.getItemMeta() instanceof SkullMeta) {
 				final SkullMeta skullMeta = (SkullMeta) item.getItemMeta();
 				skullMeta.setOwner(builder.getPlayer().getName());
