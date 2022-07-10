@@ -209,5 +209,13 @@ public class MatchCreator {
 		return null;
 	}
 
+	public static boolean cleanKillCreator(UUID playerUniqueId) {
+		final MatchCreator creator = MatchCreator.getCreator(playerUniqueId);
+		if (creator != null) {
+			creator.cleanKill();
+			return true;
+		}
+		return false;
+	}
 
 }

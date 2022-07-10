@@ -13,6 +13,7 @@ import mc.obliviate.masterduels.data.ConfigurationHandler;
 import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.data.SQLManager;
 import mc.obliviate.masterduels.game.Match;
+import mc.obliviate.masterduels.game.gamerule.GameRule;
 import mc.obliviate.masterduels.game.gamerule.MatchRuleListener;
 import mc.obliviate.masterduels.history.HistoryListener;
 import mc.obliviate.masterduels.kit.serializer.KitSerializer;
@@ -37,6 +38,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Scanner;
 
 import static mc.obliviate.masterduels.VaultUtil.vaultEnabled;
@@ -130,6 +132,10 @@ public class MasterDuels extends JavaPlugin {
 		}
 	}
 
+	private void loadRuleListeners() {
+		Arrays.stream(GameRule.values()).forEach(GameRule::loadListener);
+	}
+
 	private void setupHandlers() {
 		configurationHandler.init();
 		inventoryAPI.init();
@@ -148,6 +154,7 @@ public class MasterDuels extends JavaPlugin {
 			new BossBarHandler().init(this);
 		sqlManager.init();
 		setupVaultUtils();
+		loadRuleListeners();
 
 		Logger.setDebugModeEnabled(ConfigurationHandler.getConfig().getBoolean("debug", false));
 	}

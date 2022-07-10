@@ -14,6 +14,7 @@ public class GUISerializerUtils {
 			final ConfigurationSection section = iconsSection.getConfigurationSection(sectionName);
 
 			if (!section.isSet("slot")) continue;
+			if (!section.isSet("material")) continue;
 			final int slotNo = section.getInt("slot", -1);
 			if (slotNo != -1) {
 				gui.addItem(slotNo, getConfigItem(iconsSection.getConfigurationSection(sectionName), placeholderUtil));

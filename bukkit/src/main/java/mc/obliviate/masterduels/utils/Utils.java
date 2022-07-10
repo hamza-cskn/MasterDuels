@@ -97,5 +97,12 @@ public class Utils {
 				.add("{regenerated-health}", log.getRegeneratedHealth() + "");
 	}
 
-
+	public static boolean containsSimiliar(ItemStack item, Iterable<ItemStack> iterable) {
+		for (ItemStack itemstack : iterable) {
+			if (item.isSimilar(itemstack)) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

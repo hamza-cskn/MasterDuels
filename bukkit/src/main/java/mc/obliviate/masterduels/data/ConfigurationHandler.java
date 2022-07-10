@@ -13,6 +13,7 @@ import mc.obliviate.masterduels.game.state.RoundStartingState;
 import mc.obliviate.masterduels.gui.DuelArenaListGUI;
 import mc.obliviate.masterduels.gui.DuelHistoryLogGUI;
 import mc.obliviate.masterduels.gui.creator.DuelMatchCreatorNonOwnerGUI;
+import mc.obliviate.masterduels.gui.creator.DuelSettingsGUI;
 import mc.obliviate.masterduels.gui.creator.DuelTeamManagerGUI;
 import mc.obliviate.masterduels.kit.Kit;
 import mc.obliviate.masterduels.kit.gui.KitSelectionGUI;
@@ -103,6 +104,7 @@ public class ConfigurationHandler {
 		registerNotifyActions(config.getConfigurationSection("duel-game-lock.notify-actions"));
 		registerTeamManagerConfig(menus.getConfigurationSection("duel-creator.manage-teams-gui"));
 		registerDuelMatchCreatorNonOwnerGUIConfig(menus.getConfigurationSection("duel-creator.non-owner-gui"));
+		registerGameRulesGui(menus.getConfigurationSection("duel-creator.game-rules-gui"));
 
 		RoundStartingState.setLockDuration(Duration.ofSeconds(config.getInt("duel-game-lock.lock-duration")));
 		RoundStartingState.setLockFrequency(config.getInt("duel-game-lock.teleport-frequency"));
@@ -313,6 +315,10 @@ public class ConfigurationHandler {
 
 	private void registerHistoryGui(final ConfigurationSection section) {
 		new DuelHistoryLogGUI.Config(parseStringAsIntegerList(section.getString("page-slots")));
+	}
+
+	private void registerGameRulesGui(final ConfigurationSection section) {
+		new DuelSettingsGUI.Config(section);
 	}
 
 	private void registerArenas() {

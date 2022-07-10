@@ -100,6 +100,9 @@ duel-command:
     reload:
       process-start: '&aAll configuration files of MasterDuels reloading...'
       process-finish: '&aReload completed in {delay}ms.'
+    cancel:
+      usage: '&c/dueladmin cancel <arena name>'
+      cancel: '&cMatch of {arena} has been cancelled.'
 
 no-arena-found-with-this-name: '&cNo arenas with this name found.'
 queue:

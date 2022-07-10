@@ -63,7 +63,7 @@ public class DuelHistoryLogGUI extends ConfigurableGui {
 
 					placeholders.add("{player}", p.getName());
 
-					if (log.getWinners().contains(p.getUniqueId())) {
+					if (log.getWinners() != null && log.getWinners().contains(p.getUniqueId())) {
 						loreCopy.addAll(MessageUtils.parseColor(MessageUtils.applyPlaceholders(getIconsSection("non-solo-games-icon").getStringList("winner-info-format"), placeholders)));
 					} else {
 						loreCopy.addAll(MessageUtils.parseColor(MessageUtils.applyPlaceholders(getIconsSection("non-solo-games-icon").getStringList("loser-info-format"), placeholders)));
@@ -117,7 +117,7 @@ public class DuelHistoryLogGUI extends ConfigurableGui {
 
 				placeholders.add("{player}", p.getName());
 
-				if (log.getWinners().contains(p.getUniqueId())) {
+				if (log.getWinners() != null && log.getWinners().contains(p.getUniqueId())) {
 					loreCopy.addAll(MessageUtils.parseColor(MessageUtils.applyPlaceholders(getIconsSection("solo-games-icon").getStringList("winner-info-format"), placeholders)));
 				} else {
 					loreCopy.addAll(MessageUtils.parseColor(MessageUtils.applyPlaceholders(getIconsSection("solo-games-icon").getStringList("loser-info-format"), placeholders)));

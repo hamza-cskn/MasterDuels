@@ -1,22 +1,9 @@
 package mc.obliviate.masterduels.game.gamerule;
 
-import mc.obliviate.masterduels.api.spectator.DuelMatchPreSpectatorJoinEvent;
-import mc.obliviate.masterduels.user.Member;
-import mc.obliviate.masterduels.user.UserHandler;
-import mc.obliviate.masterduels.utils.xmaterial.XMaterial;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityShootBowEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemConsumeEvent;
-import org.bukkit.inventory.meta.PotionMeta;
 
 public class MatchRuleListener implements Listener {
-
+/*
 	@EventHandler
 	public void onIgnite(EntityDamageEvent e) {
 		if (!e.getEntityType().equals(EntityType.PLAYER)) return;
@@ -44,9 +31,6 @@ public class MatchRuleListener implements Listener {
 		final Member member = UserHandler.getMember(player.getUniqueId());
 		if (member == null) return;
 		if (e.getItem().getData().equals(XMaterial.ENCHANTED_GOLDEN_APPLE.parseItem().getData())) {
-			if (!member.getMatch().getGameDataStorage().getGameRules().contains(GameRule.NO_ENCHANTED_GOLDEN_APPLE))
-				return;
-		} else if (e.getItem().getData().equals(XMaterial.GOLDEN_APPLE.parseItem().getData())) {
 			if (!member.getMatch().getGameDataStorage().getGameRules().contains(GameRule.NO_GOLDEN_APPLE)) return;
 		} else if (e.getItem().getType().equals(XMaterial.POTION.parseMaterial())) {
 			if (!member.getMatch().getGameDataStorage().getGameRules().contains(GameRule.NO_POTION)) return;
@@ -85,5 +69,7 @@ public class MatchRuleListener implements Listener {
 		e.setCancelled(true);
 	}
 
+
+ */
 
 }

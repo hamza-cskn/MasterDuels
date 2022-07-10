@@ -5,7 +5,6 @@ import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.api.arena.DuelMatchStateChangeEvent;
 import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.data.ConfigurationHandler;
-import mc.obliviate.masterduels.game.gamerule.GameRule;
 import mc.obliviate.masterduels.game.round.MatchRoundData;
 import mc.obliviate.masterduels.game.spectator.MatchSpectatorManager;
 import mc.obliviate.masterduels.game.state.IdleState;
@@ -183,7 +182,7 @@ public class Match {
 	public void dropItems(final Player player, Location loc) {
 		Preconditions.checkArgument(loc != null, "location cannot be null");
 		Logger.debug(Logger.DebugPart.GAME, "drop items - process started");
-		if (!getGameDataStorage().getGameRules().contains(GameRule.NO_DEAD_DROP)) return;
+		//if (!getGameDataStorage().getGameRules().contains(GameRule.NO_DEAD_DROP)) return;
 		if (MasterDuels.isInShutdownMode()) return;
 
 		final List<ItemStack> allItemsInInventory = Arrays.asList(player.getInventory().getContents());

@@ -164,8 +164,8 @@ public class DuelTeamManagerGUI extends ConfigurableGui {
 				return;
 			}
 
-			matchCreator.getBuilder().removePlayer(target);
-			matchCreator.getBuilder().addPlayer(target, null, team.getTeamId());
+			matchCreator.getBuilder().getData().getGameTeamManager().unregisterPlayer(target);
+			matchCreator.getBuilder().getData().getGameTeamManager().registerPlayer(target, null, team.getTeamId()); //todo no kit
 			open();
 		});
 	}
