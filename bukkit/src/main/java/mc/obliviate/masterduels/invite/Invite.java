@@ -2,6 +2,7 @@ package mc.obliviate.masterduels.invite;
 
 import com.google.common.base.Preconditions;
 import mc.obliviate.masterduels.MasterDuels;
+import mc.obliviate.masterduels.kit.Kit;
 import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
@@ -15,12 +16,14 @@ public class Invite {
 	private final long expireOutTime;
 	private final Consumer<Invite> response;
 	private InviteState state = InviteState.PENDING;
+	private final Kit kit;
 
-	protected Invite(UUID sender, UUID receiverUniqueId, long expireTimeOut, Consumer<Invite> response) {
+	protected Invite(UUID sender, UUID receiverUniqueId, long expireTimeOut, Consumer<Invite> response, Kit kit) {
 		this.sender = sender;
 		this.receiver = receiverUniqueId;
 		this.expireOutTime = expireTimeOut;
 		this.response = response;
+		this.kit = kit;
 
 		InviteRecipient.getInviteRecipient(receiverUniqueId).addInvite(this);
 
@@ -36,6 +39,8 @@ public class Invite {
 	 * building new invite class.
 	 */
 	public static class Builder {
+
+		private Kit kit;
 
 		private UUID sender;
 		private UUID receiver;
@@ -56,7 +61,7 @@ public class Invite {
 				}
 			}
 
-			final Invite inviteBuilt = new Invite(sender, receiver, expireTime, response);
+			final Invite inviteBuilt = new Invite(sender, receiver, expireTime, response, kit);
 			return new InviteBuildResult(inviteBuilt, InviteBuildState.SUCCESS);
 		}
 
@@ -104,8 +109,17 @@ public class Invite {
 			this.sender = sender;
 			return this;
 		}
-	}
 
+		public Kit getKit() {
+			return kit;
+		}
+
+		public Builder setKit(Kit kit) {
+			this.kit = kit;
+			return this;
+		}
+
+	}
 	public static Builder create() {
 		return new Builder();
 	}
@@ -132,6 +146,9 @@ public class Invite {
 		return sender;
 	}
 
+	public Kit getKit() {
+		return kit;
+	}
 
 	/**
 	 * Purpose of this class is,
@@ -139,7 +156,9 @@ public class Invite {
 	 * when invite builder built.
 	 */
 	public static class InviteBuildResult {
+
 		final Invite invite;
+
 		final InviteBuildState inviteBuildState;
 
 		public InviteBuildResult(Invite invite, InviteBuildState inviteBuildState) {

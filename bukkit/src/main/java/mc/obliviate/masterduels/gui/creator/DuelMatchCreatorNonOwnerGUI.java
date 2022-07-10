@@ -52,7 +52,8 @@ public class DuelMatchCreatorNonOwnerGUI extends ConfigurableGui {
 		putTeamIcons();
 
 		if (matchCreator.getCreatorKitManager().getKitMode().equals(CreatorKitManager.KitMode.VARIOUS)) {
-			putIcon("kit-icon", e -> {
+			Member.Builder builder = matchCreator.getBuilder().getData().getGameTeamManager().getMemberBuilder(player.getUniqueId());
+			putIcon("kit-icon", new PlaceholderUtil().add("{kit}", builder.getKit() == null ? MessageUtils.parseColor(MessageUtils.getMessage("kit.none-kit-name")) : builder.getKit().getKitName()), e -> {
 				new KitSelectionGUI(player, matchCreator.getBuilder(), kit -> {
 					matchCreator.getBuilder().getData().getGameTeamManager().getMemberBuilder(player.getUniqueId()).setKit(kit);
 				});

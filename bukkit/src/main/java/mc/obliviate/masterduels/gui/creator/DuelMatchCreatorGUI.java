@@ -107,7 +107,7 @@ public class DuelMatchCreatorGUI extends ConfigurableGui {
 
 	private void putKitIcon() {
 		if (matchCreator.getCreatorKitManager().getKitMode().equals(CreatorKitManager.KitMode.VARIOUS)) {
-			PlaceholderUtil placeholderUtil = new PlaceholderUtil().add("{your-kit}", matchCreator.getCreatorKitManager().getDefaultKit() == null ? "" : matchCreator.getCreatorKitManager().getDefaultKit().getKitName());
+			PlaceholderUtil placeholderUtil = new PlaceholderUtil().add("{your-kit}", matchCreator.getCreatorKitManager().getDefaultKit() == null ? MessageUtils.parseColor(MessageUtils.getMessage("kit.none-kit-name")) : matchCreator.getCreatorKitManager().getDefaultKit().getKitName());
 			putIcon("kit-various-mode", placeholderUtil, e -> {
 				if (e.isLeftClick()) {
 					new KitSelectionGUI(player, matchCreator.getBuilder(), kit -> {
@@ -120,7 +120,7 @@ public class DuelMatchCreatorGUI extends ConfigurableGui {
 				}
 			});
 		} else {
-			PlaceholderUtil placeholderUtil = new PlaceholderUtil().add("{kit}", matchCreator.getCreatorKitManager().getDefaultKit() == null ? "" : matchCreator.getCreatorKitManager().getDefaultKit().getKitName());
+			PlaceholderUtil placeholderUtil = new PlaceholderUtil().add("{kit}", matchCreator.getCreatorKitManager().getDefaultKit() == null ? MessageUtils.parseColor(MessageUtils.getMessage("kit.none-kit-name")) : matchCreator.getCreatorKitManager().getDefaultKit().getKitName());
 			putIcon("kit-mutual-mode", placeholderUtil, e -> {
 				if (e.isLeftClick()) {
 					new KitSelectionGUI(player, matchCreator.getBuilder(), kit -> {

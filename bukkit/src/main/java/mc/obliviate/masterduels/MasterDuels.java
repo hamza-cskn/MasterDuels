@@ -14,7 +14,6 @@ import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.data.SQLManager;
 import mc.obliviate.masterduels.game.Match;
 import mc.obliviate.masterduels.game.gamerule.GameRule;
-import mc.obliviate.masterduels.game.gamerule.MatchRuleListener;
 import mc.obliviate.masterduels.history.HistoryListener;
 import mc.obliviate.masterduels.kit.serializer.KitSerializer;
 import mc.obliviate.masterduels.listeners.*;
@@ -210,7 +209,6 @@ public class MasterDuels extends JavaPlugin {
 		Bukkit.getPluginManager().registerEvents(new DamageListener(this), this);
 		Bukkit.getPluginManager().registerEvents(new PlayerConnectionListener(this), this);
 		Bukkit.getPluginManager().registerEvents(new SpectatorListener(), this);
-		Bukkit.getPluginManager().registerEvents(new MatchRuleListener(), this);
 		Bukkit.getPluginManager().registerEvents(new DeveloperCMD(this), this);
 		Bukkit.getPluginManager().registerEvents(new CMDExecutorListener(), this);
 		Bukkit.getPluginManager().registerEvents(new HistoryListener(this), this);

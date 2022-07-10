@@ -18,11 +18,11 @@ public class InviteUtils {
 		final Player sender = Bukkit.getPlayer(invite.getSenderUniqueId());
 		final Player target = Bukkit.getPlayer(invite.getRecipientUniqueId());
 
-		final Kit kit = null; //fixme
+		final Kit kit = invite.getKit(); //fixme
 
 		for (String inviteText : section.getStringList("text")) {
 			inviteText = inviteText + " ";
-			inviteText = MessageUtils.applyPlaceholders(inviteText, new PlaceholderUtil().add("{kit}", kit != null ? kit.getKitName() : MessageUtils.parseColor(MessageUtils.getMessage("game-creator.none-kit-name"))).add("{inviter}", sender.getName()).add("{expire-time}", TimerUtils.formatTimeUntilThenAsTimer(invite.getExpireOutTime()) + ""));
+			inviteText = MessageUtils.applyPlaceholders(inviteText, new PlaceholderUtil().add("{kit}", kit != null ? kit.getKitName() : MessageUtils.parseColor(MessageUtils.getMessage("kit.none-kit-name"))).add("{inviter}", sender.getName()).add("{expire-time}", TimerUtils.formatTimeUntilThenAsTimer(invite.getExpireOutTime()) + ""));
 			inviteText = MessageUtils.parseColor(inviteText);
 
 			if (inviteText.contains("{accept-button}") && inviteText.contains("{decline-button}")) {

@@ -75,7 +75,7 @@ public class DuelCMD implements CommandExecutor {
 				MessageUtils.sendMessage(player, "you-are-not-in-duel");
 				return false;
 			}
-		} else if (args[0].equalsIgnoreCase("top")) {
+		} else if (false && args[0].equalsIgnoreCase("top")) {//todo
 			top(player, Arrays.asList(args));
 			return true;
 		} else if (args[0].equalsIgnoreCase("toggle")) {
@@ -86,7 +86,7 @@ public class DuelCMD implements CommandExecutor {
 				MessageUtils.sendMessage(player, "invite.toggle.turned-off");
 			}
 			return true;
-		} else if (args[0].equalsIgnoreCase("stats")) {
+		} else if (false && args[0].equalsIgnoreCase("stats")) { //todo
 			stats(player, args);
 			return true;
 		}
@@ -282,7 +282,7 @@ public class DuelCMD implements CommandExecutor {
 
 		//check: target is online
 		if (target == null) {
-			MessageUtils.sendMessage(player, "target-is-not-online", new PlaceholderUtil().add("{target}", target.getName()));
+			MessageUtils.sendMessage(player, "target-is-not-online", new PlaceholderUtil().add("{target}", targetName));
 			return;
 		}
 
@@ -312,6 +312,7 @@ public class DuelCMD implements CommandExecutor {
 					.setExpireTimeLater(ConfigurationHandler.getConfig().getInt("invite-timeout") * 1000L)
 					.setSender(player.getUniqueId())
 					.setReceiver(target.getUniqueId())
+					.setKit(selectedKit)
 					.onResponse(invite -> {
 						switch (invite.getState()) {
 							case ACCEPTED:
@@ -328,6 +329,16 @@ public class DuelCMD implements CommandExecutor {
 								break;
 						}
 						if (invite.getState().equals(Invite.InviteState.ACCEPTED)) {
+							if (UserHandler.getUser(target.getUniqueId()).isInMatchBuilder()) {
+								MessageUtils.sendMessage(player, "target-already-in-duel", new PlaceholderUtil().add("{target}", target.getName()));
+								return;
+							}
+
+							if (UserHandler.getUser(player.getUniqueId()).isInMatchBuilder()) {
+								MessageUtils.sendMessage(target, "target-already-in-duel", new PlaceholderUtil().add("{target}", player.getName()));
+								return;
+							}
+
 							matchBuilder.addPlayer(target, selectedKit);
 
 							Match game = matchBuilder.build();
