@@ -182,6 +182,7 @@ public class ConfigurationHandler {
 
 		final List<String> gameRules = section.getStringList("allowed-game-rules");
 		boolean allOfThem = gameRules.contains("*");
+		MatchCreator.ALLOWED_GAME_RULES.clear();
 		for (GameRule rule : GameRule.values()) {
 			if (allOfThem || gameRules.contains(rule.name())) {
 				MatchCreator.ALLOWED_GAME_RULES.add(rule);
@@ -190,6 +191,7 @@ public class ConfigurationHandler {
 
 		final List<String> gameKits = section.getStringList("allowed-kits");
 		allOfThem = gameKits.contains("*");
+		MatchCreator.ALLOWED_KITS.clear();
 		for (Kit kit : Kit.getKits().values()) {
 			if (allOfThem || gameKits.contains(kit.getKitName())) {
 				MatchCreator.ALLOWED_KITS.add(kit);
