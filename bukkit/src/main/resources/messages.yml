@@ -45,6 +45,7 @@ kit:
   has-saved: '&7Kit saved: &f{kit}&7'
   none-kit-name: '&cNone'
 game-end-broadcast:
+  # broadcast receivers are changeable from the config.
   solo: '&a{winner}&7 has won duel with &c{winner-health} health&7! (&a{winner}&7 vs &c{loser}&7)'
   non-solo: '&a{winner}&7 and her team has won duel!' # i do not know how i can show loser and winner teams in chat. it'll be changed future.
 arrow-hit-notify:
@@ -100,7 +101,9 @@ duel-command:
 
 no-arena-found-with-this-name: '&cNo arenas with this name found.'
 queue:
-  joined: '&7You joined &b{queue-name} &7duel queue &8[&f{player-amount}&8/&f{max-player-amount}&8]'
+  joined: |-
+    &7You joined &b{queue-name} &7duel queue &8[&f{player-amount}&8/&f{max-player-amount}&8]
+    &cUse /duel leave command to leave.
   left: '&7You left duel queue: &b{queue-name}'
   created: '&7Successfully &acreated&7 new queue template: &b{queue-name}'
   deleted: '&7Successfully &cdeleted&7 new queue template: &b{queue-name}'
