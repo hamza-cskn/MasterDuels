@@ -101,6 +101,7 @@ public class DamageListener implements Listener {
 		if (e.getEntity() instanceof Player && e.getDamager() instanceof Projectile) {
 			if (((Projectile) e.getDamager()).getShooter() instanceof Player) {
 				final Player attacker = (Player) ((Projectile) e.getDamager()).getShooter();
+				if (attacker == e.getEntity()) return;
 				final Member member = UserHandler.getMember(attacker.getUniqueId());
 				if (member == null) return;
 				final double distance = MessageUtils.getFirstDigits(e.getEntity().getLocation().toVector().distance(attacker.getLocation().toVector()), 2);
