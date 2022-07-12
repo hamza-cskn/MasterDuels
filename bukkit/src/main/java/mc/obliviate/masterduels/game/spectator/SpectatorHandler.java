@@ -2,7 +2,6 @@ package mc.obliviate.masterduels.game.spectator;
 
 import mc.obliviate.masterduels.kit.InventoryStorer;
 import mc.obliviate.masterduels.kit.PlayerInventoryFrame;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -12,7 +11,7 @@ public class SpectatorHandler {
 
 	static {
 		final ItemStack[] items = new ItemStack[]{
-				null, null, null, null, null, null, null, null, new ItemStack(Material.BARRIER),
+				null, null, null, null, null, null, null, null, null,
 				null, null, null, null, null, null, null, null, null,
 				null, null, null, null, null, null, null, null, null,
 				null, null, null, null, null, null, null, null, null};
