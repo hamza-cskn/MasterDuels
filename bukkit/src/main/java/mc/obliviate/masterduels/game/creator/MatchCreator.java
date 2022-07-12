@@ -178,7 +178,7 @@ public class MatchCreator {
 	}
 
 	public void cleanKill() {
-		for (UUID uuid : builder.getPlayers()) {
+		for (UUID uuid : new ArrayList<>(builder.getPlayers())) {
 			builder.removePlayer(Bukkit.getPlayer(uuid));
 		}
 		destroy();
@@ -209,6 +209,10 @@ public class MatchCreator {
 		return null;
 	}
 
+	/**
+	 * @param playerUniqueId
+	 * @return does found any creator
+	 */
 	public static boolean cleanKillCreator(UUID playerUniqueId) {
 		final MatchCreator creator = MatchCreator.getCreator(playerUniqueId);
 		if (creator != null) {
