@@ -67,6 +67,7 @@ public class Utils {
 	public static PlaceholderUtil getPlaceholders(PlayerHistoryLog log) {
 		if (log == null) {
 			return new PlaceholderUtil()
+					.add("{kit}", "??")
 					.add("{placed-blocks}", "??")
 					.add("{broken-blocks}", "??")
 					.add("{damage-dealt}", "??")
@@ -82,6 +83,7 @@ public class Utils {
 					.add("{regenerated-health}", "??");
 		}
 		return new PlaceholderUtil()
+				.add("{kit}", log.getKitName() == null ? MessageUtils.parseColor(MessageUtils.getMessage("kit.none-kit-name")) : log.getKitName())
 				.add("{placed-blocks}", log.getPlacedBlocks() + "")
 				.add("{broken-blocks}", log.getBrokenBlocks() + "")
 				.add("{damage-dealt}", (log.getDamageDealt() / 5d) + "")
