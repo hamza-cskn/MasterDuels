@@ -32,14 +32,12 @@ public class DamageListener implements Listener {
 	public void onPreDeath(EntityDamageEvent e) {
 		if (!e.getEntityType().equals(EntityType.PLAYER)) {
 			if (e instanceof EntityDamageByEntityEvent) {
-
 				final Entity damager = ((EntityDamageByEntityEvent) e).getDamager();
 				if (damager instanceof Player) {
 					final Member member = UserHandler.getMember(damager.getUniqueId());
 					if (member == null) return;
 					e.setCancelled(true);
 				}
-
 			}
 			return;
 		}

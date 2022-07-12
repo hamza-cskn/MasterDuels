@@ -177,7 +177,6 @@ public class DuelAdminCMD implements CommandExecutor {
 
 		arena.setEnabled(toggleState);
 		MessageUtils.sendMessage(player, "duel-command.admin.arena." + (toggleState ? "enabled" : "disabled"), new PlaceholderUtil().add("{arena}", args.get(2)));
-
 	}
 
 	private void kitSave(Player player, List<String> args) {

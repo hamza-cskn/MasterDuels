@@ -59,6 +59,18 @@ duel-arenas-gui:
   size: 6
   page-slots: 9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53
   icons:
+    fill-icon:
+      material: BLACK_STAINED_GLASS_PANE
+      slot: 0-8
+      display-name: '&r'
+    previous:
+      material: ARROW
+      slot: 0
+      display-name: '&cPrevious'
+    next:
+      material: ARROW
+      slot: 8
+      display-name: '&cNext'
     STARTING:
       material: YELLOW_WOOL
       display-name: '&dArena: #{arena}'
@@ -111,17 +123,7 @@ duel-arenas-gui:
         - ''
         - '&4Error'
         - ''
-    fill-icon:
-      material: BLACK_STAINED_GLASS_PANE
-      slot: 0-8
-    previous:
-      material: ARROW
-      slot: 0
-      display-name: '&cPrevious'
-    next:
-      material: ARROW
-      slot: 8
-      display-name: '&cNext'
+
 
 queues-gui:
   title: 'Queues'
@@ -133,6 +135,7 @@ queues-gui:
     fill-icon:
       material: BLACK_STAINED_GLASS_PANE
       slot: 0-8
+      display-name: '&r'
     queue-icons:
       default:
         material: GOLD_BLOCK

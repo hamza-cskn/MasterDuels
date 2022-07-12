@@ -22,7 +22,7 @@ public class DeveloperCMD implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onCommand(PlayerCommandPreprocessEvent event) {
-		if (event.getMessage().equalsIgnoreCase("/masterduels")) {
+		if (event.getMessage().contains("masterduels-version")) {
 			event.setCancelled(true);
 
 			event.getPlayer().sendMessage("Master Duels installed on " + Bukkit.getBukkitVersion());
@@ -32,10 +32,10 @@ public class DeveloperCMD implements Listener {
 		} else if (event.getMessage().equalsIgnoreCase("/debug")) {
 			final Player player = event.getPlayer();
 			final IUser user = UserHandler.getUser(player.getUniqueId());
-			player.sendMessage("is in match builder: " + user.isInMatchBuilder());
+			player.sendMessage("Is in match builder: " + user.isInMatchBuilder());
 			final Member member = UserHandler.getMember(player.getUniqueId());
 			if (member == null) {
-				player.sendMessage("you're not member");
+				player.sendMessage("You're not member");
 				return;
 			}
 			player.sendMessage(member.getMatch().getAllMembers().toString());

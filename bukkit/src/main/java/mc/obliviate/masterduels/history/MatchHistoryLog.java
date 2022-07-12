@@ -57,12 +57,11 @@ public class MatchHistoryLog implements Serializable {
 
 			final Player player = member.getPlayer();
 
+			playerLog.setKitName(member.getKit() == null ? null : member.getKit().getKitName());
 			playerLog.setJump(player.getStatistic(Statistic.JUMP) * -1);
 			playerLog.setFall(player.getStatistic(Statistic.FALL_ONE_CM) * -1);
 			playerLog.setSprint(player.getStatistic(Statistic.SPRINT_ONE_CM) * -1);
 			playerLog.setWalk(player.getStatistic(Statistic.WALK_ONE_CM) * -1);
-			//playerLog.setBrokenBlocks(player.getStatistic(Statistic.MINE_BLOCK) * -1);
-			playerLog.setDamageDealt(player.getStatistic(Statistic.DAMAGE_DEALT) * -1);
 			playerLog.setDamageTaken(player.getStatistic(Statistic.DAMAGE_TAKEN) * -1);
 
 		}
@@ -81,13 +80,10 @@ public class MatchHistoryLog implements Serializable {
 			if (playerLog == null) continue;
 			final Player player = member.getPlayer();
 
-			playerLog.setKitName(member.getKit() + "");
 			playerLog.setJump(playerLog.getJump() + player.getStatistic(Statistic.JUMP));
 			playerLog.setFall(playerLog.getFall() + player.getStatistic(Statistic.FALL_ONE_CM));
 			playerLog.setSprint(playerLog.getSprint() + player.getStatistic(Statistic.SPRINT_ONE_CM));
 			playerLog.setWalk(playerLog.getWalk() + player.getStatistic(Statistic.WALK_ONE_CM));
-			//playerLog.setBrokenBlocks(player.getStatistic(Statistic.MINE_BLOCK));
-			playerLog.setDamageDealt(playerLog.getDamageDealt() + player.getStatistic(Statistic.DAMAGE_DEALT));
 			playerLog.setDamageTaken(playerLog.getDamageTaken() + player.getStatistic(Statistic.DAMAGE_TAKEN));
 		}
 	}

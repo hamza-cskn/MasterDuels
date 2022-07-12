@@ -50,7 +50,6 @@ public class KitEditGUI extends Gui {
 	}
 
 	public void putArmorIcons(int helmetSlot, int chestplateSlot, int leggingsSlot, int bootsSlot) {
-
 		//todo search why barriers are invisible in 1.17, 1.18
 		putArmorIcon(new Icon(Material.BARRIER), 3, helmetSlot);
 		putArmorIcon(new Icon(Material.BARRIER), 2, chestplateSlot);
@@ -99,9 +98,10 @@ public class KitEditGUI extends Gui {
 	public void putKitIcon(int slot) {
 		final Icon icon = getScaledItemLoreAndName(kit.getIcon(), "&cDisplay icon of kit", "&7Put item to change icon of kit");
 
-		addAdvancedIcon(slot, icon).onPut(e -> {
+		AdvancedSlot advancedSlot = addAdvancedIcon(slot, icon).onPut(e -> {
 			displayIcon = e.getCurrentItem();
 		});
+		getAdvancedSlotManager().putIcon(advancedSlot, displayIcon, null);
 
 	}
 
@@ -126,10 +126,4 @@ public class KitEditGUI extends Gui {
 
 		return showItem;
 	}
-
-	private String getMaterialName(ItemStack item) {
-		if (item != null) return item.getType().toString();
-		return "AIR";
-	}
-
 }
