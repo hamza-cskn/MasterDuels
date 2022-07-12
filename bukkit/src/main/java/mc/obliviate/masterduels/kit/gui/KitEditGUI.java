@@ -44,7 +44,7 @@ public class KitEditGUI extends Gui {
 			}));
 		}
 
-		addItem(0, new Icon(XMaterial.ARROW.parseItem()).setName(MessageUtils.parseColor("&cSave & Quit")).onClick(e -> {
+		addItem(0, new Icon(XMaterial.ARROW.parseItem()).setName(MessageUtils.parseColor("&cLeave")).setLore(MessageUtils.parseColor("&8Automatically saves")).onClick(e -> {
 			new KitListEditorGUI(player).open();
 		}));
 	}
@@ -86,10 +86,10 @@ public class KitEditGUI extends Gui {
 			index++;
 		}
 
-		addItem(45, Material.BARRIER);
-		addItem(46, Material.BARRIER);
-		addItem(47, Material.BARRIER);
-		addItem(48, Material.BARRIER);
+		addItem(45, new Icon(Material.BARRIER).setName(MessageUtils.parseColor("&cHelmet")));
+		addItem(46, new Icon(Material.BARRIER).setName(MessageUtils.parseColor("&cChestplate")));
+		addItem(47, new Icon(Material.BARRIER).setName(MessageUtils.parseColor("&cLeggings")));
+		addItem(48, new Icon(Material.BARRIER).setName(MessageUtils.parseColor("&cBoots")));
 
 		final Kit finalKit = new Kit(kit.getKitName(), items, armors, displayIcon);
 		Kit.getKits().put(kit.getKitName(), finalKit);
