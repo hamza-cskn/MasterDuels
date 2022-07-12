@@ -72,6 +72,9 @@ public class MasterDuels extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
+		//
+		// MOST OF INITIALIZE METHODS INCLUDED TO THIS METHOD FOR DEOBFUSCATION SECURITY
+		//
 		getLogger().info("Loading process started.");
 		Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
 
@@ -83,7 +86,7 @@ public class MasterDuels extends JavaPlugin {
 				return;
 			}
 
-			if (1658928468 > now) {
+			if (1659360775 > now) {
 				Bukkit.getScheduler().runTask(this, () -> {
 					if (getDescription().getDescription().equalsIgnoreCase("-developerMode")) {
 						Logger.setDebugModeEnabled(true);
@@ -92,11 +95,57 @@ public class MasterDuels extends JavaPlugin {
 					if (!checkObfuscated())
 						Bukkit.getLogger().info("This MasterDuels copy is not obfuscated.");
 
-					setupHandlers();
-					registerListeners();
-					registerCommands();
-					setupTimers();
+					// SETUP HANDLERS START
+					configurationHandler.init();
+					inventoryAPI.init();
+					// LOAD KITS START
+					final File file = new File(getDataFolder().getPath() + File.separator + "kits.yml");
+					final YamlConfiguration data = YamlConfiguration.loadConfiguration(file);
+					for (final String key : data.getKeys(false)) {
+						KitSerializer.deserialize(data.getConfigurationSection(key));
+					}
+					// LOAD KITS END
+					new TABManager().init(this);
+					new AdvancedReplayManager().init(this);
+					// SETUP ARENA CLEAR HANDLER START
+					final String mode = ConfigurationHandler.getConfig().getString("arena-regeneration.mode", "SMART");
+					if (!("ROLLBACKCORE".equals(mode) || "SLIMEWORLD".equals(mode) || "DISABLED".equals(mode))) {
+						arenaClearHandler = new SmartArenaClearHandler(this);
+						Bukkit.getPluginManager().registerEvents(new ArenaClearListener(this), this);
+						arenaClearHandler.init();
+					}
+					// SETUP ARENA CLEAR HANDLER END
+					HCore.initialize(this);
+					if (ConfigurationHandler.getConfig().getBoolean("scoreboards.enabled", true))
+						new InternalScoreboardManager().init(this);
+					if (ConfigurationHandler.getQueues().getBoolean("duel-queues-enabled", true))
+						duelQueueHandler.init();
+					if (ConfigurationHandler.getConfig().getBoolean("optimize-duel-worlds", false))
+						worldOptimizerHandler.init();
+					if (ConfigurationHandler.getConfig().getBoolean("boss-bars.enabled"))
+						new BossBarHandler().init(this);
+					sqlManager.init();
+					setupVaultUtils();
+					Arrays.stream(GameRule.values()).forEach(GameRule::loadListener);
+					Logger.setDebugModeEnabled(ConfigurationHandler.getConfig().getBoolean("debug", false));
+					// SETUP HANDLERS END
 
+					//REGISTER LISTENERS START
+					//RollbackListener registering from ArenaClear.java
+					//Scoreboard and Boss bar listeners registering from their own manager classes
+					Bukkit.getPluginManager().registerEvents(new ChatListener(), this);
+					Bukkit.getPluginManager().registerEvents(new DuelProtectListener(), this);
+					Bukkit.getPluginManager().registerEvents(new DamageListener(this), this);
+					Bukkit.getPluginManager().registerEvents(new PlayerConnectionListener(this), this);
+					Bukkit.getPluginManager().registerEvents(new DeveloperCMD(this), this);
+					Bukkit.getPluginManager().registerEvents(new CMDExecutorListener(), this);
+					Bukkit.getPluginManager().registerEvents(new HistoryListener(this), this);
+					//REGISTER LISTENERS END
+
+					//REGISTER COMMANDS START
+					safeRegisterCommand("duel", new DuelCMD(this));
+					safeRegisterCommand("dueladmin", new DuelAdminCMD(this));
+					//REGISTER COMMANDS END
 
 					shutdownMode = false;
 					startMetrics();
@@ -131,43 +180,6 @@ public class MasterDuels extends JavaPlugin {
 		}
 	}
 
-	private void loadRuleListeners() {
-		Arrays.stream(GameRule.values()).forEach(GameRule::loadListener);
-	}
-
-	private void setupHandlers() {
-		configurationHandler.init();
-		inventoryAPI.init();
-		loadKits();
-		new TABManager().init(this);
-		new AdvancedReplayManager().init(this);
-		setupArenaClearHandler();
-		HCore.initialize(this);
-		if (ConfigurationHandler.getConfig().getBoolean("scoreboards.enabled", true))
-			new InternalScoreboardManager().init(this);
-		if (ConfigurationHandler.getQueues().getBoolean("duel-queues-enabled", true))
-			duelQueueHandler.init();
-		if (ConfigurationHandler.getConfig().getBoolean("optimize-duel-worlds", false))
-			worldOptimizerHandler.init();
-		if (ConfigurationHandler.getConfig().getBoolean("boss-bars.enabled"))
-			new BossBarHandler().init(this);
-		sqlManager.init();
-		setupVaultUtils();
-		loadRuleListeners();
-
-		Logger.setDebugModeEnabled(ConfigurationHandler.getConfig().getBoolean("debug", false));
-	}
-
-	private void setupArenaClearHandler() {
-		final String mode = ConfigurationHandler.getConfig().getString("arena-regeneration.mode", "SMART");
-		//SMART
-		if (!("ROLLBACKCORE".equals(mode) || "SLIMEWORLD".equals(mode) || "DISABLED".equals(mode))) {
-			arenaClearHandler = new SmartArenaClearHandler(this);
-			Bukkit.getPluginManager().registerEvents(new ArenaClearListener(this), this);
-			arenaClearHandler.init();
-		}
-	}
-
 	private void setupVaultUtils() {
 		if (getServer().getPluginManager().getPlugin("Vault") != null) {
 			vaultEnabled = true;
@@ -180,46 +192,12 @@ public class MasterDuels extends JavaPlugin {
 		}
 	}
 
-	private void setupTimers() {
-		/*if (MatchHistoryLog.GAME_HISTORY_LOG_ENABLED) {
-			new GameHistoryCacheTimer().init(this);
-		}
-
-		 */
-	}
-
-	private void registerCommands() {
-		safeRegisterCommand("duel", new DuelCMD(this));
-		safeRegisterCommand("dueladmin", new DuelAdminCMD(this));
-	}
-
 	private void safeRegisterCommand(String commandName, CommandExecutor executor) {
 		final PluginCommand command = getCommand(commandName);
 		if (command == null) {
 			return;
 		}
 		command.setExecutor(executor);
-	}
-
-	private void registerListeners() {
-		//RollbackListener registering from ArenaClear.java
-		//Scoreboard and Boss bar listeners registering from their own manager classes
-		Bukkit.getPluginManager().registerEvents(new ChatListener(), this);
-		Bukkit.getPluginManager().registerEvents(new DuelProtectListener(), this);
-		Bukkit.getPluginManager().registerEvents(new DamageListener(this), this);
-		Bukkit.getPluginManager().registerEvents(new PlayerConnectionListener(this), this);
-		Bukkit.getPluginManager().registerEvents(new SpectatorListener(), this);
-		Bukkit.getPluginManager().registerEvents(new DeveloperCMD(this), this);
-		Bukkit.getPluginManager().registerEvents(new CMDExecutorListener(), this);
-		Bukkit.getPluginManager().registerEvents(new HistoryListener(this), this);
-	}
-
-	private void loadKits() {
-		final File file = new File(getDataFolder().getPath() + File.separator + "kits.yml");
-		final YamlConfiguration data = YamlConfiguration.loadConfiguration(file);
-		for (final String key : data.getKeys(false)) {
-			KitSerializer.deserialize(data.getConfigurationSection(key));
-		}
 	}
 
 	@Override
