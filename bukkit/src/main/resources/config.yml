@@ -1,5 +1,5 @@
 #
-# Official wiki: https://mrobliviate.gitbook.io/masterduels-wiki-1/
+# Official wiki: https://mrobliviate.gitbook.io/masterduels-wiki/for-non-customers/introduction
 # Developer Contact: https://www.spigotmc.org/conversations/add?to=_Obliviate_
 #
 # MasterDuels coded by Mr_Obliviate
@@ -24,11 +24,13 @@ teleport-back-when-arena-cuboid-violated: false
 
 # if set true, MasterDuels will change Bukkit world configurations of all worlds of arenas. This includes
 # the game rules of the world. We recommend this if your duel arenas are in a different world
-# from other worlds you're using for another thing.
+# from other worlds you're using for another thing. Enabling this option does not affect worlds that doesn't
+# host any duel arena.
 optimize-duel-worlds: false
 
-# if set true, MasterDuels will not reset and backup inventory. (so this is means you're disabling kits)
-# also, when a player dies in a duel, their items will drop. Do not change this option during server work.
+# if set true, MasterDuels will not reset and backup inventory. (in a nutshell, we can call it 'kits disabling')
+# also, when a player dies in a duel, their items will drop.
+# Do not change this option during server work!
 use-player-inventories: false
 
 # SERVER_WIDE - sends game end message to all players on the server
@@ -36,15 +38,11 @@ use-player-inventories: false
 # DISABLED - no message send
 game-end-broadcast-mode: SERVER_WIDE
 
-top:
-  top-wins:
-    calculation-limit: 10
-
 execute-console-commands:
-  when-duel-ended:
-  #- say duel finished
   when-duel-started:
   #- say duel started
+  when-duel-ended:
+  #- say duel finished
 # placeholders are unsupported yet.
 
 soup-regeneration-amount: 3.5
@@ -83,7 +81,7 @@ duel-game-lock:
         subtitle: '&a&l4'
         fadein: 0
     third-action:
-      remaining-time: 3 #remaining lock time in seconds
+      remaining-time: 3
       sound: NOTE_BASS
       title:
         title: ''
@@ -107,7 +105,7 @@ duel-game-lock:
       remaining-time: 0
       sound: NOTE_PIANO
       title:
-        title: '&a&lGO'
+        title: '&a&lBATTLE!'
         fadein: 5
         fadeout: 0
       #chat: '&aGood luck!'
@@ -197,11 +195,6 @@ boss-bars:
   mode: AUTO
   in-battle: 'Remaining Time: {time}' #also, you can use {timer} placeholder
   arena-closing: 'Arena Closing in: {time}'
-
-game-history:
-  enabled: true
-  max-amount-of-histories-in-storage: 50
-  cache-refresh: 1200 #in ticks
 
 duel-creator:
   data-limits:
