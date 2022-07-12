@@ -6,6 +6,7 @@ import mc.obliviate.masterduels.api.arena.DuelMatchStartEvent;
 import mc.obliviate.masterduels.api.arena.DuelMatchUninstallEvent;
 import mc.obliviate.masterduels.data.SQLManager;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -58,11 +59,22 @@ public class HistoryListener implements Listener {
 
 	@EventHandler
 	public void onDamage(EntityDamageByEntityEvent event) {
-		if (event.getEntity() instanceof Player && event.getDamager() instanceof Player) {
-			final PlayerHistoryLog log = getPlayerHistory((Player) event.getDamager());
-			if (log == null) return;
+		if (event.getEntity() instanceof Player) {
 
-			log.setHitClick(log.getHitClick() + 1);
+			if (event.getDamager() instanceof Projectile) {
+				final Player attacker = (Player) ((Projectile) event.getEntity()).getShooter();
+				final PlayerHistoryLog log = getPlayerHistory(attacker);
+				if (log == null) return;
+
+				log.setDamageDealt(log.getDamageDealt() + ((int) event.getFinalDamage() * 10));
+
+			} else if (event.getDamager() instanceof Player) {
+				final PlayerHistoryLog log = getPlayerHistory((Player) event.getDamager());
+				if (log == null) return;
+
+				log.setDamageDealt(log.getDamageDealt() + ((int) event.getFinalDamage() * 10));
+				log.setHitClick(log.getHitClick() + 1);
+			}
 		}
 	}
 
@@ -91,7 +103,6 @@ public class HistoryListener implements Listener {
 		log.setPlacedBlocks(log.getPlacedBlocks() + 1);
 	}
 
-
 	@EventHandler
 	public void onShoot(ProjectileLaunchEvent event) {
 		if (!(event.getEntity().getShooter() instanceof Player)) return;
@@ -101,7 +112,6 @@ public class HistoryListener implements Listener {
 		if (projectileLogEntry == null) return;
 		projectileLogEntry.increaseThrew(1);
 	}
-
 
 	@EventHandler
 	public void onHit(ProjectileHitEvent event) {
