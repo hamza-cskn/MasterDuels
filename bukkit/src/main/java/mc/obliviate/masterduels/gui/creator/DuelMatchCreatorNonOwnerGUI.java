@@ -53,13 +53,17 @@ public class DuelMatchCreatorNonOwnerGUI extends ConfigurableGui {
 				, Arrays.asList("kit-icon"));
 		putTeamIcons();
 
+		putIcon("leave", e -> {
+			player.performCommand("duel leave");
+		});
+
 		if (matchCreator.getCreatorKitManager().getKitMode().equals(CreatorKitManager.KitMode.VARIOUS)) {
 			Member.Builder builder = matchCreator.getBuilder().getData().getGameTeamManager().getMemberBuilder(player.getUniqueId());
 			putIcon("kit-icon", new PlaceholderUtil().add("{kit}", builder.getKit() == null ? MessageUtils.parseColor(MessageUtils.getMessage("kit.none-kit-name")) : builder.getKit().getKitName()), e -> {
 				new KitSelectionGUI(player, matchCreator.getBuilder(), kit -> {
 					matchCreator.getBuilder().getData().getGameTeamManager().getMemberBuilder(player.getUniqueId()).setKit(kit);
 					open();
-				});
+				}).open();
 			});
 		}
 	}

@@ -43,7 +43,7 @@ game-history-gui:
       material: PAPER
       display-name: '&d{played-date}'
       lore:
-        - '&7Duel Time: &d{match-duration}'
+        - '&7Duel Time: &d{match-duration-timer}'
         - '&7Rounds Played: &f{played-rounds}'
         - ''
         - '{+players}' #all winner/loser info formats will insert here
@@ -361,6 +361,15 @@ duel-creator:
           #	{game-time}
           #	{team-amount}
           #	{team-size}
+      leave:
+        material: BARRIER
+        slot: 0
+        display-name: '&cLeave from the creator'
+        lore:
+          - '&7You can use /duel leave'
+          - '&7command too.'
+          - ''
+          - '&4Click to leave'
       kit-icon:
         material: IRON_CHESTPLATE
         slot: 6
