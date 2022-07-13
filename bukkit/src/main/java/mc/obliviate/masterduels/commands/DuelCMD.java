@@ -78,6 +78,12 @@ public class DuelCMD implements CommandExecutor {
 					return true;
 				}
 
+				final MatchCreator creator = MatchCreator.getCreator(player.getUniqueId());
+				if (creator != null && !creator.getOwnerPlayer().equals(player.getUniqueId())) {
+					MatchCreator.cleanKillCreator(player.getUniqueId());
+					return true;
+				}
+
 				MessageUtils.sendMessage(player, "you-are-not-in-duel");
 				return false;
 			}
