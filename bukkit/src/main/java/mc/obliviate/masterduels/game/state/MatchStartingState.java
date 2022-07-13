@@ -7,6 +7,7 @@ import mc.obliviate.masterduels.game.MatchStateType;
 import mc.obliviate.masterduels.kit.InventoryStorer;
 import mc.obliviate.masterduels.user.Member;
 import mc.obliviate.masterduels.utils.Logger;
+import mc.obliviate.masterduels.utils.MessageUtils;
 import org.bukkit.Bukkit;
 
 public class MatchStartingState implements MatchState {
@@ -24,6 +25,7 @@ public class MatchStartingState implements MatchState {
 
 		for (Member member : match.getAllMembers()) {
 			InventoryStorer.store(member.getPlayer());
+			MessageUtils.sendMessage(member.getPlayer(), "game-started");
 		}
 
 		//match time out task

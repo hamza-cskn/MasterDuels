@@ -34,6 +34,7 @@ you-are-not-in-duel: '&cYou are not in a duel game.'
 target-already-in-duel: '&c{target} is already in duel game.'
 you-are-a-spectator: '&eYou are a spectator.'
 game-timed-out: '&cDuel game you are in, has been timed out.'
+no-arena-found-with-this-name: '&cNo arenas with this name found.'
 player-dead:
   by-attacker: '&c{victim}&7 has killed by &c{attacker}&7.'
   without-attacker: '&c{victim}&7 has been died.'
@@ -103,7 +104,6 @@ duel-command:
     cancel:
       usage: '&c/dueladmin cancel <arena name>'
       cancel: '&cMatch of {arena} has been cancelled.'
-no-arena-found-with-this-name: '&cNo arenas with this name found.'
 queue:
   joined: |-
     &7You joined &b{queue-name} &7duel queue &8[&f{player-amount}&8/&f{max-player-amount}&8]
