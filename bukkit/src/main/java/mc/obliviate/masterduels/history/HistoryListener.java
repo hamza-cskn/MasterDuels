@@ -62,7 +62,7 @@ public class HistoryListener implements Listener {
 		if (event.getEntity() instanceof Player) {
 
 			if (event.getDamager() instanceof Projectile) {
-				final Player attacker = (Player) ((Projectile) event.getEntity()).getShooter();
+				final Player attacker = (Player) ((Projectile) event.getDamager()).getShooter();
 				final PlayerHistoryLog log = getPlayerHistory(attacker);
 				if (log == null) return;
 
