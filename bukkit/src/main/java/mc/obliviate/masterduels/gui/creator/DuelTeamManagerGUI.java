@@ -52,7 +52,7 @@ public class DuelTeamManagerGUI extends ConfigurableGui {
 		for (int teamNo = 0; teamNo < matchBuilder.getTeamAmount(); teamNo++) {
 
 			final Icon icon = new Icon(guiConfig.teamIcons.get(Math.min(teamNo, guiConfig.teamIcons.size() - 1)).clone()).setName(guiConfig.teamIconName).setLore(guiConfig.teamIconLore);
-			final ItemStack item = SerializerUtils.applyPlaceholdersOnItemStack(icon.getItem(), new PlaceholderUtil().add("{team-no}", (teamNo + 1) + "").add("{team-players-amount}", matchTeamManager.getTeamBuilders().get(teamNo).getMemberBuilders().size() + "").add("{team-size}", matchBuilder.getTeamAmount() + ""));
+			final ItemStack item = SerializerUtils.applyPlaceholdersOnItemStack(icon.getItem(), new PlaceholderUtil().add("{team-no}", (teamNo + 1) + "").add("{team-players-amount}", matchTeamManager.getTeamBuilders().get(teamNo).getMemberBuilders().size() + "").add("{team-size}", matchBuilder.getTeamSize() + ""));
 
 			addItem((teamNo + 1) * 9, item);
 
