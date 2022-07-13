@@ -30,10 +30,10 @@ public class MatchStartingState implements MatchState {
 
 		//match time out task
 		match.getGameTaskManager().delayedTask("time-out", () -> {
-			match.uninstall();
 			for (Member member : match.getAllMembers()) {
 				MessageUtils.sendMessage(member.getPlayer(), "game-timed-out");
 			}
+			match.finish();
 		}, match.getGameDataStorage().getMatchDuration().toSeconds() * 20);
 		match.getGameTaskManager().delayedTask("process-switcher-task", this::next, 0); //this is a strange bug fix.
 	}
