@@ -80,7 +80,7 @@ public class DuelCMD implements CommandExecutor {
 
 				final MatchCreator creator = MatchCreator.getCreator(player.getUniqueId());
 				if (creator != null && !creator.getOwnerPlayer().equals(player.getUniqueId())) {
-					MatchCreator.cleanKillCreator(player.getUniqueId());
+					creator.removePlayer(UserHandler.getUser(player.getUniqueId()));
 					MessageUtils.sendMessage(player, "game-builder.you-left");
 					return true;
 				}
@@ -339,23 +339,24 @@ public class DuelCMD implements CommandExecutor {
 							case REJECTED:
 								MessageUtils.sendMessage(target, "invite.normal-invite.successfully-declined", new PlaceholderUtil().add("{inviter}", Utils.getDisplayName(player)));
 								MessageUtils.sendMessage(player, "invite.normal-invite.target-declined-the-invite", new PlaceholderUtil().add("{target}", Utils.getDisplayName(target)));
-								break;
+								return;
 							case EXPIRED:
 								MessageUtils.sendMessage(target, "invite.normal-invite.invite-expired-target", new PlaceholderUtil().add("{inviter}", Utils.getDisplayName(player)));
 								MessageUtils.sendMessage(player, "invite.normal-invite.invite-expired-inviter", new PlaceholderUtil().add("{target}", Utils.getDisplayName(target)));
-								break;
+								return;
 						}
 						if (invite.getState().equals(Invite.InviteState.ACCEPTED)) {
-							if (UserHandler.getUser(target.getUniqueId()).isInMatchBuilder()) {
+							if (!UserHandler.isAvailableForJoinToBuilder(target)) {
 								MessageUtils.sendMessage(player, "target-already-in-duel", new PlaceholderUtil().add("{target}", target.getName()));
 								return;
 							}
 
-							if (UserHandler.getUser(player.getUniqueId()).isInMatchBuilder()) {
+							if (!UserHandler.isAvailableForJoinToBuilder(player)) {
 								MessageUtils.sendMessage(target, "target-already-in-duel", new PlaceholderUtil().add("{target}", player.getName()));
 								return;
 							}
 
+							matchBuilder.addPlayer(player, selectedKit);
 							matchBuilder.addPlayer(target, selectedKit);
 
 							Match game = matchBuilder.build();
@@ -375,8 +376,6 @@ public class DuelCMD implements CommandExecutor {
 			} else if (buildResult.getInviteBuildState().equals(Invite.InviteBuildState.SUCCESS)) {
 				MessageUtils.sendMessage(player, "invite.normal-invite.target-has-invited", new PlaceholderUtil().add("{target}", target.getName()).add("{expire-time}", TimerUtils.formatTimeUntilThenAsTimer(buildResult.getInvite().getExpireOutTime()) + ""));
 				InviteUtils.sendInviteMessage(buildResult.getInvite(), MessageUtils.getMessageConfig().getConfigurationSection("invite.normal-invite"));
-
-				matchBuilder.addPlayer(player, selectedKit);
 			}
 		}).open();
 

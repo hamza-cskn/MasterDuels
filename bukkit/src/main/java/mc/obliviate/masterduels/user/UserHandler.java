@@ -3,6 +3,7 @@ package mc.obliviate.masterduels.user;
 import mc.obliviate.masterduels.data.SQLManager;
 import mc.obliviate.masterduels.game.Match;
 import mc.obliviate.masterduels.game.Team;
+import mc.obliviate.masterduels.game.creator.MatchCreator;
 import mc.obliviate.masterduels.kit.Kit;
 import org.bukkit.entity.Player;
 
@@ -22,6 +23,21 @@ public class UserHandler {
 		USER_MAP.put(uuid, user);
 	}
 
+	public static boolean isAvailableForJoinToBuilder(Player player) {
+		final IUser user = UserHandler.getUser(player.getUniqueId());
+		if (user == null) return false;
+		if (user instanceof Member) return false;
+
+		if (user.isInMatchBuilder()) {
+			MatchCreator creator = MatchCreator.getCreator(player.getUniqueId());
+			if (creator != null && creator.getOwnerPlayer().equals(player.getUniqueId())) {
+				MatchCreator.cleanKillCreator(player.getUniqueId());
+				return true;
+			}
+			return false;
+		}
+		return true;
+	}
 
 	public static Member getMember(UUID playerUniqueId) {
 		final IUser user = getUser(playerUniqueId);
