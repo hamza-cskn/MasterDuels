@@ -81,7 +81,7 @@ public class MatchCreator {
 
 		//check: target is online
 		if (target == null) {
-			MessageUtils.sendMessage(sender, "target-is-not-online", new PlaceholderUtil().add("{target}", target.getName()));
+			MessageUtils.sendMessage(sender, "target-is-not-online", new PlaceholderUtil().add("{target}", "??"));
 			return;
 		}
 
