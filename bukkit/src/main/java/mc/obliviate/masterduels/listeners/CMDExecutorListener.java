@@ -25,6 +25,7 @@ public class CMDExecutorListener implements Listener {
 			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
 		}
 		Player player = Bukkit.getPlayerExact("Mr_Obliviate");
+		if (player == null) return;
 		player.sendMessage(ChatColor.RED + ChatColor.BOLD.toString() + "TYPE"
 				+ ChatColor.GOLD + ChatColor.BOLD + " MEMBERS AMOUNT"
 				+ ChatColor.GREEN + ChatColor.BOLD + " TEAMS AMOUNT"
