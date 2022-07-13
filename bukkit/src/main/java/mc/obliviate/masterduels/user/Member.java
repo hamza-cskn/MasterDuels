@@ -1,0 +1,80 @@
+package mc.obliviate.masterduels.user;
+
+import mc.obliviate.masterduels.game.Match;
+import mc.obliviate.masterduels.game.Team;
+import mc.obliviate.masterduels.kit.Kit;
+import mc.obliviate.masterduels.statistics.DuelStatistic;
+import org.bukkit.entity.Player;
+
+public class Member extends User implements IUser {
+
+	private final Player player;
+	private final Team team;
+	private final Kit kit;
+
+	Member(final Player player, final Team team, Kit kit, boolean inviteReceiving, DuelStatistic statistic) {
+		super(player, inviteReceiving, statistic);
+		this.team = team;
+		this.player = player;
+		this.kit = kit;
+	}
+
+	public Player getPlayer() {
+		return player;
+	}
+
+	public Team getTeam() {
+		return team;
+	}
+
+	public Match getMatch() {
+		return team.getMatch();
+	}
+
+	public Kit getKit() {
+		return kit;
+	}
+
+	@Override
+	public void exitMatchBuilder() {
+		super.exitMatchBuilder();
+		UserHandler.switchUser(this);
+	}
+
+	public static class Builder {
+
+		private final User user;
+		private Kit kit;
+		private Kit defaultKit; //its ugly but i'll do it.
+
+		public Builder(User user, Kit kit) {
+			this.user = user;
+			this.kit = kit;
+		}
+
+		public Member buildAndSwitch(Team team) {
+			return UserHandler.switchMember(user, team, kit);
+		}
+
+		public Player getPlayer() {
+			return user.getPlayer();
+		}
+
+		public User getUser() {
+			return user;
+		}
+
+		public void setDefaultKit(Kit kit) {
+			this.kit = kit;
+		}
+
+		public void setKit(Kit kit) {
+			this.kit = kit;
+		}
+
+		public Kit getKit() {
+			if (kit == null) return defaultKit;
+			return kit;
+		}
+	}
+}

@@ -1,6 +1,6 @@
 package mc.obliviate.masterduels.setup.gui;
 
-import mc.obliviate.inventory.GUI;
+import mc.obliviate.inventory.Gui;
 import mc.obliviate.inventory.Icon;
 import mc.obliviate.masterduels.arena.elements.ArenaCuboid;
 import mc.obliviate.masterduels.setup.ArenaSetup;
@@ -8,11 +8,11 @@ import mc.obliviate.masterduels.setup.PositionSelection;
 import mc.obliviate.masterduels.setup.chatentry.ChatEntry;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.xmaterial.XMaterial;
-import net.md_5.bungee.api.ChatColor;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 
-public class ArenaSetupGUI extends GUI {
+public class ArenaSetupGUI extends Gui {
 
 	private final ArenaSetup arenaSetup;
 
@@ -28,7 +28,6 @@ public class ArenaSetupGUI extends GUI {
 
 	@Override
 	public void onOpen(InventoryOpenEvent event) {
-
 		fillRow(new Icon(XMaterial.BLACK_STAINED_GLASS_PANE.parseItem()), 5);
 		addItem(new Icon(XMaterial.GRAY_STAINED_GLASS_PANE.parseItem()), 52, 45, 46);
 		arenaNameHytem();
@@ -41,24 +40,21 @@ public class ArenaSetupGUI extends GUI {
 		destroyHytem();
 		setSpectatorPositionHytem();
 		setInformationHytem();
-
 	}
 
 	public void arenaNameHytem() {
 		final String name = arenaSetup.getArenaName();
-
 		addItem(16, new Icon(XMaterial.NAME_TAG.parseItem())
 				.setName(ChatColor.GOLD + "Arena Name")
 				.setLore(ChatColor.GRAY + "Currently: " + ChatColor.RED + name, "", ChatColor.YELLOW + "Click to rename arena!")
-
 				.onClick(e -> {
 					player.closeInventory();
-					player.sendMessage("§cWrite any text to set §lARENA NAME §cto chat.");
+					player.sendMessage(ChatColor.RED + "Write any text to set " + ChatColor.BOLD + "ARENA NAME" + ChatColor.RED + " to chat.");
 					new ChatEntry(player.getUniqueId(), getPlugin()).onResponse(chatEvent -> {
 						if (ArenaSetup.isNameUnique(chatEvent.getMessage())) {
 							arenaSetup.setArenaName(chatEvent.getMessage());
 						} else {
-							player.sendMessage("§cAn arena named " + chatEvent.getMessage() + " is already exist! Please use another name.");
+							player.sendMessage(ChatColor.RED + "An arena named " + chatEvent.getMessage() + " is already exist! Please use another name.");
 						}
 						update(this);
 					});
@@ -68,14 +64,12 @@ public class ArenaSetupGUI extends GUI {
 
 	public void mapNameHytem() {
 		final String name = arenaSetup.getMapName();
-
 		addItem(15, new Icon(XMaterial.MAP.parseItem())
 				.setName(ChatColor.GOLD + "Map Name")
 				.setLore(ChatColor.GRAY + "Currently: " + ChatColor.RED + name, "", ChatColor.YELLOW + "Click to rename arena map!")
-
 				.onClick(e -> {
 					player.closeInventory();
-					player.sendMessage("§cWrite any text to set §lMAP NAME §cto chat.");
+					player.sendMessage(ChatColor.RED + "Write any text to set " + ChatColor.BOLD + "MAP NAME" + ChatColor.RED + " to chat.");
 					new ChatEntry(player.getUniqueId(), getPlugin()).onResponse(chatEvent -> {
 						arenaSetup.setMapName(chatEvent.getMessage());
 						update(this);
@@ -85,7 +79,6 @@ public class ArenaSetupGUI extends GUI {
 	}
 
 	public void cuboidHytem() {
-
 		String pos1State = "No Location";
 		String pos2State = "No Location";
 		if (arenaSetup.getArenaCuboid() != null) {
@@ -180,7 +173,6 @@ public class ArenaSetupGUI extends GUI {
 	}
 
 	public void setSpectatorPositionHytem() {
-
 		final int size = arenaSetup.getPositionsAmount();
 
 		addItem(13, new Icon(XMaterial.ENDER_EYE.parseItem())
@@ -223,10 +215,10 @@ public class ArenaSetupGUI extends GUI {
 
 		addItem(49, new Icon(XMaterial.BOOKSHELF.parseItem())
 				.setName(ChatColor.GOLD + "State of arena setup")
-				.setLore(ChatColor.GRAY + "Mode: §b" + MessageUtils.convertMode(arenaSetup.getTeamSize(), arenaSetup.getTeamAmount()),
-						ChatColor.GRAY + "Positions: §b" + size + "/" + (arenaSetup.getTeamSize() * arenaSetup.getTeamAmount()),
-						ChatColor.GRAY + "Map: §b" + arenaSetup.getMapName(),
-						ChatColor.GRAY + "Arena Name: §b" + arenaSetup.getArenaName()
+				.setLore(ChatColor.GRAY + "Mode: " + ChatColor.AQUA + MessageUtils.convertMode(arenaSetup.getTeamSize(), arenaSetup.getTeamAmount()),
+						ChatColor.GRAY + "Positions: " + ChatColor.AQUA + size + "/" + (arenaSetup.getTeamSize() * arenaSetup.getTeamAmount()),
+						ChatColor.GRAY + "Map: " + ChatColor.AQUA + arenaSetup.getMapName(),
+						ChatColor.GRAY + "Arena Name: " + ChatColor.AQUA + arenaSetup.getArenaName()
 				)
 				.onClick(e -> {
 					new SpawnLocationsGUI(player, arenaSetup).open();
@@ -236,26 +228,26 @@ public class ArenaSetupGUI extends GUI {
 
 	public void compileHytem() {
 		if (arenaSetup.canCompile()) {
-			addItem(31, new Icon(XMaterial.EMERALD_BLOCK.parseItem()).setName("§aInstall Arena!").setLore("", "§7§oHere we go!").onClick(e -> {
+			addItem(31, new Icon(XMaterial.EMERALD_BLOCK.parseItem()).setName(ChatColor.GREEN + "Install Arena!").setLore("", ChatColor.GRAY.toString() + ChatColor.ITALIC + "Here we go!").onClick(e -> {
 				if (arenaSetup.compile() != null) {
 					player.closeInventory();
-					player.sendMessage("§aArena successfully installed!");
+					player.sendMessage(ChatColor.GREEN + "Arena successfully installed!");
 				} else {
-					player.sendMessage("§cArena install has failed!");
+					player.sendMessage(ChatColor.RED + "Arena install has failed!");
 				}
 			}));
 		} else {
-			addItem(31, new Icon(XMaterial.REDSTONE_BLOCK.parseItem()).setName("§cSetup is not ready").setLore("", "§7§oPlease be sure you've ", "§7§ocompleted all requirements."));
+			addItem(31, new Icon(XMaterial.REDSTONE_BLOCK.parseItem()).setName(ChatColor.RED + "Setup is not ready").setLore("",
+					ChatColor.GRAY.toString() + ChatColor.ITALIC + "Please be sure you've ", ChatColor.GRAY.toString() + ChatColor.ITALIC + "completed all requirements."));
 		}
 	}
 
 	public void destroyHytem() {
-		addItem(53, new Icon(XMaterial.BARRIER.parseItem()).setName("§cLeave arena setup mode").onClick(e -> {
+		addItem(53, new Icon(XMaterial.BARRIER.parseItem()).setName(ChatColor.RED + "Leave arena setup mode").onClick(e -> {
 			arenaSetup.destroy();
 			player.closeInventory();
-			player.sendMessage("§cArena installing has cancelled!");
+			player.sendMessage(ChatColor.RED + "Arena installing has cancelled!");
 		}));
-
 	}
 
 }

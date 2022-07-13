@@ -1,5 +1,6 @@
 package mc.obliviate.masterduels.setup;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 
 public class PositionSelection {
@@ -24,7 +25,7 @@ public class PositionSelection {
 	}
 
 	public static String formatLocation(final Location loc) {
-		if (loc == null) return "§cNo Location";
+		if (loc == null) return ChatColor.RED + "No Location";
 		return loc.getBlockX() + " " + loc.getBlockY() + " " + loc.getBlockZ();
 	}
 }

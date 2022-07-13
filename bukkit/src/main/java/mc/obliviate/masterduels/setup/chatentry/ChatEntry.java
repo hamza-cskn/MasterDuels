@@ -8,12 +8,13 @@ import org.bukkit.plugin.Plugin;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 public class ChatEntry {
 
 	private static final Map<UUID, ChatEntry> entryMap = new HashMap<>();
 	private final Plugin plugin;
-	public Entry entry;
+	public Consumer<AsyncPlayerChatEvent> action;
 
 	public ChatEntry(UUID uuid, Plugin plugin) {
 		this.plugin = plugin;
@@ -23,21 +24,24 @@ public class ChatEntry {
 	public static void trigger(AsyncPlayerChatEvent e) {
 		final Player sender = e.getPlayer();
 		final ChatEntry chatEntry = entryMap.get(sender.getUniqueId());
-		if (chatEntry == null || chatEntry.getEntry() == null) return;
+		if (chatEntry == null || chatEntry.getAction() == null) return;
 		e.setCancelled(true);
 		Bukkit.getScheduler().runTask(chatEntry.plugin, () -> {
-			chatEntry.getEntry().entry(e);
+			chatEntry.getAction().accept(e);
 		});
-		entryMap.remove(sender.getUniqueId());
-
+		unregisterEntryTask(sender.getUniqueId());
 	}
 
-	public void onResponse(Entry entry) {
-		this.entry = entry;
+	public static void unregisterEntryTask(UUID senderUniqueId) {
+		entryMap.remove(senderUniqueId);
 	}
 
-	public Entry getEntry() {
-		return entry;
+	public void onResponse(Consumer<AsyncPlayerChatEvent> e) {
+		this.action = e;
+	}
+
+	public Consumer<AsyncPlayerChatEvent> getAction() {
+		return action;
 	}
 
 }

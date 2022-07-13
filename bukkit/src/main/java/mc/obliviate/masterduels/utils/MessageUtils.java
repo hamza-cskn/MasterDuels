@@ -27,7 +27,7 @@ public class MessageUtils {
 	public static String getMessage(final String node) {
 		String msg = messageConfig.getString(node);
 		if (msg == null) {
-			return "No Message Found: " + node;
+			return ChatColor.RED + "No Message Found: " + ChatColor.DARK_RED + node;
 		} else if (msg.equalsIgnoreCase("DISABLED")) {
 			return null;
 		}

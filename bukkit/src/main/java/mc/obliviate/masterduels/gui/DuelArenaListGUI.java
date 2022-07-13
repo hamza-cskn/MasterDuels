@@ -1,11 +1,10 @@
 package mc.obliviate.masterduels.gui;
 
-import mc.obliviate.inventory.GUI;
 import mc.obliviate.inventory.Icon;
 import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.arena.BasicArenaState;
 import mc.obliviate.masterduels.data.DataHandler;
-import mc.obliviate.masterduels.game.Game;
+import mc.obliviate.masterduels.game.Match;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
 import mc.obliviate.masterduels.utils.serializer.SerializerUtils;
@@ -13,63 +12,81 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.List;
 import java.util.Map;
 
-public class DuelArenaListGUI extends GUI {
+public class DuelArenaListGUI extends ConfigurableGui {
 
-	public static DuelArenaListGUIConfig guiConfig;
+	private static Config guiConfig;
 
 	public DuelArenaListGUI(Player player) {
-		super(player, "duel-games-list-gui", "Duel Arenas", 6);
-		setTitle(guiConfig.guiTitle);
+		super(player, "duel-games-list-gui");
+		getPaginationManager().getSlots().addAll(guiConfig.pageSlots);
+		for (final Map.Entry<Arena, Match> entry : DataHandler.getArenas().entrySet()) {
+			getPaginationManager().addIcon(getGameIcon(entry.getKey()));
+		}
 	}
 
 	@Override
 	public void onOpen(InventoryOpenEvent event) {
-		int slot = 0;
-		for (final Map.Entry<Arena, Game> entry : DataHandler.getArenas().entrySet()) {
-			addItem(slot++, getGameIcon(entry.getKey()));
+		if (getPaginationManager().getPage() != getPaginationManager().getLastPage()) {
+			putIcon("previous", e -> {
+				getPaginationManager().previousPage();
+				getPaginationManager().update();
+			});
 		}
+		if (getPaginationManager().getPage() != 0) {
+			putIcon("next", e -> {
+				getPaginationManager().nextPage();
+				getPaginationManager().update();
+			});
+		}
+		getPaginationManager().update();
 	}
 
 	private Icon getGameIcon(final Arena arena) {
 		final PlaceholderUtil placeholderUtil = new PlaceholderUtil().add("{arena}", arena.getName()).add("{map}", arena.getMapName());
-		final Game game = DataHandler.getArenas().get(arena);
+		final Match game = DataHandler.getArenas().get(arena);
 		final BasicArenaState state = Arena.getBasicArenaState(arena);
 		if (game != null) {
-			final int players = game.getGameBuilder().getPlayers().size();
-			final int spectators = game.getSpectatorManager().getAllSpectators().size();
+			final int players = game.getGameDataStorage().getGameTeamManager().getAllMembers().size();
+			final int spectators = game.getGameSpectatorManager().getAllSpectators().size();
 			placeholderUtil.add("{players}", players + "");
 			placeholderUtil.add("{spectators}", spectators + "");
 			placeholderUtil.add("{playersandspectators}", (spectators + players) + "");
-			placeholderUtil.add("{kit}", game.getKit() == null ? "" : game.getKit().getKitName());
-			placeholderUtil.add("{mode}", MessageUtils.convertMode(game.getGameBuilder().getTeamSize(), game.getGameBuilder().getTeamAmount()));
+			placeholderUtil.add("{mode}", MessageUtils.convertMode(game.getGameDataStorage().getGameTeamManager().getTeamSize(), game.getGameDataStorage().getGameTeamManager().getTeamAmount()));
 		}
 		final Icon icon = new Icon(guiConfig.getIcon(state, placeholderUtil));
 		icon.onClick(e -> {
-			final Game g = DataHandler.getArenas().get(arena);
-			if (g != null) {
-				g.spectate(player);
+			final Match updatedGameObject = DataHandler.getArenas().get(arena);
+			if (updatedGameObject != null) {
+				updatedGameObject.getGameSpectatorManager().spectate(player);
 			}
 		});
 		return icon;
+	}
+
+	@Override
+	public String getSectionPath() {
+		return "duel-arenas-gui";
 	}
 
 	/**
 	 * Purpose of this class is storing duel arena list
 	 * gui configuration datas.
 	 */
-	public static class DuelArenaListGUIConfig {
+	public static class Config {
 
-		protected final Map<BasicArenaState, ItemStack> icons;
-		protected final String guiTitle;
+		private final Map<BasicArenaState, ItemStack> icons;
+		private final List<Integer> pageSlots;
 
-		public DuelArenaListGUIConfig(final Map<BasicArenaState, ItemStack> icons, final String guiTitle) {
+		public Config(final Map<BasicArenaState, ItemStack> icons, List<Integer> pageSlots) {
 			this.icons = icons;
-			this.guiTitle = guiTitle;
+			this.pageSlots = pageSlots;
+			DuelArenaListGUI.guiConfig = this;
 		}
 
-		protected ItemStack getIcon(final BasicArenaState state, final PlaceholderUtil placeholderUtil) {
+		private ItemStack getIcon(final BasicArenaState state, final PlaceholderUtil placeholderUtil) {
 			return SerializerUtils.applyPlaceholdersOnItemStack(icons.get(state).clone(), placeholderUtil);
 		}
 	}

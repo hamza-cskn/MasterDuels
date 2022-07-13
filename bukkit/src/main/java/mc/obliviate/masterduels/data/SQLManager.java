@@ -1,24 +1,25 @@
 package mc.obliviate.masterduels.data;
 
+import com.hakan.core.HCore;
 import mc.obliviate.bloksqliteapi.SQLHandler;
 import mc.obliviate.bloksqliteapi.sqlutils.DataType;
 import mc.obliviate.bloksqliteapi.sqlutils.SQLTable;
 import mc.obliviate.bloksqliteapi.sqlutils.SQLUpdateColumn;
 import mc.obliviate.masterduels.MasterDuels;
-import mc.obliviate.masterduels.history.GameHistoryLog;
+import mc.obliviate.masterduels.history.MatchHistoryLog;
 import mc.obliviate.masterduels.statistics.DuelStatistic;
-import mc.obliviate.masterduels.utils.Logger;
-import mc.obliviate.masterduels.utils.serializer.SerializerUtils;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.UUID;
 
 public class SQLManager extends SQLHandler {
 
-	private final SQLTable playerDataTable;
-	private final SQLTable historyTable;
+	private static SQLTable playerDataTable;
+	private static SQLTable historyTable;
 
 	public SQLManager(MasterDuels plugin) {
 		super(plugin.getDataFolder().getPath());
@@ -31,35 +32,7 @@ public class SQLManager extends SQLHandler {
 
 		historyTable = new SQLTable("history", "uuid")
 				.addField("uuid", DataType.TEXT)
-				.addField("winners", DataType.TEXT)
-				.addField("losers", DataType.TEXT)
-				.addField("startTime", DataType.INTEGER)
-				.addField("endTime", DataType.INTEGER);
-	}
-
-	public static DuelStatistic deserializeStatistic(ResultSet rs, boolean singleData) {
-		try {
-			if (singleData && !rs.next()) return null;
-			final UUID uuid = UUID.fromString(rs.getString("uuid"));
-			final int wins = rs.getInt("wins");
-			final int loses = rs.getInt("loses");
-			while (singleData && rs.next()) {
-				Logger.severe("Statistics duplication found: " + uuid);
-			}
-			return new DuelStatistic(uuid, wins, loses);
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	public SQLTable getPlayerDataTable() {
-		return playerDataTable;
-	}
-
-	public SQLTable getHistoryTable() {
-		return historyTable;
+				.addField("log", DataType.TEXT);
 	}
 
 	public void init() {
@@ -74,7 +47,22 @@ public class SQLManager extends SQLHandler {
 		historyTable.create();
 	}
 
-	public void appendDuelHistory(final GameHistoryLog log) {
+	public static DuelStatistic deserializeStatistic(ResultSet rs, boolean emptyResultSet) {
+		try {
+			final UUID uuid = UUID.fromString(rs.getString("uuid"));
+			final int wins = rs.getInt("wins");
+			final int loses = rs.getInt("loses");
+			if (emptyResultSet)
+				while (rs.next()) ;
+			return new DuelStatistic(uuid, wins, loses);
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	/*public void appendDuelHistory(final MatchHistoryLog log) {
 		final SQLUpdateColumn update = historyTable.createUpdate(log.getUuid())
 				.putData("uuid", log.getUuid())
 				.putData("winners", SerializerUtils.serializeStringConvertableList(log.getWinners()))
@@ -95,24 +83,46 @@ public class SQLManager extends SQLHandler {
 		}
 	}
 
-	public GameHistoryLog getDuelHistory(final UUID uuid) throws SQLException {
+	public MatchHistoryLog getDuelHistory(final UUID uuid) throws SQLException {
 		final ResultSet rs = historyTable.select(uuid.toString());
 
 		rs.next();
-		final GameHistoryLog log = SerializerUtils.deserializeGameHistoryLog(rs);
+		final MatchHistoryLog log = SerializerUtils.deserializeGameHistoryLog(rs);
 		while (rs.next()) { //empty result set.
 			Logger.severe("Duplicated history found: " + uuid);
 		}
 		return log;
 	}
 
-	public LinkedList<GameHistoryLog> getAllLogs() throws SQLException {
+	public LinkedList<MatchHistoryLog> getAllLogs() throws SQLException {
 		final ResultSet rs = sqlQuery("SELECT * FROM " + historyTable.getTableName() + " ORDER BY startTime DESC");
-		final LinkedList<GameHistoryLog> logs = new LinkedList<>();
+		final LinkedList<MatchHistoryLog> logs = new LinkedList<>();
 		while (rs.next()) {
 			logs.add(SerializerUtils.deserializeGameHistoryLog(rs));
 		}
 		return logs;
+	}
+
+	 */
+
+	public static List<MatchHistoryLog> loadDuelHistories() {
+		final List<MatchHistoryLog> list = new ArrayList<>();
+		try {
+			ResultSet rs = historyTable.selectAll();
+			while (rs.next()) {
+				MatchHistoryLog log = HCore.deserialize(rs.getString("log"), MatchHistoryLog.class);
+				list.add(log);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return list;
+	}
+
+	public static void saveDuelHistory(MatchHistoryLog log) {
+		UUID uuid = log.getMatch() == null ? log.getMatch().getId() : UUID.randomUUID();
+		SQLUpdateColumn update = historyTable.createUpdate(uuid).putData("uuid", uuid).putData("log", HCore.serialize(log));
+		historyTable.insert(update);
 	}
 
 	public boolean getReceivesInvites(final UUID uuid) {
@@ -143,11 +153,10 @@ public class SQLManager extends SQLHandler {
 			final ResultSet rs = playerDataTable.select(uuid.toString());
 			return deserializeStatistic(rs, true);
 		}
-		return new DuelStatistic(uuid, 0, 0);
+		return DuelStatistic.createDefaultInstance(uuid);
 	}
 
 	public LinkedList<DuelStatistic> getTopPlayers(String fieldName, int limit) {
-
 		final ResultSet rs = playerDataTable.getHighest(fieldName, limit);
 		final LinkedList<DuelStatistic> result = new LinkedList<>();
 		try {
@@ -165,7 +174,6 @@ public class SQLManager extends SQLHandler {
 	}
 
 	public LinkedList<DuelStatistic> deserializeStatisticsList(ResultSet rs) throws SQLException {
-
 		final LinkedList<DuelStatistic> result = new LinkedList<>();
 		while (rs.next()) {
 			result.add(deserializeStatistic(rs, false));
@@ -197,5 +205,12 @@ public class SQLManager extends SQLHandler {
 		}
 	}
 
+	public SQLTable getPlayerDataTable() {
+		return playerDataTable;
+	}
+
+	public SQLTable getHistoryTable() {
+		return historyTable;
+	}
 
 }

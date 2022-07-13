@@ -1,10 +1,9 @@
 package mc.obliviate.masterduels.queue;
 
-import mc.obliviate.masterduels.api.events.queue.DuelQueueJoinEvent;
-import mc.obliviate.masterduels.api.events.queue.DuelQueueLeaveEvent;
-import mc.obliviate.masterduels.api.queue.IDuelQueue;
-import mc.obliviate.masterduels.game.Game;
-import mc.obliviate.masterduels.game.GameBuilder;
+import mc.obliviate.masterduels.api.queue.DuelQueueJoinEvent;
+import mc.obliviate.masterduels.api.queue.DuelQueueLeaveEvent;
+import mc.obliviate.masterduels.game.Match;
+import mc.obliviate.masterduels.game.MatchBuilder;
 import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import org.bukkit.Bukkit;
@@ -12,20 +11,23 @@ import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
-public class DuelQueue implements IDuelQueue {
+public class DuelQueue {
+
+	private boolean locked = false;
 
 	private static final Map<DuelQueueTemplate, DuelQueue> availableQueues = new HashMap<>();
 	private final DuelQueueTemplate template;
-	private final GameBuilder builder;
+	private final MatchBuilder builder;
 
-	public DuelQueue(final DuelQueueTemplate template, final GameBuilder builder) {
+	DuelQueue(final DuelQueueTemplate template, final MatchBuilder builder) {
 		this.builder = builder;
 		this.template = template;
 		final DuelQueue queue = availableQueues.get(template);
 		if (queue != null) {
 			queue.lock();
-			Logger.error("double queue creation found in same template.");
+			Logger.severe("double queue creation found in same template.");
 		}
 		availableQueues.put(template, this);
 	}
@@ -34,14 +36,14 @@ public class DuelQueue implements IDuelQueue {
 		return availableQueues;
 	}
 
-	public static DuelQueue findQueueOfPlayer(Player player) {
+	public static DuelQueue findQueueOfPlayer(Player player) { //fixme change that usage
 		for (DuelQueue queue : availableQueues.values()) {
-			if (queue.builder.getPlayers().contains(player)) return queue;
+			if (queue.builder.getPlayers().contains(player.getUniqueId())) return queue;
 		}
 		return null;
 	}
 
-	public GameBuilder getBuilder() {
+	public MatchBuilder getBuilder() {
 		return builder;
 	}
 
@@ -49,7 +51,8 @@ public class DuelQueue implements IDuelQueue {
 		final DuelQueueJoinEvent event = new DuelQueueJoinEvent(this, player);
 		Bukkit.getPluginManager().callEvent(event);
 		if (event.isCancelled()) return; //api cancel
-		if (!builder.addPlayer(player)) MessageUtils.sendMessage(player, "queue.player-could-not-added");
+
+		builder.addPlayer(player, template.getKit());
 		if (builder.getPlayers().size() == builder.getTeamSize() * builder.getTeamAmount()) {
 			start();
 		}
@@ -61,15 +64,17 @@ public class DuelQueue implements IDuelQueue {
 	}
 
 	public void start() {
-		final Game game = builder.build();
+		final Match game = builder.build(template.getAllowedMaps());
 		if (game == null) {
-			for (final Player player : builder.getPlayers()) {
-				MessageUtils.sendMessage(player, "queue.queue-could-not-started");
+			for (final UUID uuid : builder.getPlayers()) {
+				Player player = Bukkit.getPlayer(uuid);
+				if (player == null) continue;
+				MessageUtils.sendMessage(player, "no-arena-found");
 			}
 			return;
 		}
 		lock();
-		game.startGame();
+		game.start();
 	}
 
 	/**
@@ -77,8 +82,13 @@ public class DuelQueue implements IDuelQueue {
 	 * queue leaves from available duel queue list.
 	 */
 	public void lock() {
+		locked = true;
 		availableQueues.remove(template);
 		template.createNewQueue();
+	}
+
+	public boolean isLocked() {
+		return locked;
 	}
 
 	public String getName() {

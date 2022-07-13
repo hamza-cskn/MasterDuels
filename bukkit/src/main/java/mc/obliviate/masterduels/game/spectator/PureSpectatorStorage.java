@@ -1,15 +1,13 @@
 package mc.obliviate.masterduels.game.spectator;
 
-import mc.obliviate.masterduels.api.arena.spectator.ISpectatorStorage;
-import mc.obliviate.masterduels.api.events.spectator.DuelGamePreSpectatorJoinEvent;
-import mc.obliviate.masterduels.api.events.spectator.DuelGameSpectatorLeaveEvent;
-import mc.obliviate.masterduels.api.user.IMember;
-import mc.obliviate.masterduels.api.user.ISpectator;
-import mc.obliviate.masterduels.api.user.ITeam;
+import mc.obliviate.masterduels.api.spectator.DuelMatchPreSpectatorJoinEvent;
+import mc.obliviate.masterduels.api.spectator.DuelMatchSpectatorLeaveEvent;
 import mc.obliviate.masterduels.data.DataHandler;
-import mc.obliviate.masterduels.game.Game;
+import mc.obliviate.masterduels.game.Match;
 import mc.obliviate.masterduels.kit.InventoryStorer;
-import mc.obliviate.masterduels.user.spectator.Spectator;
+import mc.obliviate.masterduels.user.Member;
+import mc.obliviate.masterduels.user.Spectator;
+import mc.obliviate.masterduels.user.UserHandler;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.playerreset.PlayerReset;
 import org.bukkit.Bukkit;
@@ -18,7 +16,7 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-import static mc.obliviate.masterduels.game.spectator.OmniSpectatorStorage.playerReset;
+import static mc.obliviate.masterduels.game.spectator.SemiSpectatorStorage.playerReset;
 
 /**
  * Purpose of this class
@@ -28,64 +26,74 @@ import static mc.obliviate.masterduels.game.spectator.OmniSpectatorStorage.playe
  * Spectator players from out of game,
  * not member.
  */
-public class PureSpectatorStorage implements ISpectatorStorage {
+public class PureSpectatorStorage implements SpectatorStorage {
 
-	private final GameSpectatorManager gsm;
-	private final List<Player> spectators = new ArrayList<>();
-	private final Game game;
+	private final MatchSpectatorManager gsm;
+	private final List<Spectator> spectators = new ArrayList<>();
+	private final Match match;
 
-	public PureSpectatorStorage(GameSpectatorManager gsm, Game game) {
+	public PureSpectatorStorage(MatchSpectatorManager gsm) {
 		this.gsm = gsm;
-		this.game = game;
+		this.match = gsm.getMatch();
 	}
 
+	private Spectator findSpectator(Player player) {
+		for (final Spectator spectator : spectators) {
+			if (spectator.getPlayer().equals(player)) {
+				return spectator;
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public void unspectate(Spectator spectator) {
+		if (!spectators.remove(spectator)) return;
+
+		Bukkit.getPluginManager().callEvent(new DuelMatchSpectatorLeaveEvent(spectator));
+		playerReset.reset(spectator.getPlayer());
+
+		UserHandler.switchUser(spectator);
+		if (DataHandler.getLobbyLocation() != null) {
+			spectator.getPlayer().teleport(DataHandler.getLobbyLocation());
+		}
+		InventoryStorer.restore(spectator.getPlayer());
+		//MessageAPI.getInstance(game.getPlugin()).sendTitle(player, TitleHandler.getTitle(TitleHandler.TitleType.SPECTATOR_LEAVE));
+
+	}
 
 	@Override
 	public void unspectate(Player player) {
-		if (!spectators.remove(player)) return;
-
-		final ISpectator spectator = DataHandler.getSpectator(player.getUniqueId());
+		final Spectator spectator = findSpectator(player);
 		if (spectator == null) return;
-
-		Bukkit.getPluginManager().callEvent(new DuelGameSpectatorLeaveEvent(spectator));
-		Bukkit.broadcastMessage("pure spectator unspectate()");
-		playerReset.reset(player);
-
-		DataHandler.getUsers().remove(player.getUniqueId());
-		if (DataHandler.getLobbyLocation() != null) {
-			player.teleport(DataHandler.getLobbyLocation());
-		}
-		InventoryStorer.restore(player);
-		//MessageAPI.getInstance(game.getPlugin()).sendTitle(player, TitleHandler.getTitle(TitleHandler.TitleType.SPECTATOR_LEAVE));
-
-
+		unspectate(spectator);
 	}
 
 	@Override
 	public void spectate(Player player) {
-		if (spectators.contains(player)) return;
-		spectators.add(player);
+		Spectator spectator = findSpectator(player);
+		if (spectator != null) return;
 
-		final DuelGamePreSpectatorJoinEvent duelGamePreSpectatorJoinEvent = new DuelGamePreSpectatorJoinEvent(player, game);
+		final DuelMatchPreSpectatorJoinEvent duelGamePreSpectatorJoinEvent = new DuelMatchPreSpectatorJoinEvent(player, match);
 		Bukkit.getPluginManager().callEvent(duelGamePreSpectatorJoinEvent);
 		if (duelGamePreSpectatorJoinEvent.isCancelled()) return;
 
-		DataHandler.getUsers().put(player.getUniqueId(), new Spectator(game, player));
+		spectator = UserHandler.switchSpectator(UserHandler.getUser(player.getUniqueId()), match);
+
+		//fixme external registering
+		SpectatorHandler.giveSpectatorItems(player);
+
+		spectators.add(spectator);
 
 		new PlayerReset().excludeGamemode().excludeInventory().excludeLevel().excludeExp().reset(player);
 
-		Bukkit.broadcastMessage("pure spectator spectate()");
-
-		for (final ITeam team : game.getTeams().values()) {
-			for (final IMember m : team.getMembers()) {
-				m.getPlayer().hidePlayer(player);
-			}
+		for (final Spectator spec : gsm.getAllSpectators()) {
+			spec.getPlayer().showPlayer(player);
+			player.showPlayer(spec.getPlayer());
 		}
 
-
-		for (final Player spec : gsm.getAllSpectators()) {
-			spec.showPlayer(player);
-			player.showPlayer(spec);
+		for (final Member member : match.getAllMembers()) {
+			member.getPlayer().hidePlayer(player);
 		}
 
 		player.setAllowFlight(true);
@@ -93,7 +101,7 @@ public class PureSpectatorStorage implements ISpectatorStorage {
 
 		MessageUtils.sendMessage(player, "you-are-a-spectator");
 
-		player.teleport(game.getArena().getSpectatorLocation());
+		player.teleport(match.getArena().getSpectatorLocation());
 		//MessageAPI.getInstance(game.getPlugin()).sendTitle(player, TitleHandler.getTitle(TitleHandler.TitleType.SPECTATOR_JOIN));
 
 
@@ -101,12 +109,12 @@ public class PureSpectatorStorage implements ISpectatorStorage {
 
 	@Override
 	public boolean isSpectator(Player player) {
-		return spectators.contains(player);
+		return findSpectator(player) != null;
 	}
 
 
 	@Override
-	public List<Player> getSpectatorList() {
+	public List<Spectator> getSpectatorList() {
 		return spectators;
 	}
 }

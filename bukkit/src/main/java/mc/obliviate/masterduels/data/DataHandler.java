@@ -1,66 +1,20 @@
 package mc.obliviate.masterduels.data;
 
-import mc.obliviate.masterduels.api.arena.IGame;
-import mc.obliviate.masterduels.api.user.IMember;
-import mc.obliviate.masterduels.api.user.ISpectator;
-import mc.obliviate.masterduels.api.user.ITeam;
-import mc.obliviate.masterduels.api.user.IUser;
 import mc.obliviate.masterduels.arena.Arena;
-import mc.obliviate.masterduels.game.Game;
-import mc.obliviate.masterduels.user.spectator.Spectator;
-import mc.obliviate.masterduels.user.team.Member;
-import mc.obliviate.masterduels.user.team.Team;
+import mc.obliviate.masterduels.game.Match;
 import org.bukkit.Location;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 public class DataHandler {
 
-	private static final Map<UUID, IUser> users = new HashMap<>();
-	private static final Map<Arena, Game> arenas = new HashMap<>();
-	public static int LOCK_TIME_IN_SECONDS = 3;
+	private static final Map<Arena, Match> arenas = new HashMap<>();
 	private static Location lobbyLocation = null;
 
-	public static ITeam getTeam(final UUID uuid) {
-		final IMember member = getMember(uuid);
-		if (member == null) return null;
-		return member.getTeam();
-	}
-
-	public static IGame getGame(final UUID uuid) {
-		final ITeam team = getTeam(uuid);
-		if (team == null) return null;
-		return team.getGame();
-	}
-
-	public static IMember getMember(final UUID uuid) {
-		final IUser user = users.get(uuid);
-		if (user instanceof IMember) {
-			return (IMember) user;
-		}
-		return null;
-	}
-
-	public static ISpectator getSpectator(final UUID uuid) {
-		final IUser user = users.get(uuid);
-		if (user instanceof ISpectator) {
-			return (ISpectator) user;
-		}
-		return null;
-	}
-
-	public static IUser getUser(final UUID uuid) {
-		return users.get(uuid);
-	}
-
-	public static Map<UUID, IUser> getUsers() {
-		return users;
-	}
-
-	public static Map<Arena, Game> getArenas() {
-		return arenas;
+	public static Map<Arena, Match> getArenas() {
+		return Collections.unmodifiableMap(arenas);
 	}
 
 	public static void registerArena(final Arena arena) {
@@ -68,7 +22,11 @@ public class DataHandler {
 		arenas.put(arena, null);
 	}
 
-	public static void registerGame(final Arena arena, final Game game) {
+	public static void unregisterArena(final Arena arena) {
+		arenas.remove(arena);
+	}
+
+	public static void registerGame(final Arena arena, final Match game) {
 		if (arenas.containsKey(arena)) {
 			//put if value is null,
 			arenas.putIfAbsent(arena, game);

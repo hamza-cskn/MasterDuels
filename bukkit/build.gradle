@@ -32,13 +32,15 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.github.Obliviated:ObliviateInvs:3.2.0'
+    //implementation 'com.github.Obliviated:ObliviateInvs:3.2.0'
+    implementation files('D:/Users/User/Desktop/Libraries/ObliviateInvs.jar')
+    compileOnly files('D:/Users/User/Desktop/Local Servers & Setups/LOCAL 1.8/plugins/Replay.jar')
     implementation 'com.github.Obliviated:BlokSQLiteAPI:1.0.7-b'
     implementation 'com.github.hakan-krgn.hCore:bukkit-primary:0.4.7'
-    implementation project(':api')
+    //implementation project(':api')
     compileOnly 'io.puharesource.mc:TitleManager:2.2.0'
     compileOnly 'me.neznamy:tab-api:3.0.1'
-    compileOnly 'org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT'
+    compileOnly 'org.spigotmc:spigot:1.8.8-R0.1-SNAPSHOT'
     compileOnly 'com.github.MilkBowl:VaultAPI:1.7'
 }
 
@@ -47,9 +49,31 @@ version = '1.0-SNAPSHOT'
 description = 'MasterDuels'
 java.sourceCompatibility = JavaVersion.VERSION_11
 
-project.setLibsDirName('../../../../Local Servers & Setups/LOCAL 1.8/plugins')
+compileJava.options.encoding = 'UTF-8'
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+project.setLibsDirName('D:/Users/User/Desktop/Local Servers & Setups/LOCAL 1.8/plugins')
 
 shadowJar {
+    /*
+    exclude 'com/hakan/core/command/**'
+    exclude 'com/hakan/core/database/**'
+    exclude 'com/hakan/core/hologram/**'
+    exclude 'com/hakan/core/item/**'
+    exclude 'com/hakan/core/npc/**'
+    exclude 'com/hakan/core/packet/**'
+    exclude 'com/hakan/core/particle/**'
+    exclude 'com/hakan/core/renderer/**'
+    exclude 'com/hakan/core/scheduler/**'
+    exclude 'com/hakan/core/spam/**'
+    exclude 'com/hakan/core/ui/**'
+    exclude 'com/hakan/core/utils/**'
+    exclude 'com/hakan/core/worldborder/**'
+     */
+    relocate 'com.hakan.core', 'mc.obliviate.masterduels.lib.hcore'
     relocate 'mc.obliviate.inventory', 'mc.obliviate.masterduels.lib.inventory'
     relocate 'mc.obliviate.bloksqlite', 'mc.obliviate.masterduels.lib.sqlite'
 }

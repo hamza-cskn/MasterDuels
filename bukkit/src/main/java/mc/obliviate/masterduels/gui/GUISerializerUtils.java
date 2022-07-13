@@ -1,24 +1,28 @@
 package mc.obliviate.masterduels.gui;
 
-import mc.obliviate.inventory.GUI;
+import mc.obliviate.inventory.Gui;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
 import mc.obliviate.masterduels.utils.serializer.SerializerUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.List;
+
 public class GUISerializerUtils {
 
-	public static void putDysfunctionalIcons(GUI gui, ConfigurationSection iconsSection) {
+	public static void putDysfunctionalIcons(Gui gui, ConfigurationSection iconsSection, PlaceholderUtil placeholderUtil, List<String> functionalSlots) {
 		if (iconsSection == null) throw new IllegalArgumentException("null configuration section given!");
 		for (String sectionName : iconsSection.getKeys(false)) {
 			final ConfigurationSection section = iconsSection.getConfigurationSection(sectionName);
 
+			if (functionalSlots.contains(sectionName)) continue;
 			if (!section.isSet("slot")) continue;
+			if (!section.isSet("material")) continue;
+
 			final int slotNo = section.getInt("slot", -1);
 			if (slotNo != -1) {
-				gui.addItem(slotNo, getConfigItem(iconsSection.getConfigurationSection(sectionName)));
-				return;
+				gui.addItem(slotNo, getConfigItem(iconsSection.getConfigurationSection(sectionName), placeholderUtil));
+				continue;
 			}
 
 			final String slotString = section.getString("slot", "");
@@ -34,16 +38,16 @@ public class GUISerializerUtils {
 				}
 				if (from > to) continue;
 				for (; from <= to; from++) {
-					gui.addItem(from, getConfigItem(iconsSection.getConfigurationSection(sectionName)));
+					gui.addItem(from, getConfigItem(iconsSection.getConfigurationSection(sectionName), placeholderUtil));
 				}
-				return;
+				continue;
 			} else if (slotString.contains(",")) {
 				final String[] slots = slotString.split(",");
 				if (slots.length < 2) continue;
 
 				for (final String slotText : slots) {
 					try {
-						gui.addItem(Integer.parseInt(slotText), getConfigItem(iconsSection.getConfigurationSection(sectionName)));
+						gui.addItem(Integer.parseInt(slotText), getConfigItem(iconsSection.getConfigurationSection(sectionName), placeholderUtil));
 					} catch (NumberFormatException ignore) {
 					}
 				}

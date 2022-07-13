@@ -1,7 +1,6 @@
 package mc.obliviate.masterduels.kit;
 
 import mc.obliviate.masterduels.MasterDuels;
-import mc.obliviate.masterduels.api.kit.IKit;
 import mc.obliviate.masterduels.kit.serializer.KitSerializer;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -13,7 +12,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Kit implements IKit {
+public class Kit {
 
 	public static boolean USE_PLAYER_INVENTORIES = false;
 	private static final Map<String, Kit> kits = new HashMap<>();
@@ -37,10 +36,6 @@ public class Kit implements IKit {
 		return kits;
 	}
 
-	public static boolean storeKits(final Player player) {
-		if (USE_PLAYER_INVENTORIES) return true;
-		return InventoryStorer.store(player) != null;
-	}
 
 	public static void load(final Kit kit, final Player player) {
 		if (USE_PLAYER_INVENTORIES) return;
@@ -61,28 +56,28 @@ public class Kit implements IKit {
 
 	}
 
-	@Override
 	public ItemStack[] getArmorContents() {
 		return playerInventoryFrame.getArmorContents();
 	}
 
-	@Override
 	public ItemStack[] getContents() {
 		return playerInventoryFrame.getContents();
 	}
 
-	@Override
 	public String getKitName() {
 		return kitName;
 	}
 
-	@Override
 	public ItemStack getIcon() {
 		if (icon == null || icon.getType().equals(Material.AIR)) return new ItemStack(Material.DIAMOND_CHESTPLATE);
 		return icon.clone();
 	}
 
 	@Override
+	public String toString() {
+		return kitName;
+	}
+
 	public void setIcon(ItemStack icon) {
 		this.icon = icon;
 	}

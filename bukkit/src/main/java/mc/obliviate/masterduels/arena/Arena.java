@@ -1,21 +1,21 @@
 package mc.obliviate.masterduels.arena;
 
-import mc.obliviate.masterduels.api.arena.IArena;
 import mc.obliviate.masterduels.arena.elements.ArenaCuboid;
 import mc.obliviate.masterduels.arena.elements.Positions;
 import mc.obliviate.masterduels.data.DataHandler;
-import mc.obliviate.masterduels.game.Game;
+import mc.obliviate.masterduels.game.Match;
 import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.serializer.SerializerUtils;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static mc.obliviate.masterduels.arena.BasicArenaState.*;
 
-public class Arena implements IArena {
+public class Arena {
 
 	private final String name;
 	private final String mapName;
@@ -49,10 +49,11 @@ public class Arena implements IArena {
 		return null;
 	}
 
-	public static Arena findArena(int teamSize, int teamAmount) {
-		for (final Map.Entry<Arena, Game> entry : DataHandler.getArenas().entrySet()) {
+	public static Arena findArena(int teamSize, int teamAmount, List<String> allowedMaps) {
+		for (final Map.Entry<Arena, Match> entry : DataHandler.getArenas().entrySet()) {
 			if (entry.getKey().getTeamAmount() >= teamAmount && entry.getKey().getTeamSize() >= teamSize) {
 				if (!entry.getKey().isEnabled()) continue;
+				if (!allowedMaps.isEmpty() && !allowedMaps.contains(entry.getKey().getMapName())) continue;
 				if (entry.getValue() == null) return entry.getKey();
 			}
 		}
@@ -61,10 +62,10 @@ public class Arena implements IArena {
 
 	public static BasicArenaState getBasicArenaState(Arena arena) {
 		if (arena == null) return UNKNOWN;
-		final Game game = DataHandler.getArenas().get(arena);
+		final Match match = DataHandler.getArenas().get(arena);
 
 
-		if (game == null) {
+		if (match == null) {
 			if (arena.isEnabled()) {
 				return EMPTY;
 			} else {
@@ -72,15 +73,15 @@ public class Arena implements IArena {
 			}
 		}
 
-		switch (game.getGameState()) {
-			case BATTLE:
+		switch (match.getMatchState().getMatchStateType()) {
+			case PLAYING:
 				return PLAYING;
-			case GAME_ENDING:
+			case MATCH_ENDING:
 			case UNINSTALLING:
 				return ENDING;
 			case ROUND_STARTING:
 			case ROUND_ENDING:
-			case GAME_STARING:
+			case MATCH_STARING:
 				return STARTING;
 		}
 		return UNKNOWN;
@@ -127,7 +128,7 @@ public class Arena implements IArena {
 		final int teamAmount = section.getInt("team-amount");
 
 		Location spectatorLocation;
-		if (section.isSet("spectator-position")) {
+		if (section.isConfigurationSection("spectator-position")) {
 			spectatorLocation = SerializerUtils.deserializeLocationYAML(section.getConfigurationSection("spectator-position"));
 		} else {
 			spectatorLocation = positions.get("spawn-team-1").getLocation(1);

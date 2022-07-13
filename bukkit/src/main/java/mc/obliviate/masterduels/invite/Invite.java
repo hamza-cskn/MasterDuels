@@ -2,26 +2,28 @@ package mc.obliviate.masterduels.invite;
 
 import com.google.common.base.Preconditions;
 import mc.obliviate.masterduels.MasterDuels;
-import mc.obliviate.masterduels.api.invite.IInvite;
-import mc.obliviate.masterduels.api.invite.InviteState;
+import mc.obliviate.masterduels.kit.Kit;
 import org.bukkit.Bukkit;
 
+import java.util.ArrayList;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-public class Invite implements IInvite {
+public class Invite {
 
 	private final UUID sender;
 	private final UUID receiver;
 	private final long expireOutTime;
 	private final Consumer<Invite> response;
 	private InviteState state = InviteState.PENDING;
+	private final Kit kit;
 
-	protected Invite(UUID sender, UUID receiverUniqueId, long expireTimeOut, Consumer<Invite> response) {
+	protected Invite(UUID sender, UUID receiverUniqueId, long expireTimeOut, Consumer<Invite> response, Kit kit) {
 		this.sender = sender;
 		this.receiver = receiverUniqueId;
 		this.expireOutTime = expireTimeOut;
 		this.response = response;
+		this.kit = kit;
 
 		InviteRecipient.getInviteRecipient(receiverUniqueId).addInvite(this);
 
@@ -38,6 +40,8 @@ public class Invite implements IInvite {
 	 */
 	public static class Builder {
 
+		private Kit kit;
+
 		private UUID sender;
 		private UUID receiver;
 		private long expireTime;
@@ -48,17 +52,16 @@ public class Invite implements IInvite {
 
 		public InviteBuildResult build() {
 			InviteRecipient inviteRecipient = InviteRecipient.getInviteRecipient(receiver);
-			for (Invite invite : inviteRecipient.getInvites()) {
+			for (Invite invite : new ArrayList<>(inviteRecipient.getInvites())) {
 				if (invite.sender.equals(sender)) {
 					if (invite.expireOutTime < System.currentTimeMillis()) {
-						return new InviteBuildResult(null, InviteBuildState.ERROR_ALREADY_INVITED);
-					} else {
 						inviteRecipient.removeInvite(invite);
 					}
+					return new InviteBuildResult(null, InviteBuildState.ERROR_ALREADY_INVITED);
 				}
 			}
 
-			final Invite inviteBuilt = new Invite(sender, receiver, expireTime, response);
+			final Invite inviteBuilt = new Invite(sender, receiver, expireTime, response, kit);
 			return new InviteBuildResult(inviteBuilt, InviteBuildState.SUCCESS);
 		}
 
@@ -106,8 +109,17 @@ public class Invite implements IInvite {
 			this.sender = sender;
 			return this;
 		}
-	}
 
+		public Kit getKit() {
+			return kit;
+		}
+
+		public Builder setKit(Kit kit) {
+			this.kit = kit;
+			return this;
+		}
+
+	}
 	public static Builder create() {
 		return new Builder();
 	}
@@ -134,6 +146,9 @@ public class Invite implements IInvite {
 		return sender;
 	}
 
+	public Kit getKit() {
+		return kit;
+	}
 
 	/**
 	 * Purpose of this class is,
@@ -141,7 +156,9 @@ public class Invite implements IInvite {
 	 * when invite builder built.
 	 */
 	public static class InviteBuildResult {
+
 		final Invite invite;
+
 		final InviteBuildState inviteBuildState;
 
 		public InviteBuildResult(Invite invite, InviteBuildState inviteBuildState) {
@@ -165,6 +182,19 @@ public class Invite implements IInvite {
 	public enum InviteBuildState {
 		SUCCESS,
 		ERROR_ALREADY_INVITED,
+	}
+
+	/**
+	 * Purpose of this class is,
+	 * defining current state of invite.
+	 */
+	public enum InviteState {
+
+		PENDING,
+		ACCEPTED,
+		REJECTED,
+		EXPIRED,
+		CANCELLED
 	}
 
 }

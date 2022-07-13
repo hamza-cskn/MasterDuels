@@ -8,27 +8,27 @@ import java.util.UUID;
 
 public class InventoryStorer {
 
-	private static final Map<UUID, PlayerInventoryFrame> inventories = new HashMap<>();
+	private static final Map<UUID, PlayerInventoryFrame> INVENTORY_FRAME_MAP = new HashMap<>();
 
 	/**
-	 * @return restore is success or not.
+	 * @return true if restore is success.
 	 */
 	public static boolean restore(final Player player) {
 		if (player == null) return false;
-		final PlayerInventoryFrame inv = inventories.get(player.getUniqueId());
+		final PlayerInventoryFrame inv = INVENTORY_FRAME_MAP.get(player.getUniqueId());
 		if (inv == null) return true;
 		player.getInventory().setContents(inv.getContents());
 		player.getInventory().setArmorContents(inv.getArmorContents());
-		inventories.remove(player.getUniqueId());
+		INVENTORY_FRAME_MAP.remove(player.getUniqueId());
 		return true;
 	}
 
 	public static PlayerInventoryFrame store(final Player player) {
 		if (player == null) return null;
-		if (inventories.containsKey(player.getUniqueId())) return null;
+		if (INVENTORY_FRAME_MAP.containsKey(player.getUniqueId())) return null;
 
 		final PlayerInventoryFrame playerInventoryFrame = new PlayerInventoryFrame(player.getInventory().getContents(), player.getInventory().getArmorContents());
-		inventories.put(player.getUniqueId(), playerInventoryFrame);
+		INVENTORY_FRAME_MAP.put(player.getUniqueId(), playerInventoryFrame);
 		return playerInventoryFrame;
 	}
 

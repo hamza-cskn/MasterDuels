@@ -2,9 +2,8 @@ package mc.obliviate.masterduels.utils.versioncontroller;
 
 import org.bukkit.Bukkit;
 
-import java.util.Locale;
-
 public enum ServerVersionController {
+
 	UNKNOWN,
 	OUTDATED,
 	V1_8,
@@ -19,7 +18,6 @@ public enum ServerVersionController {
 	V1_17,
 	V1_18,
 	NEWER;
-
 
 	private static ServerVersionController serverVersion;
 

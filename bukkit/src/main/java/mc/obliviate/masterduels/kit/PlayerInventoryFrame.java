@@ -28,7 +28,7 @@ public class PlayerInventoryFrame {
 		player.getInventory().setChestplate(null);
 		player.getInventory().setLeggings(null);
 		player.getInventory().setBoots(null);
-		if (frame == null || frame.getContents() == null) return false;
+		if (frame == null) return false;
 		final PlayerInventory inv = player.getInventory();
 		inv.setContents(frame.getContents());
 		inv.setArmorContents(frame.getArmorContents());

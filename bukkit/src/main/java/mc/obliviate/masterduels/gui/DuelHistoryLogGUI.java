@@ -1,102 +1,167 @@
 package mc.obliviate.masterduels.gui;
 
-import mc.obliviate.inventory.GUI;
 import mc.obliviate.inventory.Icon;
-import mc.obliviate.masterduels.history.GameHistoryLog;
+import mc.obliviate.masterduels.history.MatchHistoryLog;
+import mc.obliviate.masterduels.history.PlayerHistoryLog;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
 import mc.obliviate.masterduels.utils.timer.TimerUtils;
-import mc.obliviate.masterduels.utils.xmaterial.XMaterial;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryOpenEvent;
-import org.bukkit.inventory.ItemStack;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
-public class DuelHistoryLogGUI extends GUI {
+import static mc.obliviate.masterduels.data.SQLManager.loadDuelHistories;
+import static mc.obliviate.masterduels.utils.Utils.getPlaceholders;
 
-	public static ConfigurationSection guiSection;
-	public static DuelHistoryLogGUIConfig guiConfig;
+public class DuelHistoryLogGUI extends ConfigurableGui {
+
+	private static DuelHistoryLogGUI.Config guiConfig;
 
 	public DuelHistoryLogGUI(Player player) {
-		super(player, "duel-history-log-gui", "Title could not loaded", 6);
-		setTitle(guiSection.getString("title", "Title could not loaded"));
+		super(player, "duel-history-log-gui");
+
+		getPaginationManager().getSlots().addAll(guiConfig.pageSlots);
+
+		List<MatchHistoryLog> logs = loadDuelHistories(); //todo cache it
+		int i = 1;
+		for (MatchHistoryLog log : logs) {
+			PlaceholderUtil placeholderUtil = new PlaceholderUtil()
+					.add("{played-date}", TimerUtils.formatDate(log.getStartTime()))
+					.add("{match-duration-timer}", TimerUtils.formatTimeDifferenceAsTimer(log.getStartTime(), log.getFinishTime()))
+					.add("{match-duration-time}", TimerUtils.formatTimeDifferenceAsTime(log.getStartTime(), log.getFinishTime()))
+					.add("{played-rounds}", log.getPlayedRound() + "");
+			Icon icon;
+			if (log.getPlayerHistoryLogMap().size() <= 2) {
+				icon = getSoloGamesIcon(log, placeholderUtil, i);
+			} else {
+				icon = getNonSoloGamesIcon(log, placeholderUtil, i);
+			}
+
+			getPaginationManager().addIcon(icon);
+			i++;
+		}
+	}
+
+	private Icon getNonSoloGamesIcon(MatchHistoryLog log, PlaceholderUtil placeholderUtil, int amount) {
+		Icon icon = new Icon(GUISerializerUtils.getConfigItem(getIconsSection("non-solo-games-icon"), placeholderUtil)).setAmount(amount);
+		List<String> loreCopy = new ArrayList<>();
+		for (String loreLine : icon.getItem().getItemMeta().getLore()) {
+			if (loreLine.equalsIgnoreCase("{+players}")) {
+
+				for (Map.Entry<UUID, PlayerHistoryLog> entry : log.getPlayerHistoryLogMap().entrySet()) {
+					PlayerHistoryLog playerHistoryLog = entry.getValue();
+					OfflinePlayer p = Bukkit.getOfflinePlayer(entry.getKey());
+
+					if (playerHistoryLog == null) continue;
+					PlaceholderUtil placeholders = getPlaceholders(playerHistoryLog);
+
+					placeholders.add("{player}", p.getName());
+
+					if (log.getWinners() != null && log.getWinners().contains(p.getUniqueId())) {
+						loreCopy.addAll(MessageUtils.parseColor(MessageUtils.applyPlaceholders(getIconsSection("non-solo-games-icon").getStringList("winner-info-format"), placeholders)));
+					} else {
+						loreCopy.addAll(MessageUtils.parseColor(MessageUtils.applyPlaceholders(getIconsSection("non-solo-games-icon").getStringList("loser-info-format"), placeholders)));
+					}
+				}
+
+			} else {
+				loreCopy.add(loreLine);
+			}
+		}
+
+		return icon.setLore(loreCopy);
+
+	}
+
+	private Icon getSoloGamesIcon(MatchHistoryLog log, PlaceholderUtil placeholderUtil, int amount) {
+		Icon icon = new Icon(GUISerializerUtils.getConfigItem(getIconsSection("solo-games-icon"), placeholderUtil)).setAmount(amount);
+
+		OfflinePlayer player1 = null;
+		PlayerHistoryLog player1HistoryLog = null;
+		OfflinePlayer player2 = null;
+		PlayerHistoryLog player2HistoryLog = null;
+
+		for (Map.Entry<UUID, PlayerHistoryLog> entry : log.getPlayerHistoryLogMap().entrySet()) {
+			if (player1 == null) {
+				player1 = Bukkit.getOfflinePlayer(entry.getKey());
+				player1HistoryLog = entry.getValue();
+			} else {
+				player2 = Bukkit.getOfflinePlayer(entry.getKey());
+				player2HistoryLog = entry.getValue();
+			}
+		}
+
+		List<String> loreCopy = new ArrayList<>();
+		for (String loreLine : icon.getItem().getItemMeta().getLore()) {
+			if (loreLine.equalsIgnoreCase("{+player-1}") || loreLine.equalsIgnoreCase("{+player-2}")) {
+
+				PlayerHistoryLog playerHistoryLog = null;
+				OfflinePlayer p = null;
+
+				if (loreLine.equalsIgnoreCase("{+player-1}")) {
+					playerHistoryLog = player1HistoryLog;
+					p = player1;
+				} else if (loreLine.equalsIgnoreCase("{+player-2}")) {
+					playerHistoryLog = player2HistoryLog;
+					p = player2;
+				}
+
+				PlaceholderUtil placeholders = getPlaceholders(playerHistoryLog);
+				if (playerHistoryLog == null) continue;
+
+				placeholders.add("{player}", p.getName());
+
+				if (log.getWinners() != null && log.getWinners().contains(p.getUniqueId())) {
+					loreCopy.addAll(MessageUtils.parseColor(MessageUtils.applyPlaceholders(getIconsSection("solo-games-icon").getStringList("winner-info-format"), placeholders)));
+				} else {
+					loreCopy.addAll(MessageUtils.parseColor(MessageUtils.applyPlaceholders(getIconsSection("solo-games-icon").getStringList("loser-info-format"), placeholders)));
+				}
+
+			} else {
+				loreCopy.add(loreLine);
+			}
+		}
+
+		return icon.setLore(loreCopy);
 	}
 
 	@Override
 	public void onOpen(InventoryOpenEvent event) {
-		fillRow(new Icon(XMaterial.BLACK_STAINED_GLASS_PANE.parseItem()), 0);
-
-		int slot = 9;
-		for (final GameHistoryLog log : GameHistoryLog.historyCache) {
-
-			HistoryIconType type;
-			if (log.getLosers().size() == 1) {
-				type = HistoryIconType.SOLO;
-			} else {
-				type = HistoryIconType.NON_SOLO;
-			}
-
-			addItem(slot++, guiConfig.deserializeIcon(type, log));
+		putDysfunctionalIcons();
+		if (getPaginationManager().getPage() != getPaginationManager().getLastPage()) {
+			putIcon("previous", e -> {
+				getPaginationManager().previousPage();
+				getPaginationManager().update();
+			});
 		}
+		if (getPaginationManager().getPage() != 0) {
+			putIcon("next", e -> {
+				getPaginationManager().nextPage();
+				getPaginationManager().update();
+			});
+		}
+		getPaginationManager().update();
+	}
+
+	@Override
+	public String getSectionPath() {
+		return "game-history-gui";
 	}
 
 
-	private enum HistoryIconType {
-		SOLO,
-		NON_SOLO
-	}
+	public static class Config {
 
+		private final List<Integer> pageSlots;
 
-	public static class DuelHistoryLogGUIConfig {
-
-		private final Map<HistoryIconType, ItemStack> historyIconItemStacks = new HashMap<>();
-		private final String winnersFormat;
-		private final String losersFormat;
-
-		public DuelHistoryLogGUIConfig(ConfigurationSection guiSection) {
-			historyIconItemStacks.put(HistoryIconType.SOLO, GUISerializerUtils.getConfigItem(guiSection.getConfigurationSection("solo-games-icon")));
-			historyIconItemStacks.put(HistoryIconType.NON_SOLO, GUISerializerUtils.getConfigItem(guiSection.getConfigurationSection("non-solo-games-icon")));
-			winnersFormat = guiSection.getString("winners-format");
-			losersFormat = guiSection.getString("losers-format");
-		}
-
-		protected Icon deserializeIcon(final HistoryIconType type, GameHistoryLog log) {
-			final Icon icon = new Icon(historyIconItemStacks.get(type).clone());
-			List<String> description = icon.getItem().getItemMeta().getLore(); //raw-placeholder lore
-			if (description == null) description = new ArrayList<>();
-			icon.setLore(new ArrayList<>());
-
-			final PlaceholderUtil placeholderUtil = new PlaceholderUtil().add("{time}", TimerUtils.formatTimeDifferenceAsTime(log.getStartTime(), log.getEndTime()))
-					.add("{played-date}", TimerUtils.formatDate(log.getStartTime()));
-			if (log.getWinners().size() == 1) {
-				placeholderUtil.add("{winner}", Bukkit.getOfflinePlayer(log.getWinners().get(0)).getName());
-			}
-			if (log.getLosers().size() == 1) {
-				placeholderUtil.add("{loser}", Bukkit.getOfflinePlayer(log.getLosers().get(0)).getName());
-			}
-			for (final String line : description) {
-				if (line.equalsIgnoreCase("{+winners}")) {
-					for (final UUID uuid : log.getWinners()) {
-						icon.appendLore(MessageUtils.parseColor(MessageUtils.applyPlaceholders(winnersFormat, new PlaceholderUtil().add("{winner}", Bukkit.getOfflinePlayer(uuid).getName()))));
-					}
-					continue;
-				} else if (line.equalsIgnoreCase("{+losers}")) {
-					for (final UUID uuid : log.getLosers()) {
-						icon.appendLore(MessageUtils.parseColor(MessageUtils.applyPlaceholders(losersFormat, new PlaceholderUtil().add("{loser}", Bukkit.getOfflinePlayer(uuid).getName()))));
-					}
-					continue;
-				}
-				icon.appendLore(MessageUtils.parseColor(MessageUtils.applyPlaceholders(line, placeholderUtil)));
-			}
-
-			icon.setName(MessageUtils.parseColor(MessageUtils.applyPlaceholders(icon.getItem().getItemMeta().getDisplayName(), placeholderUtil)));
-
-			return icon;
+		public Config(List<Integer> pageSlots) {
+			this.pageSlots = pageSlots;
+			DuelHistoryLogGUI.guiConfig = this;
 		}
 	}
-
-
 }

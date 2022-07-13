@@ -1,6 +1,5 @@
 package mc.obliviate.masterduels.utils.serializer;
 
-import mc.obliviate.masterduels.history.GameHistoryLog;
 import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
@@ -12,8 +11,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -38,6 +35,7 @@ public class SerializerUtils {
 
 	public static Location deserializeLocationYAML(final ConfigurationSection section) {
 		if (section == null) return null;
+		if (!(section.isSet("world") && section.isSet("x") && section.isSet("y") && section.isSet("x"))) return null;
 		final World world = Bukkit.getWorld(section.getString("world"));
 		if (world == null) {
 			Logger.error("world could not found (yaml loc deserializing): " + section.getString("world"));
@@ -82,7 +80,7 @@ public class SerializerUtils {
 	public static ItemStack deserializeItemStack(ConfigurationSection section, PlaceholderUtil placeholderUtil) {
 		if (section == null) throw new IllegalArgumentException("ItemStack section cannot be null!");
 		final Optional<XMaterial> xmaterial = XMaterial.matchXMaterial(section.getString("material", "BEDROCK"));
-		if (!xmaterial.isPresent()) {
+		if (xmaterial.isEmpty()) {
 			Logger.error("Material could not found: " + section.getString("material"));
 			return null;
 		}
@@ -109,24 +107,17 @@ public class SerializerUtils {
 		return item;
 	}
 
-	private static void setSafe(ConfigurationSection section, String key, Object value) {
-		if (value != null) {
-			if (value instanceof List && ((List) value).size() == 0) {
-				return;
-			}
-			section.set(key, value);
-		}
-	}
-
-	public static GameHistoryLog deserializeGameHistoryLog(ResultSet rs) throws SQLException {
+	/*public static MatchHistoryLog deserializeGameHistoryLog(ResultSet rs) throws SQLException {
 		final String uuid = rs.getString("uuid");
 		final String serializedWinners = rs.getString("winners");
 		final String serializedLosers = rs.getString("losers");
 		final long startTime = rs.getLong("startTime");
 		final long endTime = rs.getLong("endTime");
 
-		return new GameHistoryLog(UUID.fromString(uuid), startTime, endTime, SerializerUtils.deserializeUUIDList(serializedWinners), SerializerUtils.deserializeUUIDList(serializedLosers));
+		return new MatchHistoryLog(UUID.fromString(uuid), startTime, endTime, SerializerUtils.deserializeUUIDList(serializedWinners), SerializerUtils.deserializeUUIDList(serializedLosers));
 
 	}
+
+	 */
 
 }

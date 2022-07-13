@@ -1,12 +1,13 @@
 package mc.obliviate.masterduels.kit.gui;
 
-import mc.obliviate.inventory.GUI;
+import mc.obliviate.inventory.Gui;
 import mc.obliviate.inventory.Icon;
 import mc.obliviate.inventory.advancedslot.AdvancedSlot;
 import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.kit.Kit;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.xmaterial.XMaterial;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
@@ -14,7 +15,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
-public class KitEditGUI extends GUI {
+public class KitEditGUI extends Gui {
 
 	private final Kit kit;
 	private ItemStack[] armors;
@@ -34,7 +35,7 @@ public class KitEditGUI extends GUI {
 
 		putKitIcon(50);
 
-		putArmorIcon(45, 46, 47, 48);
+		putArmorIcons(45, 46, 47, 48);
 
 		int slot = 9;
 		for (final ItemStack item : kit.getContents()) {
@@ -43,43 +44,34 @@ public class KitEditGUI extends GUI {
 			}));
 		}
 
-		addItem(0, new Icon(XMaterial.ARROW.parseItem()).setName(MessageUtils.parseColor("&cGo Back")).onClick(e -> {
+		addItem(0, new Icon(XMaterial.ARROW.parseItem()).setName(MessageUtils.parseColor("&cLeave")).setLore(MessageUtils.parseColor("&8Automatically saves")).onClick(e -> {
 			new KitListEditorGUI(player).open();
 		}));
 	}
 
-	public void putArmorIcon(int helmetSlot, int chestplateSlot, int leggingsSlot, int bootsSlot) {
-
+	public void putArmorIcons(int helmetSlot, int chestplateSlot, int leggingsSlot, int bootsSlot) {
 		//todo search why barriers are invisible in 1.17, 1.18
-		final Icon helmetIcon = getScaledItemLoreAndName(armors[3], "&cHelmet slot", "&7Put item to change helmet");
-		final Icon chestplateIcon = getScaledItemLoreAndName(armors[2], "&cChestplate slot", "&7Put item to change chestplate");
-		final Icon leggingsIcon = getScaledItemLoreAndName(armors[1], "&cLeggings slot", "&7Put item to change leggings");
-		final Icon bootsIcon = getScaledItemLoreAndName(armors[0], "&cBoots slot", "&7Put item to change boots");
-
-		addAdvancedIcon(helmetSlot, helmetIcon).onPut(e -> {
-			armors[3] = e.getCurrentItem();
-		});
-		addAdvancedIcon(chestplateSlot, chestplateIcon).onPut(e -> {
-			armors[2] = e.getCurrentItem();
-		});
-		addAdvancedIcon(leggingsSlot, leggingsIcon).onPut(e -> {
-			armors[1] = e.getCurrentItem();
-		});
-		addAdvancedIcon(bootsSlot, bootsIcon).onPut(e -> {
-			armors[0] = e.getCurrentItem();
-		});
+		putArmorIcon(new Icon(Material.BARRIER), 3, helmetSlot);
+		putArmorIcon(new Icon(Material.BARRIER), 2, chestplateSlot);
+		putArmorIcon(new Icon(Material.BARRIER), 1, leggingsSlot);
+		putArmorIcon(new Icon(Material.BARRIER), 0, bootsSlot);
 	}
 
 	private void putArmorIcon(Icon icon, int armorPieceIndex, int slot) {
-
-		final AdvancedSlot advancedSlot = addAdvancedIcon(slot, icon).onPut(e -> {
-			armors[armorPieceIndex] = e.getCurrentItem();
+		final AdvancedSlot advancedSlot = addAdvancedIcon(slot, icon).onPreClick((e, item) -> {
+			if (e != null) {
+				armors[armorPieceIndex] = item;
+			}
+			return false;
+		}).onPickup(e -> {
+			if (e != null && e.getCurrentItem() == null) {
+				return;
+			}
+			armors[armorPieceIndex] = null;
 		});
 
-		if (armors[armorPieceIndex] != null) return;
-
+		if (armors[armorPieceIndex] == null) return;
 		getAdvancedSlotManager().putIcon(advancedSlot, armors[armorPieceIndex], null);
-
 	}
 
 	@Override
@@ -93,6 +85,11 @@ public class KitEditGUI extends GUI {
 			index++;
 		}
 
+		addItem(45, new Icon(Material.BARRIER).setName(MessageUtils.parseColor("&cHelmet")));
+		addItem(46, new Icon(Material.BARRIER).setName(MessageUtils.parseColor("&cChestplate")));
+		addItem(47, new Icon(Material.BARRIER).setName(MessageUtils.parseColor("&cLeggings")));
+		addItem(48, new Icon(Material.BARRIER).setName(MessageUtils.parseColor("&cBoots")));
+
 		final Kit finalKit = new Kit(kit.getKitName(), items, armors, displayIcon);
 		Kit.getKits().put(kit.getKitName(), finalKit);
 		Kit.save((MasterDuels) getPlugin(), finalKit);
@@ -101,9 +98,10 @@ public class KitEditGUI extends GUI {
 	public void putKitIcon(int slot) {
 		final Icon icon = getScaledItemLoreAndName(kit.getIcon(), "&cDisplay icon of kit", "&7Put item to change icon of kit");
 
-		addAdvancedIcon(slot, icon).onPut(e -> {
-			kit.setIcon(e.getCurrentItem());
+		AdvancedSlot advancedSlot = addAdvancedIcon(slot, icon).onPut(e -> {
+			displayIcon = e.getCurrentItem();
 		});
+		getAdvancedSlotManager().putIcon(advancedSlot, displayIcon, null);
 
 	}
 
@@ -128,10 +126,4 @@ public class KitEditGUI extends GUI {
 
 		return showItem;
 	}
-
-	private String getMaterialName(ItemStack item) {
-		if (item != null) return item.getType().toString();
-		return "AIR";
-	}
-
 }
