@@ -21,10 +21,12 @@ public class PlayerConnectionListener implements Listener {
 	@EventHandler
 	public void onDisconnect(PlayerQuitEvent event) {
 		final IUser user = UserHandler.getUser(event.getPlayer().getUniqueId());
+		if (user == null) return;
 		if (user instanceof Member) {
 			((Member) user).getTeam().getMatch().getMatchState().leave(((Member) user));
 		} else if (user.getMatchBuilder() != null) {
-			if (!MatchCreator.cleanKillCreator(event.getPlayer().getUniqueId())) {
+			MatchCreator creator = MatchCreator.getCreator(event.getPlayer().getUniqueId());
+			if (creator == null || creator.getOwnerPlayer() != event.getPlayer().getUniqueId() || !MatchCreator.cleanKillCreator(event.getPlayer().getUniqueId())) {
 				user.getMatchBuilder().removePlayer(user);
 			}
 		}
