@@ -99,10 +99,13 @@ public class RoundStartingState implements MatchState {
 			final Location loc = positions.getLocation(i++);
 			if (loc == null) {
 				Logger.severe("Player could not teleported to lock position because location is null.");
-			} else if (member.getPlayer().teleport(loc)) return;
+			}
+			final boolean teleportResult = member.getPlayer().teleport(loc);
+			if (!teleportResult) {
+				Logger.error("Player " + member.getPlayer().getName() + " could not teleported to duel arena. Game has been cancelled.");
+				match.uninstall();
+			}
 
-			Logger.error("Player " + member.getPlayer().getName() + " could not teleported to duel arena. Game has been cancelled.");
-			match.uninstall();
 		}
 	}
 
