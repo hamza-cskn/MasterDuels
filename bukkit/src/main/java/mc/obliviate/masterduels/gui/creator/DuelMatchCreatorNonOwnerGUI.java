@@ -21,6 +21,7 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class DuelMatchCreatorNonOwnerGUI extends ConfigurableGui {
@@ -35,20 +36,21 @@ public class DuelMatchCreatorNonOwnerGUI extends ConfigurableGui {
 				new PlaceholderUtil()
 						.add("{owner}", Utils.getDisplayName(Bukkit.getPlayer(matchCreator.getOwnerPlayer())))
 						.add("{mode}", MessageUtils.convertMode(matchCreator.getBuilder().getTeamSize(), matchCreator.getBuilder().getTeamAmount())))));
+		setSize((matchCreator.getBuilder().getTeamAmount() + 1) * 9);
 	}
 
 	@Override
 	public void onOpen(InventoryOpenEvent event) {
 		putDysfunctionalIcons(new PlaceholderUtil()
-				.add("{mode}", MessageUtils.convertMode(matchCreator.getBuilder().getTeamSize(), matchCreator.getBuilder().getTeamAmount()))
-				.add("{invited-players}", matchCreator.getInvites().size() + "")
-				.add("{total-players}", matchCreator.getBuilder().getPlayers().size() + "")
-				.add("{round-amount}", matchCreator.getBuilder().getTotalRounds() + "")
-				.add("{game-timer}", TimerUtils.formatTimeAsTimer(matchCreator.getBuilder().getDuration().toSeconds()))
-				.add("{game-time}", TimerUtils.formatTimeAsTime(matchCreator.getBuilder().getDuration().toSeconds()))
-				.add("{team-amount}", matchCreator.getBuilder().getTeamAmount() + "")
-				.add("{team-size}", matchCreator.getBuilder().getTeamSize() + "")
-		);
+						.add("{mode}", MessageUtils.convertMode(matchCreator.getBuilder().getTeamSize(), matchCreator.getBuilder().getTeamAmount()))
+						.add("{invited-players}", matchCreator.getInvites().size() + "")
+						.add("{total-players}", matchCreator.getBuilder().getPlayers().size() + "")
+						.add("{round-amount}", matchCreator.getBuilder().getTotalRounds() + "")
+						.add("{game-timer}", TimerUtils.formatTimeAsTimer(matchCreator.getBuilder().getDuration().toSeconds()))
+						.add("{game-time}", TimerUtils.formatTimeAsTime(matchCreator.getBuilder().getDuration().toSeconds()))
+						.add("{team-amount}", matchCreator.getBuilder().getTeamAmount() + "")
+						.add("{team-size}", matchCreator.getBuilder().getTeamSize() + "")
+				, Arrays.asList("kit-icon"));
 		putTeamIcons();
 
 		if (matchCreator.getCreatorKitManager().getKitMode().equals(CreatorKitManager.KitMode.VARIOUS)) {
@@ -56,6 +58,7 @@ public class DuelMatchCreatorNonOwnerGUI extends ConfigurableGui {
 			putIcon("kit-icon", new PlaceholderUtil().add("{kit}", builder.getKit() == null ? MessageUtils.parseColor(MessageUtils.getMessage("kit.none-kit-name")) : builder.getKit().getKitName()), e -> {
 				new KitSelectionGUI(player, matchCreator.getBuilder(), kit -> {
 					matchCreator.getBuilder().getData().getGameTeamManager().getMemberBuilder(player.getUniqueId()).setKit(kit);
+					open();
 				});
 			});
 		}
