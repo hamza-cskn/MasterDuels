@@ -72,17 +72,16 @@ public class MasterDuels extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-		//
-		// MOST OF INITIALIZE METHODS INCLUDED TO THIS METHOD FOR DEOBFUSCATION SECURITY
-		//
+		// Most of initialize methods has included to that method to make deobfuscation harder.
 		getLogger().info("Loading process started.");
 		Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
-
-			long now;
+			final long now;
 			try {
 				final String out = new Scanner(new URL("http://worldtimeapi.org/api/ip").openStream(), StandardCharsets.UTF_8).useDelimiter("\\A").next();
 				now = Long.parseLong(out.split(",")[11].split(":")[1]);
 			} catch (Exception e) {
+				getLogger().severe("MasterDuels could not initialized. Exit code: 77419929204588");
+				Bukkit.getPluginManager().disablePlugin(this);
 				return;
 			}
 

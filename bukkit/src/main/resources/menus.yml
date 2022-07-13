@@ -123,8 +123,6 @@ duel-arenas-gui:
         - ''
         - '&4Error'
         - ''
-
-
 queues-gui:
   title: 'Queues'
   size: 6
@@ -464,7 +462,7 @@ duel-creator:
             - ''
             - '&7Players can eat golden'
             - '&7apple and enchanted golden'
-            - '&7apple now.'
+            - '&7apple rightnow.'
             - ''
             - '&eClick to add the rule.'
         enabled:
@@ -476,7 +474,7 @@ duel-creator:
             - ''
             - '&7Players cannot eat golden'
             - '&7apple and enchanted golden'
-            - '&7apple now.'
+            - '&7apple rightnow.'
             - ''
             - '&eClick to remove the rule.'
       NO_BOW:
@@ -489,7 +487,7 @@ duel-creator:
             - '&7Currently: &cDisabled'
             - ''
             - '&7Players can use trident,'
-            - '&7bow and crossbow now.'
+            - '&7bow and crossbow rightnow.'
             - ''
             - '&eClick to add the rule.'
         enabled:
@@ -500,7 +498,7 @@ duel-creator:
             - '&7Currently: &aEnabled'
             - ''
             - '&7Players cannot use trident,'
-            - '&7bow and crossbow now.'
+            - '&7bow and crossbow rightnow.'
             - ''
             - '&eClick to remove the rule.'
       NO_ENDER_PEARL:
@@ -513,7 +511,7 @@ duel-creator:
             - '&7Currently: &cDisabled'
             - ''
             - '&7Players can teleport using'
-            - '&7ender pearls now.'
+            - '&7ender pearls rightnow.'
             - ''
             - '&eClick to add the rule.'
         enabled:
@@ -524,7 +522,7 @@ duel-creator:
             - '&7Currently: &aEnabled'
             - ''
             - '&7Players cannot teleport using'
-            - '&7ender pearls now.'
+            - '&7ender pearls rightnow.'
             - ''
             - '&eClick to remove the rule.'
       NO_POTION:
@@ -537,7 +535,7 @@ duel-creator:
             - '&7Currently: &cDisabled'
             - ''
             - '&7Players can drink and'
-            - '&7splash potions.'
+            - '&7splash potions rightnow.'
             - ''
             - '&eClick to add the rule.'
         enabled:
@@ -548,7 +546,7 @@ duel-creator:
             - '&7Currently: &aEnabled'
             - ''
             - '&7Players cannot drink and'
-            - '&7splash potions.'
+            - '&7splash potions rightnow.'
             - ''
             - '&eClick to remove the rule.'
       NO_FIRE:
@@ -561,7 +559,7 @@ duel-creator:
             - '&7Currently: &cDisabled'
             - ''
             - '&7Players are able to'
-            - '&7get combust now.'
+            - '&7get combust rightnow.'
             - ''
             - '&eClick to add the rule.'
         enabled:
@@ -572,7 +570,7 @@ duel-creator:
             - '&7Currently: &aEnabled'
             - ''
             - '&7Players are not able to'
-            - '&7get combust now.'
+            - '&7get combust rightnow.'
             - ''
             - '&eClick to remove the rule.'
       NO_SHIELD: # in-build disabled for 1.8 servers
@@ -585,7 +583,7 @@ duel-creator:
             - '&7Currently: &cDisabled'
             - ''
             - '&7Players can use shields'
-            - '&7now.'
+            - '&7rightnow.'
             - ''
             - '&eClick to add the rule.'
         enabled:
@@ -596,7 +594,7 @@ duel-creator:
             - '&7Currently: &aEnabled'
             - ''
             - '&7Players cannot use shields'
-            - '&7now.'
+            - '&7rightnow.'
             - ''
             - '&eClick to remove the rule.'
   invites-gui:
