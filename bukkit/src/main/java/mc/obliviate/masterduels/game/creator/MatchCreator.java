@@ -124,11 +124,11 @@ public class MatchCreator {
 						case REJECTED:
 							MessageUtils.sendMessage(target, "invite.game-creator-invite.successfully-declined", new PlaceholderUtil().add("{inviter}", Utils.getDisplayName(sender)));
 							MessageUtils.sendMessage(sender, "invite.game-creator-invite.target-declined-the-invite", new PlaceholderUtil().add("{target}", Utils.getDisplayName(target)));
-							break;
+							return;
 						case EXPIRED:
 							MessageUtils.sendMessage(target, "invite.game-creator-invite.invite-expired-target", new PlaceholderUtil().add("{inviter}", Utils.getDisplayName(sender)));
 							MessageUtils.sendMessage(sender, "invite.game-creator-invite.invite-expired-inviter", new PlaceholderUtil().add("{target}", Utils.getDisplayName(target)));
-							break;
+							return;
 					}
 
 					final MatchCreator creator = getCreator(target.getUniqueId());
