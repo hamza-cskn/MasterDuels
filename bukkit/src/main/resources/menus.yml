@@ -516,7 +516,7 @@ duel-creator:
             - '&eClick to add the rule.'
         enabled:
           material: LIME_DYE
-          display-name: '&aNo Golden Apple'
+          display-name: '&aNo Ender Pearl'
           lore:
             - ''
             - '&7Currently: &aEnabled'
