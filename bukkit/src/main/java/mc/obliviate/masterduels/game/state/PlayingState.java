@@ -58,7 +58,9 @@ public class PlayingState implements MatchState {
 		}
 
 		if (match.getGameDataStorage().getGameTeamManager().checkTeamEliminated(victim.getTeam())) {
-			match.broadcastInGame("duel-team-eliminated", new PlaceholderUtil().add("{victim}", Utils.getDisplayName(victim.getPlayer())));
+			if (match.getGameDataStorage().getGameTeamManager().getTeamSize() != 1) {
+				match.broadcastInGame("duel-team-eliminated", new PlaceholderUtil().add("{victim}", Utils.getDisplayName(victim.getPlayer())));
+			}
 		}
 
 		final Team lastSurvivedTeam = match.getGameDataStorage().getGameTeamManager().getLastSurvivedTeam();
