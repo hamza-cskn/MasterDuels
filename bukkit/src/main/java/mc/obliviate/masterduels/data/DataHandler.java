@@ -4,6 +4,7 @@ import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.game.Match;
 import org.bukkit.Location;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,12 +14,16 @@ public class DataHandler {
 	private static Location lobbyLocation = null;
 
 	public static Map<Arena, Match> getArenas() {
-		return arenas;
+		return Collections.unmodifiableMap(arenas);
 	}
 
 	public static void registerArena(final Arena arena) {
 		if (arena == null) return;
 		arenas.put(arena, null);
+	}
+
+	public static void unregisterArena(final Arena arena) {
+		arenas.remove(arena);
 	}
 
 	public static void registerGame(final Arena arena, final Match game) {

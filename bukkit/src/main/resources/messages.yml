@@ -53,6 +53,7 @@ arrow-hit-notify:
   message: '&cYou hit {victim} from {distance} blocks far!'
 game-builder:
   wrong-player-amount: '&cYou can not create this game. Because you need {expected} players but you invited {found} players.'
+
 duel-command:
   usage: |-
     [DISABLE_PREFIX]&6&lDuel&6 Commands
@@ -83,11 +84,15 @@ duel-command:
       &7 /dueladmin teststart <player 1> <player 2> [arena] &8- &9instantly starts a duel game between two players without invite.
       &7 /dueladmin cancel <arena name> &8- &9forces an game to finish
     arena:
+      delete:
+        match-playing: '&cYou cannot delete {arena} until the match finished. If you want to force it, use /dueladmin cancel {arena} command to cancel the match.'
+        deleted: '&aThe arena named {arena} successfully deleted permanently.'
       disabled: '&7Arena &f{arena} &7successfully &cdisabled.'
       enabled: '&7Arena &f{arena} &7successfully &aenabled.'
       usage:
         enable: '&cCorrect usage: /dueladmin arena enable <arena name>'
         disable: '&cCorrect usage: /dueladmin arena disable <arena name>'
+        delete: '&cCorrect usage: /dueladmin arena delete <arena name>'
     lobby-set: '&aThis location successfully saved as lobby.'
     nick:
       reset: '&7Your nick has been reset.'
@@ -98,7 +103,6 @@ duel-command:
     cancel:
       usage: '&c/dueladmin cancel <arena name>'
       cancel: '&cMatch of {arena} has been cancelled.'
-
 no-arena-found-with-this-name: '&cNo arenas with this name found.'
 queue:
   joined: |-

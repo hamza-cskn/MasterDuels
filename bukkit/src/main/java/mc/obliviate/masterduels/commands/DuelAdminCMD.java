@@ -47,24 +47,7 @@ public class DuelAdminCMD implements CommandExecutor {
 		}
 
 		if (args[0].equalsIgnoreCase("create")) {
-
-			try {
-				final ArenaSetup setup = new ArenaSetup(plugin, player);
-				Bukkit.getPluginManager().registerEvents(setup, plugin);
-			} catch (IllegalStateException e) {
-				player.sendMessage("§cYou are already in a Arena setup mode.");
-				return false;
-			}
-
-			player.sendMessage("§e§l- SETUPING AN ARENA -");
-			player.sendMessage("§6§lTIP: §7Use blaze rod to select cuboid.");
-			player.sendMessage("§6§lTIP: §7Use blaze powder to open arena setup gui.");
-			player.sendMessage("§6§lTIP: §7Selected blocks will be redstone block at client-side");
-
-			player.getInventory().addItem(new ItemStack(Material.BLAZE_POWDER));
-			player.getInventory().addItem(new ItemStack(Material.BLAZE_ROD));
-			return true;
-
+			create(player);
 		} else if (args[0].equalsIgnoreCase("setlobby")) {
 			SerializerUtils.serializeLocationYAML(plugin.getConfigurationHandler().getData().createSection("lobby-location"), player.getLocation());
 			plugin.getConfigurationHandler().saveDataFile();
@@ -88,6 +71,10 @@ public class DuelAdminCMD implements CommandExecutor {
 				toggleArena(player, Arrays.asList(args), false);
 			} else if (args[1].equalsIgnoreCase("enable")) {
 				toggleArena(player, Arrays.asList(args), true);
+			} else if (args[1].equalsIgnoreCase("create")) {
+				create(player);
+			} else if (args[1].equalsIgnoreCase("delete")) {
+				delete(player, Arrays.asList(args));
 			}
 			return true;
 		} else if (args[0].equalsIgnoreCase("cancel")) {
@@ -192,6 +179,47 @@ public class DuelAdminCMD implements CommandExecutor {
 		MessageUtils.sendMessage(player, "kit.has-saved", new PlaceholderUtil().add("{kit}", name));
 
 		Kit.save(plugin, kit);
+	}
+
+	private void create(Player player) {
+		try {
+			final ArenaSetup setup = new ArenaSetup(plugin, player);
+			Bukkit.getPluginManager().registerEvents(setup, plugin);
+		} catch (IllegalStateException e) {
+			player.sendMessage("§cYou are already in a Arena setup mode.");
+		}
+
+		player.sendMessage("§e§l- ARENA SETUP MODE ENABLED -");
+		player.sendMessage("§6§lTIP: §7Use blaze rod to select cuboid.");
+		player.sendMessage("§6§lTIP: §7Use blaze powder to open arena setup gui.");
+		player.sendMessage("§6§lTIP: §7Selected blocks will be redstone block at client-side");
+
+		player.getInventory().addItem(new ItemStack(Material.BLAZE_POWDER));
+		player.getInventory().addItem(new ItemStack(Material.BLAZE_ROD));
+	}
+
+	private void delete(Player player, List<String> args) {
+		if (args.size() == 0) {
+			MessageUtils.sendMessage(player, "duel-command.admin.arena.usage.delete");
+			return;
+		}
+
+		final String arenaName = args.get(0);
+		final Arena arena = DataHandler.getArenaFromName(arenaName);
+		if (arena == null) {
+			MessageUtils.sendMessage(player, "no-arena-found-with-this-name");
+			return;
+		}
+
+		final Match match = DataHandler.getArenas().get(arena);
+		if (match == null) {
+			MessageUtils.sendMessage(player, "duel-command.admin.arena.delete.match-playing", new PlaceholderUtil().add("{arena}", arena.getName()));
+			return;
+		}
+
+		DataHandler.unregisterArena(arena);
+		plugin.getConfigurationHandler().deleteArena(arena);
+		MessageUtils.sendMessage(player, "duel-command.admin.arena.delete.deleted", new PlaceholderUtil().add("{arena}", arena.getName()));
 	}
 
 

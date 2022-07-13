@@ -323,8 +323,7 @@ public class ConfigurationHandler {
 
 	private void registerArenas() {
 		for (final String arenaName : data.getKeys(false)) {
-			final Arena arena = Arena.deserialize(data.getConfigurationSection(arenaName));
-			DataHandler.registerArena(arena);
+			Arena.deserialize(data.getConfigurationSection(arenaName));
 		}
 	}
 
@@ -402,6 +401,11 @@ public class ConfigurationHandler {
 	public void saveArena(final Arena arena) {
 		final ConfigurationSection section = data.createSection(arena.getName());
 		arena.serialize(section);
+		saveDataFile();
+	}
+
+	public void deleteArena(final Arena arena) {
+		data.set(arena.getName(), null);
 		saveDataFile();
 	}
 
