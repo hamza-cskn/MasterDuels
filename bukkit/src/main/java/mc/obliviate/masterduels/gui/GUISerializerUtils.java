@@ -6,15 +6,19 @@ import mc.obliviate.masterduels.utils.serializer.SerializerUtils;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.List;
+
 public class GUISerializerUtils {
 
-	public static void putDysfunctionalIcons(Gui gui, ConfigurationSection iconsSection, PlaceholderUtil placeholderUtil) {
+	public static void putDysfunctionalIcons(Gui gui, ConfigurationSection iconsSection, PlaceholderUtil placeholderUtil, List<String> functionalSlots) {
 		if (iconsSection == null) throw new IllegalArgumentException("null configuration section given!");
 		for (String sectionName : iconsSection.getKeys(false)) {
 			final ConfigurationSection section = iconsSection.getConfigurationSection(sectionName);
 
+			if (functionalSlots.contains(sectionName)) continue;
 			if (!section.isSet("slot")) continue;
 			if (!section.isSet("material")) continue;
+
 			final int slotNo = section.getInt("slot", -1);
 			if (slotNo != -1) {
 				gui.addItem(slotNo, getConfigItem(iconsSection.getConfigurationSection(sectionName), placeholderUtil));
