@@ -87,6 +87,8 @@ public class DuelTeamManagerGUI extends ConfigurableGui {
 								if (matchCreator.getOwnerPlayer().equals(player1.getUniqueId()))
 									return; //owner cannot leave
 								matchBuilder.removePlayer(player1);
+								MessageUtils.sendMessage(player1, "game-builder.you-kicked");
+								MessageUtils.sendMessage(player1, "game-builder.you-kick", new PlaceholderUtil().add("{kicked}", Utils.getDisplayName(player1)));
 								open();
 								break;
 							case PICKUP_HALF:

@@ -81,6 +81,7 @@ public class DuelCMD implements CommandExecutor {
 				final MatchCreator creator = MatchCreator.getCreator(player.getUniqueId());
 				if (creator != null && !creator.getOwnerPlayer().equals(player.getUniqueId())) {
 					MatchCreator.cleanKillCreator(player.getUniqueId());
+					MessageUtils.sendMessage(player, "game-builder.you-left");
 					return true;
 				}
 

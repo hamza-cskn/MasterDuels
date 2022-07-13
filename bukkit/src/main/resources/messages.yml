@@ -53,7 +53,12 @@ arrow-hit-notify:
   action-bar: '&c{victim}''s health is {health}'
   message: '&cYou hit {victim} from {distance} blocks far!'
 game-builder:
-  wrong-player-amount: '&cYou can not create this game. Because you need {expected} players but you invited {found} players.'
+  wrong-player-amount: '&cYou can not create this game. Because you need {expected} players but your creator has {found} players.'
+  you-left: '&cYou left from {player}''s Duel Creator.'
+  player-left: '&eThe player {player} left from the creator. &7[&f{total-players}&8/&f{max-players}&7]'
+  player-joined: '&eThe player {player} joined to the creator. &7[&f{total-players}&8/&f{max-players}&7]'
+  you-kicked: '&cYou have been kicked from {player}''s Duel Creator.'
+  you-kick: '&cYou kicked {kicked} player from the Duel Creator.'
 
 duel-command:
   usage: |-
