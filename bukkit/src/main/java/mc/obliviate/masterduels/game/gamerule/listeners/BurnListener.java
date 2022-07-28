@@ -13,7 +13,7 @@ public class BurnListener implements Listener {
 
 	@EventHandler(ignoreCancelled = true)
 	public void onLaunch(EntityCombustEvent e) {
-		if (e.getEntity() instanceof Player) return;
+		if (!(e.getEntity() instanceof Player)) return;
 		final Player player = (Player) e.getEntity();
 		final Member member = UserHandler.getMember(player.getUniqueId());
 		if (member == null) return;

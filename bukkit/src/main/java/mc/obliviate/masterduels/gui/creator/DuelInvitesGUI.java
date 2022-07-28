@@ -1,8 +1,8 @@
 package mc.obliviate.masterduels.gui.creator;
 
 import mc.obliviate.inventory.Icon;
+import mc.obliviate.inventory.configurable.ConfigurableGui;
 import mc.obliviate.masterduels.game.creator.MatchCreator;
-import mc.obliviate.masterduels.gui.ConfigurableGui;
 import mc.obliviate.masterduels.queue.DuelQueue;
 import mc.obliviate.masterduels.setup.chatentry.ChatEntry;
 import mc.obliviate.masterduels.user.IUser;
@@ -10,8 +10,8 @@ import mc.obliviate.masterduels.user.Member;
 import mc.obliviate.masterduels.user.UserHandler;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.Utils;
-import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
 import mc.obliviate.masterduels.utils.xmaterial.XMaterial;
+import mc.obliviate.util.placeholder.PlaceholderUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;

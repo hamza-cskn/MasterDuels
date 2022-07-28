@@ -1,7 +1,6 @@
 package mc.obliviate.masterduels.commands;
 
 import mc.obliviate.masterduels.MasterDuels;
-import mc.obliviate.masterduels.VaultUtil;
 import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.game.Match;
@@ -11,8 +10,9 @@ import mc.obliviate.masterduels.kit.gui.KitListEditorGUI;
 import mc.obliviate.masterduels.setup.ArenaSetup;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.Utils;
-import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
+import mc.obliviate.masterduels.utils.VaultUtil;
 import mc.obliviate.masterduels.utils.serializer.SerializerUtils;
+import mc.obliviate.util.placeholder.PlaceholderUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.Command;

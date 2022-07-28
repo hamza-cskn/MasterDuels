@@ -15,3 +15,7 @@ commands:
     aliases:
       - masterduels
   dueladmin:
+permissions:
+  masterduels.creator.set.*:
+    default: true
+    description: Allow players using all creator features.

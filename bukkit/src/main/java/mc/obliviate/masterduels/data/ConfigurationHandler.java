@@ -83,7 +83,6 @@ public class ConfigurationHandler {
 		return menus;
 	}
 
-
 	public void init() {
 		loadDataFile(new File(plugin.getDataFolder() + File.separator + DATA_FILE_NAME));
 		loadMessagesFile(new File(plugin.getDataFolder() + File.separator + MESSAGES_FILE_NAME));

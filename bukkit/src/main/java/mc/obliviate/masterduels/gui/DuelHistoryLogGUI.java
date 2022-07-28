@@ -1,11 +1,13 @@
 package mc.obliviate.masterduels.gui;
 
 import mc.obliviate.inventory.Icon;
+import mc.obliviate.inventory.configurable.ConfigurableGui;
+import mc.obliviate.inventory.pagination.PaginationManager;
 import mc.obliviate.masterduels.history.MatchHistoryLog;
 import mc.obliviate.masterduels.history.PlayerHistoryLog;
 import mc.obliviate.masterduels.utils.MessageUtils;
-import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
 import mc.obliviate.masterduels.utils.timer.TimerUtils;
+import mc.obliviate.util.placeholder.PlaceholderUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -22,11 +24,12 @@ import static mc.obliviate.masterduels.utils.Utils.getPlaceholders;
 public class DuelHistoryLogGUI extends ConfigurableGui {
 
 	private static DuelHistoryLogGUI.Config guiConfig;
+	private final PaginationManager paginationManager = new PaginationManager(this);
 
 	public DuelHistoryLogGUI(Player player) {
 		super(player, "duel-history-log-gui");
 
-		getPaginationManager().getSlots().addAll(guiConfig.pageSlots);
+		this.paginationManager.getSlots().addAll(guiConfig.pageSlots);
 
 		List<MatchHistoryLog> logs = loadDuelHistories(); //todo cache it
 		int i = 1;
@@ -43,13 +46,13 @@ public class DuelHistoryLogGUI extends ConfigurableGui {
 				icon = getNonSoloGamesIcon(log, placeholderUtil, i);
 			}
 
-			getPaginationManager().addIcon(icon);
+			paginationManager.addItem(icon);
 			i++;
 		}
 	}
 
 	private Icon getNonSoloGamesIcon(MatchHistoryLog log, PlaceholderUtil placeholderUtil, int amount) {
-		Icon icon = new Icon(GUISerializerUtils.getConfigItem(getIconsSection("non-solo-games-icon"), placeholderUtil)).setAmount(amount);
+		Icon icon = new Icon(getConfigItem("non-solo-games-icon", placeholderUtil)).setAmount(amount);
 		List<String> loreCopy = new ArrayList<>();
 		for (String loreLine : icon.getItem().getItemMeta().getLore()) {
 			if (loreLine.equalsIgnoreCase("{+players}")) {
@@ -80,7 +83,7 @@ public class DuelHistoryLogGUI extends ConfigurableGui {
 	}
 
 	private Icon getSoloGamesIcon(MatchHistoryLog log, PlaceholderUtil placeholderUtil, int amount) {
-		Icon icon = new Icon(GUISerializerUtils.getConfigItem(getIconsSection("solo-games-icon"), placeholderUtil)).setAmount(amount);
+		Icon icon = new Icon(getConfigItem("solo-games-icon", placeholderUtil)).setAmount(amount);
 
 		OfflinePlayer player1 = null;
 		PlayerHistoryLog player1HistoryLog = null;
@@ -134,19 +137,17 @@ public class DuelHistoryLogGUI extends ConfigurableGui {
 	@Override
 	public void onOpen(InventoryOpenEvent event) {
 		putDysfunctionalIcons();
-		if (getPaginationManager().getPage() != getPaginationManager().getLastPage()) {
+		if (this.paginationManager.getCurrentPage() != this.paginationManager.getLastPage()) {
 			putIcon("previous", e -> {
-				getPaginationManager().previousPage();
-				getPaginationManager().update();
+				this.paginationManager.goPreviousPage().update();
 			});
 		}
-		if (getPaginationManager().getPage() != 0) {
+		if (this.paginationManager.getCurrentPage() != 0) {
 			putIcon("next", e -> {
-				getPaginationManager().nextPage();
-				getPaginationManager().update();
+				this.paginationManager.goNextPage().update();
 			});
 		}
-		getPaginationManager().update();
+		this.paginationManager.update();
 	}
 
 	@Override

@@ -1,7 +1,7 @@
 package mc.obliviate.masterduels.utils;
 
-import mc.obliviate.masterduels.utils.placeholder.InternalPlaceholder;
-import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
+import mc.obliviate.util.placeholder.InternalPlaceholder;
+import mc.obliviate.util.placeholder.PlaceholderUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;

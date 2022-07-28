@@ -16,8 +16,8 @@ public class MatchRoundData {
 
 	private final Map<Team, Integer> teamWins = new HashMap<>();
 	private Team winnerTeam;
-	private int round = 0;
-	private int totalRounds = 1;
+    private int round = 1;
+    private int totalRounds = 1;
 
 	public void addWin(final Team team) {
 		final int wins = teamWins.getOrDefault(team, 0);

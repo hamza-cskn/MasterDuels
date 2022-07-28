@@ -1,16 +1,16 @@
 package mc.obliviate.masterduels.gui.creator;
 
 import com.google.common.base.Preconditions;
-import mc.obliviate.masterduels.VaultUtil;
+import mc.obliviate.inventory.configurable.ConfigurableGui;
 import mc.obliviate.masterduels.data.ConfigurationHandler;
 import mc.obliviate.masterduels.game.Match;
 import mc.obliviate.masterduels.game.creator.CreatorKitManager;
 import mc.obliviate.masterduels.game.creator.MatchCreator;
-import mc.obliviate.masterduels.gui.ConfigurableGui;
 import mc.obliviate.masterduels.kit.gui.KitSelectionGUI;
 import mc.obliviate.masterduels.utils.MessageUtils;
-import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
+import mc.obliviate.masterduels.utils.VaultUtil;
 import mc.obliviate.masterduels.utils.timer.TimerUtils;
+import mc.obliviate.util.placeholder.PlaceholderUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 

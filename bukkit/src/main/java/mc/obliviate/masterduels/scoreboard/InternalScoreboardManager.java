@@ -16,6 +16,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+import java.time.Duration;
+
 public final class InternalScoreboardManager implements Listener {
 
 	public void init(MasterDuels plugin) {
@@ -43,51 +45,38 @@ public final class InternalScoreboardManager implements Listener {
 
 	public void setupScoreboard(Member member, MatchStateType type) {
 		uninstallScoreboard(member.getPlayer());
-		final HScoreboard scoreboard = HCore.createScoreboard(member.getPlayer());
+		HCore.scheduler(false).after(Duration.ofMillis(1050)).run(() -> {
+			final ScoreboardFormatConfig formatConfig = ScoreboardFormatConfig.getFormatConfig(type);
+			final Match match = member.getMatch();
 
-		final ScoreboardFormatConfig formatConfig = ScoreboardFormatConfig.getFormatConfig(type);
-		scoreboard.setTitle(formatConfig.getTitle());
-		scoreboard.setUpdateInterval(20);
-		scoreboard.show();
+			HScoreboard scoreboard = HCore.createScoreboard(member.getPlayer(), formatConfig.getTitle());
+			scoreboard.update(20, hScoreboard -> {
+				int lineNo = 0;
+				for (String line : formatConfig.getLines()) {
+					if (line.equalsIgnoreCase("{+opponents}")) {
+						for (final Member loopMember : match.getAllMembers()) {
+							if (member.getTeam().equals(loopMember.getTeam())) continue;
 
-		final Match match = member.getMatch();
-		scoreboard.update(hScoreboard -> {
+							if (!loopMember.getPlayer().isOnline()) {
+								line = formatConfig.getQuitOpponentFormat();
+							} else if (UserHandler.isSpectator(loopMember.getPlayer().getUniqueId())) {
+								line = formatConfig.getDeadOpponentFormat();
+							} else {
+								line = formatConfig.getLiveOpponentFormat().replace("{health}", loopMember.getPlayer().getHealthScale() + "");
+							}
 
-			int lineNo = 0;
-			for (String line : formatConfig.getLines()) {
-
-				if (line.equalsIgnoreCase("{+opponents}")) {
-					for (final Member loopMember : match.getAllMembers()) {
-						if (member.getTeam().equals(loopMember.getTeam())) continue;
-
-						if (!loopMember.getPlayer().isOnline()) {
-							line = formatConfig.getQuitOpponentFormat();
-						} else if (UserHandler.isSpectator(loopMember.getPlayer().getUniqueId())) {
-							line = formatConfig.getDeadOpponentFormat();
-						} else {
-							line = formatConfig.getLiveOpponentFormat().replace("{health}", loopMember.getPlayer().getHealthScale() + "");
+							line = line.replace("{name}", Utils.getDisplayName(loopMember.getPlayer()) + "");
+							scoreboard.setLine(lineNo++, line);
 						}
-
-						line = line.replace("{name}", Utils.getDisplayName(loopMember.getPlayer()) + "");
-						scoreboard.setLine(lineNo++, trimString(line, 16));
+					} else {
+						line = line.replace("{round}", match.getGameDataStorage().getGameRoundData().getCurrentRound() + "")
+								.replace("{map}", match.getArena().getMapName())
+								.replace("{timer}", TimerUtils.formatTimeUntilThenAsTimer(match.getGameDataStorage().getFinishTime()))
+								.replace("{team-size}", member.getTeam().getMembers().size() + "");
+						scoreboard.setLine(lineNo++, line);
 					}
-				} else {
-					line = line.replace("{round}", "" + match.getGameDataStorage().getGameRoundData().getCurrentRound())
-							.replace("{map}", match.getArena().getMapName() + "")
-							.replace("{timer}", TimerUtils.formatTimeUntilThenAsTimer(match.getGameDataStorage().getFinishTime()))
-							.replace("{team-size}", member.getTeam().getMembers().size() + "");
-					scoreboard.setLine(lineNo++, trimString(line, 16));
 				}
-			}
+			});
 		});
 	}
-
-	private static String trimString(String string, int charLimit) {
-		if (string.length() > charLimit) {
-			return string.substring(0, charLimit);
-		}
-		return string;
-	}
-
-
 }

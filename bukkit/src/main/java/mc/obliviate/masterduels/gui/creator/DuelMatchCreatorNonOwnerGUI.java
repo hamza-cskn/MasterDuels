@@ -1,20 +1,20 @@
 package mc.obliviate.masterduels.gui.creator;
 
 import mc.obliviate.inventory.Icon;
+import mc.obliviate.inventory.configurable.ConfigurableGui;
+import mc.obliviate.inventory.configurable.util.ItemStackSerializer;
 import mc.obliviate.masterduels.data.ConfigurationHandler;
 import mc.obliviate.masterduels.game.MatchBuilder;
 import mc.obliviate.masterduels.game.MatchTeamManager;
 import mc.obliviate.masterduels.game.Team;
 import mc.obliviate.masterduels.game.creator.CreatorKitManager;
 import mc.obliviate.masterduels.game.creator.MatchCreator;
-import mc.obliviate.masterduels.gui.ConfigurableGui;
 import mc.obliviate.masterduels.kit.gui.KitSelectionGUI;
 import mc.obliviate.masterduels.user.Member;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.Utils;
-import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
-import mc.obliviate.masterduels.utils.serializer.SerializerUtils;
 import mc.obliviate.masterduels.utils.timer.TimerUtils;
+import mc.obliviate.util.placeholder.PlaceholderUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryOpenEvent;
@@ -75,7 +75,8 @@ public class DuelMatchCreatorNonOwnerGUI extends ConfigurableGui {
 		for (int teamNo = 0; teamNo < matchBuilder.getTeamAmount(); teamNo++) {
 
 			final Icon icon = new Icon(guiConfig.teamIcons.get(Math.min(teamNo, guiConfig.teamIcons.size() - 1)).clone()).setName(guiConfig.teamIconName).setLore(guiConfig.teamIconLore);
-			final ItemStack item = SerializerUtils.applyPlaceholdersOnItemStack(icon.getItem(), new PlaceholderUtil().add("{team-no}", (teamNo + 1) + "").add("{team-players-amount}", matchTeamManager.getTeamBuilders().get(teamNo).getMemberBuilders().size() + "").add("{team-size}", matchBuilder.getTeamAmount() + ""));
+			final ItemStack item = icon.getItem();
+			ItemStackSerializer.applyPlaceholdersToItemStack(item, new PlaceholderUtil().add("{team-no}", (teamNo + 1) + "").add("{team-players-amount}", matchTeamManager.getTeamBuilders().get(teamNo).getMemberBuilders().size() + "").add("{team-size}", matchBuilder.getTeamAmount() + ""));
 
 			addItem((teamNo + 1) * 9, item);
 
@@ -145,7 +146,8 @@ public class DuelMatchCreatorNonOwnerGUI extends ConfigurableGui {
 		}
 
 		private ItemStack getPlayerSlotIcon(Member.Builder builder) {
-			final ItemStack item = SerializerUtils.applyPlaceholdersOnItemStack(playerSlotIcon.clone(), new PlaceholderUtil().add("{player}", Utils.getDisplayName(builder.getPlayer())).add("{kit}", builder.getKit() == null ? MessageUtils.parseColor(MessageUtils.getMessage("kit.none-kit-name")) : builder.getKit().getKitName()));
+			final ItemStack item = playerSlotIcon.clone();
+			ItemStackSerializer.applyPlaceholdersToItemStack(item, new PlaceholderUtil().add("{player}", Utils.getDisplayName(builder.getPlayer())).add("{kit}", builder.getKit() == null ? MessageUtils.parseColor(MessageUtils.getMessage("kit.none-kit-name")) : builder.getKit().getKitName()));
 			if (item.getItemMeta() instanceof SkullMeta) {
 				final SkullMeta skullMeta = (SkullMeta) item.getItemMeta();
 				skullMeta.setOwner(builder.getPlayer().getName());

@@ -20,9 +20,9 @@ import mc.obliviate.masterduels.user.Spectator;
 import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.Utils;
-import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
 import mc.obliviate.masterduels.utils.playerreset.PlayerReset;
 import mc.obliviate.masterduels.utils.timer.TimerUtils;
+import mc.obliviate.util.placeholder.PlaceholderUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -232,28 +232,32 @@ public class Match {
 				break;
 			case "DISABLED":
 				return;
-		}
+        }
 
-		if (receivers == null) return;
+        if (receivers == null) return;
 
-		MatchRoundData roundData = matchDataStorage.getGameRoundData();
-		if (roundData.getTeamWins().isEmpty()) return;
+        MatchRoundData roundData = matchDataStorage.getGameRoundData();
+        if (roundData.getTeamWins().isEmpty()) return;
 
-		final Team winnerTeam = roundData.getWinnerTeam();
-		final List<Team> loserTeams = matchDataStorage.getGameTeamManager().getTeams().stream().filter(team -> !team.equals(winnerTeam)).collect(Collectors.toList());
+        final Team winnerTeam = roundData.getWinnerTeam();
+        final List<Team> loserTeams = matchDataStorage.getGameTeamManager().getTeams().stream().filter(team -> !team.equals(winnerTeam)).collect(Collectors.toList());
 
-		if (roundData.getWinnerTeam().getMembers().size() == 1) {
-			final Player winner = roundData.getWinnerTeam().getMembers().get(0).getPlayer();
-			final Player loser = loserTeams.size() == 0 || loserTeams.get(0).getSize() == 0 ? null : loserTeams.get(0).getMembers().get(0).getPlayer();
-			for (final Player player : receivers) {
-				MessageUtils.sendMessage(player, "game-end-broadcast.solo", new PlaceholderUtil().add("{winner}", Utils.getDisplayName(winner)).add("{loser}", Utils.getDisplayName(loser)).add("{winner-health}", "" + winner.getHealthScale()));
-			}
-			for (final Member member : getAllMembers()) {
-				sendSoloMatchSummary(member.getPlayer(), winner, loser);
-			}
-		} else {
-			final Player winner = winnerTeam.getMembers().get(0).getPlayer();
-			final String loserName = loserTeams.size() == 0 || loserTeams.get(0).getSize() == 0 ? "" : Utils.getDisplayName(loserTeams.get(0).getMembers().get(0).getPlayer());
+        if (winnerTeam.getMembers().isEmpty()) {
+            for (final Member member : getAllMembers()) {
+                sendNonSoloMatchSummary(member.getPlayer());
+            }
+        } else if (winnerTeam.getMembers().size() == 1) {
+            final Player winner = winnerTeam.getMembers().get(0).getPlayer();
+            final Player loser = loserTeams.size() == 0 || loserTeams.get(0).getSize() == 0 ? null : loserTeams.get(0).getMembers().get(0).getPlayer();
+            for (final Player player : receivers) {
+                MessageUtils.sendMessage(player, "game-end-broadcast.solo", new PlaceholderUtil().add("{winner}", Utils.getDisplayName(winner)).add("{loser}", Utils.getDisplayName(loser)).add("{winner-health}", "" + winner.getHealthScale()));
+            }
+            for (final Member member : getAllMembers()) {
+                sendSoloMatchSummary(member.getPlayer(), winner, loser);
+            }
+        } else {
+            final Player winner = winnerTeam.getMembers().get(0).getPlayer();
+            final String loserName = loserTeams.size() == 0 || loserTeams.get(0).getSize() == 0 ? "" : Utils.getDisplayName(loserTeams.get(0).getMembers().get(0).getPlayer());
 			for (final Player player : receivers) {
 				MessageUtils.sendMessage(player, "game-end-broadcast.non-solo", new PlaceholderUtil().add("{winner}", Utils.getDisplayName(winner)).add("{loser}", loserName));
 			}

@@ -1,6 +1,10 @@
 package mc.obliviate.masterduels;
 
 import com.hakan.core.HCore;
+import com.hakan.core.message.HMessageHandler;
+import com.hakan.core.packet.HPacketHandler;
+import com.hakan.core.scoreboard.HScoreboardHandler;
+import com.hakan.core.utils.ProtocolVersion;
 import mc.obliviate.inventory.InventoryAPI;
 import mc.obliviate.masterduels.arenaclear.ArenaClearListener;
 import mc.obliviate.masterduels.arenaclear.IArenaClearHandler;
@@ -35,12 +39,13 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Scanner;
 
-import static mc.obliviate.masterduels.VaultUtil.vaultEnabled;
+import static mc.obliviate.masterduels.utils.VaultUtil.vaultEnabled;
 
 public class MasterDuels extends JavaPlugin {
 
@@ -62,11 +67,11 @@ public class MasterDuels extends JavaPlugin {
 		return shutdownMode;
 	}
 
-	protected static Economy getEconomy() {
+	public static Economy getEconomy() {
 		return economy;
 	}
 
-	protected static Permission getPermissions() {
+	public static Permission getPermissions() {
 		return permissions;
 	}
 
@@ -114,7 +119,19 @@ public class MasterDuels extends JavaPlugin {
 						arenaClearHandler.init();
 					}
 					// SETUP ARENA CLEAR HANDLER END
-					HCore.initialize(this);
+					try {
+						HCore.setInstance(this);
+						Field field = HCore.class.getDeclaredField("VERSION");
+						field.setAccessible(true);
+						field.set(null, ProtocolVersion.getCurrentVersion());
+						field.setAccessible(false);
+						HPacketHandler.initialize();
+						HMessageHandler.initialize();
+						HScoreboardHandler.initialize();
+					} catch (Exception e) {
+						throw new RuntimeException(e);
+					}
+
 					if (ConfigurationHandler.getConfig().getBoolean("scoreboards.enabled", true))
 						new InternalScoreboardManager().init(this);
 					if (ConfigurationHandler.getQueues().getBoolean("duel-queues-enabled", true))

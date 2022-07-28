@@ -1,8 +1,9 @@
 package mc.obliviate.masterduels.kit.gui;
 
 import mc.obliviate.inventory.Icon;
+import mc.obliviate.inventory.configurable.ConfigurableGui;
+import mc.obliviate.inventory.pagination.PaginationManager;
 import mc.obliviate.masterduels.game.MatchBuilder;
-import mc.obliviate.masterduels.gui.ConfigurableGui;
 import mc.obliviate.masterduels.kit.Kit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -17,6 +18,7 @@ public class KitSelectionGUI extends ConfigurableGui {
 	private final MatchBuilder builder;
 	private final KitSelectResponse response;
 	private final List<Kit> allowedKits;
+	private final PaginationManager paginationManager = new PaginationManager(this);
 
 	public KitSelectionGUI(Player player, MatchBuilder builder, KitSelectResponse response) {
 		this(player, builder, response, null);
@@ -34,9 +36,9 @@ public class KitSelectionGUI extends ConfigurableGui {
 				response.onSelected(kit);
 			});
 
-			getPaginationManager().addIcon(icon);
+			this.paginationManager.addItem(icon);
 		}
-		getPaginationManager().getSlots().addAll(guiConfig.pageSlots);
+		this.paginationManager.getSlots().addAll(guiConfig.pageSlots);
 	}
 
 	private Collection<Kit> getAllowedKits() {
@@ -56,19 +58,17 @@ public class KitSelectionGUI extends ConfigurableGui {
 	@Override
 	public void onOpen(InventoryOpenEvent event) {
 		putDysfunctionalIcons();
-		if (getPaginationManager().getPage() != getPaginationManager().getLastPage()) {
+		if (this.paginationManager.getCurrentPage() != this.paginationManager.getLastPage()) {
 			putIcon("previous", e -> {
-				getPaginationManager().previousPage();
-				getPaginationManager().update();
+				this.paginationManager.goPreviousPage().update();
 			});
 		}
-		if (getPaginationManager().getPage() != 0) {
+		if (this.paginationManager.getCurrentPage() != 0) {
 			putIcon("next", e -> {
-				getPaginationManager().nextPage();
-				getPaginationManager().update();
+				this.paginationManager.goNextPage().update();
 			});
 		}
-		getPaginationManager().update();
+		this.paginationManager.update();
 	}
 
 	@Override

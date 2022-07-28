@@ -8,8 +8,8 @@ import mc.obliviate.masterduels.user.Member;
 import mc.obliviate.masterduels.user.Spectator;
 import mc.obliviate.masterduels.user.UserHandler;
 import mc.obliviate.masterduels.utils.MessageUtils;
-import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
-import org.bukkit.Material;
+import mc.obliviate.masterduels.utils.xmaterial.XMaterial;
+import mc.obliviate.util.placeholder.PlaceholderUtil;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -62,28 +62,8 @@ public class DuelProtectListener implements Listener {
 		if (user instanceof Spectator) {
 			e.setCancelled(true);
 		} else if (user instanceof Member) {
-			if (e.getAction() == Action.PHYSICAL || (e.getClickedBlock() != null && (e.getClickedBlock().getState() instanceof InventoryHolder))) {
+			if (e.getAction() == Action.PHYSICAL || (e.getClickedBlock() != null || (e.getClickedBlock().getState() instanceof InventoryHolder))) {
 				e.setCancelled(true);
-				return;
-			}
-			if (e.getClickedBlock() != null) {
-				switch (e.getClickedBlock().getType()) {
-					case WORKBENCH:
-					case ANVIL:
-					case TRAP_DOOR:
-					case FENCE_GATE:
-					case DARK_OAK_DOOR:
-					case ACACIA_DOOR:
-					case BIRCH_DOOR:
-					case JUNGLE_DOOR:
-					case SPRUCE_DOOR:
-					case WOOD_DOOR:
-					case WOODEN_DOOR:
-					case STONE_BUTTON:
-					case WOOD_BUTTON:
-					case LEVER:
-						e.setCancelled(true);
-				}
 			}
 		}
 	}
@@ -93,9 +73,9 @@ public class DuelProtectListener implements Listener {
 		if (!(e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK))) return;
 		final IUser user = UserHandler.getUser(e.getPlayer().getUniqueId());
 		if (user instanceof Member) {
-			if (e.getItem() != null && e.getItem().getType().equals(Material.MUSHROOM_SOUP)) {
+			if (e.getItem() != null && e.getItem().getType().equals(XMaterial.MUSHROOM_STEW.parseMaterial())) {
 				e.getPlayer().setHealth(Math.min(e.getPlayer().getMaxHealth(), e.getPlayer().getHealth() + soupRegenAmount));
-				e.getPlayer().setItemInHand(new ItemStack(Material.BOWL));
+				e.getPlayer().setItemInHand(new ItemStack(XMaterial.BOWL.parseMaterial()));
 			}
 		}
 	}
