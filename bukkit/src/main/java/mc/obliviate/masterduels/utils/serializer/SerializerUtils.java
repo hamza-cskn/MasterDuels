@@ -1,19 +1,13 @@
 package mc.obliviate.masterduels.utils.serializer;
 
 import mc.obliviate.masterduels.utils.Logger;
-import mc.obliviate.masterduels.utils.MessageUtils;
-import mc.obliviate.masterduels.utils.xmaterial.XMaterial;
-import mc.obliviate.util.placeholder.PlaceholderUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 public class SerializerUtils {
@@ -76,48 +70,4 @@ public class SerializerUtils {
 
 		return list;
 	}
-
-	public static ItemStack deserializeItemStack(ConfigurationSection section, PlaceholderUtil placeholderUtil) {
-		if (section == null) throw new IllegalArgumentException("ItemStack section cannot be null!");
-		final Optional<XMaterial> xmaterial = XMaterial.matchXMaterial(section.getString("material", "BEDROCK"));
-		if (xmaterial.isEmpty()) {
-			Logger.error("Material could not found: " + section.getString("material"));
-			return null;
-		}
-
-		final ItemStack item = xmaterial.get().parseItem();
-		if (item == null) {
-			Logger.error("Material could not parsed as itemstack: " + section.getString("material"));
-			return null;
-		}
-
-		final ItemMeta meta = item.getItemMeta();
-		meta.setDisplayName(MessageUtils.parseColor(MessageUtils.applyPlaceholders(section.getString("display-name"), placeholderUtil)));
-		meta.setLore(MessageUtils.parseColor(MessageUtils.applyPlaceholders(section.getStringList("lore"), placeholderUtil)));
-		item.setItemMeta(meta);
-		item.setAmount(section.getInt("amount", 1));
-		return item;
-	}
-
-	public static ItemStack applyPlaceholdersOnItemStack(ItemStack item, PlaceholderUtil placeholderUtil) {
-		final ItemMeta meta = item.getItemMeta();
-		meta.setDisplayName(MessageUtils.parseColor(MessageUtils.applyPlaceholders(meta.getDisplayName(), placeholderUtil)));
-		meta.setLore(MessageUtils.parseColor(MessageUtils.applyPlaceholders(meta.getLore(), placeholderUtil)));
-		item.setItemMeta(meta);
-		return item;
-	}
-
-	/*public static MatchHistoryLog deserializeGameHistoryLog(ResultSet rs) throws SQLException {
-		final String uuid = rs.getString("uuid");
-		final String serializedWinners = rs.getString("winners");
-		final String serializedLosers = rs.getString("losers");
-		final long startTime = rs.getLong("startTime");
-		final long endTime = rs.getLong("endTime");
-
-		return new MatchHistoryLog(UUID.fromString(uuid), startTime, endTime, SerializerUtils.deserializeUUIDList(serializedWinners), SerializerUtils.deserializeUUIDList(serializedLosers));
-
-	}
-
-	 */
-
 }

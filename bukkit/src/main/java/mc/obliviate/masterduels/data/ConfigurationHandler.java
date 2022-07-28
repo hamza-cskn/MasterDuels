@@ -1,5 +1,7 @@
 package mc.obliviate.masterduels.data;
 
+import mc.obliviate.inventory.configurable.GuiConfigurationTable;
+import mc.obliviate.inventory.configurable.util.ItemStackSerializer;
 import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.arena.BasicArenaState;
@@ -90,6 +92,7 @@ public class ConfigurationHandler {
 		loadMenusFile(new File(plugin.getDataFolder() + File.separator + MENUS_FILE_NAME));
 		loadQueuesFile(new File(plugin.getDataFolder() + File.separator + QUEUES_FILE_NAME));
 
+		GuiConfigurationTable.setDefaultConfigurationTable(new GuiConfigurationTable(ConfigurationHandler.menus));
 		registerArenas();
 		registerLobbyLocation();
 		registerDelayEndDuelAfterPlayerKill();
@@ -213,7 +216,7 @@ public class ConfigurationHandler {
 		final Map<String, ItemStack> iconItemStacks = new HashMap<>();
 
 		//firstly, deserialize default icon.
-		final ItemStack defaultIcon = SerializerUtils.deserializeItemStack(section.getConfigurationSection("icons.queue-icons.default"), null);
+		final ItemStack defaultIcon = ItemStackSerializer.deserializeItemStack(section.getConfigurationSection("icons.queue-icons.default"), null);
 		iconItemStacks.put("default", defaultIcon);
 
 		final ConfigurationSection iconsSection = section.getConfigurationSection("icons.queue-icons");
@@ -227,7 +230,7 @@ public class ConfigurationHandler {
 				continue;
 			}
 
-			final ItemStack item = SerializerUtils.deserializeItemStack(iconsSection.getConfigurationSection(key), null);
+			final ItemStack item = ItemStackSerializer.deserializeItemStack(iconsSection.getConfigurationSection(key), null);
 
 
 			if (item == null) {
@@ -287,16 +290,16 @@ public class ConfigurationHandler {
 
 	private void registerDuelMatchCreatorNonOwnerGUIConfig(final ConfigurationSection section) {
 		new DuelMatchCreatorNonOwnerGUI.Config(
-				SerializerUtils.deserializeItemStack(section.getConfigurationSection("icons.empty-player-slot"), null),
-				SerializerUtils.deserializeItemStack(section.getConfigurationSection("icons.player-slot"), null),
+				ItemStackSerializer.deserializeItemStack(section.getConfigurationSection("icons.empty-player-slot"), null),
+				ItemStackSerializer.deserializeItemStack(section.getConfigurationSection("icons.player-slot"), null),
 				section.getString("icons.team-slot.display-name"),
 				section.getStringList("icons.team-slot.lore"), parseItemStackList(menus.getStringList("duel-creator.manage-teams-gui.icons.team-slot.dynamic-materials")));
 	}
 
 	private void registerTeamManagerConfig(final ConfigurationSection section) {
 		new DuelTeamManagerGUI.Config(
-				SerializerUtils.deserializeItemStack(section.getConfigurationSection("icons.empty-player-slot"), null),
-				SerializerUtils.deserializeItemStack(section.getConfigurationSection("icons.player-slot"), null),
+				ItemStackSerializer.deserializeItemStack(section.getConfigurationSection("icons.empty-player-slot"), null),
+				ItemStackSerializer.deserializeItemStack(section.getConfigurationSection("icons.player-slot"), null),
 				section.getString("icons.team-slot.display-name"),
 				section.getStringList("icons.team-slot.lore"), parseItemStackList(menus.getStringList("duel-creator.non-owner-gui.icons.team-slot.dynamic-materials")));
 	}
@@ -304,7 +307,7 @@ public class ConfigurationHandler {
 	private void registerDuelListGUIConfig(final ConfigurationSection section) {
 		final Map<BasicArenaState, ItemStack> icons = new HashMap<>();
 		for (final BasicArenaState state : BasicArenaState.values()) {
-			icons.put(state, SerializerUtils.deserializeItemStack(section.getConfigurationSection("icons." + state.name()), null));
+			icons.put(state, ItemStackSerializer.deserializeItemStack(section.getConfigurationSection("icons." + state.name()), null));
 		}
 
 		final List<Integer> pageSlots = parseStringAsIntegerList(section.getString("page-slots"));

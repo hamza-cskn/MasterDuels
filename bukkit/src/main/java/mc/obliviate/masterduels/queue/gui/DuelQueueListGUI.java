@@ -3,11 +3,11 @@ package mc.obliviate.masterduels.queue.gui;
 import mc.obliviate.inventory.Gui;
 import mc.obliviate.inventory.Icon;
 import mc.obliviate.inventory.configurable.ConfigurableGui;
+import mc.obliviate.inventory.configurable.util.ItemStackSerializer;
 import mc.obliviate.masterduels.data.ConfigurationHandler;
 import mc.obliviate.masterduels.game.MatchBuilder;
 import mc.obliviate.masterduels.queue.DuelQueue;
 import mc.obliviate.masterduels.queue.DuelQueueTemplate;
-import mc.obliviate.masterduels.utils.serializer.SerializerUtils;
 import mc.obliviate.masterduels.utils.xmaterial.XMaterial;
 import mc.obliviate.util.placeholder.PlaceholderUtil;
 import org.bukkit.configuration.ConfigurationSection;
@@ -77,7 +77,7 @@ public class DuelQueueListGUI extends ConfigurableGui {
 
 			final int players = builder.getPlayers().size();
 
-			SerializerUtils.applyPlaceholdersOnItemStack(item, new PlaceholderUtil()
+			ItemStackSerializer.applyPlaceholdersToItemStack(item, new PlaceholderUtil()
 					.add("{players}", players + "")
 					.add("{max-players}", (builder.getTeamSize() * builder.getTeamAmount()) + "")
 					.add("{queue-name}", templateName));

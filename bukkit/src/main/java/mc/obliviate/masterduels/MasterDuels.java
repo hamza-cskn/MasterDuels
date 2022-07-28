@@ -100,6 +100,7 @@ public class MasterDuels extends JavaPlugin {
 						Bukkit.getLogger().info("This MasterDuels copy is not obfuscated.");
 
 					// SETUP HANDLERS START
+
 					configurationHandler.init();
 					inventoryAPI.init();
 					// LOAD KITS START
