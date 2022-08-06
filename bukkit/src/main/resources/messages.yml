@@ -31,7 +31,7 @@ you-can-not-break: '[DISABLE_PREFIX]&cYou cannot break this block.'
 duel-team-eliminated: '&7The team of &c{victim}&7 has been eliminated!' #for non-solo games
 you-are-in-duel: '&cYou cannot do this in duel game.'
 you-are-not-in-duel: '&cYou are not in a duel game.'
-target-already-in-duel: '&c{target} is already in duel game.'
+target-already-in-duel: '&c{target}&c is already in duel game.'
 you-are-a-spectator: '&eYou are a spectator.'
 game-timed-out: '&cDuel game you are in, has been timed out.'
 no-arena-found-with-this-name: '&cNo arenas with this name found.'
@@ -50,15 +50,15 @@ game-end-broadcast:
   solo: '&a{winner}&7 has won duel with &c{winner-health} health&7! (&a{winner}&7 vs &c{loser}&7)'
   non-solo: '&a{winner}&7 and her team has won duel!' # i do not know how i can show loser and winner teams in chat. it'll be changed future.
 arrow-hit-notify:
-  action-bar: '&c{victim}''s health is {health}'
-  message: '&cYou hit {victim} from {distance} blocks far!'
+  action-bar: '&c{victim}&c''s health is {health}'
+  message: '&cYou hit {victim}&c from {distance} blocks far!'
 game-builder:
   wrong-player-amount: '&cYou can not create this game. Because you need {expected} players but your creator has {found} players.'
-  you-left: '&cYou left from {player}''s Duel Creator.'
-  player-left: '&eThe player {player} left from the creator. &7[&f{total-players}&8/&f{max-players}&7]'
-  player-joined: '&eThe player {player} joined to the creator. &7[&f{total-players}&8/&f{max-players}&7]'
-  you-kicked: '&cYou have been kicked from {player}''s Duel Creator.'
-  you-kick: '&cYou kicked {kicked} player from the Duel Creator.'
+  you-left: '&cYou left from {player}&c''s Duel Creator.'
+  player-left: '&eThe player {player}&e left from the creator. &7[&f{total-players}&8/&f{max-players}&7]'
+  player-joined: '&eThe player {player}&e joined to the creator. &7[&f{total-players}&8/&f{max-players}&7]'
+  you-kicked: '&cYou have been kicked from {player}&c''s Duel Creator.'
+  you-kick: '&cYou kicked {kicked}&c player from the Duel Creator.'
 
 duel-command:
   usage: |-
@@ -86,7 +86,7 @@ duel-command:
       &7 /dueladmin kit save <kit name> &8- &9saves your current inventory as new kit
       &7 /dueladmin kit editor &8- &9opens kit editor gui 
       &7 /dueladmin setlobby &8- &9sets lobby location to teleport players after duel games 
-      &7 /dueladmin nick [nickname] &8- &9changes display name for MasterDuels 
+      &7 /dueladmin nick [nickname] &8- &9changes your display name for MasterDuels 
       &7 /dueladmin teststart <player 1> <player 2> [arena] &8- &9instantly starts a duel game between two players without invite.
       &7 /dueladmin cancel <arena name> &8- &9forces an game to finish
     arena:
@@ -178,8 +178,8 @@ invite:
     invite-expired-inviter: '&7Your duel invite to &f{target}&7 has expired.'
     invite-expired-target: '&7Duel invite sent by &f{inviter}&7 has timed out.'
     all-teams-are-full-target: '&cYour invite could not accept because this room is full.'
-    all-teams-are-full-inviter: '&cInvite that is sent to {target} could not accept because the room is full.'
-    player-already-in-creator: '&c{target} is already in the room.'
+    all-teams-are-full-inviter: '&cInvite that is sent to {target}&c could not accept because the room is full.'
+    player-already-in-creator: '&c{target}&c is already in the room.'
 time-format:
   second: 'second'
   seconds: 'seconds'
