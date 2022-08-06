@@ -78,6 +78,7 @@ public class DuelMatchCreatorNonOwnerGUI extends ConfigurableGui {
             final Icon icon = new Icon(DuelMatchCreatorNonOwnerGUI.guiConfig.teamIcons.get(Math.min(teamNo, DuelMatchCreatorNonOwnerGUI.guiConfig.teamIcons.size() - 1)).clone()).setName(DuelMatchCreatorNonOwnerGUI.guiConfig.teamIconName).setLore(DuelMatchCreatorNonOwnerGUI.guiConfig.teamIconLore);
             final ItemStack item = icon.getItem();
             ItemStackSerializer.applyPlaceholdersToItemStack(item, new PlaceholderUtil().add("{team-no}", (teamNo + 1) + "").add("{team-players-amount}", matchTeamManager.getTeamBuilders().get(teamNo).getMemberBuilders().size() + "").add("{team-size}", matchBuilder.getTeamAmount() + ""));
+            ItemStackSerializer.parseColorOfItemStack(item);
 
             addItem((teamNo + 1) * 9, item);
 
@@ -123,8 +124,9 @@ public class DuelMatchCreatorNonOwnerGUI extends ConfigurableGui {
      * gui configuration.
      */
     private ItemStack getPlayerSlotIcon(Member.Builder builder) {
-        final ItemStack item = new Icon(guiConfig.playerSlotIcon.clone()).setName(guiConfig.teamIconName).setLore(guiConfig.teamIconLore).getItem();
+        final ItemStack item = new Icon(guiConfig.playerSlotIcon.clone()).getItem();
         ItemStackSerializer.applyPlaceholdersToItemStack(item, new PlaceholderUtil().add("{player}", Utils.getDisplayName(builder.getPlayer())).add("{kit}", builder.getKit(this.matchCreator.getBuilder().getData().getKitManager().getKitMode()) == null ? MessageUtils.parseColor(MessageUtils.getMessage("kit.none-kit-name")) : builder.getKit(this.matchCreator.getBuilder().getData().getKitManager().getKitMode()).getKitName()));
+        ItemStackSerializer.parseColorOfItemStack(item);
         if (item.getItemMeta() instanceof SkullMeta) {
             final SkullMeta skullMeta = (SkullMeta) item.getItemMeta();
             skullMeta.setOwner(builder.getPlayer().getName());
