@@ -20,6 +20,7 @@ import java.util.UUID;
  **/
 public class MatchTeamManager {
 
+	private final MatchDataStorage matchDataStorage;
 	private boolean locked = false;
 	// when locked, team builders is dysfunctional
 	private final List<Team.Builder> teamBuilders = new ArrayList<>();
@@ -27,6 +28,10 @@ public class MatchTeamManager {
 	private final List<Team> teams = new ArrayList<>();
 	private int teamAmount = 2;
 	private int teamSize = 1;
+
+	public MatchTeamManager(MatchDataStorage matchDataStorage) {
+		this.matchDataStorage = matchDataStorage;
+	}
 
 	public boolean areAllTeamBuildersFull() {
 		for (Team.Builder team : teamBuilders) {
@@ -128,7 +133,7 @@ public class MatchTeamManager {
 			for (int index = teamSize; index > 0; index--) {
 				if (memberIndex < membersCopy.size()) {
 					Member.Builder memBuilder = membersCopy.get(memberIndex++);
-					builder.registerPlayer(memBuilder.getPlayer(), memBuilder.getKit());
+					builder.registerPlayer(memBuilder.getPlayer(), memBuilder.getKit(this.matchDataStorage.getKitManager().getKitMode()));
 				}
 			}
 		}
