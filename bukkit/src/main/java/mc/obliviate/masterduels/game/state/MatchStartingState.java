@@ -34,7 +34,7 @@ public class MatchStartingState implements MatchState {
 				MessageUtils.sendMessage(member.getPlayer(), "game-timed-out");
 			}
 			match.finish();
-		}, match.getGameDataStorage().getMatchDuration().toSeconds() * 20);
+		}, match.getGameDataStorage().getMatchDuration().getSeconds() * 20);
 		match.getGameTaskManager().delayedTask("process-switcher-task", this::next, 0); //this is a strange bug fix.
 	}
 

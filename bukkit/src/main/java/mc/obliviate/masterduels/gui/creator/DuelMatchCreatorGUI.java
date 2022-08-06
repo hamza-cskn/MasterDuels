@@ -4,7 +4,7 @@ import com.google.common.base.Preconditions;
 import mc.obliviate.inventory.configurable.ConfigurableGui;
 import mc.obliviate.masterduels.data.ConfigurationHandler;
 import mc.obliviate.masterduels.game.Match;
-import mc.obliviate.masterduels.game.creator.CreatorKitManager;
+import mc.obliviate.masterduels.game.creator.KitManager;
 import mc.obliviate.masterduels.game.creator.MatchCreator;
 import mc.obliviate.masterduels.kit.gui.KitSelectionGUI;
 import mc.obliviate.masterduels.utils.MessageUtils;
@@ -42,8 +42,8 @@ public class DuelMatchCreatorGUI extends ConfigurableGui {
 				.add("{invited-players}", matchCreator.getInvites().size() + "")
 				.add("{total-players}", matchCreator.getBuilder().getPlayers().size() + "")
 				.add("{round-amount}", matchCreator.getBuilder().getTotalRounds() + "")
-				.add("{game-timer}", TimerUtils.formatTimeAsTimer(matchCreator.getBuilder().getDuration().toSeconds()))
-				.add("{game-time}", TimerUtils.formatTimeAsTime(matchCreator.getBuilder().getDuration().toSeconds()))
+				.add("{game-timer}", TimerUtils.formatTimeAsTimer(matchCreator.getBuilder().getDuration().toMinutes() * 60))
+				.add("{game-time}", TimerUtils.formatTimeAsTime(matchCreator.getBuilder().getDuration().toMinutes() * 60))
 				.add("{team-amount}", matchCreator.getBuilder().getTeamAmount() + "")
 				.add("{team-size}", matchCreator.getBuilder().getTeamSize() + "")
 		);
@@ -106,29 +106,28 @@ public class DuelMatchCreatorGUI extends ConfigurableGui {
 	}
 
 	private void putKitIcon() {
-		if (matchCreator.getCreatorKitManager().getKitMode().equals(CreatorKitManager.KitMode.VARIOUS)) {
-			PlaceholderUtil placeholderUtil = new PlaceholderUtil().add("{your-kit}", matchCreator.getCreatorKitManager().getDefaultKit() == null ? MessageUtils.parseColor(MessageUtils.getMessage("kit.none-kit-name")) : matchCreator.getCreatorKitManager().getDefaultKit().getKitName());
+		if (matchCreator.getBuilder().getData().getKitManager().getKitMode().equals(KitManager.KitMode.VARIOUS)) {
+			PlaceholderUtil placeholderUtil = new PlaceholderUtil().add("{your-kit}", matchCreator.getBuilder().getData().getKitManager().getDefaultKit() == null ? MessageUtils.parseColor(MessageUtils.getMessage("kit.none-kit-name")) : matchCreator.getBuilder().getData().getKitManager().getDefaultKit().getKitName());
 			putIcon("kit-various-mode", placeholderUtil, e -> {
 				if (e.isLeftClick()) {
 					new KitSelectionGUI(player, matchCreator.getBuilder(), kit -> {
-						matchCreator.getCreatorKitManager().setDefaultKit(kit);
-						open();
 					}, MatchCreator.ALLOWED_KITS).open();
 				} else if (e.isRightClick()) {
-					matchCreator.getCreatorKitManager().setKitMode(CreatorKitManager.KitMode.MUTUAL);
+					matchCreator.getBuilder().getData().getKitManager().setKitMode(KitManager.KitMode.MUTUAL);
 					open();
 				}
 			});
 		} else {
-			PlaceholderUtil placeholderUtil = new PlaceholderUtil().add("{kit}", matchCreator.getCreatorKitManager().getDefaultKit() == null ? MessageUtils.parseColor(MessageUtils.getMessage("kit.none-kit-name")) : matchCreator.getCreatorKitManager().getDefaultKit().getKitName());
+			PlaceholderUtil placeholderUtil = new PlaceholderUtil().add("{kit}", matchCreator.getBuilder().getData().getKitManager().getDefaultKit() == null ? MessageUtils.parseColor(MessageUtils.getMessage("kit.none-kit-name")) : matchCreator.getBuilder().getData().getKitManager().getDefaultKit().getKitName());
 			putIcon("kit-mutual-mode", placeholderUtil, e -> {
 				if (e.isLeftClick()) {
 					new KitSelectionGUI(player, matchCreator.getBuilder(), kit -> {
-						matchCreator.getCreatorKitManager().setDefaultKit(kit);
+						matchCreator.getBuilder().getData().getKitManager().setDefaultKit(kit);
+						matchCreator.getBuilder().getData().getGameTeamManager().getMemberBuilder(player.getUniqueId()).setKit(kit);
 						open();
 					}, MatchCreator.ALLOWED_KITS).open();
 				} else if (e.isRightClick()) {
-					matchCreator.getCreatorKitManager().setKitMode(CreatorKitManager.KitMode.VARIOUS);
+					matchCreator.getBuilder().getData().getKitManager().setKitMode(KitManager.KitMode.VARIOUS);
 					open();
 				}
 			});
@@ -149,13 +148,13 @@ public class DuelMatchCreatorGUI extends ConfigurableGui {
 
 	private void putFinishTimeIcon() {
 		putIcon("game-time", new PlaceholderUtil()
-				.add("{game-timer}", TimerUtils.formatTimeAsTimer(matchCreator.getBuilder().getDuration().toSeconds()))
-				.add("{game-time}", TimerUtils.formatTimeAsTime(matchCreator.getBuilder().getDuration().toSeconds())), e -> {
+				.add("{game-timer}", TimerUtils.formatTimeAsTimer(matchCreator.getBuilder().getDuration().getSeconds()))
+				.add("{game-time}", TimerUtils.formatTimeAsTime(matchCreator.getBuilder().getDuration().getSeconds())), e -> {
 			if (!isOwner) return;
 			if (e.isRightClick()) {
-				matchCreator.getBuilder().setDuration(Duration.ofSeconds(Math.max(matchCreator.getBuilder().getDuration().toSeconds() - 30, MatchCreator.MIN_GAME_TIME)));
+				matchCreator.getBuilder().setDuration(Duration.ofSeconds(Math.max(matchCreator.getBuilder().getDuration().getSeconds() - 30, MatchCreator.MIN_GAME_TIME)));
 			} else if (e.isLeftClick()) {
-				matchCreator.getBuilder().setDuration(Duration.ofSeconds(Math.min(matchCreator.getBuilder().getDuration().toSeconds() + 30, MatchCreator.MAX_GAME_TIME)));
+				matchCreator.getBuilder().setDuration(Duration.ofSeconds(Math.min(matchCreator.getBuilder().getDuration().getSeconds() + 30, MatchCreator.MAX_GAME_TIME)));
 			}
 			open();
 		});

@@ -5,6 +5,7 @@ import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.api.arena.DuelMatchStateChangeEvent;
 import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.data.ConfigurationHandler;
+import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.game.round.MatchRoundData;
 import mc.obliviate.masterduels.game.spectator.MatchSpectatorManager;
 import mc.obliviate.masterduels.game.state.IdleState;
@@ -150,7 +151,6 @@ public class Match {
 	 * unregisters match, members, spectators; clears arena etc...
 	 */
 	public void uninstall() {
-		Logger.debug(Logger.DebugPart.GAME, "uninstall game - process started");
 		if (gameState instanceof MatchUninstallingState) {
 			Logger.severe("Uninstall Game method called twice.");
 			return;
@@ -186,7 +186,6 @@ public class Match {
 
 	public void dropItems(final Player player, Location loc) {
 		Preconditions.checkArgument(loc != null, "location cannot be null");
-		Logger.debug(Logger.DebugPart.GAME, "drop items - process started");
 		//if (!getGameDataStorage().getGameRules().contains(GameRule.NO_DEAD_DROP)) return;
 		if (MasterDuels.isInShutdownMode()) return;
 
@@ -198,7 +197,6 @@ public class Match {
 				.forEach(item -> player.getWorld().dropItemNaturally(loc, item));
 
 		player.getInventory().clear();
-		Logger.debug(Logger.DebugPart.GAME, "drop items - process finished");
 	}
 
 	public void resetPlayers() {
@@ -281,7 +279,7 @@ public class Match {
 
 		PlaceholderUtil playerPlaceholders = getPlaceholders(playerLog);
 
-		receiver.sendMessage(MessageUtils.parseColor("&a") + "▬".repeat(72));
+		receiver.sendMessage(MessageUtils.parseColor("&a") + "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬");
 		receiver.sendMessage("                          " + MessageUtils.parseColor(generalPlaceholders.apply("&f&lClassic Duel &7- &a&l{match-timer}")));
 		receiver.sendMessage("");
 		receiver.sendMessage("                  " + MessageUtils.parseColor(generalPlaceholders.apply("&7{own}&7  {opponent}"))); //todo wont work
@@ -295,7 +293,7 @@ public class Match {
 		receiver.sendMessage("                   " + MessageUtils.parseColor(playerPlaceholders.apply("&f&lBlocks Broken&7: &a{broken-blocks} blocks")));
 		receiver.sendMessage("                       " + MessageUtils.parseColor(playerPlaceholders.apply("&f&lMeters Sprint&7: &a{sprint}m")));
 		receiver.sendMessage("");
-		receiver.sendMessage(MessageUtils.parseColor("&a") + "▬".repeat(72));
+		receiver.sendMessage(MessageUtils.parseColor("&a") + "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬");//72 times repeat
 	}
 
 
@@ -322,7 +320,7 @@ public class Match {
 			opponentPlaceholders = getPlaceholders(winnerLog);
 		}
 
-		receiver.sendMessage(MessageUtils.parseColor("&a") + "▬".repeat(72));
+		receiver.sendMessage(MessageUtils.parseColor("&a") + "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬");
 		receiver.sendMessage("                          " + MessageUtils.parseColor(generalPlaceholders.apply("&f&lClassic Duel &7- &a&l{match-timer}")));
 		receiver.sendMessage("");
 		receiver.sendMessage("                  " + MessageUtils.parseColor(generalPlaceholders.apply("&7{own}&7  {opponent}")));
@@ -336,7 +334,7 @@ public class Match {
 		receiver.sendMessage("               " + MessageUtils.parseColor(ownPlaceholders.apply("&a{broken-blocks} blocks &7- &f&lBlocks Broken &7- ") + opponentPlaceholders.apply("&a{broken-blocks} blocks")));
 		receiver.sendMessage("                 " + MessageUtils.parseColor(ownPlaceholders.apply("&a{sprint}m &7- &f&lMeters Sprint &7- ") + opponentPlaceholders.apply("&a{sprint}m")));
 		receiver.sendMessage("");
-		receiver.sendMessage(MessageUtils.parseColor("&a") + "▬".repeat(72));
+		receiver.sendMessage(MessageUtils.parseColor("&a") + "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬");
 	}
 
 

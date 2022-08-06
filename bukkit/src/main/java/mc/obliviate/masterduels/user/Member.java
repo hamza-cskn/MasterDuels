@@ -65,7 +65,7 @@ public class Member extends User implements IUser {
 		}
 
 		public void setDefaultKit(Kit kit) {
-			this.kit = kit;
+			this.defaultKit = kit;
 		}
 
 		public void setKit(Kit kit) {
@@ -73,8 +73,17 @@ public class Member extends User implements IUser {
 		}
 
 		public Kit getKit() {
-			if (kit == null) return defaultKit;
-			return kit;
+			return getKit(KitManager.KitMode.VARIOUS);
+		}
+
+		public Kit getKit(KitManager.KitMode mode) {
+			if (mode == KitManager.KitMode.VARIOUS) {
+				if (kit == null) return defaultKit;
+				return kit;
+			} else {
+				return defaultKit;
+			}
+
 		}
 	}
 }

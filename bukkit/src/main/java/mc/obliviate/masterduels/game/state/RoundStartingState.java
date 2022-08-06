@@ -21,10 +21,10 @@ import static mc.obliviate.masterduels.kit.Kit.USE_PLAYER_INVENTORIES;
 
 public class RoundStartingState implements MatchState {
 
-	private static Duration LOCK_DURATION = Duration.ofSeconds(3);
-	private static int LOCK_FREQUENCY = 5;
-	private long roundStartTime;
-	private final Match match;
+    private static Duration LOCK_DURATION = Duration.ofSeconds(7);
+    private static int LOCK_FREQUENCY = 5;
+    private long roundStartTime;
+    private final Match match;
 
 	public RoundStartingState(Match match) {
 		this.match = match;
