@@ -1,4 +1,4 @@
-package mc.obliviate.masterduels.history;
+package mc.obliviate.masterduels.playerdata;
 
 import org.bukkit.entity.Projectile;
 
