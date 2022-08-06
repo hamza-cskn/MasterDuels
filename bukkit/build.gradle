@@ -1,18 +1,19 @@
 dependencies {
-    implementation 'com.github.hakan-krgn.hCore:bukkit-primary:0.5.1'
+    implementation 'com.github.hakan-krgn.hCore:bukkit-primary:0.5.7'
     implementation 'com.github.Obliviated:BlokSQLiteAPI:1.0.7-b'
     //implementation project(':api')
 
-    compileOnly files('D:/Users/User/Desktop/Local Servers & Setups/LOCAL 1.8/plugins/Replay.jar')
+    implementation files('D:/Users/User/Desktop/Libraries/hcore.jar')
+    compileOnly files('D:/Users/User/Desktop/Libraries/Replay.jar')
     compileOnly files('D:/Users/User/Desktop/Libraries/Vault.jar')
     compileOnly 'org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT'
     compileOnly 'io.puharesource.mc:TitleManager:2.2.0'
     compileOnly 'me.neznamy:tab-api:3.0.1'
 
-    implementation 'com.github.hamza-cskn.obliviate-invs:core:4.1.0'
-    implementation 'com.github.hamza-cskn.obliviate-invs:configurablegui:4.1.0'
-    implementation 'com.github.hamza-cskn.obliviate-invs:advancedslot:4.1.0'
-    implementation 'com.github.hamza-cskn.obliviate-invs:pagination:4.1.0'
+    implementation 'com.github.hamza-cskn.obliviate-invs:core:4.1.1'
+    implementation 'com.github.hamza-cskn.obliviate-invs:configurablegui:4.1.1'
+    implementation 'com.github.hamza-cskn.obliviate-invs:advancedslot:4.1.1'
+    implementation 'com.github.hamza-cskn.obliviate-invs:pagination:4.1.1'
 }
 
 shadowJar {
@@ -36,4 +37,4 @@ shadowJar {
     relocate 'mc.obliviate.bloksqlite', 'mc.obliviate.masterduels.lib.sqlite'
 }
 
-project.setLibsDirName('D:/Users/User/Desktop')
+project.setLibsDirName('D:/Users/User/Desktop/')
