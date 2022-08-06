@@ -12,9 +12,9 @@ import mc.obliviate.masterduels.game.state.MatchEndingState;
 import mc.obliviate.masterduels.game.state.MatchState;
 import mc.obliviate.masterduels.game.state.MatchUninstallingState;
 import mc.obliviate.masterduels.game.task.MatchTaskManager;
-import mc.obliviate.masterduels.history.MatchHistoryLog;
-import mc.obliviate.masterduels.history.PlayerHistoryLog;
 import mc.obliviate.masterduels.kit.Kit;
+import mc.obliviate.masterduels.playerdata.history.MatchHistoryLog;
+import mc.obliviate.masterduels.playerdata.history.PlayerHistoryLog;
 import mc.obliviate.masterduels.user.Member;
 import mc.obliviate.masterduels.user.Spectator;
 import mc.obliviate.masterduels.utils.Logger;
@@ -29,7 +29,11 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static mc.obliviate.masterduels.utils.Utils.getPlaceholders;
