@@ -1,18 +1,18 @@
 package mc.obliviate.masterduels.arenaclear.modes.smart.workloads;
 
 import com.google.common.collect.Queues;
+import mc.obliviate.masterduels.MasterDuels;
 import org.bukkit.Bukkit;
-import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayDeque;
 
 public class WorkLoadThread implements Runnable {
 
 	private static final int MAX_MS_PER_TICK = 5;
-	private final Plugin plugin;
+	private final MasterDuels plugin;
 	private final ArrayDeque<IWorkLoad> workLoadDeque = Queues.newArrayDeque();
 
-	public WorkLoadThread(Plugin plugin) {
+	public WorkLoadThread(MasterDuels plugin) {
 		this.plugin = plugin;
 	}
 
@@ -27,9 +27,12 @@ public class WorkLoadThread implements Runnable {
 			workLoadDeque.poll().compute(plugin);
 		}
 		if (next()) {
-			Bukkit.getScheduler().runTaskLater(plugin, this, 1);
+			if (MasterDuels.isInShutdownMode()) {
+				run();
+			} else {
+				Bukkit.getScheduler().runTaskLater(plugin, this, 1);
+			}
 		}
-
 	}
 
 	public ArrayDeque<IWorkLoad> getWorkLoadDeque() {

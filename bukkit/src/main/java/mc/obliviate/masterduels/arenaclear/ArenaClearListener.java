@@ -2,7 +2,6 @@ package mc.obliviate.masterduels.arenaclear;
 
 import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.api.arena.DuelMatchStartEvent;
-import mc.obliviate.masterduels.api.arena.DuelMatchUninstallEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -18,10 +17,4 @@ public class ArenaClearListener implements Listener {
 	public void onGameStart(final DuelMatchStartEvent event) {
 		plugin.getArenaClearHandler().add(event.getMatch(), plugin);
 	}
-
-	@EventHandler
-	public void onGameEnd(final DuelMatchUninstallEvent event) {
-		plugin.getArenaClearHandler().getArenaClear(event.getMatch().getArena().getName()).clear();
-	}
-
 }
