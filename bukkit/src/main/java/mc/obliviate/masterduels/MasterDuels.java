@@ -41,6 +41,10 @@ public class MasterDuels extends JavaPlugin {
     }
 
     @Override
+    public void onEnable() {
+    }
+
+    @Override
     public void onDisable() {
         shutdownMode = true;
         for (final Match match : DataHandler.getArenas().values()) {

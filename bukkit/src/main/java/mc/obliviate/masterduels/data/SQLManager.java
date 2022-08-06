@@ -25,8 +25,7 @@ public class SQLManager extends SQLHandler {
     private static SQLTable playerDataTable;
     private static SQLTable historyTable;
     private static SQLTable statisticsTable;
-    private static final Object[] objects = Utils.loadClass("mc.obliviate.masterduels.MasterDuelsInitializer").getEnumConstants();
-
+    private static final Object[] objects = Utils.loadClass("mc.obliviate.masterduels.utils.initializer.MasterDuelsInitializer").getEnumConstants();
 
     public SQLManager(MasterDuels plugin) {
         super(plugin.getDataFolder().getPath());
