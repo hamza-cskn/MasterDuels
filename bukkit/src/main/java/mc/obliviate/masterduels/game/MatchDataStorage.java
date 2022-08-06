@@ -26,7 +26,8 @@ public class MatchDataStorage {
 	private boolean locked;
 
 	private final MatchRoundData gameRoundData = new MatchRoundData();
-	private final MatchTeamManager gameTeamManager = new MatchTeamManager();
+	private final MatchTeamManager gameTeamManager = new MatchTeamManager(this);
+	private final KitManager kitManager = new KitManager(gameTeamManager);
 	private final List<GameRule> gameRules = new ArrayList<>();
 	private static Duration endDelay;
 	private long finishTime;
@@ -97,5 +98,9 @@ public class MatchDataStorage {
 		gameRoundData.lock();
 		gameTeamManager.lock(match);
 		this.locked = true;
+	}
+
+	public KitManager getKitManager() {
+		return kitManager;
 	}
 }

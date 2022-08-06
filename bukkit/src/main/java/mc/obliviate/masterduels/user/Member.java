@@ -2,8 +2,9 @@ package mc.obliviate.masterduels.user;
 
 import mc.obliviate.masterduels.game.Match;
 import mc.obliviate.masterduels.game.Team;
+import mc.obliviate.masterduels.game.creator.KitManager;
 import mc.obliviate.masterduels.kit.Kit;
-import mc.obliviate.masterduels.statistics.DuelStatistic;
+import mc.obliviate.masterduels.playerdata.statistics.DuelStatistic;
 import org.bukkit.entity.Player;
 
 public class Member extends User implements IUser {

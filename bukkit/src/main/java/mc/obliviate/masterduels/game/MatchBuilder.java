@@ -115,7 +115,7 @@ public class MatchBuilder {
 				final Player player = Bukkit.getPlayer(uuid);
 				Preconditions.checkNotNull(player, "player cannot be offline");
 				Member.Builder memberBuilder = matchDataStorage.getGameTeamManager().getMemberBuilder(player.getUniqueId());
-				matchDataStorage.getGameTeamManager().registerPlayer(player, memberBuilder.getKit(), teamNo);
+				matchDataStorage.getGameTeamManager().registerPlayer(player, memberBuilder.getKit(this.matchDataStorage.getKitManager().getKitMode()), teamNo);
 			}
 		}
 	}

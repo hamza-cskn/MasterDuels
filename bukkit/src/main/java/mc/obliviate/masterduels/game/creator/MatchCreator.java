@@ -19,7 +19,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.time.Duration;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.function.Consumer;
 
 /**
@@ -44,7 +49,6 @@ public class MatchCreator {
 	//invited player's uuid, invite
 	private final Map<UUID, Invite> invites = new HashMap<>();
 	private final UUID ownerPlayer;
-	private final CreatorKitManager creatorKitManager = new CreatorKitManager(this);
 	private final MatchBuilder builder;
 
 	public MatchCreator(UUID ownerPlayer) {
@@ -141,7 +145,7 @@ public class MatchCreator {
 					}
 
 					response.accept(invite);
-					creatorKitManager.setDefaultKit(creatorKitManager.getDefaultKit());
+					builder.getData().getKitManager().setDefaultKit(builder.getData().getKitManager().getDefaultKit());
 
 				}).build();
 
@@ -190,11 +194,12 @@ public class MatchCreator {
 		builder.removePlayer(user);
 		for (UUID uuid : builder.getPlayers()) {
 			Player player = Bukkit.getPlayer(uuid);
-			MessageUtils.sendMessage(player, "game-builder.player-left", new PlaceholderUtil().add("{player}", Utils.getDisplayName(player)).add("{total-players}", builder.getPlayers().size() + "").add("{max-players}", (builder.getData().getGameTeamManager().getTeamSize() * builder.getData().getGameTeamManager().getTeamAmount()) + ""));
+			MessageUtils.sendMessage(player, "game-builder.player-left", new PlaceholderUtil().add("{player}", Utils.getDisplayName(user.getPlayer())).add("{total-players}", builder.getPlayers().size() + "").add("{max-players}", (builder.getData().getGameTeamManager().getTeamSize() * builder.getData().getGameTeamManager().getTeamAmount()) + ""));
 		}
 	}
 
 	public void addPlayer(Player player, Kit kit, int teamNo) {
+		Preconditions.checkNotNull(player, "player cannot be null");
 		builder.addPlayer(player, kit, teamNo);
 		for (UUID uuid : builder.getPlayers()) {
 			Player receiver = Bukkit.getPlayer(uuid);
@@ -209,10 +214,6 @@ public class MatchCreator {
 
 	public static Map<UUID, MatchCreator> getGameCreatorMap() {
 		return Collections.unmodifiableMap(GAME_CREATOR_MAP);
-	}
-
-	public CreatorKitManager getCreatorKitManager() {
-		return creatorKitManager;
 	}
 
 	public static MatchCreator getCreator(UUID playerUniqueId) {
