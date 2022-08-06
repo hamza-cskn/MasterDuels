@@ -1,16 +1,20 @@
-package mc.obliviate.masterduels.history;
+package mc.obliviate.masterduels.playerdata.history;
 
 import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.api.arena.DuelMatchEndEvent;
 import mc.obliviate.masterduels.api.arena.DuelMatchStartEvent;
 import mc.obliviate.masterduels.api.arena.DuelMatchUninstallEvent;
 import mc.obliviate.masterduels.data.SQLManager;
+import mc.obliviate.masterduels.playerdata.ProjectileLogEntry;
+import mc.obliviate.masterduels.playerdata.statistics.DuelStatistic;
+import mc.obliviate.masterduels.user.UserHandler;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
@@ -20,8 +24,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
-import static mc.obliviate.masterduels.history.MatchHistoryLog.getPlayerHistory;
 
 @SuppressWarnings("rawtypes")
 public class HistoryListener implements Listener {
@@ -48,6 +50,13 @@ public class HistoryListener implements Listener {
 		});
 
 		log.finish(winnerUUIDs);
+
+		for (Player player : event.getMatch().getPlayers()) {
+			PlayerHistoryLog playerHistoryLog = log.getPlayerHistoryLogMap().get(player.getUniqueId());
+			DuelStatistic duelStatistic = UserHandler.getUser(player.getUniqueId()).getStatistic();
+			duelStatistic.migrate(playerHistoryLog.getPlayerData());
+			plugin.getSqlManager().saveStatistic(duelStatistic);
+		}
 	}
 
 	@EventHandler
@@ -63,17 +72,17 @@ public class HistoryListener implements Listener {
 
 			if (event.getDamager() instanceof Projectile) {
 				final Player attacker = (Player) ((Projectile) event.getDamager()).getShooter();
-				final PlayerHistoryLog log = getPlayerHistory(attacker);
-				if (log == null) return;
+				final PlayerHistoryLog playerLog = MatchHistoryLog.getPlayerHistory(attacker);
+				if (playerLog == null) return;
 
-				log.setDamageDealt(log.getDamageDealt() + ((int) event.getFinalDamage() * 10));
+				playerLog.getPlayerData().setDamageDealt(playerLog.getPlayerData().getDamageDealt() + ((int) event.getFinalDamage() * 10));
 
 			} else if (event.getDamager() instanceof Player) {
-				final PlayerHistoryLog log = getPlayerHistory((Player) event.getDamager());
-				if (log == null) return;
+				final PlayerHistoryLog playerLog = MatchHistoryLog.getPlayerHistory((Player) event.getDamager());
+				if (playerLog == null) return;
 
-				log.setDamageDealt(log.getDamageDealt() + ((int) event.getFinalDamage() * 10));
-				log.setHitClick(log.getHitClick() + 1);
+				playerLog.getPlayerData().setDamageDealt(playerLog.getPlayerData().getDamageDealt() + ((int) event.getFinalDamage() * 10));
+				playerLog.getPlayerData().setHitClick(playerLog.getPlayerData().getHitClick() + 1);
 			}
 		}
 	}
@@ -81,34 +90,34 @@ public class HistoryListener implements Listener {
 	@EventHandler
 	public void onClick(PlayerInteractEvent event) {
 		if (event.getAction() != Action.LEFT_CLICK_AIR) return;
-		final PlayerHistoryLog log = getPlayerHistory(event.getPlayer());
-		if (log == null) return;
+		final PlayerHistoryLog playerLog = MatchHistoryLog.getPlayerHistory(event.getPlayer());
+		if (playerLog == null) return;
 
-		log.setClick(log.getClick() + 1);
+		playerLog.getPlayerData().setClick(playerLog.getPlayerData().getClick() + 1);
 	}
 
 	@EventHandler
 	public void onBreak(BlockBreakEvent event) {
-		final PlayerHistoryLog log = getPlayerHistory(event.getPlayer());
+		final PlayerHistoryLog log = MatchHistoryLog.getPlayerHistory(event.getPlayer());
 		if (log == null) return;
 
-		log.setBrokenBlocks(log.getBrokenBlocks() + 1);
+		log.getPlayerData().setBrokenBlocks(log.getPlayerData().getBrokenBlocks() + 1);
 	}
 
 
 	@EventHandler
-	public void onPlace(BlockBreakEvent event) {
-		final PlayerHistoryLog log = getPlayerHistory(event.getPlayer());
+	public void onPlace(BlockPlaceEvent event) {
+		final PlayerHistoryLog log = MatchHistoryLog.getPlayerHistory(event.getPlayer());
 		if (log == null) return;
-		log.setPlacedBlocks(log.getPlacedBlocks() + 1);
+		log.getPlayerData().setPlacedBlocks(log.getPlayerData().getPlacedBlocks() + 1);
 	}
 
 	@EventHandler
 	public void onShoot(ProjectileLaunchEvent event) {
 		if (!(event.getEntity().getShooter() instanceof Player)) return;
-		final PlayerHistoryLog log = getPlayerHistory(((Player) event.getEntity().getShooter()));
+		final PlayerHistoryLog log = MatchHistoryLog.getPlayerHistory(((Player) event.getEntity().getShooter()));
 		if (log == null) return;
-		ProjectileLogEntry projectileLogEntry = log.getProjectileLog(event.getEntity());
+		ProjectileLogEntry projectileLogEntry = log.getPlayerData().getProjectileLog(event.getEntity());
 		if (projectileLogEntry == null) return;
 		projectileLogEntry.increaseThrew(1);
 	}
@@ -116,9 +125,9 @@ public class HistoryListener implements Listener {
 	@EventHandler
 	public void onHit(ProjectileHitEvent event) {
 		if (!(event.getEntity().getShooter() instanceof Player)) return;
-		final PlayerHistoryLog log = getPlayerHistory(((Player) event.getEntity().getShooter()));
+		final PlayerHistoryLog log = MatchHistoryLog.getPlayerHistory(((Player) event.getEntity().getShooter()));
 		if (log == null) return;
-		ProjectileLogEntry projectileLogEntry = log.getProjectileLog(event.getEntity());
+		ProjectileLogEntry projectileLogEntry = log.getPlayerData().getProjectileLog(event.getEntity());
 		if (projectileLogEntry == null) return;
 		projectileLogEntry.increaseHit(1);
 	}
@@ -126,8 +135,8 @@ public class HistoryListener implements Listener {
 	@EventHandler
 	public void onHealthRegeneration(EntityRegainHealthEvent event) {
 		if (!(event.getEntity() instanceof Player)) return;
-		final PlayerHistoryLog log = getPlayerHistory(((Player) event.getEntity()));
+		final PlayerHistoryLog log = MatchHistoryLog.getPlayerHistory(((Player) event.getEntity()));
 		if (log == null) return;
-		log.setRegeneratedHealth(log.getRegeneratedHealth() + event.getAmount());
+		log.getPlayerData().setRegeneratedHealth(log.getPlayerData().getRegeneratedHealth() + event.getAmount());
 	}
 }

@@ -37,7 +37,7 @@ public class MatchEndingState implements MatchState {
 		match.getGameTaskManager().cancelTask("REMAINING_TIME");
 
 		match.getGameDataStorage().setFinishTime(System.currentTimeMillis() + MatchDataStorage.getEndDelay().toMillis());
-		match.getGameTaskManager().delayedTask("uninstall", this::next, MatchDataStorage.getEndDelay().toSeconds() * 20);
+		match.getGameTaskManager().delayedTask("uninstall", this::next, MatchDataStorage.getEndDelay().getSeconds() * 20);
 
 		match.broadcastGameEnd();
 	}

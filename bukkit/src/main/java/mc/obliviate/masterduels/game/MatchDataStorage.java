@@ -1,6 +1,7 @@
 package mc.obliviate.masterduels.game;
 
 import com.google.common.base.Preconditions;
+import mc.obliviate.masterduels.game.creator.KitManager;
 import mc.obliviate.masterduels.game.gamerule.GameRule;
 import mc.obliviate.masterduels.game.round.MatchRoundData;
 
@@ -31,7 +32,7 @@ public class MatchDataStorage {
 	private final List<GameRule> gameRules = new ArrayList<>();
 	private static Duration endDelay;
 	private long finishTime;
-	private Duration matchDuration = Duration.ofMinutes(1); //in millis
+	private Duration matchDuration = Duration.ofMinutes(1);
 
 	public List<GameRule> getGameRules() {
 		return Collections.unmodifiableList(gameRules);

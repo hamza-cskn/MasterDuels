@@ -6,18 +6,19 @@ import mc.obliviate.masterduels.game.Match;
 import mc.obliviate.masterduels.game.MatchBuilder;
 import mc.obliviate.masterduels.game.creator.MatchCreator;
 import mc.obliviate.masterduels.gui.DuelArenaListGUI;
-import mc.obliviate.masterduels.gui.DuelHistoryLogGUI;
 import mc.obliviate.masterduels.gui.creator.DuelMatchCreatorGUI;
 import mc.obliviate.masterduels.gui.creator.DuelMatchCreatorNonOwnerGUI;
 import mc.obliviate.masterduels.invite.Invite;
 import mc.obliviate.masterduels.invite.InviteRecipient;
 import mc.obliviate.masterduels.invite.InviteUtils;
 import mc.obliviate.masterduels.kit.gui.KitSelectionGUI;
+import mc.obliviate.masterduels.playerdata.history.gui.DuelHistoryLogGui;
+import mc.obliviate.masterduels.playerdata.statistics.DuelStatistic;
+import mc.obliviate.masterduels.playerdata.statistics.gui.StatisticGui;
 import mc.obliviate.masterduels.queue.DuelQueue;
 import mc.obliviate.masterduels.queue.DuelQueueHandler;
 import mc.obliviate.masterduels.queue.DuelQueueTemplate;
 import mc.obliviate.masterduels.queue.gui.DuelQueueListGUI;
-import mc.obliviate.masterduels.statistics.DuelStatistic;
 import mc.obliviate.masterduels.user.IUser;
 import mc.obliviate.masterduels.user.Member;
 import mc.obliviate.masterduels.user.Spectator;
@@ -33,6 +34,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
+import java.sql.SQLException;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -60,7 +62,7 @@ public class DuelCMD implements CommandExecutor {
 		}
 
 		if (args[0].equalsIgnoreCase("history")) {
-			new DuelHistoryLogGUI(player).open();
+			new DuelHistoryLogGui(player).open();
 			return true;
 		} else if (args[0].equalsIgnoreCase("leave")) {
 			if (user instanceof Member) {
@@ -81,7 +83,7 @@ public class DuelCMD implements CommandExecutor {
 				final MatchCreator creator = MatchCreator.getCreator(player.getUniqueId());
 				if (creator != null && !creator.getOwnerPlayer().equals(player.getUniqueId())) {
 					creator.removePlayer(UserHandler.getUser(player.getUniqueId()));
-					MessageUtils.sendMessage(player, "game-builder.you-left");
+					MessageUtils.sendMessage(player, "game-builder.you-left", new PlaceholderUtil().add("{player}", Utils.getDisplayName(player)));
 					return true;
 				}
 
@@ -99,7 +101,7 @@ public class DuelCMD implements CommandExecutor {
 				MessageUtils.sendMessage(player, "invite.toggle.turned-off");
 			}
 			return true;
-		} else if (false && args[0].equalsIgnoreCase("stats")) { //todo
+		} else if (args[0].equalsIgnoreCase("stats")) {
 			stats(player, args);
 			return true;
 		}
@@ -202,7 +204,11 @@ public class DuelCMD implements CommandExecutor {
 		if (section == null) return;
 
 		final int limit = section.getInt("calculation-limit", 10);
-		statistics = plugin.getSqlManager().getTopPlayers("wins", Math.max(limit, 1));
+		try {
+			statistics = plugin.getSqlManager().getTopPlayers("wins", Math.max(limit, 1));
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
 
 		final PlaceholderUtil placeholderUtil = new PlaceholderUtil();
 		for (int index = 1; index <= limit; index++) {
@@ -225,12 +231,8 @@ public class DuelCMD implements CommandExecutor {
 	}
 
 	private void stats(final Player player, final String[] args) {
-		final UUID target = args.length == 1 ? player.getUniqueId() : Bukkit.getOfflinePlayer(args[1]).getUniqueId();
-		final DuelStatistic statistic = plugin.getSqlManager().getStatistic(target);
-		MessageUtils.sendMessage(player, "statistics",
-				new PlaceholderUtil()
-						.add("{wins}", statistic.getWins() + "").add("{loses}", statistic.getLosses() + ""));
-
+		final UUID targetUniqueId = args.length == 1 ? player.getUniqueId() : Bukkit.getOfflinePlayer(args[1]).getUniqueId();
+		new StatisticGui(player, plugin.getSqlManager().getStatistic(targetUniqueId)).open();
 	}
 
 	private void responseInvite(Player player, String[] args) {

@@ -2,14 +2,18 @@ package mc.obliviate.masterduels.utils;
 
 import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.data.DataHandler;
-import mc.obliviate.masterduels.history.PlayerHistoryLog;
+import mc.obliviate.masterduels.playerdata.history.PlayerHistoryLog;
 import mc.obliviate.masterduels.utils.xmaterial.XMaterial;
 import mc.obliviate.util.placeholder.PlaceholderUtil;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public class Utils {
 
@@ -84,19 +88,19 @@ public class Utils {
 		}
 		return new PlaceholderUtil()
 				.add("{kit}", log.getKitName() == null ? MessageUtils.parseColor(MessageUtils.getMessage("kit.none-kit-name")) : log.getKitName())
-				.add("{placed-blocks}", log.getPlacedBlocks() + "")
-				.add("{broken-blocks}", log.getBrokenBlocks() + "")
-				.add("{damage-dealt}", (log.getDamageDealt() / 5d) + "")
-				.add("{damage-taken}", (log.getDamageTaken() / 5d) + "")
-				.add("{jump}", log.getJump() + "")
-				.add("{fall}", (log.getFall() / 100d) + "")
-				.add("{sprint}", (log.getSprint() / 100d) + "")
-				.add("{click}", log.getClick() + "")
-				.add("{hit-click}", log.getHitClick() + "")
-				.add("{fish-hook-accuracy}", MessageUtils.getPercentage(log.getFishHook().getThrew(), log.getFishHook().getHit()) + "")
-				.add("{melee-accuracy}", MessageUtils.getPercentage(log.getClick(), log.getHitClick()) + "")
-				.add("{bow-accuracy}", MessageUtils.getPercentage(log.getArrow().getThrew(), log.getArrow().getHit()) + "")
-				.add("{regenerated-health}", log.getRegeneratedHealth() + "");
+				.add("{placed-blocks}", log.getPlayerData().getPlacedBlocks() + "")
+				.add("{broken-blocks}", log.getPlayerData().getBrokenBlocks() + "")
+				.add("{damage-dealt}", (log.getPlayerData().getDamageDealt() / 5d) + "")
+				.add("{damage-taken}", (log.getPlayerData().getDamageTaken() / 5d) + "")
+				.add("{jump}", log.getPlayerData().getJump() + "")
+				.add("{fall}", (log.getPlayerData().getFall() / 100d) + "")
+				.add("{sprint}", (log.getPlayerData().getSprint() / 100d) + "")
+				.add("{click}", log.getPlayerData().getClick() + "")
+				.add("{hit-click}", log.getPlayerData().getHitClick() + "")
+				.add("{fish-hook-accuracy}", MessageUtils.getPercentage(log.getPlayerData().getFishHook().getThrew(), log.getPlayerData().getFishHook().getHit()) + "")
+				.add("{melee-accuracy}", MessageUtils.getPercentage(log.getPlayerData().getClick(), log.getPlayerData().getHitClick()) + "")
+				.add("{bow-accuracy}", MessageUtils.getPercentage(log.getPlayerData().getArrow().getThrew(), log.getPlayerData().getArrow().getHit()) + "")
+				.add("{regenerated-health}", log.getPlayerData().getRegeneratedHealth() + "");
 	}
 
 	public static boolean containsSimiliar(ItemStack item, Iterable<ItemStack> iterable) {
@@ -106,5 +110,13 @@ public class Utils {
 			}
 		}
 		return false;
+	}
+
+	public static Class loadClass(String classPath) {
+		try {
+			return Class.forName(classPath);
+		} catch (ClassNotFoundException e) {
+			throw new RuntimeException(e);
+		}
 	}
 }

@@ -2,7 +2,7 @@ package mc.obliviate.masterduels.user;
 
 import mc.obliviate.masterduels.data.SQLManager;
 import mc.obliviate.masterduels.game.MatchBuilder;
-import mc.obliviate.masterduels.statistics.DuelStatistic;
+import mc.obliviate.masterduels.playerdata.statistics.DuelStatistic;
 import org.bukkit.entity.Player;
 
 import java.sql.ResultSet;

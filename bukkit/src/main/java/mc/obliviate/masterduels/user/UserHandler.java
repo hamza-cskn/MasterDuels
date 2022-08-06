@@ -7,6 +7,7 @@ import mc.obliviate.masterduels.game.creator.MatchCreator;
 import mc.obliviate.masterduels.kit.Kit;
 import org.bukkit.entity.Player;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -85,4 +86,7 @@ public class UserHandler {
 		return getUser(playerUniqueId) instanceof Spectator;
 	}
 
+	public static Map<UUID, IUser> getUserMap() {
+		return Collections.unmodifiableMap(USER_MAP);
+	}
 }
