@@ -51,6 +51,7 @@ public class Match {
 
 	public Match(Arena arena, MatchDataStorage matchDataStorage) {
 		this.arena = arena;
+		DataHandler.registerGame(arena, this);
 		this.matchDataStorage = matchDataStorage;
 
 		final List<Player> players = new ArrayList<>();
