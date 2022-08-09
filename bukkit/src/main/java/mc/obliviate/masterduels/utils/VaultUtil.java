@@ -8,7 +8,7 @@ public class VaultUtil {
     public static boolean vaultEnabled = false;
 
 	public static boolean checkPermission(Player player, String permission) {
-		if (!vaultEnabled) return player.isOp();
+		if (!vaultEnabled) return player.hasPermission(permission);
 		return MasterDuels.getPermissions().has(player, permission);
 	}
 
