@@ -34,19 +34,19 @@ public class DuelMatchCreatorGUI extends ConfigurableGui {
 		super.open();
 	}
 
-	@Override
-	public void onOpen(InventoryOpenEvent event) {
-		Preconditions.checkState(matchCreator.getBuilder().getPlayers().size() > 0, "no player found");
-		putDysfunctionalIcons(new PlaceholderUtil()
-				.add("{mode}", MessageUtils.convertMode(matchCreator.getBuilder().getTeamSize(), matchCreator.getBuilder().getTeamAmount()))
-				.add("{invited-players}", matchCreator.getInvites().size() + "")
-				.add("{total-players}", matchCreator.getBuilder().getPlayers().size() + "")
-				.add("{round-amount}", matchCreator.getBuilder().getTotalRounds() + "")
-				.add("{game-timer}", TimerUtils.formatTimeAsTimer(matchCreator.getBuilder().getDuration().toMinutes() * 60))
-				.add("{game-time}", TimerUtils.formatTimeAsTime(matchCreator.getBuilder().getDuration().toMinutes() * 60))
-				.add("{team-amount}", matchCreator.getBuilder().getTeamAmount() + "")
-				.add("{team-size}", matchCreator.getBuilder().getTeamSize() + "")
-		);
+    @Override
+    public void onOpen(InventoryOpenEvent event) {
+        Preconditions.checkState(matchCreator.getBuilder().getPlayers().size() > 0, "no player found");
+        putDysfunctionalIcons(new PlaceholderUtil()
+                        .add("{mode}", MessageUtils.convertMode(matchCreator.getBuilder().getTeamSize(), matchCreator.getBuilder().getTeamAmount()))
+                        .add("{invited-players}", matchCreator.getInvites().size() + "")
+                        .add("{total-players}", matchCreator.getBuilder().getPlayers().size() + "")
+                        .add("{round-amount}", matchCreator.getBuilder().getTotalRounds() + "")
+                        .add("{game-timer}", TimerUtils.formatTimeAsTimer(matchCreator.getBuilder().getDuration().toMinutes() * 60))
+                        .add("{game-time}", TimerUtils.formatTimeAsTime(matchCreator.getBuilder().getDuration().toMinutes() * 60))
+                        .add("{team-amount}", matchCreator.getBuilder().getTeamAmount() + "")
+                        .add("{team-size}", matchCreator.getBuilder().getTeamSize() + "")
+                , Arrays.asList("team-size", "team-amount", "invites", "rules", "round-amount", "kit-mutual-mode", "kit-various-mode", "game-time", "manage-teams", "start-game"));
 
 		if (VaultUtil.checkPermission(player, "masterduels.duelcreator.set.teamsize"))
 			putTeamSizeIcon();
