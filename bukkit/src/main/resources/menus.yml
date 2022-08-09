@@ -630,7 +630,6 @@ duel-creator:
           - ''
           - '&eClick to invite a player!'
 
-
 statistic-gui:
   title: 'Your Stats'
   row: 4

@@ -37,4 +37,4 @@ shadowJar {
     relocate 'mc.obliviate.bloksqlite', 'mc.obliviate.masterduels.lib.sqlite'
 }
 
-project.setLibsDirName('D:/Users/User/Desktop/')
+project.setLibsDirName('D:/Users/User/Desktop/Local Servers & Setups/LOCAL 1.8/plugins')
