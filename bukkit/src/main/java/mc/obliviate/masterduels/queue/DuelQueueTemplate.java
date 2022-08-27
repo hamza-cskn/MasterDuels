@@ -15,7 +15,6 @@ public class DuelQueueTemplate {
 	private static ConfigurationSection section = null; //default values section
 	private static final List<DuelQueueTemplate> queueTemplates = new LinkedList<>();
 	private final String queueTemplateName;
-	private final MatchDataStorage matchDataStorage;
 	private final Kit kit;
 
 	/**
@@ -23,21 +22,20 @@ public class DuelQueueTemplate {
 	 */
 	private final List<String> allowedMaps;
 
-	private DuelQueueTemplate(final String queueTemplateName, MatchDataStorage matchDataStorage, Kit kit, List<String> allowedMaps) {
+	private DuelQueueTemplate(final String queueTemplateName, Kit kit, List<String> allowedMaps) {
 		this.queueTemplateName = queueTemplateName;
-		this.matchDataStorage = matchDataStorage;
 		this.kit = kit;
 		this.allowedMaps = allowedMaps;
-		queueTemplates.add(this);
+		DuelQueueTemplate.queueTemplates.add(this);
 		createNewQueue();
 	}
 
 	public static DuelQueueTemplate deserialize(final ConfigurationSection section) {
 		DuelQueueTemplate.section = section;
 
-		final String kitName = section.getString("kit");
+		final String kitName = section.getString("kit", "DISABLED");
 		Kit kit;
-		if (kitName == null) {
+		if (kitName.equalsIgnoreCase("DISABLED")) {
 			kit = null;
 		} else {
 			kit = Kit.getKits().get(kitName);
@@ -48,7 +46,7 @@ public class DuelQueueTemplate {
 			allowedMaps.clear();
 		}
 
-		return new DuelQueueTemplate(section.getName(), deserializeMatchDataStorage(section), kit, allowedMaps);
+		return new DuelQueueTemplate(section.getName(), kit, allowedMaps);
 	}
 
 	private static MatchDataStorage deserializeMatchDataStorage(final ConfigurationSection section) {
@@ -67,16 +65,16 @@ public class DuelQueueTemplate {
 	}
 
 	public static List<DuelQueueTemplate> getQueueTemplates() {
-		return queueTemplates;
+		return DuelQueueTemplate.queueTemplates;
 	}
 
 	public static boolean removeQueueTemplate(String name) {
 		final DuelQueueTemplate template = getQueueTemplateFromName(name);
-		return queueTemplates.remove(template);
+		return DuelQueueTemplate.queueTemplates.remove(template);
 	}
 
 	public static DuelQueueTemplate getQueueTemplateFromName(String name) {
-		for (DuelQueueTemplate duelQueueTemplate : queueTemplates) {
+		for (DuelQueueTemplate duelQueueTemplate : DuelQueueTemplate.queueTemplates) {
 			if (duelQueueTemplate.getName().equalsIgnoreCase(name)) {
 				return duelQueueTemplate;
 			}
@@ -85,19 +83,19 @@ public class DuelQueueTemplate {
 	}
 
 	public void createNewQueue() {
-		new DuelQueue(this, Match.create(matchDataStorage));
+		new DuelQueue(this, Match.create(DuelQueueTemplate.deserializeMatchDataStorage(DuelQueueTemplate.section)));
 	}
 
 	public Kit getKit() {
-		return kit;
+		return this.kit;
 	}
 
 	public List<String> getAllowedMaps() {
-		return Collections.unmodifiableList(allowedMaps);
+		return Collections.unmodifiableList(this.allowedMaps);
 	}
 
 	public String getName() {
-		return queueTemplateName;
+		return this.queueTemplateName;
 	}
 
 
