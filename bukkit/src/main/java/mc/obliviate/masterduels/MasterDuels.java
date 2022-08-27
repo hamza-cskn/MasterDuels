@@ -20,7 +20,7 @@ public class MasterDuels extends JavaPlugin {
     private final ArenaWorldOptimizerHandler worldOptimizerHandler = new ArenaWorldOptimizerHandler();
     private final SQLManager sqlManager = new SQLManager(this);
     private final InventoryAPI inventoryAPI = new InventoryAPI(this);
-    private final ConfigurationHandler configurationHandler = new ConfigurationHandler(this);
+    private final ConfigurationHandler configurationHandler = ConfigurationHandler.createInstance(this);
     private final DuelQueueHandler duelQueueHandler = new DuelQueueHandler(this);
     private IArenaClearHandler arenaClearHandler;
 
@@ -52,6 +52,7 @@ public class MasterDuels extends JavaPlugin {
                 match.uninstall();
             }
         }
+        getSqlManager().saveAllUsers();
         getSqlManager().disconnect();
     }
 
