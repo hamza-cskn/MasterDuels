@@ -1,0 +1,38 @@
+name: MasterDuels
+main: mc.obliviate.masterduels.MasterDuels
+author: Mr_Obliviate
+description: Professional duel game plugin for professional servers.
+version: 22.8.1
+api-version: 1.13
+softdepend:
+  - Multiverse-Core
+  - TAB
+  - Vault
+  - AdvancedReplay
+commands:
+  duel:
+    aliases:
+      - masterduels
+  dueladmin:
+permissions:
+  masterduels.creator.set.teamsize:
+    default: true
+    description: allows changing the team size
+  masterduels.creator.set.teamamount:
+    default: true
+    description: allows changing the team amount
+  masterduels.creator.set.rules:
+    default: true
+    description: allows ruling creator
+  masterduels.creator.set.roundamount:
+    default: true
+    description: allows changing the round amount
+  masterduels.creator.set.teammanager:
+    default: true
+    description: allows managing teams
+  masterduels.creator.set.kit:
+    default: true
+    description: allows setting kits
+  masterduels.creator.set.finishtime:
+    default: true
+    description: allows changing the duration of match

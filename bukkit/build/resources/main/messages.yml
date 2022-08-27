@@ -1,0 +1,188 @@
+#        TIP 1
+# Write 'DISABLED' to disable a message.
+# Ex.
+#game-finished: 'DISABLED'
+
+#        TIP 2
+# Write '[DISABLE_PREFIX]' to head of text to disable prefix.
+# Ex.
+#game-finished: '[DISABLE_PREFIX]Game finished.'
+
+#        TIP 3
+# Write '|-' to head of text to make multi-line message. (invite notify messages is not included)
+# Ex.
+#game-finished: |-
+#  Game has been finished!
+#  &r
+#  Congratulations!
+
+prefix: '&7[&6MasterDuels&7] &7'
+unknown-usage: '&cWrong command usage!'
+invalid-number: '&c{entry} is not a valid number.'
+command-is-blocked: '&cYou can not use &4''{command}''&c in duel match.'
+no-arena-found: '&cCould not find available arena.'
+target-is-not-online: '&cThis player is not online rightnow.'
+you-left-from-duel: '&cYou left from duel.'
+game-finished: '&cDuel game has been finished.'
+game-started: '&cDuel game has been started!'
+enter-player-name-to-invite: '&cEnter player name you want to invite.'
+you-can-not-place: '[DISABLE_PREFIX]&cYou cannot place block here.'
+you-can-not-break: '[DISABLE_PREFIX]&cYou cannot break this block.'
+duel-team-eliminated: '&7The team of &c{victim}&7 has been eliminated!' #for non-solo games
+you-are-in-duel: '&cYou cannot do this in duel game.'
+you-are-not-in-duel: '&cYou are not in a duel game.'
+target-already-in-duel: '&c{target}&c is already in duel game.'
+you-are-a-spectator: '&eYou are a spectator.'
+game-timed-out: '&cDuel game you are in, has been timed out.'
+no-arena-found-with-this-name: '&cNo arenas with this name found.'
+player-dead:
+  by-attacker: '&c{victim}&7 has killed by &c{attacker}&7.'
+  without-attacker: '&c{victim}&7 has been died.'
+kit:
+  usage: |-
+    [DISABLE_PREFIX]&7 /dueladmin kit save <kit name> &8- &9saves your current inventory as new kit
+    &7 /dueladmin kit editor &8- &9opens kit editor gui
+  editor-usage: '&cCorrect usage: /dueladmin kit save <kit name>'
+  has-saved: '&7Kit saved: &f{kit}&7'
+  none-kit-name: '&cNone'
+game-end-broadcast:
+  # broadcast receivers are changeable from the config.
+  solo: '&a{winner}&7 has won duel with &c{winner-health} health&7! (&a{winner}&7 vs &c{loser}&7)'
+  non-solo: '&a{winner}&7 and her team has won duel!' # i do not know how i can show loser and winner teams in chat. it'll be changed future.
+arrow-hit-notify:
+  action-bar: '&c{victim}&c''s health is {health}'
+  message: '&cYou hit {victim}&c from {distance} blocks far!'
+game-builder:
+  wrong-player-amount: '&cYou can not create this game. Because you need {expected} players but your creator has {found} players.'
+  you-left: '&cYou left from {player}&c''s Duel Creator.'
+  player-left: '&eThe player {player}&e left from the creator. &7[&f{total-players}&8/&f{max-players}&7]'
+  player-joined: '&eThe player {player}&e joined to the creator. &7[&f{total-players}&8/&f{max-players}&7]'
+  you-kicked: '&cYou have been kicked from {player}&c''s Duel Creator.'
+  you-kick: '&cYou kicked {kicked}&c player from the Duel Creator.'
+
+duel-command:
+  usage: |-
+    [DISABLE_PREFIX]&6&lDuel&6 Commands
+    &7 /duel [invite] <player name> &8- &9sends duel invite to a player
+    &7 /duel accept &8- &9accept a duel invite
+    &7 /duel decline &8- &9decline a duel invite
+    &7 /duel spectate &8- &9spectate a player who are in duel
+    &7 /duel leave &8- &9leave from duel game
+    &7 /duel toggle &8- &9toggles invite receive state of you
+    &7 /duel history &8- &9opens duel history gui
+    &7 /duel arenas &8- &9opens arena list menu.
+    &7 /duel queue menu &8- &9opens duel queues menu
+    &7 /duel queue join <queue name>&8- &9joins a duel queue
+    &7 /duel queue leave &8- &9leaves from duel queue
+    &7 /duel creator &c&l[BETA] &8- &9opens an advanced match builder
+    &f&nMasterDuels&f {build-version}
+  admin:
+    usage: |-
+      [DISABLE_PREFIX]&c&lAdmin&c Commands
+      &7 /dueladmin create &8- &9enables arena setup mode
+      &7 /dueladmin reload &8- &9reloads configuration files. &c(May break the scoreboards, boss bars etc. temporarily.)
+      &7 /dueladmin arena disable <arena name>&8- &9disables an arena
+      &7 /dueladmin arena enable <arena name> &8- &9enables an arena
+      &7 /dueladmin kit save <kit name> &8- &9saves your current inventory as new kit
+      &7 /dueladmin kit editor &8- &9opens kit editor gui 
+      &7 /dueladmin setlobby &8- &9sets lobby location to teleport players after duel games 
+      &7 /dueladmin nick [nickname] &8- &9changes your display name for MasterDuels 
+      &7 /dueladmin teststart <player 1> <player 2> [arena] &8- &9instantly starts a duel game between two players without invite.
+      &7 /dueladmin cancel <arena name> &8- &9forces an game to finish
+    arena:
+      delete:
+        match-playing: '&cYou cannot delete {arena} until the match finished. If you want to force it, use /dueladmin cancel {arena} command to cancel the match.'
+        deleted: '&aThe arena named {arena} successfully deleted permanently.'
+      disabled: '&7Arena &f{arena} &7successfully &cdisabled.'
+      enabled: '&7Arena &f{arena} &7successfully &aenabled.'
+      usage:
+        enable: '&cCorrect usage: /dueladmin arena enable <arena name>'
+        disable: '&cCorrect usage: /dueladmin arena disable <arena name>'
+        delete: '&cCorrect usage: /dueladmin arena delete <arena name>'
+    lobby-set: '&aThis location successfully saved as lobby.'
+    nick:
+      reset: '&7Your nick has been reset.'
+      change: '&7Your nick updated as &b{nick}&7.'
+    reload:
+      process-start: '&aAll configuration files of MasterDuels reloading...'
+      process-finish: '&aReload completed in {delay}ms.'
+    cancel:
+      usage: '&c/dueladmin cancel <arena name>'
+      cancel: '&cMatch of {arena} has been cancelled.'
+queue:
+  joined: |-
+    &7You joined &b{queue-name} &7duel queue &8[&f{player-amount}&8/&f{max-player-amount}&8]
+    &cUse /duel leave command to leave.
+  left: '&7You left duel queue: &b{queue-name}'
+  created: '&7Successfully &acreated&7 new queue template: &b{queue-name}'
+  deleted: '&7Successfully &cdeleted&7 new queue template: &b{queue-name}'
+  player-could-not-added: '&cAn error occurred during joining a queue.'
+  queue-not-found: '&cNo queue found that is named &4''{entry}''&c.'
+  no-queue-name: '&cPlease enter a queue name to join.'
+  usage: |-
+    [DISABLE_PREFIX]&7 /duel queue menu &8- &9opens duel queues menu
+    &7 /duel queue join <queue name> &8- &9joins a duel queue
+    &7 /duel queue leave &8- &9leaves a duel queue
+  you-are-not-in-queue: '&cYou are not in queue.'
+  you-are-in-queue: '&cYou cannot do that while you''re in a queue'
+invite:
+  usage: '&cCorrect Usage:&7 /duel <player name>'
+  toggle:
+    turned-on: '&7You have &aenabled&7 duel requests!'
+    turned-off: '&7You have &cdisabled&7 duel requests!'
+    you-can-not-invite: '&c{target} disabled duel requests.'
+  you-dont-have-invite: '&cYou don''t have any duel invite :('
+  you-cannot-invite-yourself: '&cYou cannot invite yourself.'
+  already-invited: '&cYou already invited this player.'
+  normal-invite:
+    text:
+      - '    &5&m                 &r       &d&lDUEL REQUEST       &5&m                 &r    '
+      - '            &f{inviter}&7 is challenging to you in a duel game!'
+      - '                  &7Do you want accept the invite?'
+      - '                               &7Kit: &e{kit}'
+      - '&f'
+      - '                    {accept-button}    &r{decline-button}'
+    button:
+      accept-button:
+        hover: '&aClick to accept duel request!'
+        text: '&a&l[ACCEPT]'
+      decline-button:
+        hover: '&cClick to decline duel request!'
+        text: '&c&l[DECLINE]'
+    target-declined-the-invite: '&7{target}, &cdeclined&7 your duel invite.'
+    target-accepted-the-invite: '&f{target} &7accepted your duel invite.'
+    successfully-declined: '&7You &cdeclined &f{inviter}&7''s duel invite.'
+    successfully-accepted: '&7You have accepted &f{inviter}&7''s invite.'
+    target-has-invited: '&7You sent a duel invite to &f{target}&7. The invite will be expired after &f{expire-time} seconds&7.'
+    invite-expired-inviter: '&7Your duel invite to &f{target}&7 has expired.'
+    invite-expired-target: '&7Duel invite sent by &f{inviter}&7 has timed out.'
+  game-creator-invite:
+    text:
+      - '    &5&m                 &r       &5&lDUEL ROOM INVITE       &5&m                 &r    '
+      - '               &f{inviter}&7 invited you to joining own duel room!'
+      - '       &7if you accept it, {inviter} can start a duel game that is managed by him.'
+      - '&f'
+      - '                    {accept-button}    &r{decline-button}'
+    button:
+      accept-button:
+        hover: '&aClick to accept joining the room!'
+        text: '&a&l[JOIN ROOM]'
+      decline-button:
+        hover: '&cClick to decline joining the room!'
+        text: '&c&l[DECLINE]'
+    target-declined-the-invite: '&7{target}, &cdeclined&7 your duel room invite.'
+    target-accepted-the-invite: '&f{target} &7accepted your duel room invite.'
+    successfully-declined: '&7You &cdeclined &f{inviter}&7''s duel room invite.'
+    successfully-accepted: '&7You have accepted &f{inviter}&7''s room invite.'
+    target-has-invited: '&7You sent a duel room invite to &f{target}&7. The invite will be expired after &f{expire-time} seconds&7.'
+    invite-expired-inviter: '&7Your duel invite to &f{target}&7 has expired.'
+    invite-expired-target: '&7Duel invite sent by &f{inviter}&7 has timed out.'
+    all-teams-are-full-target: '&cYour invite could not accept because this room is full.'
+    all-teams-are-full-inviter: '&cInvite that is sent to {target}&c could not accept because the room is full.'
+    player-already-in-creator: '&c{target}&c is already in the room.'
+time-format:
+  second: 'second'
+  seconds: 'seconds'
+  minute: 'minute'
+  minutes: 'minutes'
+  date-format: 'HH:mm dd/MM/yyyy'

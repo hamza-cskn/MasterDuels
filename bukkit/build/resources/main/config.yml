@@ -1,0 +1,220 @@
+#
+# Official wiki: https://mrobliviate.gitbook.io/masterduels-wiki/for-non-customers/introduction
+# Developer Contact: https://www.spigotmc.org/conversations/add?to=_Obliviate_
+#
+# MasterDuels coded by Mr_Obliviate
+#
+
+delay-end-duel-after-player-kill: 20 #in seconds
+invite-timeout: 120 #in seconds
+
+arena-regeneration:
+  # SMART - removes only placed blocks, liquids, and formed blocks(blocks created when lava touched water)
+  # ROLLBACKCORE (COMING SOON) - regenerates all blocks in the arena region (https://www.spigotmc.org/resources/rollbackcore-1-4-7-1-17-1.18517/)
+  # SLIMEWORLD (COMING SOON) - regenerates the world completely (https://www.spigotmc.org/resources/advanced-slimeworldmanager.87209/)
+  regenerate-mode: SMART
+  remove-entities: true #removes DROPPED ITEMS and PROJECTILES that are in the arena region.
+
+# if set true, players can break only placed blocks by a player (and formed blocks).
+prevent-break-non-placed-blocks: true
+
+# if set true, teleports the player to arena area(1. team's 1. position) when they break/place block
+# to out of arena cuboid. Do not set it true if you didn't set arena cuboids correctly.
+teleport-back-when-arena-cuboid-violated: false
+
+# if set true, MasterDuels will change Bukkit world configurations of all worlds of arenas. This includes
+# the game rules of the world. We recommend this if your duel arenas are in a different world
+# from other worlds you're using for another thing. Enabling this option does not affect worlds that doesn't
+# host any duel arena.
+optimize-duel-worlds: false
+
+# if set true, MasterDuels will not reset and backup inventory. (in a nutshell, we can call it 'kits disabling')
+# also, when a player dies in a duel, their items will drop.
+# Do not change this option during server work!
+use-player-inventories: false
+
+# SERVER_WIDE - sends game end message to all players on the server
+# SPECTATORS_AND_MEMBERS - sends game end message to all players in the duel game
+# DISABLED - no message send
+game-end-broadcast-mode: SERVER_WIDE
+
+execute-console-commands:
+  when-duel-started:
+  #- say duel started
+  when-duel-ended:
+  #- say duel finished
+# placeholders are unsupported yet.
+
+soup-regeneration-amount: 3.5
+
+action-limitations:
+  # DISALLOW -> disallows item dropping (pressing Q)
+  # FRIENDLY -> players cannot pickup items which is dropped (pressing Q) by their opponents
+  # ALLOW -> players can drop and pickup all items
+  item-pickup: DISALLOW
+  executable-commands-during-match:
+    PLAYING:
+      - duel
+    ROUND_STARTING:
+      - duel
+    ROUND_ENDING:
+      - duel
+    MATCH_ENDING:
+      - enderchest
+      - ec
+      - pv
+      - chest
+      - duel #to leave duel game
+
+duel-game-lock:
+  lock-duration: 7 #in seconds
+  teleport-frequency: 5 # teleport amount per second
+  notify-actions:
+    first-action:
+      remaining-time: 5 # remaining lock time in seconds
+      sound: NOTE_BASS
+      title:
+        subtitle: '&a&l5'
+        fadein: 5
+        fadeout: 0
+    second-action:
+      remaining-time: 4
+      sound: NOTE_BASS
+      title:
+        title: ''
+        subtitle: '&a&l4'
+        fadein: 0
+    third-action:
+      remaining-time: 3
+      sound: NOTE_BASS
+      title:
+        title: ''
+        subtitle: '&a&l3'
+        fadein: 0
+    fourth-action:
+      remaining-time: 2
+      sound: NOTE_BASS
+      title:
+        title: ''
+        subtitle: '&a&l2'
+        fadein: 0
+    fifth-action:
+      remaining-time: 1
+      sound: NOTE_BASS
+      title:
+        subtitle: '&a&l1'
+        fadein: 5
+        fadeout: 0
+    sixth-action:
+      remaining-time: 0
+      sound: NOTE_PIANO
+      title:
+        title: '&a&lBATTLE!'
+        fadein: 5
+        fadeout: 0
+      #chat: '&aGood luck!'
+      #action-bar: '&aGame is started'
+
+#{timer} = 13:59
+#{time} = 13 minutes 59 seconds
+#You can translate time format from message.yml time-format
+scoreboards:
+  enabled: true
+  PLAYING:
+    title: '&e&lDUELS'
+    live-opponent-format: '&a{name} &c{health}❤'
+    dead-opponent-format: '&a{name} &cDEAD'
+    quit-opponent-format: '&a{name} &cQUIT'
+    lines:
+      - '&fRound: &e#{round}'
+      - '&fMap: &e{map}'
+      - ''
+      - '&fTime:'
+      - ' &a{timer}'
+      - ''
+      - '{+opponents}'
+      - '&ewww.yourserver.net'
+  ROUND_STARTING:
+    title: '&e&lDUELS'
+    live-opponent-format: '&a{name} &c{health}❤'
+    dead-opponent-format: '&a{name} &cDEAD'
+    quit-opponent-format: '&a{name} &cQUIT'
+    lines:
+      - '&fRound: &e#{round}'
+      - '&fMap: &e{map}'
+      - ''
+      - '&fTime:'
+      - ' &a{timer}'
+      - ''
+      - '{+opponents}'
+      - '&ewww.yourserver.net'
+  ROUND_ENDING:
+    title: '&e&lDUELS'
+    live-opponent-format: '&a{name} &c{health}❤'
+    dead-opponent-format: '&a{name} &cDEAD'
+    quit-opponent-format: '&a{name} &cQUIT'
+    lines:
+      - '&fRound: &e#{round}'
+      - '&fMap: &e{map}'
+      - ''
+      - '&fTime:'
+      - ' &a{timer}'
+      - ''
+      - '{+opponents}'
+      - '&ewww.yourserver.net'
+  MATCH_ENDING:
+    title: '&e&lDUELS'
+    live-opponent-format: '&a{name} &c{health}❤'
+    dead-opponent-format: '&a{name} &cDEAD'
+    quit-opponent-format: '&a{name} &cQUIT'
+    lines:
+      - '&fRound: &e#{round}'
+      - '&fMap: &e{map}'
+      - ''
+      - '&fTime:'
+      - ' &a{timer}'
+      - ''
+      - '{+opponents}'
+      - '&ewww.yourserver.net'
+
+
+# requires AdvancedReplay (https://www.spigotmc.org/resources/advancedreplay-1-8-1-18.52849/)
+# this module automatically records duel matches to replay after.
+advanced-replay:
+  enabled: true
+
+# requires TAB (https://github.com/NEZNAMY/TAB/releases)
+tab-nametags:
+  #how spectators should see members
+  third-person-prefix: '&7&k'
+  #how players should see teammates
+  friend-prefix: '&a'
+  #how players should see opponents
+  opponent-prefix: '&c&k'
+
+boss-bars:
+  enabled: true
+  # MasterDuels can use TAB's boss bar API or its own boss bar manager.
+  # Boss bar manager of MasterDuels doesn't support 1.8 but TAB's API does.
+  # TAB -> uses TAB's Boss Bars
+  # INTERNAL -> uses MasterDuels's Boss Bars
+  # AUTO -> If the server version is 1.8 uses TAB boss bars otherwise uses internal boss bars.
+  mode: AUTO
+  in-battle: 'Remaining Time: {time}' #also, you can use {timer} placeholder
+  arena-closing: 'Arena Closing in: {time}'
+
+duel-creator:
+  data-limits:
+    max-team-size: 5
+    min-team-size: 1
+    max-team-amount: 4
+    min-team-amount: 2
+    max-rounds: 5
+    min-rounds: 1
+    max-game-time: 600 #in seconds
+    min-game-time: 60 #in seconds
+    allowed-kits: #these kits are selectable
+      - '*'
+    allowed-game-rules: #these game rules are toggleable
+      - '*'
+      #- NO_BOW

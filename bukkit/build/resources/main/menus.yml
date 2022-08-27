@@ -1,0 +1,736 @@
+game-history-gui:
+  title: 'Duel History'
+  row: 6
+  page-slots: 9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53
+  icons:
+    fill-icon:
+      material: BLACK_STAINED_GLASS_PANE
+      slot: 0-8
+    solo-games-icon:
+      material: PAPER
+      display-name: '&5{played-date}'
+      lore:
+        - '&7Duel Time: &d{match-duration-timer}' #{match-duration-time} supported
+        - '&7Rounds Played: &f{played-rounds}'
+        - ''
+        - '{+player-1}' #winner/loser info formats will insert here
+        - ''
+        - '{+player-2}'
+        - ''
+      winner-info-format:
+        - '&a{player}&e&l WINNER'
+        - '&7Damage Dealt: &f{damage-dealt}&c❤'
+        - '&7Bow Accuracy: &f{bow-accuracy}%'
+      loser-info-format:
+        - '&c{player}'
+        - '&7Damage Dealt: &f{damage-dealt}&c❤'
+        - '&7Bow Accuracy: &f{bow-accuracy}%'
+        # supported placeholders:
+        #{placed-blocks}
+        #{broken-blocks}
+        #{damage-dealt} # in heart (players has 20 heart)
+        #{damage-taken} # in heart
+        #{jump}
+        #{fall} #in meters
+        #{sprint} #in meters
+        #{click}
+        #{hit-click}
+        #{fish-hook-accuracy}
+        #{melee-accuracy}
+        #{bow-accuracy}
+        #{regenerated-health}
+    non-solo-games-icon:
+      material: PAPER
+      display-name: '&d{played-date}'
+      lore:
+        - '&7Duel Time: &d{match-duration-timer}'
+        - '&7Rounds Played: &f{played-rounds}'
+        - ''
+        - '{+players}' #all winner/loser info formats will insert here
+        - ''
+      winner-info-format:
+        - '&a{player}&e&l WINNER TEAM'
+      loser-info-format:
+        - '&c{player}'
+
+duel-arenas-gui:
+  enabled: true # this gui can be disabled
+  title: 'Duel Arenas'
+  row: 6
+  page-slots: 9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53
+  icons:
+    fill-icon:
+      material: BLACK_STAINED_GLASS_PANE
+      slot: 0-8
+      display-name: '&r'
+    previous:
+      material: ARROW
+      slot: 0
+      display-name: '&cPrevious'
+    next:
+      material: ARROW
+      slot: 8
+      display-name: '&cNext'
+    STARTING:
+      material: YELLOW_WOOL
+      display-name: '&dArena: #{arena}'
+      lore:
+        - ''
+        - '&7State: &eStarting...'
+        - '&7Players: &b{players}'
+        - '&7Mode: &b{mode}'
+        - ''
+        - '&eClick to spectate game!'
+    PLAYING:
+      material: RED_WOOL
+      display-name: '&dArena: #{arena}'
+      lore:
+        - ''
+        - '&7State: &cPlaying'
+        - '&7Players: &b{players}'
+        - '&7Mode: &b{mode}'
+        - ''
+        - '&eClick to spectate game!'
+    ENDING:
+      material: YELLOW_WOOL
+      display-name: '&dArena: #{arena}'
+      lore:
+        - ''
+        - '&7State: &eEnding'
+        - '&7Players: &b{players}'
+        - '&7Mode: &b{mode}'
+        - ''
+        - '&eClick to spectate game!'
+    EMPTY:
+      material: LIME_WOOL
+      display-name: '&dArena: #{arena}'
+      lore:
+        - ''
+        - '&7State: &aAvailable'
+        - '&7Map: &9{map}'
+        - ''
+    DISABLED:
+      material: REDSTONE_BLOCK
+      display-name: '&dArena: #{arena}'
+      lore:
+        - '&cThis arena currently'
+        - '&cdisabled by administrators.'
+        - ''
+    UNKNOWN:
+      material: BEDROCK
+      display-name: '&dArena: #{arena}'
+      lore:
+        - ''
+        - '&4Error'
+        - ''
+
+queues-gui:
+  title: 'Queues'
+  row: 6
+  # amount of queue icons are dynamic. it shows player amount of the queue.
+  # if set false, MasterDuels will fix 0 amounts to 1 to prevent display bugs on 1.9+ clients
+  use-zero-amount: false
+  icons:
+    fill-icon:
+      material: BLACK_STAINED_GLASS_PANE
+      slot: 0-8
+      display-name: '&r'
+    queue-icons:
+      default:
+        material: GOLD_BLOCK
+        display-name: '&c{queue-name}'
+        lore:
+          - '&7Players: &e{players}&8/&e{max-players}'
+          - ''
+          - '&eClick to join queue!'
+      uhc:
+        material: DIAMOND
+        slot: 9
+        # display-name and lore will be came from 'default' section.
+        # because these datas are not specified here.
+      archer:
+        material: BOW
+        slot: 10
+        lore:
+          - '&7Players: &e{players}&8/&e{max-players}'
+          - ''
+          - '&c&lNOTE: &cThere is no sword in'
+          - '&cthis kit!'
+          - ''
+          - '&eClick to join queue!'
+        # only display-name will become from 'default' section.
+
+kit-selection-gui:
+  title: 'Select a kit'
+  row: 4
+  page-slots: 9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44
+  icons:
+    fill-icon:
+      material: BLACK_STAINED_GLASS_PANE
+      slot: 0-8
+    previous:
+      material: ARROW
+      slot: 0
+      display-name: '&cPrevious'
+    next:
+      material: ARROW
+      slot: 8
+      display-name: '&cNext'
+
+duel-creator:
+  gui:
+    title: 'Duel Creator {mode} &c&lBETA'
+    row: 6
+    icons:
+      fill-icon:
+        material: BLACK_STAINED_GLASS_PANE
+        slot: 45-53
+        display-name: '&r'
+      information-icon:
+        material: BOOKSHELF
+        slot: 50
+        display-name: '&9Information'
+        lore:
+          - ''
+          - '&7Mode: &b{mode}'
+          - '&7Total players: &a{total-players} players'
+          - '&7Max Time: &a{game-time}'
+          - '&7Round: &a{round-amount} round(s)'
+          - ''
+          # supported placeholders
+          #	{mode}
+          #	{invited-players}
+          #	{total-players}
+          # {round-amount}
+          # {game-timer}
+          #	{game-time}
+          #	{team-amount}
+          #	{team-size}
+      team-size:
+        material: PLAYER_HEAD
+        slot: 11
+        display-name: '&9Team Size'
+        lore:
+          - '&7'
+          - '&7Currently: &f{team-size}'
+          - '&7'
+          - '&7Member amount of a team.'
+          - '&7'
+          - '&c&lWARNING: &cChange of this'
+          - '&csetting, resets all teams.'
+          - '&7'
+          - '&eLeft click to increase'
+          - '&eRight click to decrease'
+      team-amount:
+        material: PLAYER_HEAD
+        slot: 12
+        display-name: '&9Team Amount'
+        lore:
+          - '&7'
+          - '&7Currently: &f{team-amount}'
+          - '&7'
+          - '&7Amount of teams in game.'
+          - '&7'
+          - '&c&lWARNING: &cChange of this'
+          - '&csetting, resets all teams.'
+          - '&7'
+          - '&eLeft click to increase'
+          - '&eRight click to decrease'
+      invites:
+        material: WRITABLE_BOOK
+        slot: 13
+        display-name: '&9Invited Players'
+        lore:
+          - '&7'
+          - '&7Pending Invites: {invited-players}'
+          - '&7Players: {total-players}'
+          - '&7'
+          - '&7Invite a player to challenge'
+          - '&7him.'
+          - '&7'
+          - '&eClick to open menu'
+      rules:
+        material: COMPARATOR
+        slot: 14
+        display-name: '&9Rules'
+        lore:
+          - '&7'
+          - '&7Game rules of game.'
+          - '&7'
+          - '&eClick to open menu'
+      round-amount:
+        material: LADDER
+        slot: 15
+        display-name: '&9Round Amount'
+        lore:
+          - '&7'
+          - '&7Currently: &f{round-amount}'
+          - '&7'
+          - '&7How many rounds will the'
+          - '&7game last?'
+          - '&7'
+          - '&85 round needs 3 win.'
+          - '&7'
+          - '&eLeft click to increase'
+          - '&eRight click to decrease'
+      kit-mutual-mode:
+        material: IRON_CHESTPLATE
+        slot: 20
+        display-name: '&9Kit'
+        lore:
+          - '&7'
+          - '&7Kit: &f{kit}'
+          - '&7'
+          - '&7Each player will fight with'
+          - '&7this kit.'
+          - '&7'
+          - '&eLeft Click to choose kit.'
+          - '&eRight click to switch various mode.'
+      kit-various-mode:
+        material: GOLDEN_CHESTPLATE
+        slot: 20
+        display-name: '&9Kit &6&lVARIOUS MODE'
+        lore:
+          - '&7'
+          - '&7Your Kit: &f{your-kit}'
+          - '&7'
+          - '&7Each player will fight with'
+          - '&7kit they want.'
+          - ''
+          - '&7In default, players will get'
+          - '&7kit you selected.'
+          - '&7'
+          - '&eLeft click to choose kit.'
+          - '&eRight click to switch mutual mode.'
+      game-time:
+        material: CLOCK
+        slot: 21
+        display-name: '&9Game Time'
+        lore:
+          - '&7'
+          - '&7Currently: &a{game-timer}'
+          - '&7'
+          - '&7Time out time of game.'
+          - '&7'
+          - '&eLeft click to increase'
+          - '&eRight click to decrease'
+      manage-teams:
+        material: PAINTING
+        slot: 22
+        display-name: '&9Manage Teams'
+        lore:
+          - '&7'
+          - '&7Manage members of teams.'
+          - '&7'
+          - '&eClick to open menu'
+      start-game:
+        material: EMERALD_BLOCK
+        slot: 49
+        display-name: '&2Start Game!'
+        lore:
+          - '&7'
+          - '&7&oAre you for this'
+          - '&7&oAre you for this &8&o2x'
+          - '&7&oHere we go!'
+          - '&7'
+          - '&aClick to start duel game!'
+  non-owner-gui:
+    title: '{owner}''s Creator {mode}'
+    row: 5
+    icons:
+      fill-icon:
+        material: BLACK_STAINED_GLASS_PANE
+        slot: 0-8
+        display-name: '&r'
+      information-icon:
+        material: BOOKSHELF
+        slot: 4
+        display-name: '&9Information'
+        lore:
+          - ''
+          - '&7Mode: &b{mode}'
+          - '&7Total players: &a{total-players} players'
+          - '&7Max Time: &a{game-time}'
+          - '&7Round: &a{round-amount} round(s)'
+          - ''
+          # supported placeholders
+          #	{mode}
+          #	{invited-players}
+          #	{total-players}
+          # {round-amount}
+          # {game-timer}
+          #	{game-time}
+          #	{team-amount}
+          #	{team-size}
+      leave:
+        material: BARRIER
+        slot: 0
+        display-name: '&cLeave from the creator'
+        lore:
+          - '&7You can use /duel leave'
+          - '&7command too.'
+          - ''
+          - '&4Click to leave'
+      kit-icon:
+        material: IRON_CHESTPLATE
+        slot: 6
+        display-name: '&9Kit'
+        lore:
+          - '&7'
+          - '&7Kit: &f{kit}'
+          - '&7'
+          - '&7You''ll fight with'
+          - '&7this kit.'
+          - '&7'
+          - '&eClick to choose kit.'
+      empty-player-slot:
+        material: BARRIER
+        display-name: '&cEmpty!'
+      player-slot:
+        material: PLAYER_HEAD
+        display-name: '&b{player}'
+        lore:
+          - '&7Kit: &a{kit}'
+      team-slot:
+        dynamic-materials:
+          - RED_STAINED_GLASS
+          - BLUE_STAINED_GLASS
+          - YELLOW_STAINED_GLASS
+          - LIME_STAINED_GLASS
+          - PURPLE_STAINED_GLASS
+          - CYAN_STAINED_GLASS
+          - ORANGE_STAINED_GLASS
+          - PINK_STAINED_GLASS
+          - LIGHT_BLUE_STAINED_GLASS
+          - GREEN_STAINED_GLASS
+        display-name: '&f{team-no}. team'
+        lore:
+          - '&7({team-players-amount}&8/&7{team-size})'
+  manage-teams-gui:
+    title: Manage Teams
+    #the size of gui is dynamic
+    icons:
+      fill-icon:
+        material: BLACK_STAINED_GLASS_PANE
+        slot: 0-8
+        display-name: '&r'
+      empty-player-slot:
+        material: BARRIER
+        display-name: '&cEmpty!'
+        lore:
+          - ''
+          - '&7Put a player''s head here'
+          - '&7to switch team.'
+      player-slot:
+        material: PLAYER_HEAD
+        display-name: '&b{player}'
+        lore:
+          - ''
+          - '&7Kit: &a{kit}'
+          - ''
+          - '&ePut another slot to switch team'
+          - '&ePress Q to kick player'
+      team-slot:
+        dynamic-materials:
+          - RED_STAINED_GLASS
+          - BLUE_STAINED_GLASS
+          - YELLOW_STAINED_GLASS
+          - LIME_STAINED_GLASS
+          - PURPLE_STAINED_GLASS
+          - CYAN_STAINED_GLASS
+          - ORANGE_STAINED_GLASS
+          - PINK_STAINED_GLASS
+          - LIGHT_BLUE_STAINED_GLASS
+          - GREEN_STAINED_GLASS
+        display-name: '&f{team-no}. team'
+        lore:
+          - '&7({team-players-amount}&8/&7{team-size})'
+      back:
+        material: ARROW
+        slot: 0
+        display-name: '&cBack'
+  game-rules-gui:
+    title: 'Game Rules'
+    row: 3
+    icons:
+      fill-icon:
+        material: BLACK_STAINED_GLASS_PANE
+        slot: 0-8
+        display-name: '&r'
+      back:
+        material: ARROW
+        slot: 0
+        display-name: '&cBack'
+      NO_GOLDEN_APPLE:
+        slot: 9
+        disabled:
+          material: GRAY_DYE
+          display-name: '&cNo Golden Apple'
+          lore:
+            - ''
+            - '&7Currently: &cDisabled'
+            - ''
+            - '&7Players can eat golden'
+            - '&7apple and enchanted golden'
+            - '&7apple rightnow.'
+            - ''
+            - '&eClick to add the rule.'
+        enabled:
+          material: LIME_DYE
+          display-name: '&aNo Golden Apple'
+          lore:
+            - ''
+            - '&7Currently: &aEnabled'
+            - ''
+            - '&7Players cannot eat golden'
+            - '&7apple and enchanted golden'
+            - '&7apple rightnow.'
+            - ''
+            - '&eClick to remove the rule.'
+      NO_BOW:
+        slot: 10
+        disabled:
+          material: GRAY_DYE
+          display-name: '&cNo Bow'
+          lore:
+            - ''
+            - '&7Currently: &cDisabled'
+            - ''
+            - '&7Players can use trident,'
+            - '&7bow and crossbow rightnow.'
+            - ''
+            - '&eClick to add the rule.'
+        enabled:
+          material: LIME_DYE
+          display-name: '&aNo Bow'
+          lore:
+            - ''
+            - '&7Currently: &aEnabled'
+            - ''
+            - '&7Players cannot use trident,'
+            - '&7bow and crossbow rightnow.'
+            - ''
+            - '&eClick to remove the rule.'
+      NO_ENDER_PEARL:
+        slot: 11
+        disabled:
+          material: GRAY_DYE
+          display-name: '&cNo Ender Pearl'
+          lore:
+            - ''
+            - '&7Currently: &cDisabled'
+            - ''
+            - '&7Players can teleport using'
+            - '&7ender pearls rightnow.'
+            - ''
+            - '&eClick to add the rule.'
+        enabled:
+          material: LIME_DYE
+          display-name: '&aNo Ender Pearl'
+          lore:
+            - ''
+            - '&7Currently: &aEnabled'
+            - ''
+            - '&7Players cannot teleport using'
+            - '&7ender pearls rightnow.'
+            - ''
+            - '&eClick to remove the rule.'
+      NO_POTION:
+        slot: 12
+        disabled:
+          material: GRAY_DYE
+          display-name: '&cNo Potion'
+          lore:
+            - ''
+            - '&7Currently: &cDisabled'
+            - ''
+            - '&7Players can drink and'
+            - '&7splash potions rightnow.'
+            - ''
+            - '&eClick to add the rule.'
+        enabled:
+          material: LIME_DYE
+          display-name: '&aNo Potion'
+          lore:
+            - ''
+            - '&7Currently: &aEnabled'
+            - ''
+            - '&7Players cannot drink and'
+            - '&7splash potions rightnow.'
+            - ''
+            - '&eClick to remove the rule.'
+      NO_FIRE:
+        slot: 13
+        disabled:
+          material: GRAY_DYE
+          display-name: '&cNo Fire'
+          lore:
+            - ''
+            - '&7Currently: &cDisabled'
+            - ''
+            - '&7Players are able to'
+            - '&7get combust rightnow.'
+            - ''
+            - '&eClick to add the rule.'
+        enabled:
+          material: LIME_DYE
+          display-name: '&aNo Fire'
+          lore:
+            - ''
+            - '&7Currently: &aEnabled'
+            - ''
+            - '&7Players are not able to'
+            - '&7get combust rightnow.'
+            - ''
+            - '&eClick to remove the rule.'
+      NO_SHIELD: # in-build disabled for 1.8 servers
+        slot: 14
+        disabled:
+          material: GRAY_DYE
+          display-name: '&cNo Shield'
+          lore:
+            - ''
+            - '&7Currently: &cDisabled'
+            - ''
+            - '&7Players can use shields'
+            - '&7rightnow.'
+            - ''
+            - '&eClick to add the rule.'
+        enabled:
+          material: LIME_DYE
+          display-name: '&aNo Shield'
+          lore:
+            - ''
+            - '&7Currently: &aEnabled'
+            - ''
+            - '&7Players cannot use shields'
+            - '&7rightnow.'
+            - ''
+            - '&eClick to remove the rule.'
+  invites-gui:
+    title: 'Pending Invites'
+    row: 5
+    icons:
+      fill-icon:
+        material: BLACK_STAINED_GLASS_PANE
+        slot: 0-8
+        display-name: '&r'
+      back:
+        material: ARROW
+        slot: 0
+        display-name: '&cBack'
+      invite:
+        material: WRITABLE_BOOK
+        slot: 4
+        display-name: '&aInvite a Player'
+        lore:
+          - ''
+          - '&7Current Players: {players-amount}'
+          - '&7Pending Invites: {pending-invites-amount}'
+          - ''
+          - '&eClick to invite a player!'
+
+profile-gui:
+  title: 'Your Stats'
+  row: 4
+  icons:
+    fill-icon:
+      material: BLACK_STAINED_GLASS_PANE
+      slot: 0-8
+      display-name: '&r'
+    toggle-invites-icon-enabled:
+      material: LIME_DYE
+      slot: 24
+      display-name: '&aInvite Receiving Enabled'
+      lore:
+        - '&7Currently: &aEnabled'
+        - ''
+        - '&7Players can send you duel match'
+        - '&7invite and challenge you.'
+        - ''
+        - '&eClick to disable invite receiving'
+    toggle-invites-icon-disabled:
+      material: RED_DYE
+      slot: 24
+      display-name: '&cInvite Receiving Disabled'
+      lore:
+        - '&7Currently: &cDisabled'
+        - ''
+        - '&7Players cannot send you duel match'
+        - '&7invite.'
+        - ''
+        - '&eClick to enable invite receiving'
+    toggle-scoreboard-icon-enabled:
+      material: LIME_DYE
+      slot: 25
+      display-name: '&aScoreboard Display'
+      lore:
+        - '&7Currently: &aEnabled'
+        - ''
+        - '&7The scoreboard is visible to you.'
+        - ''
+        - '&eClick to disable display'
+    toggle-scoreboard-icon-disabled:
+      material: RED_DYE
+      slot: 25
+      display-name: '&cScoreboard Display'
+      lore:
+        - '&7Currently: &cDisabled'
+        - ''
+        - '&7The scoreboard is invisible to you.'
+        - ''
+        - '&eClick to enable display'
+    toggle-boss-bar-icon-enabled:
+      material: LIME_DYE
+      slot: 26
+      display-name: '&aBoss Bar Display'
+      lore:
+        - '&7Currently: &aEnabled'
+        - ''
+        - '&7The boss bar is visible to you.'
+        - ''
+        - '&eClick to disable display'
+    toggle-boss-bar-icon-disabled:
+      material: RED_DYE
+      slot: 26
+      display-name: '&cBoss Bar Display'
+      lore:
+        - '&7Currently: &cDisabled'
+        - ''
+        - '&7The boss bar is invisible to you.'
+        - ''
+        - '&eClick to enable display'
+    stat-icon:
+      material: PLAYER_HEAD
+      slot: 22
+      display-name: '&aStatistics'
+      lore:
+        - '&7 Wins: &6{wins}'
+        - '&7 Losses: &6{losses}'
+        - ''
+        - '&7 Damage Dealt: &c{damage-dealt} ❤'
+        - '&7 Damage Taken: &c{damage-taken} ❤'
+        - ''
+        - '&7 Placed Blocks: &e{placed-blocks} blocks'
+        - '&7 Broken Blocks: &e{broken-blocks} blocks'
+        - '&7 Meters Sprint: &e{sprint}m'
+        - ''
+        - '&7 Bow Accuracy: &6%{bow-accuracy}'
+        - '&7 Melee Accuracy: &6%{melee-accuracy}'
+        - '&7 Fish Hook Accuracy: &6%{fish-hook-accuracy}'
+        # supported placeholders:
+        #{wins}
+        #{losses}
+        #{placed-blocks}
+        #{broken-blocks}
+        #{damage-dealt} # in heart (admits that players have 20 hearts)
+        #{damage-taken} # in heart
+        #{jump}
+        #{fall} #in meters
+        #{sprint} #in meters
+        #{click}
+        #{hit-click}
+        #{fish-hook-accuracy}
+        #{melee-accuracy}
+        #{bow-accuracy}
+        #{regenerated-health}
