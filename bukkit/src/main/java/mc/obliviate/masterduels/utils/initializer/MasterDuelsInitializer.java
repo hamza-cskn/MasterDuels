@@ -51,7 +51,7 @@ public class MasterDuelsInitializer {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-        }).start();
+        });//.start();
     }
 
     private void tryInit(int tryCount) throws InterruptedException {

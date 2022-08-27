@@ -7,6 +7,7 @@ import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.data.SQLManager;
 import mc.obliviate.masterduels.game.Match;
 import mc.obliviate.masterduels.queue.DuelQueueHandler;
+import mc.obliviate.masterduels.utils.initializer.MasterDuelsInitializer;
 import mc.obliviate.masterduels.utils.optimization.ArenaWorldOptimizerHandler;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
@@ -42,6 +43,7 @@ public class MasterDuels extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        new MasterDuelsInitializer().init();
     }
 
     @Override

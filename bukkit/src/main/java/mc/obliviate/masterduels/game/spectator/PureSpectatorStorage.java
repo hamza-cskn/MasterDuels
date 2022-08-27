@@ -48,18 +48,19 @@ public class PureSpectatorStorage implements SpectatorStorage {
 
 	@Override
 	public void unspectate(Spectator spectator) {
+		Bukkit.broadcastMessage("pure unspectate");
 		if (!spectators.remove(spectator)) return;
 
 		Bukkit.getPluginManager().callEvent(new DuelMatchSpectatorLeaveEvent(spectator));
 		playerReset.reset(spectator.getPlayer());
 
 		UserHandler.switchUser(spectator);
+		Bukkit.broadcastMessage("switched to user...");
 		if (DataHandler.getLobbyLocation() != null) {
 			spectator.getPlayer().teleport(DataHandler.getLobbyLocation());
 		}
 		InventoryStorer.restore(spectator.getPlayer());
 		//MessageAPI.getInstance(game.getPlugin()).sendTitle(player, TitleHandler.getTitle(TitleHandler.TitleType.SPECTATOR_LEAVE));
-
 	}
 
 	@Override
