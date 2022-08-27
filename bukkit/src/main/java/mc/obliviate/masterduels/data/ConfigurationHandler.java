@@ -23,7 +23,7 @@ import mc.obliviate.masterduels.playerdata.history.gui.DuelHistoryLogGui;
 import mc.obliviate.masterduels.queue.DuelQueueHandler;
 import mc.obliviate.masterduels.queue.DuelQueueTemplate;
 import mc.obliviate.masterduels.queue.gui.DuelQueueListGUI;
-import mc.obliviate.masterduels.scoreboard.ScoreboardFormatConfig;
+import mc.obliviate.masterduels.scoreboard.ScoreboardConfig;
 import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.notify.NotifyActionStack;
@@ -360,15 +360,16 @@ public class ConfigurationHandler {
     }
 
     private void registerScoreboards() {
+        ScoreboardConfig scoreboardConfig = new ScoreboardConfig(config.getInt("scoreboards.update-interval", 20));
         for (final MatchStateType gameState : MatchStateType.values()) {
             final ConfigurationSection section = config.getConfigurationSection("scoreboards." + gameState.name());
-            ScoreboardFormatConfig scoreboardFormatConfig;
             if (section == null) {
-                new ScoreboardFormatConfig(gameState, ("{name} &c{health}HP"), ("{name} &cDEAD"), ("{name} &cQUIT"), ("&e&lDuels"), (Arrays.asList("{+opponents}", "", "&4&lERROR: &c" + gameState, "&7No Lines Found")));
-            } else {
-                new ScoreboardFormatConfig(gameState, (section.getString("live-opponent-format")), (section.getString("dead-opponent-format")), (section.getString("quit-opponent-format")), (section.getString("title")), (section.getStringList("lines")));
+                scoreboardConfig.registerFormatConfig(gameState, "{name} &c{health}HP", "{name} &cDEAD", "{name} &cQUIT", "&e&lDuels", Arrays.asList("{+opponents}", "", "&4&lERROR: &c" + gameState, "&7No Lines Found"));
+                continue;
             }
+            scoreboardConfig.registerFormatConfig(gameState, section.getString("live-opponent-format"), section.getString("dead-opponent-format"), section.getString("quit-opponent-format"), section.getString("title"), section.getStringList("lines"));
         }
+        ScoreboardConfig.setDefaultConfig(scoreboardConfig);
     }
 
     private void registerBossBars() {

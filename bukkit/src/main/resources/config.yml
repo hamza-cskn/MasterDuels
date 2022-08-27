@@ -120,6 +120,7 @@ duel-game-lock:
 #You can translate time format from message.yml time-format
 scoreboards:
   enabled: true
+  update-interval: 20 # in ticks
   PLAYING:
     title: '&e&lDUELS'
     live-opponent-format: '&a{name} &c{health}❤'

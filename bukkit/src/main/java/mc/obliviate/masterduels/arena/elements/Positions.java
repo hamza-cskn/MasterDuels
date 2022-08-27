@@ -15,7 +15,6 @@ import java.util.Map;
 
 public class Positions {
 
-
 	private final Map<Integer, Location> locations = new HashMap<>();
 
 	public Map<Integer, Location> getLocations() {

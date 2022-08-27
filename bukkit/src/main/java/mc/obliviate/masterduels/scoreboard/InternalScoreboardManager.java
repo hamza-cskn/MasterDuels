@@ -46,18 +46,15 @@ public final class InternalScoreboardManager implements Listener {
 
     private void uninstallScoreboard(Player player) {
         InternalScoreboard.deleteIfPresent(player.getUniqueId());
-        //HCore.findScoreboardByPlayer(player).ifPresent(HScoreboard::delete);
     }
 
     public void setupScoreboard(Member member, MatchStateType type) {
-
-        final ScoreboardFormatConfig formatConfig = ScoreboardFormatConfig.getFormatConfig(type);
+        final ScoreboardFormatConfig formatConfig = ScoreboardConfig.getDefaultConfig().getFormatConfig(type);
         final Match match = member.getMatch();
 
         InternalScoreboard scoreboard = new InternalScoreboard(member.getPlayer().getUniqueId());
-        scoreboard.show();
         scoreboard.setTitle(formatConfig.getTitle());
-        scoreboard.setUpdateInterval(20);
+        scoreboard.setUpdateInterval(ScoreboardConfig.getDefaultConfig().getIntervalInTicks());
         scoreboard.update(sb -> {
             int lineNo = 0;
             List<String> list = formatConfig.getLines();
@@ -76,7 +73,7 @@ public final class InternalScoreboardManager implements Listener {
                             } else if (UserHandler.isSpectator(loopMember.getPlayer().getUniqueId())) {
                                 minorLine = formatConfig.getDeadOpponentFormat();
                             } else {
-                                minorLine = formatConfig.getLiveOpponentFormat().replace("{health}", loopMember.getPlayer().getHealthScale() + "");
+                                minorLine = formatConfig.getLiveOpponentFormat().replace("{health}", loopMember.getPlayer().getHealth() + "");
                             }
 
                             minorLine = minorLine
@@ -92,8 +89,8 @@ public final class InternalScoreboardManager implements Listener {
                     line = line.replace("{team-size}", member.getTeam().getMembers().size() + "");
                     sb.setLine(lineNo++, line);
                 }
-
             }
         });
+        scoreboard.show();
     }
 }

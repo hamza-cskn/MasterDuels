@@ -1,81 +1,70 @@
-scoreboards-enabled: true
-update-interval: 20 # in ticks
-scoreboards:
-  default:
+TournamentArena:
+  name: TournamentArena
+  map-name: Skyport
+  arena-cuboid:
+    position-1: -40.0, 74.0, -40.0, 0.0, 0.0, map_skyport
+    position-2: 40.0, 92.0, 40.0, 0.0, 0.0, map_skyport
+  spectator-position: { }
+  positions:
+    spawn-team-2:
+      '1': 40.0, 92.0, 40.0, 0.0, 0.0, map_skyport
+    spawn-team-1:
+      '1': 40.0, 92.0, 40.0, 0.0, 0.0, map_skyport
+  team-size: 1
+  team-amount: 2
+  scoreboard:
     PLAYING:
-      title: '&e&lDUELS'
+      title: '&e&lDUELS TOURNAMENT'
       live-opponent-format: '&a{name} &c{health}❤'
-      dead-opponent-format: '&a{name} &cDEAD'
+      dead-opponent-format: '&a{name} &cELEMINATED'
       quit-opponent-format: '&a{name} &cQUIT'
       lines:
         - '&fRound: &e#{round}'
-        - '&fMap: &e{map}'
         - ''
-        - '&fTime:'
+        - '&fRemaining Time:'
         - ' &a{timer}'
         - ''
         - '{+opponents}'
         - '&ewww.yourserver.net'
-    ROUND_STARTING:
-      title: '&e&lDUELS'
-      live-opponent-format: '&a{name} &c{health}❤'
-      dead-opponent-format: '&a{name} &cDEAD'
-      quit-opponent-format: '&a{name} &cQUIT'
-      lines:
-        - '&fRound: &e#{round}'
-        - '&fMap: &e{map}'
-        - ''
-        - '&fTime:'
-        - ' &a{timer}'
-        - ''
-        - '{+opponents}'
-        - '&ewww.yourserver.net'
-    ROUND_ENDING:
-      title: '&e&lDUELS'
-      live-opponent-format: '&a{name} &c{health}❤'
-      dead-opponent-format: '&a{name} &cDEAD'
-      quit-opponent-format: '&a{name} &cQUIT'
-      lines:
-        - '&fRound: &e#{round}'
-        - '&fMap: &e{map}'
-        - ''
-        - '&fTime:'
-        - ' &a{timer}'
-        - ''
-        - '{+opponents}'
-        - '&ewww.yourserver.net'
-    MATCH_ENDING:
-      title: '&e&lDUELS'
-      live-opponent-format: '&a{name} &c{health}❤'
-      dead-opponent-format: '&a{name} &cDEAD'
-      quit-opponent-format: '&a{name} &cQUIT'
-      lines:
-        - '&fRound: &e#{round}'
-        - '&fMap: &e{map}'
-        - ''
-        - '&fTime:'
-        - ' &a{timer}'
-        - ''
-        - '{+opponents}'
-        - '&ewww.yourserver.net'
-  example-scoreboard:
-    # if a match's mode, kit, map and arena attributes are equal to datas given below,
-    # example-scoreboard will be shown to the players instead of default scoreboard.
-    mode: 1v1
-    kit: ExampleKitName
-    map: AnyMapName
-    arena: AnyArenaName
-    PLAYING:
-      title: '&e&lDUELS'
-      live-opponent-format: '&a{name} &c{health}❤'
-      dead-opponent-format: '&a{name} &cDEAD'
-      quit-opponent-format: '&a{name} &cQUIT'
-      lines:
-        - '&fRound: &e#{round}'
-        - '&fMap: &e{map}'
-        - ''
-        - '&fTime:'
-        - ' &a{timer}'
-        - ''
-        - '{+opponents}'
-        - '&ewww.yourserver.net'
+  tab-nametags:
+    third-person-prefix: '&7&k'
+    friend-prefix: '&a'
+    opponent-prefix: '&c&k'
+  boss-bars:
+    in-battle: 'Remaining Time: {time}' #also, you can use {timer} placeholder
+    arena-closing: 'Arena Closing in: {time}'
+  duel-game-lock:
+    lock-duration: 7 #in seconds
+    teleport-frequency: 5 # teleport amount per second
+    notify-actions:
+      action:
+        remaining-time: 0
+        sound: NOTE_PIANO
+        title:
+          title: '&a&lBATTLE!'
+          fadein: 5
+          fadeout: 0
+  action-limitations:
+    # DISALLOW -> disallows item dropping (pressing Q)
+    # FRIENDLY -> players cannot pickup items which is dropped (pressing Q) by their opponents
+    # ALLOW -> players can drop and pickup all items
+    item-pickup: DISALLOW
+    executable-commands-during-match:
+      PLAYING:
+        - duel
+      ROUND_STARTING:
+        - duel
+      ROUND_ENDING:
+        - duel
+      MATCH_ENDING:
+        - enderchest
+        - ec
+        - pv
+        - chest
+        - duel #to leave duel game
+  delay-end-duel-after-player-kill: 20 #in seconds
+  execute-console-commands:
+    when-duel-started:
+    #- say duel started
+    when-duel-ended:
+    #- say duel finished
