@@ -10,7 +10,7 @@ import mc.obliviate.masterduels.user.Member;
 import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.Utils;
-import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
+import mc.obliviate.util.placeholder.PlaceholderUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.event.entity.EntityDamageEvent;
 
@@ -58,7 +58,9 @@ public class PlayingState implements MatchState {
 		}
 
 		if (match.getGameDataStorage().getGameTeamManager().checkTeamEliminated(victim.getTeam())) {
-			match.broadcastInGame("duel-team-eliminated", new PlaceholderUtil().add("{victim}", Utils.getDisplayName(victim.getPlayer())));
+			if (match.getGameDataStorage().getGameTeamManager().getTeamSize() != 1) {
+				match.broadcastInGame("duel-team-eliminated", new PlaceholderUtil().add("{victim}", Utils.getDisplayName(victim.getPlayer())));
+			}
 		}
 
 		final Team lastSurvivedTeam = match.getGameDataStorage().getGameTeamManager().getLastSurvivedTeam();

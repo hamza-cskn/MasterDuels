@@ -8,9 +8,6 @@ import mc.obliviate.masterduels.kit.Kit;
 import mc.obliviate.masterduels.user.IUser;
 import mc.obliviate.masterduels.user.Member;
 import mc.obliviate.masterduels.user.UserHandler;
-import mc.obliviate.masterduels.utils.MessageUtils;
-import mc.obliviate.masterduels.utils.Utils;
-import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -89,22 +86,12 @@ public class MatchBuilder {
 
 		players.add(player.getUniqueId());
 		matchDataStorage.getGameTeamManager().registerPlayer(player, kit, availableTeamNo);
-
-		for (UUID uuid : players) {
-			Player receiver = Bukkit.getPlayer(uuid);
-			MessageUtils.sendMessage(receiver, "player-joined", new PlaceholderUtil().add("{player}", Utils.getDisplayName(player)).add("{total-players}", players.size() + "").add("{max-players}", (matchDataStorage.getGameTeamManager().getTeamSize() * matchDataStorage.getGameTeamManager().getTeamAmount()) + ""));
-		}
 	}
 
 	public void removePlayer(IUser user) {
 		players.remove(user.getPlayer().getUniqueId());
 		matchDataStorage.getGameTeamManager().unregisterPlayer(user);
 		user.exitMatchBuilder();
-
-		for (UUID uuid : players) {
-			Player player = Bukkit.getPlayer(uuid);
-			MessageUtils.sendMessage(player, "player-left", new PlaceholderUtil().add("{player}", Utils.getDisplayName(player)).add("{total-players}", players.size() + "").add("{max-players}", (matchDataStorage.getGameTeamManager().getTeamSize() * matchDataStorage.getGameTeamManager().getTeamAmount()) + ""));
-		}
 	}
 
 	public void removePlayer(Player player) {
@@ -128,17 +115,18 @@ public class MatchBuilder {
 				final Player player = Bukkit.getPlayer(uuid);
 				Preconditions.checkNotNull(player, "player cannot be offline");
 				Member.Builder memberBuilder = matchDataStorage.getGameTeamManager().getMemberBuilder(player.getUniqueId());
-				matchDataStorage.getGameTeamManager().registerPlayer(player, memberBuilder.getKit(), teamNo);
+				matchDataStorage.getGameTeamManager().registerPlayer(player, memberBuilder.getKit(this.matchDataStorage.getKitManager().getKitMode()), teamNo);
 			}
 		}
 	}
 
 	public int getAvailableTeamNo() {
+        Preconditions.checkState(!matchDataStorage.getGameTeamManager().getTeamBuilders().isEmpty(), "no team builder found");
 		for (Team.Builder teamBuilder : matchDataStorage.getGameTeamManager().getTeamBuilders()) {
 			if (teamBuilder.getMemberBuilders().size() < matchDataStorage.getGameTeamManager().getTeamSize())
 				return teamBuilder.getTeamId();
 		}
-		return -1;
+		return -1; //not found
 	}
 
 	public Team getTeam(Player player) {

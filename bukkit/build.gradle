@@ -1,79 +1,40 @@
-plugins {
-    id 'java'
-    id 'com.github.johnrengelman.shadow' version '7.1.2'
-}
-
-
-repositories {
-    mavenLocal()
-    maven {
-        url = uri("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
-    }
-
-    maven {
-        url = uri("https://jitpack.io")
-    }
-
-    maven {
-        url = uri("https://repo.puha.io/repo/")
-    }
-
-    maven {
-        url = uri("https://oss.sonatype.org/content/repositories/snapshots")
-    }
-
-    maven {
-        url = uri("https://repo.kryptonmc.org/releases")
-    }
-
-    maven {
-        url = uri("https://repo.maven.apache.org/maven2/")
-    }
-}
-
 dependencies {
-    //implementation 'com.github.Obliviated:ObliviateInvs:3.2.0'
-    implementation files('D:/Users/User/Desktop/Libraries/ObliviateInvs.jar')
-    compileOnly files('D:/Users/User/Desktop/Local Servers & Setups/LOCAL 1.8/plugins/Replay.jar')
+    implementation 'com.github.hakan-krgn.hCore:bukkit-primary:0.5.7'
     implementation 'com.github.Obliviated:BlokSQLiteAPI:1.0.7-b'
-    implementation 'com.github.hakan-krgn.hCore:bukkit-primary:0.4.7'
     //implementation project(':api')
+
+    //implementation files('D:/Users/User/Desktop/Libraries/hcore.jar')
+    compileOnly files('D:/Users/User/Desktop/Libraries/Replay.jar')
+    compileOnly files('D:/Users/User/Desktop/Libraries/Vault.jar')
+    compileOnly 'org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT'
     compileOnly 'io.puharesource.mc:TitleManager:2.2.0'
     compileOnly 'me.neznamy:tab-api:3.0.1'
-    compileOnly 'org.spigotmc:spigot:1.8.8-R0.1-SNAPSHOT'
-    compileOnly 'com.github.MilkBowl:VaultAPI:1.7'
+
+    implementation 'com.github.hamza-cskn.obliviate-invs:core:4.1.4'
+    implementation 'com.github.hamza-cskn.obliviate-invs:configurablegui:4.1.4'
+    implementation 'com.github.hamza-cskn.obliviate-invs:advancedslot:4.1.4'
+    implementation 'com.github.hamza-cskn.obliviate-invs:pagination:4.1.4'
 }
-
-group = 'mc.obliviate'
-version = '1.0-SNAPSHOT'
-description = 'MasterDuels'
-java.sourceCompatibility = JavaVersion.VERSION_11
-
-compileJava.options.encoding = 'UTF-8'
-
-tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
-}
-
-project.setLibsDirName('D:/Users/User/Desktop/Local Servers & Setups/LOCAL 1.8/plugins')
 
 shadowJar {
-    /*
     exclude 'com/hakan/core/command/**'
     exclude 'com/hakan/core/database/**'
     exclude 'com/hakan/core/hologram/**'
     exclude 'com/hakan/core/item/**'
     exclude 'com/hakan/core/npc/**'
-    exclude 'com/hakan/core/packet/**'
     exclude 'com/hakan/core/particle/**'
     exclude 'com/hakan/core/renderer/**'
-    exclude 'com/hakan/core/scheduler/**'
     exclude 'com/hakan/core/spam/**'
     exclude 'com/hakan/core/ui/**'
-    exclude 'com/hakan/core/utils/**'
     exclude 'com/hakan/core/worldborder/**'
-     */
+    exclude 'com/hakan/core/utils/hooks/**'
+    exclude 'com/hakan/core/utils/query/**'
+    exclude 'com/hakan/core/utils/yaml/**'
+
     relocate 'com.hakan.core', 'mc.obliviate.masterduels.lib.hcore'
+    relocate 'mc.obliviate.util', 'mc.obliviate.masterduels.lib.util'
     relocate 'mc.obliviate.inventory', 'mc.obliviate.masterduels.lib.inventory'
     relocate 'mc.obliviate.bloksqlite', 'mc.obliviate.masterduels.lib.sqlite'
 }
+
+project.setLibsDirName('D:/Users/User/Desktop/Local Servers & Setups/LOCAL 1.8/plugins')

@@ -1,13 +1,15 @@
 package mc.obliviate.masterduels.gui;
 
 import mc.obliviate.inventory.Icon;
+import mc.obliviate.inventory.configurable.ConfigurableGui;
+import mc.obliviate.inventory.configurable.util.ItemStackSerializer;
+import mc.obliviate.inventory.pagination.PaginationManager;
 import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.arena.BasicArenaState;
 import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.game.Match;
 import mc.obliviate.masterduels.utils.MessageUtils;
-import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
-import mc.obliviate.masterduels.utils.serializer.SerializerUtils;
+import mc.obliviate.util.placeholder.PlaceholderUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.ItemStack;
@@ -18,30 +20,29 @@ import java.util.Map;
 public class DuelArenaListGUI extends ConfigurableGui {
 
 	private static Config guiConfig;
+	private final PaginationManager paginationManager = new PaginationManager(this);
 
 	public DuelArenaListGUI(Player player) {
 		super(player, "duel-games-list-gui");
-		getPaginationManager().getSlots().addAll(guiConfig.pageSlots);
+		this.paginationManager.getSlots().addAll(guiConfig.pageSlots);
 		for (final Map.Entry<Arena, Match> entry : DataHandler.getArenas().entrySet()) {
-			getPaginationManager().addIcon(getGameIcon(entry.getKey()));
+			this.paginationManager.addItem(getGameIcon(entry.getKey()));
 		}
 	}
 
 	@Override
 	public void onOpen(InventoryOpenEvent event) {
-		if (getPaginationManager().getPage() != getPaginationManager().getLastPage()) {
+		if (this.paginationManager.getCurrentPage() != this.paginationManager.getLastPage()) {
 			putIcon("previous", e -> {
-				getPaginationManager().previousPage();
-				getPaginationManager().update();
+				this.paginationManager.goPreviousPage().update();
 			});
 		}
-		if (getPaginationManager().getPage() != 0) {
+		if (this.paginationManager.getCurrentPage() != 0) {
 			putIcon("next", e -> {
-				getPaginationManager().nextPage();
-				getPaginationManager().update();
+				this.paginationManager.goNextPage().update();
 			});
 		}
-		getPaginationManager().update();
+		this.paginationManager.update();
 	}
 
 	private Icon getGameIcon(final Arena arena) {
@@ -87,7 +88,9 @@ public class DuelArenaListGUI extends ConfigurableGui {
 		}
 
 		private ItemStack getIcon(final BasicArenaState state, final PlaceholderUtil placeholderUtil) {
-			return SerializerUtils.applyPlaceholdersOnItemStack(icons.get(state).clone(), placeholderUtil);
+			final ItemStack item = icons.get(state).clone();
+			ItemStackSerializer.applyPlaceholdersToItemStack(item, placeholderUtil);
+			return item;
 		}
 	}
 

@@ -2,14 +2,14 @@ package mc.obliviate.masterduels.queue.gui;
 
 import mc.obliviate.inventory.Gui;
 import mc.obliviate.inventory.Icon;
+import mc.obliviate.inventory.configurable.ConfigurableGui;
+import mc.obliviate.inventory.configurable.util.ItemStackSerializer;
 import mc.obliviate.masterduels.data.ConfigurationHandler;
 import mc.obliviate.masterduels.game.MatchBuilder;
-import mc.obliviate.masterduels.gui.ConfigurableGui;
 import mc.obliviate.masterduels.queue.DuelQueue;
 import mc.obliviate.masterduels.queue.DuelQueueTemplate;
-import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
-import mc.obliviate.masterduels.utils.serializer.SerializerUtils;
 import mc.obliviate.masterduels.utils.xmaterial.XMaterial;
+import mc.obliviate.util.placeholder.PlaceholderUtil;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -38,8 +38,8 @@ public class DuelQueueListGUI extends ConfigurableGui {
 			final int slot = ConfigurationHandler.getMenusSection("queues-gui.icons.queue-icons." + template.getName()).getInt("slot");
 			addItem(slot, new Icon(guiConfig.getIconOfTemplate(template.getName(), DuelQueue.getAvailableQueues().get(template).getBuilder()))
 					.onClick(e -> {
-						player.performCommand("duel queue join " + template.getName());
 						player.closeInventory();
+						player.performCommand("duel queue join " + template.getName());
 					}));
 		}
 	}
@@ -77,7 +77,7 @@ public class DuelQueueListGUI extends ConfigurableGui {
 
 			final int players = builder.getPlayers().size();
 
-			SerializerUtils.applyPlaceholdersOnItemStack(item, new PlaceholderUtil()
+			ItemStackSerializer.applyPlaceholdersToItemStack(item, new PlaceholderUtil()
 					.add("{players}", players + "")
 					.add("{max-players}", (builder.getTeamSize() * builder.getTeamAmount()) + "")
 					.add("{queue-name}", templateName));

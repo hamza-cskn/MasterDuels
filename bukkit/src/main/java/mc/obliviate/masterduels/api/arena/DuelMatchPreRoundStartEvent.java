@@ -29,7 +29,7 @@ public class DuelMatchPreRoundStartEvent extends Event implements MatchEvent {
 	}
 
 	public int getNewRound() {
-		return game.getGameDataStorage().getGameRoundData().getCurrentRound() + 1;
+		return game.getGameDataStorage().getGameRoundData().getCurrentRound();
 	}
 
 	public MatchRoundData getRoundData() {

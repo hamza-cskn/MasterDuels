@@ -1,13 +1,14 @@
-package mc.obliviate.masterduels;
+package mc.obliviate.masterduels.utils;
 
+import mc.obliviate.masterduels.MasterDuels;
 import org.bukkit.entity.Player;
 
 public class VaultUtil {
 
-	protected static boolean vaultEnabled = false;
+    public static boolean vaultEnabled = false;
 
 	public static boolean checkPermission(Player player, String permission) {
-		if (!vaultEnabled) return player.isOp();
+		if (!vaultEnabled) return player.hasPermission(permission);
 		return MasterDuels.getPermissions().has(player, permission);
 	}
 

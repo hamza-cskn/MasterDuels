@@ -5,6 +5,7 @@ import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.api.arena.DuelMatchStateChangeEvent;
 import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.data.ConfigurationHandler;
+import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.game.round.MatchRoundData;
 import mc.obliviate.masterduels.game.spectator.MatchSpectatorManager;
 import mc.obliviate.masterduels.game.state.IdleState;
@@ -12,24 +13,28 @@ import mc.obliviate.masterduels.game.state.MatchEndingState;
 import mc.obliviate.masterduels.game.state.MatchState;
 import mc.obliviate.masterduels.game.state.MatchUninstallingState;
 import mc.obliviate.masterduels.game.task.MatchTaskManager;
-import mc.obliviate.masterduels.history.MatchHistoryLog;
-import mc.obliviate.masterduels.history.PlayerHistoryLog;
 import mc.obliviate.masterduels.kit.Kit;
+import mc.obliviate.masterduels.playerdata.history.MatchHistoryLog;
+import mc.obliviate.masterduels.playerdata.history.PlayerHistoryLog;
 import mc.obliviate.masterduels.user.Member;
 import mc.obliviate.masterduels.user.Spectator;
 import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.Utils;
-import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
 import mc.obliviate.masterduels.utils.playerreset.PlayerReset;
 import mc.obliviate.masterduels.utils.timer.TimerUtils;
+import mc.obliviate.util.placeholder.PlaceholderUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static mc.obliviate.masterduels.utils.Utils.getPlaceholders;
@@ -51,6 +56,7 @@ public class Match {
 
 	public Match(Arena arena, MatchDataStorage matchDataStorage) {
 		this.arena = arena;
+		DataHandler.registerGame(arena, this);
 		this.matchDataStorage = matchDataStorage;
 
 		final List<Player> players = new ArrayList<>();
@@ -145,7 +151,6 @@ public class Match {
 	 * unregisters match, members, spectators; clears arena etc...
 	 */
 	public void uninstall() {
-		Logger.debug(Logger.DebugPart.GAME, "uninstall game - process started");
 		if (gameState instanceof MatchUninstallingState) {
 			Logger.severe("Uninstall Game method called twice.");
 			return;
@@ -181,7 +186,6 @@ public class Match {
 
 	public void dropItems(final Player player, Location loc) {
 		Preconditions.checkArgument(loc != null, "location cannot be null");
-		Logger.debug(Logger.DebugPart.GAME, "drop items - process started");
 		//if (!getGameDataStorage().getGameRules().contains(GameRule.NO_DEAD_DROP)) return;
 		if (MasterDuels.isInShutdownMode()) return;
 
@@ -193,7 +197,6 @@ public class Match {
 				.forEach(item -> player.getWorld().dropItemNaturally(loc, item));
 
 		player.getInventory().clear();
-		Logger.debug(Logger.DebugPart.GAME, "drop items - process finished");
 	}
 
 	public void resetPlayers() {
@@ -232,28 +235,32 @@ public class Match {
 				break;
 			case "DISABLED":
 				return;
-		}
+        }
 
-		if (receivers == null) return;
+        if (receivers == null) return;
 
-		MatchRoundData roundData = matchDataStorage.getGameRoundData();
-		if (roundData.getTeamWins().isEmpty()) return;
+        MatchRoundData roundData = matchDataStorage.getGameRoundData();
+        if (roundData.getTeamWins().isEmpty()) return;
 
-		final Team winnerTeam = roundData.getWinnerTeam();
-		final List<Team> loserTeams = matchDataStorage.getGameTeamManager().getTeams().stream().filter(team -> !team.equals(winnerTeam)).collect(Collectors.toList());
+        final Team winnerTeam = roundData.getWinnerTeam();
+        final List<Team> loserTeams = matchDataStorage.getGameTeamManager().getTeams().stream().filter(team -> !team.equals(winnerTeam)).collect(Collectors.toList());
 
-		if (roundData.getWinnerTeam().getMembers().size() == 1) {
-			final Player winner = roundData.getWinnerTeam().getMembers().get(0).getPlayer();
-			final Player loser = loserTeams.size() == 0 || loserTeams.get(0).getSize() == 0 ? null : loserTeams.get(0).getMembers().get(0).getPlayer();
-			for (final Player player : receivers) {
-				MessageUtils.sendMessage(player, "game-end-broadcast.solo", new PlaceholderUtil().add("{winner}", Utils.getDisplayName(winner)).add("{loser}", Utils.getDisplayName(loser)).add("{winner-health}", "" + winner.getHealthScale()));
-			}
-			for (final Member member : getAllMembers()) {
-				sendSoloMatchSummary(member.getPlayer(), winner, loser);
-			}
-		} else {
-			final Player winner = winnerTeam.getMembers().get(0).getPlayer();
-			final String loserName = loserTeams.size() == 0 || loserTeams.get(0).getSize() == 0 ? "" : Utils.getDisplayName(loserTeams.get(0).getMembers().get(0).getPlayer());
+        if (winnerTeam.getMembers().isEmpty()) {
+            for (final Member member : getAllMembers()) {
+                sendNonSoloMatchSummary(member.getPlayer());
+            }
+        } else if (winnerTeam.getMembers().size() == 1) {
+            final Player winner = winnerTeam.getMembers().get(0).getPlayer();
+            final Player loser = loserTeams.size() == 0 || loserTeams.get(0).getSize() == 0 ? null : loserTeams.get(0).getMembers().get(0).getPlayer();
+            for (final Player player : receivers) {
+                MessageUtils.sendMessage(player, "game-end-broadcast.solo", new PlaceholderUtil().add("{winner}", Utils.getDisplayName(winner)).add("{loser}", Utils.getDisplayName(loser)).add("{winner-health}", "" + winner.getHealthScale()));
+            }
+            for (final Member member : getAllMembers()) {
+                sendSoloMatchSummary(member.getPlayer(), winner, loser);
+            }
+        } else {
+            final Player winner = winnerTeam.getMembers().get(0).getPlayer();
+            final String loserName = loserTeams.size() == 0 || loserTeams.get(0).getSize() == 0 ? "" : Utils.getDisplayName(loserTeams.get(0).getMembers().get(0).getPlayer());
 			for (final Player player : receivers) {
 				MessageUtils.sendMessage(player, "game-end-broadcast.non-solo", new PlaceholderUtil().add("{winner}", Utils.getDisplayName(winner)).add("{loser}", loserName));
 			}
@@ -272,7 +279,7 @@ public class Match {
 
 		PlaceholderUtil playerPlaceholders = getPlaceholders(playerLog);
 
-		receiver.sendMessage(MessageUtils.parseColor("&a") + "▬".repeat(72));
+		receiver.sendMessage(MessageUtils.parseColor("&a") + "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬");
 		receiver.sendMessage("                          " + MessageUtils.parseColor(generalPlaceholders.apply("&f&lClassic Duel &7- &a&l{match-timer}")));
 		receiver.sendMessage("");
 		receiver.sendMessage("                  " + MessageUtils.parseColor(generalPlaceholders.apply("&7{own}&7  {opponent}"))); //todo wont work
@@ -286,7 +293,7 @@ public class Match {
 		receiver.sendMessage("                   " + MessageUtils.parseColor(playerPlaceholders.apply("&f&lBlocks Broken&7: &a{broken-blocks} blocks")));
 		receiver.sendMessage("                       " + MessageUtils.parseColor(playerPlaceholders.apply("&f&lMeters Sprint&7: &a{sprint}m")));
 		receiver.sendMessage("");
-		receiver.sendMessage(MessageUtils.parseColor("&a") + "▬".repeat(72));
+		receiver.sendMessage(MessageUtils.parseColor("&a") + "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬");//72 times repeat
 	}
 
 
@@ -313,7 +320,7 @@ public class Match {
 			opponentPlaceholders = getPlaceholders(winnerLog);
 		}
 
-		receiver.sendMessage(MessageUtils.parseColor("&a") + "▬".repeat(72));
+		receiver.sendMessage(MessageUtils.parseColor("&a") + "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬");
 		receiver.sendMessage("                          " + MessageUtils.parseColor(generalPlaceholders.apply("&f&lClassic Duel &7- &a&l{match-timer}")));
 		receiver.sendMessage("");
 		receiver.sendMessage("                  " + MessageUtils.parseColor(generalPlaceholders.apply("&7{own}&7  {opponent}")));
@@ -327,7 +334,7 @@ public class Match {
 		receiver.sendMessage("               " + MessageUtils.parseColor(ownPlaceholders.apply("&a{broken-blocks} blocks &7- &f&lBlocks Broken &7- ") + opponentPlaceholders.apply("&a{broken-blocks} blocks")));
 		receiver.sendMessage("                 " + MessageUtils.parseColor(ownPlaceholders.apply("&a{sprint}m &7- &f&lMeters Sprint &7- ") + opponentPlaceholders.apply("&a{sprint}m")));
 		receiver.sendMessage("");
-		receiver.sendMessage(MessageUtils.parseColor("&a") + "▬".repeat(72));
+		receiver.sendMessage(MessageUtils.parseColor("&a") + "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬");
 	}
 
 

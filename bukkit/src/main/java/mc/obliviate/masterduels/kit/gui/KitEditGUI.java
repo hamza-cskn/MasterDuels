@@ -3,6 +3,7 @@ package mc.obliviate.masterduels.kit.gui;
 import mc.obliviate.inventory.Gui;
 import mc.obliviate.inventory.Icon;
 import mc.obliviate.inventory.advancedslot.AdvancedSlot;
+import mc.obliviate.inventory.advancedslot.AdvancedSlotManager;
 import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.kit.Kit;
 import mc.obliviate.masterduels.utils.MessageUtils;
@@ -20,6 +21,7 @@ public class KitEditGUI extends Gui {
 	private final Kit kit;
 	private ItemStack[] armors;
 	private ItemStack displayIcon;
+	private final AdvancedSlotManager advancedSlotManager = new AdvancedSlotManager(this);
 
 	public KitEditGUI(Player player, Kit kit) {
 		super(player, "kit-edit-gui", "Kit Editor > " + kit.getKitName(), 6);
@@ -58,20 +60,20 @@ public class KitEditGUI extends Gui {
 	}
 
 	private void putArmorIcon(Icon icon, int armorPieceIndex, int slot) {
-		final AdvancedSlot advancedSlot = addAdvancedIcon(slot, icon).onPreClick((e, item) -> {
+		final AdvancedSlot advancedSlot = this.advancedSlotManager.addAdvancedIcon(slot, icon).onPreClick((e, item) -> {
 			if (e != null) {
-				armors[armorPieceIndex] = item;
+				this.armors[armorPieceIndex] = item;
 			}
 			return false;
 		}).onPickup(e -> {
 			if (e != null && e.getCurrentItem() == null) {
 				return;
 			}
-			armors[armorPieceIndex] = null;
+			this.armors[armorPieceIndex] = null;
 		});
 
 		if (armors[armorPieceIndex] == null) return;
-		getAdvancedSlotManager().putIcon(advancedSlot, armors[armorPieceIndex], null);
+		this.advancedSlotManager.putIconToAdvancedSlot(advancedSlot, armors[armorPieceIndex], null);
 	}
 
 	@Override
@@ -98,10 +100,11 @@ public class KitEditGUI extends Gui {
 	public void putKitIcon(int slot) {
 		final Icon icon = getScaledItemLoreAndName(kit.getIcon(), "&cDisplay icon of kit", "&7Put item to change icon of kit");
 
-		AdvancedSlot advancedSlot = addAdvancedIcon(slot, icon).onPut(e -> {
-			displayIcon = e.getCurrentItem();
+		AdvancedSlot advancedSlot = this.advancedSlotManager.addAdvancedIcon(slot, icon).onPut(e -> {
+			if (e != null)
+				displayIcon = e.getCurrentItem();
 		});
-		getAdvancedSlotManager().putIcon(advancedSlot, displayIcon, null);
+		this.advancedSlotManager.putIconToAdvancedSlot(advancedSlot, displayIcon, null);
 
 	}
 

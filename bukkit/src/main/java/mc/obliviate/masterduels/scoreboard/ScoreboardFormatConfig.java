@@ -18,11 +18,11 @@ public class ScoreboardFormatConfig {
 	private final List<String> lines;
 
 	public ScoreboardFormatConfig(MatchStateType matchStateType, String liveOpponentFormat, String deadOpponentFormat, String quitOpponentFormat, String title, List<String> lines) {
-		this.liveOpponentFormat = MessageUtils.parseColor(liveOpponentFormat);
-		this.deadOpponentFormat = MessageUtils.parseColor(deadOpponentFormat);
-		this.quitOpponentFormat = MessageUtils.parseColor(quitOpponentFormat);
+		this.liveOpponentFormat = liveOpponentFormat;
+		this.deadOpponentFormat = deadOpponentFormat;
+		this.quitOpponentFormat = quitOpponentFormat;
 		this.title = MessageUtils.parseColor(title);
-		this.lines = MessageUtils.parseColor(lines);
+		this.lines = lines;
 
 		SCOREBOARD_FORMAT_CONFIG_MAP.put(matchStateType, this);
 	}

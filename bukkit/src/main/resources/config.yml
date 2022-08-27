@@ -53,14 +53,18 @@ action-limitations:
   # ALLOW -> players can drop and pickup all items
   item-pickup: DISALLOW
   executable-commands-during-match:
-    #PLAYING:
-    #ROUND_STARTING:
-    #ROUND_ENDING:
+    PLAYING:
+      - duel
+    ROUND_STARTING:
+      - duel
+    ROUND_ENDING:
+      - duel
     MATCH_ENDING:
       - enderchest
       - ec
       - pv
       - chest
+      - duel #to leave duel game
 
 duel-game-lock:
   lock-duration: 7 #in seconds
@@ -114,7 +118,7 @@ duel-game-lock:
 #{timer} = 13:59
 #{time} = 13 minutes 59 seconds
 #You can translate time format from message.yml time-format
-scoreboards: #Requires TitleManager plugin
+scoreboards:
   enabled: true
   PLAYING:
     title: '&e&lDUELS'
@@ -125,11 +129,10 @@ scoreboards: #Requires TitleManager plugin
       - '&fRound: &e#{round}'
       - '&fMap: &e{map}'
       - ''
-      - '&fRemaining Time:'
+      - '&fTime:'
       - ' &a{timer}'
       - ''
-      - '{+opponents}' # placeholders that is starts with '+', will clone as line for each opponent of player
-      - ''
+      - '{+opponents}'
       - '&ewww.yourserver.net'
   ROUND_STARTING:
     title: '&e&lDUELS'
@@ -140,8 +143,10 @@ scoreboards: #Requires TitleManager plugin
       - '&fRound: &e#{round}'
       - '&fMap: &e{map}'
       - ''
-      - '&fStarting: &a{timer}'
+      - '&fTime:'
+      - ' &a{timer}'
       - ''
+      - '{+opponents}'
       - '&ewww.yourserver.net'
   ROUND_ENDING:
     title: '&e&lDUELS'
@@ -152,8 +157,10 @@ scoreboards: #Requires TitleManager plugin
       - '&fRound: &e#{round}'
       - '&fMap: &e{map}'
       - ''
-      - '&fStarting: &a{timer}'
+      - '&fTime:'
+      - ' &a{timer}'
       - ''
+      - '{+opponents}'
       - '&ewww.yourserver.net'
   MATCH_ENDING:
     title: '&e&lDUELS'
@@ -164,12 +171,12 @@ scoreboards: #Requires TitleManager plugin
       - '&fRound: &e#{round}'
       - '&fMap: &e{map}'
       - ''
-      - '&fArena Closing: '
-      - '&c{timer}'
+      - '&fTime:'
+      - ' &a{timer}'
       - ''
       - '{+opponents}'
-      - ''
       - '&ewww.yourserver.net'
+
 
 # requires AdvancedReplay (https://www.spigotmc.org/resources/advancedreplay-1-8-1-18.52849/)
 # this module automatically records duel matches to replay after.

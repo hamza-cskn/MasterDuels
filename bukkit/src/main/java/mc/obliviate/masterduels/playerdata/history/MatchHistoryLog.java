@@ -1,8 +1,7 @@
-package mc.obliviate.masterduels.history;
+package mc.obliviate.masterduels.playerdata.history;
 
 import com.google.common.base.Preconditions;
 import mc.obliviate.masterduels.game.Match;
-import mc.obliviate.masterduels.game.gamerule.GameRule;
 import mc.obliviate.masterduels.user.IUser;
 import mc.obliviate.masterduels.user.Member;
 import mc.obliviate.masterduels.user.Spectator;
@@ -11,9 +10,15 @@ import org.bukkit.Statistic;
 import org.bukkit.entity.Player;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public class MatchHistoryLog implements Serializable {
+
+	private static final long serialVersionUID = 6523421098267757690L;
 
 	//active listening logs
 	private static final Map<Match, MatchHistoryLog> SAVING_MATCH_HISTORY_LOGS = new HashMap<>();
@@ -26,8 +31,6 @@ public class MatchHistoryLog implements Serializable {
 
 	private int playedRound;
 	private int maxRound;
-
-	private List<GameRule> rules;
 
 	public MatchHistoryLog(Map<UUID, PlayerHistoryLog> playerHistoryLogMap, long startTime, long finishTime, List<UUID> winners) {
 		this.playerHistoryLogMap = playerHistoryLogMap;
@@ -49,7 +52,6 @@ public class MatchHistoryLog implements Serializable {
 		SAVING_MATCH_HISTORY_LOGS.put(match, this);
 
 		maxRound = match.getGameDataStorage().getGameRoundData().getTotalRounds();
-		rules = match.getGameDataStorage().getGameRules();
 
 		for (final Member member : match.getAllMembers()) {
 			final PlayerHistoryLog playerLog = new PlayerHistoryLog();
@@ -58,11 +60,11 @@ public class MatchHistoryLog implements Serializable {
 			final Player player = member.getPlayer();
 
 			playerLog.setKitName(member.getKit() == null ? null : member.getKit().getKitName());
-			playerLog.setJump(player.getStatistic(Statistic.JUMP) * -1);
-			playerLog.setFall(player.getStatistic(Statistic.FALL_ONE_CM) * -1);
-			playerLog.setSprint(player.getStatistic(Statistic.SPRINT_ONE_CM) * -1);
-			playerLog.setWalk(player.getStatistic(Statistic.WALK_ONE_CM) * -1);
-			playerLog.setDamageTaken(player.getStatistic(Statistic.DAMAGE_TAKEN) * -1);
+			playerLog.getPlayerData().setJump(player.getStatistic(Statistic.JUMP) * -1);
+			playerLog.getPlayerData().setFall(player.getStatistic(Statistic.FALL_ONE_CM) * -1);
+			playerLog.getPlayerData().setSprint(player.getStatistic(Statistic.SPRINT_ONE_CM) * -1);
+			playerLog.getPlayerData().setWalk(player.getStatistic(Statistic.WALK_ONE_CM) * -1);
+			playerLog.getPlayerData().setDamageTaken(player.getStatistic(Statistic.DAMAGE_TAKEN) * -1);
 
 		}
 	}
@@ -80,11 +82,12 @@ public class MatchHistoryLog implements Serializable {
 			if (playerLog == null) continue;
 			final Player player = member.getPlayer();
 
-			playerLog.setJump(playerLog.getJump() + player.getStatistic(Statistic.JUMP));
-			playerLog.setFall(playerLog.getFall() + player.getStatistic(Statistic.FALL_ONE_CM));
-			playerLog.setSprint(playerLog.getSprint() + player.getStatistic(Statistic.SPRINT_ONE_CM));
-			playerLog.setWalk(playerLog.getWalk() + player.getStatistic(Statistic.WALK_ONE_CM));
-			playerLog.setDamageTaken(playerLog.getDamageTaken() + player.getStatistic(Statistic.DAMAGE_TAKEN));
+			playerLog.getPlayerData().setJump(playerLog.getPlayerData().getJump() + player.getStatistic(Statistic.JUMP));
+			playerLog.getPlayerData().setFall(playerLog.getPlayerData().getFall() + player.getStatistic(Statistic.FALL_ONE_CM));
+			playerLog.getPlayerData().setSprint(playerLog.getPlayerData().getSprint() + player.getStatistic(Statistic.SPRINT_ONE_CM));
+			playerLog.getPlayerData().setWalk(playerLog.getPlayerData().getWalk() + player.getStatistic(Statistic.WALK_ONE_CM));
+			playerLog.getPlayerData().setDamageTaken(playerLog.getPlayerData().getDamageTaken() + player.getStatistic(Statistic.DAMAGE_TAKEN));
+
 		}
 	}
 
@@ -122,10 +125,6 @@ public class MatchHistoryLog implements Serializable {
 
 	public int getPlayedRound() {
 		return playedRound;
-	}
-
-	public List<GameRule> getRules() {
-		return rules;
 	}
 
 	public List<UUID> getWinners() {

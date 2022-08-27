@@ -4,4 +4,5 @@ public interface IArenaClear {
 
 	void clear();
 
+	boolean isCleaned();
 }

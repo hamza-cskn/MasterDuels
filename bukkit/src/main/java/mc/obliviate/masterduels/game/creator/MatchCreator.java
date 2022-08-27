@@ -1,5 +1,6 @@
 package mc.obliviate.masterduels.game.creator;
 
+import com.google.common.base.Preconditions;
 import mc.obliviate.masterduels.data.ConfigurationHandler;
 import mc.obliviate.masterduels.game.Match;
 import mc.obliviate.masterduels.game.MatchBuilder;
@@ -12,13 +13,18 @@ import mc.obliviate.masterduels.user.Member;
 import mc.obliviate.masterduels.user.UserHandler;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.Utils;
-import mc.obliviate.masterduels.utils.placeholder.PlaceholderUtil;
 import mc.obliviate.masterduels.utils.timer.TimerUtils;
+import mc.obliviate.util.placeholder.PlaceholderUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.time.Duration;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.function.Consumer;
 
 /**
@@ -43,7 +49,6 @@ public class MatchCreator {
 	//invited player's uuid, invite
 	private final Map<UUID, Invite> invites = new HashMap<>();
 	private final UUID ownerPlayer;
-	private final CreatorKitManager creatorKitManager = new CreatorKitManager(this);
 	private final MatchBuilder builder;
 
 	public MatchCreator(UUID ownerPlayer) {
@@ -140,7 +145,7 @@ public class MatchCreator {
 					}
 
 					response.accept(invite);
-					creatorKitManager.setDefaultKit(creatorKitManager.getDefaultKit());
+					builder.getData().getKitManager().setDefaultKit(builder.getData().getKitManager().getDefaultKit());
 
 				}).build();
 
@@ -184,6 +189,24 @@ public class MatchCreator {
 		destroy();
 	}
 
+	public void removePlayer(IUser user) {
+		Preconditions.checkNotNull(user, "user cannot be null");
+		builder.removePlayer(user);
+		for (UUID uuid : builder.getPlayers()) {
+			Player player = Bukkit.getPlayer(uuid);
+			MessageUtils.sendMessage(player, "game-builder.player-left", new PlaceholderUtil().add("{player}", Utils.getDisplayName(user.getPlayer())).add("{total-players}", builder.getPlayers().size() + "").add("{max-players}", (builder.getData().getGameTeamManager().getTeamSize() * builder.getData().getGameTeamManager().getTeamAmount()) + ""));
+		}
+	}
+
+	public void addPlayer(Player player, Kit kit, int teamNo) {
+		Preconditions.checkNotNull(player, "player cannot be null");
+		builder.addPlayer(player, kit, teamNo);
+		for (UUID uuid : builder.getPlayers()) {
+			Player receiver = Bukkit.getPlayer(uuid);
+			MessageUtils.sendMessage(receiver, "game-builder.player-joined", new PlaceholderUtil().add("{player}", Utils.getDisplayName(player)).add("{total-players}", builder.getPlayers().size() + "").add("{max-players}", (builder.getData().getGameTeamManager().getTeamSize() * builder.getData().getGameTeamManager().getTeamAmount()) + ""));
+		}
+	}
+
 	public Match create() {
 		destroy();
 		return builder.build();
@@ -191,10 +214,6 @@ public class MatchCreator {
 
 	public static Map<UUID, MatchCreator> getGameCreatorMap() {
 		return Collections.unmodifiableMap(GAME_CREATOR_MAP);
-	}
-
-	public CreatorKitManager getCreatorKitManager() {
-		return creatorKitManager;
 	}
 
 	public static MatchCreator getCreator(UUID playerUniqueId) {

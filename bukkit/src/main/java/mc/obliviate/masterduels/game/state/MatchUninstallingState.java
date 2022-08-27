@@ -1,5 +1,6 @@
 package mc.obliviate.masterduels.game.state;
 
+import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.api.DuelMatchMemberLeaveEvent;
 import mc.obliviate.masterduels.api.arena.DuelMatchUninstallEvent;
 import mc.obliviate.masterduels.data.DataHandler;
@@ -42,9 +43,9 @@ public class MatchUninstallingState implements MatchState {
 			leave(spectator);
 		}
 
+		MasterDuels.getInstance().getArenaClearHandler().getArenaClear(match.getArena().getName()).clear();
 		match.getGameTaskManager().cancelTasks();
 		DataHandler.registerArena(match.getArena());
-		Logger.debug(Logger.DebugPart.GAME, "uninstall game - process finished");
 	}
 
 	@Override
