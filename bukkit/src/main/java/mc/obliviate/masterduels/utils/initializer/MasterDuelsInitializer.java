@@ -93,6 +93,9 @@ public class MasterDuelsInitializer {
                     Bukkit.getLogger().info("This MasterDuels copy is not obfuscated.");
 
                 // SETUP HANDLERS START
+                plugin.getConfigurationHandler().prepare();
+                new TABManager().init(plugin);
+                new AdvancedReplayManager().init(plugin);
                 plugin.getConfigurationHandler().init();
                 plugin.getInventoryAPI().init();
                 // LOAD KITS START
@@ -102,8 +105,6 @@ public class MasterDuelsInitializer {
                     KitSerializer.deserialize(data.getConfigurationSection(key));
                 }
                 // LOAD KITS END
-                new TABManager().init(plugin);
-                new AdvancedReplayManager().init(plugin);
                 // SETUP ARENA CLEAR HANDLER START
                 final String mode = ConfigurationHandler.getConfig().getString("arena-regeneration.mode", "SMART");
                 if (!("ROLLBACKCORE".equals(mode) || "SLIMEWORLD".equals(mode) || "DISABLED".equals(mode))) {

@@ -1,5 +1,6 @@
 package mc.obliviate.masterduels.data;
 
+import com.google.common.base.Preconditions;
 import mc.obliviate.inventory.configurable.GuiConfigurationTable;
 import mc.obliviate.inventory.configurable.util.ItemStackSerializer;
 import mc.obliviate.masterduels.MasterDuels;
@@ -48,6 +49,8 @@ import java.util.Map;
 
 public class ConfigurationHandler {
 
+    private static ConfigurationHandler instance = null;
+
     private static final String DATA_FILE_NAME = "arenas.yml";
     private static final String CONFIG_FILE_NAME = "config.yml";
     private static final String MESSAGES_FILE_NAME = "messages.yml";
@@ -61,8 +64,15 @@ public class ConfigurationHandler {
     private static YamlConfiguration queues;
     private static YamlConfiguration menus;
 
-    public ConfigurationHandler(final MasterDuels plugin) {
+    private boolean prepared = false;
+
+    private ConfigurationHandler(final MasterDuels plugin) {
         this.plugin = plugin;
+    }
+
+    public static ConfigurationHandler createInstance(final MasterDuels plugin) {
+        if (instance == null) instance = new ConfigurationHandler(plugin);
+        return instance;
     }
 
     public static ConfigurationSection getMenusSection(String sectionName) {
@@ -89,12 +99,17 @@ public class ConfigurationHandler {
         return menus;
     }
 
-    public void init() {
+    public void prepare() {
         loadDataFile(new File(this.plugin.getDataFolder() + File.separator + DATA_FILE_NAME));
         loadMessagesFile(new File(this.plugin.getDataFolder() + File.separator + MESSAGES_FILE_NAME));
         loadConfigFile(new File(this.plugin.getDataFolder() + File.separator + CONFIG_FILE_NAME));
         loadMenusFile(new File(this.plugin.getDataFolder() + File.separator + MENUS_FILE_NAME));
         loadQueuesFile(new File(this.plugin.getDataFolder() + File.separator + QUEUES_FILE_NAME));
+        this.prepared = true;
+    }
+
+    public void init() {
+        Preconditions.checkState(prepared, "Configuration is not able to load without prepare.");
 
         GuiConfigurationTable.setDefaultConfigurationTable(new GuiConfigurationTable(menus));
         registerArenas();
@@ -358,7 +373,6 @@ public class ConfigurationHandler {
 
     private void registerBossBars() {
         if (config.getBoolean("boss-bars.enabled", false)) {
-
             BossBarHandler.BossBarModule module = BossBarHandler.BossBarModule.DISABLED;
             switch (config.getString("boss-bars.mode")) {
                 case "INTERNAL":
