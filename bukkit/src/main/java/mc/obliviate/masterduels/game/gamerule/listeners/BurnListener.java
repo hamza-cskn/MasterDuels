@@ -17,7 +17,7 @@ public class BurnListener implements Listener {
 		final Player player = (Player) e.getEntity();
 		final Member member = UserHandler.getMember(player.getUniqueId());
 		if (member == null) return;
-		if (!member.getMatch().getGameDataStorage().getGameRules().contains(GameRule.NO_BOW)) return;
+		if (!member.getMatch().getGameDataStorage().getGameRules().contains(GameRule.NO_FIRE)) return;
 
 		e.setCancelled(true);
 	}
@@ -28,7 +28,7 @@ public class BurnListener implements Listener {
 		final Player player = (Player) e.getEntity();
 		final Member member = UserHandler.getMember(player.getUniqueId());
 		if (member == null) return;
-		if (!member.getMatch().getGameDataStorage().getGameRules().contains(GameRule.NO_BOW)) return;
+		if (!member.getMatch().getGameDataStorage().getGameRules().contains(GameRule.NO_FIRE)) return;
 
 		switch (e.getCause()) {
 			case FIRE:
