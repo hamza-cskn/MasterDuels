@@ -1,5 +1,5 @@
 dependencies {
-    implementation 'com.github.hakan-krgn.hCore:bukkit-primary:0.5.7'
+    implementation 'com.github.hakan-krgn.hCore:bukkit-primary:0.6.0'
     implementation 'com.github.Obliviated:BlokSQLiteAPI:1.0.7-b'
     //implementation project(':api')
 

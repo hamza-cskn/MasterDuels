@@ -1,0 +1,81 @@
+scoreboards-enabled: true
+update-interval: 20 # in ticks
+scoreboards:
+  default:
+    PLAYING:
+      title: '&e&lDUELS'
+      live-opponent-format: '&a{name} &c{health}❤'
+      dead-opponent-format: '&a{name} &cDEAD'
+      quit-opponent-format: '&a{name} &cQUIT'
+      lines:
+        - '&fRound: &e#{round}'
+        - '&fMap: &e{map}'
+        - ''
+        - '&fTime:'
+        - ' &a{timer}'
+        - ''
+        - '{+opponents}'
+        - '&ewww.yourserver.net'
+    ROUND_STARTING:
+      title: '&e&lDUELS'
+      live-opponent-format: '&a{name} &c{health}❤'
+      dead-opponent-format: '&a{name} &cDEAD'
+      quit-opponent-format: '&a{name} &cQUIT'
+      lines:
+        - '&fRound: &e#{round}'
+        - '&fMap: &e{map}'
+        - ''
+        - '&fTime:'
+        - ' &a{timer}'
+        - ''
+        - '{+opponents}'
+        - '&ewww.yourserver.net'
+    ROUND_ENDING:
+      title: '&e&lDUELS'
+      live-opponent-format: '&a{name} &c{health}❤'
+      dead-opponent-format: '&a{name} &cDEAD'
+      quit-opponent-format: '&a{name} &cQUIT'
+      lines:
+        - '&fRound: &e#{round}'
+        - '&fMap: &e{map}'
+        - ''
+        - '&fTime:'
+        - ' &a{timer}'
+        - ''
+        - '{+opponents}'
+        - '&ewww.yourserver.net'
+    MATCH_ENDING:
+      title: '&e&lDUELS'
+      live-opponent-format: '&a{name} &c{health}❤'
+      dead-opponent-format: '&a{name} &cDEAD'
+      quit-opponent-format: '&a{name} &cQUIT'
+      lines:
+        - '&fRound: &e#{round}'
+        - '&fMap: &e{map}'
+        - ''
+        - '&fTime:'
+        - ' &a{timer}'
+        - ''
+        - '{+opponents}'
+        - '&ewww.yourserver.net'
+  example-scoreboard:
+    # if a match's mode, kit, map and arena attributes are equal to datas given below,
+    # example-scoreboard will be shown to the players instead of default scoreboard.
+    mode: 1v1
+    kit: ExampleKitName
+    map: AnyMapName
+    arena: AnyArenaName
+    PLAYING:
+      title: '&e&lDUELS'
+      live-opponent-format: '&a{name} &c{health}❤'
+      dead-opponent-format: '&a{name} &cDEAD'
+      quit-opponent-format: '&a{name} &cQUIT'
+      lines:
+        - '&fRound: &e#{round}'
+        - '&fMap: &e{map}'
+        - ''
+        - '&fTime:'
+        - ' &a{timer}'
+        - ''
+        - '{+opponents}'
+        - '&ewww.yourserver.net'
