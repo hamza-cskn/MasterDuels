@@ -200,7 +200,11 @@ public class MasterDuelsInitializer {
     private static void safeRegisterCommand(MasterDuels plugin, String commandName, CommandExecutor executor) {
         final PluginCommand command = plugin.getCommand(commandName);
         if (command == null) {
+            Logger.error("Command could not registered: " + commandName);
             return;
+        }
+        if (executor instanceof TabCompleter) {
+            command.setTabCompleter((TabCompleter) executor);
         }
         command.setExecutor(executor);
     }
