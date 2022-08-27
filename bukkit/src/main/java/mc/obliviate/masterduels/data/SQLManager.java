@@ -11,6 +11,7 @@ import mc.obliviate.masterduels.playerdata.history.MatchHistoryLog;
 import mc.obliviate.masterduels.playerdata.statistics.DuelStatistic;
 import mc.obliviate.masterduels.user.IUser;
 import mc.obliviate.masterduels.user.UserHandler;
+import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.Utils;
 
 import java.sql.ResultSet;
@@ -32,7 +33,9 @@ public class SQLManager extends SQLHandler {
 
         playerDataTable = new SQLTable("playerData", "uuid")
                 .addField("uuid", DataType.TEXT)
-                .addField("receivesInvites", DataType.INTEGER);
+                .addField("receivesInvites", DataType.INTEGER)
+                .addField("showScoreboard", DataType.INTEGER)
+                .addField("showBossBar", DataType.INTEGER);
 
         statisticsTable = new SQLTable("statistics", "uuid")
                 .addField("uuid", DataType.TEXT)
@@ -80,37 +83,20 @@ public class SQLManager extends SQLHandler {
         historyTable.insert(update);
     }
 
-    public boolean getReceivesInvites(final UUID uuid) {
-        final Integer value = playerDataTable.getInteger(uuid.toString(), "receivesInvites");
-        return value == null || value == 1;
-    }
-
-    /**
-     * @return new state
-     */
-    public boolean toggleReceivesInvites(final UUID uuid) {
-        final boolean bool = getReceivesInvites(uuid);
-        if (playerDataTable.exist(uuid.toString())) {
-            sqlUpdate("UPDATE " + playerDataTable.getTableName() + " SET receivesInvites = " + (bool ? 0 : 1) + " WHERE uuid = '" + uuid + "'");
-        } else {
-            final SQLUpdateColumn update = playerDataTable.createUpdate(uuid.toString())
-                    .putData("uuid", uuid.toString())
-                    .putData("receivesInvites", (bool ? 0 : 1));
-            playerDataTable.insert(update);
-        }
-        return !bool;
-    }
-
     public static DuelStatistic deserializeStatistic(ResultSet rs, boolean emptyResultSet) {
+        String serializedStatistics = null;
+        UUID uuid = null;
         try {
-            final UUID uuid = UUID.fromString(rs.getString("uuid"));
-            final String serializedStatistics = rs.getString("statistics");
+            uuid = UUID.fromString(rs.getString("uuid"));
+            serializedStatistics = rs.getString("statistics");
             PlayerData playerData = HCore.deserialize(serializedStatistics, PlayerData.class);
             if (emptyResultSet)
                 while (rs.next()) ;
             return new DuelStatistic(uuid, playerData);
 
         } catch (SQLException e) {
+            Logger.error("Statistics could not loaded. Serialized statistics backing up. Check folder of MasterDuels.");
+            Logger.writeLog("alert-logs", uuid + " -> " + serializedStatistics);
             e.printStackTrace();
         }
         return null;
@@ -125,8 +111,13 @@ public class SQLManager extends SQLHandler {
     }
 
     public DuelStatistic getStatistic(final UUID uuid) {
-        if (playerDataTable.exist(uuid.toString())) {
-            final ResultSet rs = playerDataTable.select(uuid.toString());
+        IUser user = UserHandler.getUser(uuid);
+        if (user != null) {
+            if (user.getStatistic() != null) return user.getStatistic();
+        }
+
+        if (statisticsTable.exist(uuid.toString())) {
+            final ResultSet rs = statisticsTable.select(uuid.toString());
             return deserializeStatistic(rs, true);
         }
         return DuelStatistic.createDefaultInstance(uuid);
@@ -138,10 +129,25 @@ public class SQLManager extends SQLHandler {
         }
     }
 
+    public void saveAllUsers() {
+        for (IUser user : UserHandler.getUserMap().values()) {
+            saveUser(user);
+        }
+    }
+
+    public void saveUser(IUser user) {
+        saveStatistic(user.getStatistic());
+        SQLUpdateColumn update = playerDataTable.createUpdate(user.getPlayer().getUniqueId())
+                .putData("uuid", user.getPlayer().getUniqueId())
+                .putData("receivesInvites", user.inviteReceiving() ? 1 : 0)
+                .putData("showScoreboard", user.showScoreboard() ? 1 : 0)
+                .putData("showBossBar", user.showBossBar() ? 1 : 0);
+        playerDataTable.insertOrUpdate(update);
+    }
+
     public void saveStatistic(DuelStatistic statistic) {
-        UUID uuid = statistic.getPlayerUniqueId() != null ? statistic.getPlayerUniqueId() : UUID.randomUUID();
-        SQLUpdateColumn update = statisticsTable.createUpdate(uuid).putData("uuid", uuid).putData("statistics", HCore.serialize(statistic));
-        statisticsTable.insert(update);
+        SQLUpdateColumn update = statisticsTable.createUpdate(statistic.getPlayerUniqueId()).putData("uuid", statistic.getPlayerUniqueId()).putData("statistics", HCore.serialize(statistic.getPlayerData()));
+        statisticsTable.insertOrUpdate(update);
     }
 
     public LinkedList<DuelStatistic> getTopPlayers(String fieldName, int limit) throws SQLException {
