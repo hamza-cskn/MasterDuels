@@ -27,7 +27,7 @@ import mc.obliviate.masterduels.utils.VaultUtil;
 import mc.obliviate.masterduels.utils.advancedreplay.AdvancedReplayManager;
 import mc.obliviate.masterduels.utils.metrics.Metrics;
 import mc.obliviate.masterduels.utils.tab.TABManager;
-import mc.obliviate.masterduels.utils.versioncontroller.ServerVersionController;
+import mc.obliviate.util.versiondetection.ServerVersionController;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
