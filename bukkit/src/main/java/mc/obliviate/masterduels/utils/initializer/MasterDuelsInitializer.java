@@ -33,46 +33,45 @@ import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.lang.reflect.Field;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.Scanner;
 
 public class MasterDuelsInitializer {
 
-    private static final Thread INITIALIZER_THREAD = new Thread(() -> {
-        try {
-            new MasterDuelsInitializer().tryInit(10);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-    });
-
     static {
-        INITIALIZER_THREAD.start();
+        new Thread(() -> {
+            try {
+                new MasterDuelsInitializer().tryInit(60);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }).start();
     }
 
     private void tryInit(int tryCount) throws InterruptedException {
-        if (tryCount == 0) return;
+        if (tryCount == 0) {
+            Thread.currentThread().interrupt();
+            return;
+        }
         if (!Bukkit.getPluginManager().isPluginEnabled("MasterDuels")) {
             Thread.sleep(1000);
             tryInit(--tryCount);
         } else {
             init();
-            INITIALIZER_THREAD.interrupt();
+            Thread.currentThread().interrupt();
         }
     }
 
     public void init() {
         Bukkit.getLogger().info("[MasterDuels] initialization process started. MasterDuels waking up.");
         MasterDuels plugin = JavaPlugin.getPlugin(MasterDuels.class);
-        final long now;
+        /*final long now;
         try {
             final String out = new Scanner(new URL("http://worldtimeapi.org/api/ip").openStream(), String.valueOf(StandardCharsets.UTF_8)).useDelimiter("\\A").next();
             now = Long.parseLong(out.split(",")[11].split(":")[1]);
@@ -80,9 +79,9 @@ public class MasterDuelsInitializer {
             plugin.getLogger().severe("MasterDuels could not initialized. Exit code: 1");
             Bukkit.getPluginManager().disablePlugin(plugin);
             return;
-        }
+        }*/
 
-        if (1662051935 > now) {
+        if (true) {
             Bukkit.getScheduler().runTask(plugin, () -> {
                 if (plugin.getDescription().getDescription().equalsIgnoreCase("-developerMode")) {
                     Logger.setDebugModeEnabled(true);

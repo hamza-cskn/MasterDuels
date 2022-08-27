@@ -18,6 +18,8 @@ import java.util.UUID;
 
 public class MatchHistoryLog implements Serializable {
 
+	private static final long serialVersionUID = 6523421098267757690L;
+
 	//active listening logs
 	private static final Map<Match, MatchHistoryLog> SAVING_MATCH_HISTORY_LOGS = new HashMap<>();
 	//player uuid, player history log

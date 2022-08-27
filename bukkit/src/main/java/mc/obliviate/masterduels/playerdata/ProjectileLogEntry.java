@@ -6,15 +6,17 @@ import java.io.Serializable;
 
 public class ProjectileLogEntry<T extends Projectile> implements Serializable {
 
-	private int hit;
-	private int threw;
+    private static final long serialVersionUID = 6523421098267757690L;
 
-	public ProjectileLogEntry() {
-		this.hit = 0;
-		this.threw = 0;
-	}
+    private int hit;
+    private int threw;
 
-	public ProjectileLogEntry(int hit, int threw) {
+    public ProjectileLogEntry() {
+        this.hit = 0;
+        this.threw = 0;
+    }
+
+    public ProjectileLogEntry(int hit, int threw) {
 		this.hit = hit;
 		this.threw = threw;
 	}

@@ -20,33 +20,33 @@ public enum ServerVersionController {
 	V1_19,
 	NEWER;
 
-	private static ServerVersionController serverVersion;
+	private static mc.obliviate.masterduels.utils.versioncontroller.ServerVersionController serverVersion;
 
-	public static boolean isServerVersionAbove(ServerVersionController version) {
+	public static boolean isServerVersionAbove(mc.obliviate.masterduels.utils.versioncontroller.ServerVersionController version) {
 		return getServerVersion().ordinal() > version.ordinal();
 	}
 
-	public static boolean isServerVersionAtLeast(ServerVersionController version) {
+	public static boolean isServerVersionAtLeast(mc.obliviate.masterduels.utils.versioncontroller.ServerVersionController version) {
 		return getServerVersion().ordinal() >= version.ordinal();
 	}
 
-	public static boolean isServerVersionAtOrBelow(ServerVersionController version) {
+	public static boolean isServerVersionAtOrBelow(mc.obliviate.masterduels.utils.versioncontroller.ServerVersionController version) {
 		return getServerVersion().ordinal() <= version.ordinal();
 	}
 
-	public static boolean isServerVersionBelow(ServerVersionController version) {
+	public static boolean isServerVersionBelow(mc.obliviate.masterduels.utils.versioncontroller.ServerVersionController version) {
 		return getServerVersion().ordinal() < version.ordinal();
 	}
 
-	public static ServerVersionController getServerVersion() {
+	public static mc.obliviate.masterduels.utils.versioncontroller.ServerVersionController getServerVersion() {
 		if (serverVersion == null) serverVersion = calculateServerVersion();
 		return serverVersion;
 	}
 
-	private static ServerVersionController calculateServerVersion() {
+	private static mc.obliviate.masterduels.utils.versioncontroller.ServerVersionController calculateServerVersion() {
 		final String bukkitVersion = Bukkit.getBukkitVersion().split("-")[0].split("\\.")[1];
 		try {
-			return ServerVersionController.valueOf("V1_" + bukkitVersion);
+			return mc.obliviate.masterduels.utils.versioncontroller.ServerVersionController.valueOf("V1_" + bukkitVersion);
 		} catch (Exception e) {
 			return UNKNOWN;
 		}

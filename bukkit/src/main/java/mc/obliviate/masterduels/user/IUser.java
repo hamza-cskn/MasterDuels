@@ -6,21 +6,29 @@ import org.bukkit.entity.Player;
 
 public interface IUser {
 
-	Player getPlayer();
+    Player getPlayer();
 
-	boolean isInMatchBuilder();
+    boolean isInMatchBuilder();
 
-	MatchBuilder getMatchBuilder();
+    MatchBuilder getMatchBuilder();
 
-	void exitMatchBuilder();
+    void exitMatchBuilder();
 
-	void setMatchBuilder(MatchBuilder duelSpace);
+    void setMatchBuilder(MatchBuilder duelSpace);
 
-	boolean inviteReceiving();
+    boolean inviteReceiving();
 
-	void setInviteReceiving(boolean inviteReceiving);
+    boolean showBossBar();
 
-	DuelStatistic getStatistic();
+    void setShowBossBar(boolean showBossBar);
+
+    boolean showScoreboard();
+
+    void setShowScoreboard(boolean showScoreboard);
+
+    void setInviteReceiving(boolean inviteReceiving);
+
+    DuelStatistic getStatistic();
 
 
 }

@@ -9,82 +9,82 @@ import org.bukkit.entity.Player;
 
 public class Member extends User implements IUser {
 
-	private final Player player;
-	private final Team team;
-	private final Kit kit;
+    private final Player player;
+    private final Team team;
+    private final Kit kit;
 
-	Member(final Player player, final Team team, Kit kit, boolean inviteReceiving, DuelStatistic statistic) {
-		super(player, inviteReceiving, statistic);
-		this.team = team;
-		this.player = player;
-		this.kit = kit;
-	}
+    Member(final Player player, final Team team, Kit kit, boolean inviteReceiving, boolean showScoreboard, boolean showBossBar, DuelStatistic statistic) {
+        super(player, inviteReceiving, showScoreboard, showBossBar, statistic);
+        this.team = team;
+        this.player = player;
+        this.kit = kit;
+    }
 
-	public Player getPlayer() {
-		return player;
-	}
+    public Player getPlayer() {
+        return player;
+    }
 
-	public Team getTeam() {
-		return team;
-	}
+    public Team getTeam() {
+        return team;
+    }
 
-	public Match getMatch() {
-		return team.getMatch();
-	}
+    public Match getMatch() {
+        return team.getMatch();
+    }
 
-	public Kit getKit() {
-		return kit;
-	}
+    public Kit getKit() {
+        return kit;
+    }
 
-	@Override
-	public void exitMatchBuilder() {
-		super.exitMatchBuilder();
-		UserHandler.switchUser(this);
-	}
+    @Override
+    public void exitMatchBuilder() {
+        super.exitMatchBuilder();
+        UserHandler.switchUser(this);
+    }
 
-	public static class Builder {
+    public static class Builder {
 
-		private final User user;
-		private Kit kit;
-		private Kit defaultKit; //its ugly but i'll do it.
+        private final User user;
+        private Kit kit;
+        private Kit defaultKit; //its ugly but i'll do it.
 
-		public Builder(User user, Kit kit) {
-			this.user = user;
-			this.kit = kit;
-		}
+        public Builder(User user, Kit kit) {
+            this.user = user;
+            this.kit = kit;
+        }
 
-		public Member buildAndSwitch(Team team) {
-			return UserHandler.switchMember(user, team, kit);
-		}
+        public Member buildAndSwitch(Team team) {
+            return UserHandler.switchMember(user, team, kit);
+        }
 
-		public Player getPlayer() {
-			return user.getPlayer();
-		}
+        public Player getPlayer() {
+            return user.getPlayer();
+        }
 
-		public User getUser() {
-			return user;
-		}
+        public User getUser() {
+            return user;
+        }
 
-		public void setDefaultKit(Kit kit) {
-			this.defaultKit = kit;
-		}
+        public void setDefaultKit(Kit kit) {
+            this.defaultKit = kit;
+        }
 
-		public void setKit(Kit kit) {
-			this.kit = kit;
-		}
+        public void setKit(Kit kit) {
+            this.kit = kit;
+        }
 
-		public Kit getKit() {
-			return getKit(KitManager.KitMode.VARIOUS);
-		}
+        public Kit getKit() {
+            return getKit(KitManager.KitMode.VARIOUS);
+        }
 
-		public Kit getKit(KitManager.KitMode mode) {
-			if (mode == KitManager.KitMode.VARIOUS) {
-				if (kit == null) return defaultKit;
-				return kit;
-			} else {
-				return defaultKit;
-			}
+        public Kit getKit(KitManager.KitMode mode) {
+            if (mode == KitManager.KitMode.VARIOUS) {
+                if (kit == null) return defaultKit;
+                return kit;
+            } else {
+                return defaultKit;
+            }
 
-		}
-	}
+        }
+    }
 }

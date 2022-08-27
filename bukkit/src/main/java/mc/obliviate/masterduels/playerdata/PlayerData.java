@@ -10,6 +10,8 @@ import java.io.Serializable;
 
 public class PlayerData implements Serializable {
 
+    private static final long serialVersionUID = 6523421098267757690L;
+
     private int hitClick;
     private int click;
     private int placedBlocks;

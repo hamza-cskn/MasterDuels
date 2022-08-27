@@ -630,7 +630,7 @@ duel-creator:
           - ''
           - '&eClick to invite a player!'
 
-statistic-gui:
+profile-gui:
   title: 'Your Stats'
   row: 4
   icons:
@@ -638,11 +638,99 @@ statistic-gui:
       material: BLACK_STAINED_GLASS_PANE
       slot: 0-8
       display-name: '&r'
+    toggle-invites-icon-enabled:
+      material: LIME_DYE
+      slot: 24
+      display-name: '&aInvite Receiving Enabled'
+      lore:
+        - '&7Currently: &aEnabled'
+        - ''
+        - '&7Players can send you duel match'
+        - '&7invite and challenge you.'
+        - ''
+        - '&eClick to disable invite receiving'
+    toggle-invites-icon-disabled:
+      material: RED_DYE
+      slot: 24
+      display-name: '&cInvite Receiving Disabled'
+      lore:
+        - '&7Currently: &cDisabled'
+        - ''
+        - '&7Players cannot send you duel match'
+        - '&7invite.'
+        - ''
+        - '&eClick to enable invite receiving'
+    toggle-scoreboard-icon-enabled:
+      material: LIME_DYE
+      slot: 25
+      display-name: '&aScoreboard Display'
+      lore:
+        - '&7Currently: &aEnabled'
+        - ''
+        - '&7The scoreboard is visible to you.'
+        - ''
+        - '&eClick to disable display'
+    toggle-scoreboard-icon-disabled:
+      material: RED_DYE
+      slot: 25
+      display-name: '&cScoreboard Display'
+      lore:
+        - '&7Currently: &cDisabled'
+        - ''
+        - '&7The scoreboard is invisible to you.'
+        - ''
+        - '&eClick to enable display'
+    toggle-boss-bar-icon-enabled:
+      material: LIME_DYE
+      slot: 26
+      display-name: '&aBoss Bar Display'
+      lore:
+        - '&7Currently: &aEnabled'
+        - ''
+        - '&7The boss bar is visible to you.'
+        - ''
+        - '&eClick to disable display'
+    toggle-boss-bar-icon-disabled:
+      material: RED_DYE
+      slot: 26
+      display-name: '&cBoss Bar Display'
+      lore:
+        - '&7Currently: &cDisabled'
+        - ''
+        - '&7The boss bar is invisible to you.'
+        - ''
+        - '&eClick to enable display'
     stat-icon:
-      material: PAPER
+      material: PLAYER_HEAD
       slot: 22
       display-name: '&aStatistics'
       lore:
-        - '&7 Wins: &b{wins}'
-        - '&7 Losses: &b{losses}'
-        - '&7 Placed Blocks: &b{placed-blocks}'
+        - '&7 Wins: &6{wins}'
+        - '&7 Losses: &6{losses}'
+        - ''
+        - '&7 Damage Dealt: &c{damage-dealt} ❤'
+        - '&7 Damage Taken: &c{damage-taken} ❤'
+        - ''
+        - '&7 Placed Blocks: &e{placed-blocks} blocks'
+        - '&7 Broken Blocks: &e{broken-blocks} blocks'
+        - '&7 Meters Sprint: &e{sprint}m'
+        - ''
+        - '&7 Bow Accuracy: &6%{bow-accuracy}'
+        - '&7 Melee Accuracy: &6%{melee-accuracy}'
+        - '&7 Fish Hook Accuracy: &6%{fish-hook-accuracy}'
+        # supported placeholders:
+        #{wins}
+        #{losses}
+        #{placed-blocks}
+        #{broken-blocks}
+        #{damage-dealt} # in heart (admits that players have 20 hearts)
+        #{damage-taken} # in heart
+        #{jump}
+        #{fall} #in meters
+        #{sprint} #in meters
+        #{click}
+        #{hit-click}
+        #{fish-hook-accuracy}
+        #{melee-accuracy}
+        #{bow-accuracy}
+        #{regenerated-health}

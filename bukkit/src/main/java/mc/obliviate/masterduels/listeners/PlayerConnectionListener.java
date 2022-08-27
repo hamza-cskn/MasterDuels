@@ -12,11 +12,11 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 public class PlayerConnectionListener implements Listener {
 
-	private final MasterDuels plugin;
+    private final MasterDuels plugin;
 
-	public PlayerConnectionListener(MasterDuels plugin) {
-		this.plugin = plugin;
-	}
+    public PlayerConnectionListener(MasterDuels plugin) {
+        this.plugin = plugin;
+    }
 
     @EventHandler
     public void onDisconnect(PlayerQuitEvent event) {
@@ -37,9 +37,9 @@ public class PlayerConnectionListener implements Listener {
         }
     }
 
-	@EventHandler
-	public void onConnect(PlayerJoinEvent event) {
-		UserHandler.loadDuelUser(plugin.getSqlManager(), event.getPlayer());
-	}
+    @EventHandler
+    public void onConnect(PlayerJoinEvent event) {
+        UserHandler.loadDuelUser(plugin.getSqlManager(), event.getPlayer());
+    }
 
 }

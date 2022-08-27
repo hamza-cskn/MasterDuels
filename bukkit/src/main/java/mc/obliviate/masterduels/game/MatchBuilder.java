@@ -121,11 +121,12 @@ public class MatchBuilder {
 	}
 
 	public int getAvailableTeamNo() {
+        Preconditions.checkState(!matchDataStorage.getGameTeamManager().getTeamBuilders().isEmpty(), "no team builder found");
 		for (Team.Builder teamBuilder : matchDataStorage.getGameTeamManager().getTeamBuilders()) {
 			if (teamBuilder.getMemberBuilders().size() < matchDataStorage.getGameTeamManager().getTeamSize())
 				return teamBuilder.getTeamId();
 		}
-		return -1;
+		return -1; //not found
 	}
 
 	public Team getTeam(Player player) {

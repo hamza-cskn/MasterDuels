@@ -6,15 +6,17 @@ import java.io.Serializable;
 
 public class PlayerHistoryLog implements Serializable {
 
-	private final PlayerData playerData;
-	private String kitName;
+    private static final long serialVersionUID = 6523421098267757690L;
 
-	public PlayerHistoryLog() {
-		this(new PlayerData());
-	}
+    private final PlayerData playerData;
+    private String kitName;
 
-	public PlayerHistoryLog(PlayerData playerData) {
-		this.playerData = playerData;
+    public PlayerHistoryLog() {
+        this(new PlayerData());
+    }
+
+    public PlayerHistoryLog(PlayerData playerData) {
+        this.playerData = playerData;
 	}
 
 	public PlayerData getPlayerData() {

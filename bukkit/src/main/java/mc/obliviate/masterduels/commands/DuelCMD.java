@@ -1,5 +1,6 @@
 package mc.obliviate.masterduels.commands;
 
+import com.google.common.base.Preconditions;
 import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.data.ConfigurationHandler;
 import mc.obliviate.masterduels.game.Match;
@@ -14,7 +15,7 @@ import mc.obliviate.masterduels.invite.InviteUtils;
 import mc.obliviate.masterduels.kit.gui.KitSelectionGUI;
 import mc.obliviate.masterduels.playerdata.history.gui.DuelHistoryLogGui;
 import mc.obliviate.masterduels.playerdata.statistics.DuelStatistic;
-import mc.obliviate.masterduels.playerdata.statistics.gui.StatisticGui;
+import mc.obliviate.masterduels.playerdata.statistics.gui.ProfileGui;
 import mc.obliviate.masterduels.queue.DuelQueue;
 import mc.obliviate.masterduels.queue.DuelQueueHandler;
 import mc.obliviate.masterduels.queue.DuelQueueTemplate;
@@ -36,6 +37,7 @@ import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -94,8 +96,7 @@ public class DuelCMD implements CommandExecutor {
             top(player, Arrays.asList(args));
             return true;
         } else if (args[0].equalsIgnoreCase("toggle")) {
-            final boolean state = plugin.getSqlManager().toggleReceivesInvites(player.getUniqueId());
-            if (state) {
+            if (user.inviteReceiving()) {
                 MessageUtils.sendMessage(player, "invite.toggle.turned-on");
             } else {
                 MessageUtils.sendMessage(player, "invite.toggle.turned-off");
@@ -235,7 +236,7 @@ public class DuelCMD implements CommandExecutor {
 
     private void stats(final Player player, final String[] args) {
         final UUID targetUniqueId = args.length == 1 ? player.getUniqueId() : Bukkit.getOfflinePlayer(args[1]).getUniqueId();
-        new StatisticGui(player, plugin.getSqlManager().getStatistic(targetUniqueId)).open();
+        new ProfileGui(player, plugin.getSqlManager().getStatistic(targetUniqueId)).open();
     }
 
     private void responseInvite(Player player, String[] args) {
@@ -320,11 +321,15 @@ public class DuelCMD implements CommandExecutor {
             return;
         }
 
+        IUser user = UserHandler.getUser(target.getUniqueId());
+        Preconditions.checkNotNull(user, "user cannot be null");
+
         //check: target accepts invites
-        if (!plugin.getSqlManager().getReceivesInvites(target.getUniqueId())) {
+        if (!user.inviteReceiving()) {
             MessageUtils.sendMessage(player, "invite.toggle.you-can-not-invite", new PlaceholderUtil().add("{target}", target.getName()));
             return;
         }
+
         //1v1
         final MatchBuilder matchBuilder = Match.create();
         matchBuilder.setTeamsAttributes(1, 2).setDuration(Duration.ofMinutes(1)).setTotalRounds(1);
@@ -383,8 +388,37 @@ public class DuelCMD implements CommandExecutor {
                 InviteUtils.sendInviteMessage(buildResult.getInvite(), MessageUtils.getMessageConfig().getConfigurationSection("invite.normal-invite"));
             }
         }).open();
-
-
     }
 
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        final List<String> validCommands = new ArrayList(Arrays.asList("invite", "leave", "stats", "toggle", "accept", "decline", "creator", "history", "queue join", "queue menu", "queue leave", "arenas", "spectate"));
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            validCommands.add(Utils.getDisplayName(player));
+        }
+        if (true) return validCommands;
+        final List<String> result = new ArrayList<>();
+        // queue join, queue leave
+        // /duel
+        // /duel q
+        // /duel quit
+        // /duel queue
+        // /duel queue j
+        String search = args.length == 0 ? "" : String.join(" ", args);
+        CASE1:
+        for (String vCmd : validCommands) {
+            String[] vCmdArg = vCmd.split(" ");
+            if (vCmdArg.length < args.length) continue;
+
+            String match = vCmdArg[args.length];
+            if (match.startsWith(search)) {
+                result.add(match);
+            }
+        }
+
+
+        if (result.isEmpty()) {
+            return null;
+        }
+        return result;
+    }
 }

@@ -38,8 +38,8 @@ public class DuelQueueListGUI extends ConfigurableGui {
 			final int slot = ConfigurationHandler.getMenusSection("queues-gui.icons.queue-icons." + template.getName()).getInt("slot");
 			addItem(slot, new Icon(guiConfig.getIconOfTemplate(template.getName(), DuelQueue.getAvailableQueues().get(template).getBuilder()))
 					.onClick(e -> {
-						player.performCommand("duel queue join " + template.getName());
 						player.closeInventory();
+						player.performCommand("duel queue join " + template.getName());
 					}));
 		}
 	}
