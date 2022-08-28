@@ -20,9 +20,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.HashMap;
 import java.util.Map;
 
-import static mc.obliviate.masterduels.bossbar.BossBarHandler.CLOSING_TEXT_FORMAT;
-import static mc.obliviate.masterduels.bossbar.BossBarHandler.NORMAL_TEXT_FORMAT;
-
 public class InternalBossBarManager implements Listener {
 
 	private final Map<Match, HBossBar> bossBarMap = new HashMap<>();
@@ -34,7 +31,7 @@ public class InternalBossBarManager implements Listener {
 	@EventHandler
 	public void onDuelMatchStateChange(DuelMatchStateChangeEvent event) {
 		if (event.getNewState().getMatchStateType().equals(MatchStateType.MATCH_STARING)) {
-			HBossBar bossBar = HCore.createBossBar(NORMAL_TEXT_FORMAT, HBarColor.WHITE, HBarStyle.SEGMENTED_10);
+			HBossBar bossBar = HCore.createBossBar(BossBarHandler.getDefaultConfig().getPlayingTextFormat(), HBarColor.WHITE, HBarStyle.SEGMENTED_10);
 			bossBarMap.put(event.getMatch(), bossBar);
 			initializeBossBarTimer(event.getMatch(), bossBar);
 			for (Member member : event.getMatch().getGameDataStorage().getGameTeamManager().getAllMembers()) {
@@ -54,10 +51,10 @@ public class InternalBossBarManager implements Listener {
 		match.getGameTaskManager().repeatTask("BOSSBAR", () -> {
 			if (match.getMatchState().getMatchStateType().equals(MatchStateType.MATCH_ENDING)) {
 				bar.setProgress((Utils.getPercentage(MatchDataStorage.getEndDelay().toMillis(), (match.getGameDataStorage().getFinishTime() - System.currentTimeMillis())) / 100d));
-                bar.setTitle(CLOSING_TEXT_FORMAT.replace("{time}", TimerUtils.formatTimeUntilThenAsTimer(match.getGameDataStorage().getFinishTime())).replace("{timer}", TimerUtils.formatTimeUntilThenAsTimer(match.getGameDataStorage().getFinishTime())));
+				bar.setTitle(BossBarHandler.getDefaultConfig().getEndingTextFormat().replace("{time}", TimerUtils.formatTimeUntilThenAsTimer(match.getGameDataStorage().getFinishTime())).replace("{timer}", TimerUtils.formatTimeUntilThenAsTimer(match.getGameDataStorage().getFinishTime())));
 			} else {
-                bar.setProgress((Utils.getPercentage(match.getGameDataStorage().getMatchDuration().toMillis(), (match.getGameDataStorage().getFinishTime() - System.currentTimeMillis())) / 100d));
-                bar.setTitle(NORMAL_TEXT_FORMAT.replace("{time}", TimerUtils.formatTimeUntilThenAsTimer(match.getGameDataStorage().getFinishTime())).replace("{timer}", TimerUtils.formatTimeUntilThenAsTimer(match.getGameDataStorage().getFinishTime())));
+				bar.setProgress((Utils.getPercentage(match.getGameDataStorage().getMatchDuration().toMillis(), (match.getGameDataStorage().getFinishTime() - System.currentTimeMillis())) / 100d));
+				bar.setTitle(BossBarHandler.getDefaultConfig().getPlayingTextFormat().replace("{time}", TimerUtils.formatTimeUntilThenAsTimer(match.getGameDataStorage().getFinishTime())).replace("{timer}", TimerUtils.formatTimeUntilThenAsTimer(match.getGameDataStorage().getFinishTime())));
 			}
 		}, null, 0, 20);
 	}

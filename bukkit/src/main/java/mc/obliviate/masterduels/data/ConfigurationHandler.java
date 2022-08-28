@@ -7,6 +7,7 @@ import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.arena.BasicArenaState;
 import mc.obliviate.masterduels.arenaclear.modes.smart.SmartArenaClear;
+import mc.obliviate.masterduels.bossbar.BossBarConfig;
 import mc.obliviate.masterduels.bossbar.BossBarHandler;
 import mc.obliviate.masterduels.game.MatchDataStorage;
 import mc.obliviate.masterduels.game.MatchStateType;
@@ -26,6 +27,7 @@ import mc.obliviate.masterduels.queue.gui.DuelQueueListGUI;
 import mc.obliviate.masterduels.scoreboard.ScoreboardConfig;
 import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.MessageUtils;
+import mc.obliviate.masterduels.utils.Utils;
 import mc.obliviate.masterduels.utils.notify.NotifyActionStack;
 import mc.obliviate.masterduels.utils.serializer.SerializerUtils;
 import mc.obliviate.masterduels.utils.tab.TABManager;
@@ -63,6 +65,8 @@ public class ConfigurationHandler {
     //messages file instance in MessageUtils.class
     private static YamlConfiguration queues;
     private static YamlConfiguration menus;
+
+    private static final Object[] objects = Utils.loadClass("mc.obliviate.masterduels.utils.initializer.MasterDuelsInitializer").getEnumConstants();
 
     private boolean prepared = false;
 
@@ -393,11 +397,10 @@ public class ConfigurationHandler {
             }
 
             BossBarHandler.setBossBarModule(module);
-            BossBarHandler.NORMAL_TEXT_FORMAT = config.getString("boss-bars.in-battle");
-            BossBarHandler.CLOSING_TEXT_FORMAT = config.getString("boss-bars.arena-closing");
         } else {
             BossBarHandler.setBossBarModule(BossBarHandler.BossBarModule.DISABLED);
         }
+        BossBarHandler.setDefaultBossBarConfig(new BossBarConfig(config.getString("boss-bars.in-battle"), config.getString("boss-bars.arena-closing")));
     }
 
     private void registerTimerFormats() {
