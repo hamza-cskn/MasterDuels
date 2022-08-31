@@ -5,6 +5,7 @@ import com.hakan.core.message.HMessageHandler;
 import com.hakan.core.packet.HPacketHandler;
 import com.hakan.core.scoreboard.HScoreboardHandler;
 import com.hakan.core.utils.ProtocolVersion;
+import mc.obliviate.inventory.InventoryAPI;
 import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.arenaclear.ArenaClearListener;
 import mc.obliviate.masterduels.arenaclear.modes.smart.SmartArenaClearHandler;
@@ -96,7 +97,7 @@ public class MasterDuelsInitializer {
                 new TABManager().init(plugin);
                 new AdvancedReplayManager().init(plugin);
                 plugin.getConfigurationHandler().init();
-                plugin.getInventoryAPI().init();
+                new InventoryAPI(plugin).init();
                 // LOAD KITS START
                 final File file = new File(plugin.getDataFolder().getPath() + File.separator + "kits.yml");
                 final YamlConfiguration data = YamlConfiguration.loadConfiguration(file);
@@ -127,10 +128,6 @@ public class MasterDuelsInitializer {
 
                 if (ConfigurationHandler.getConfig().getBoolean("scoreboards.enabled", true))
                     new InternalScoreboardManager().init(plugin);
-                if (ConfigurationHandler.getQueues().getBoolean("duel-queues-enabled", true))
-                    plugin.getDuelQueueHandler().init();
-                if (ConfigurationHandler.getConfig().getBoolean("optimize-duel-worlds", false))
-                    plugin.getWorldOptimizerHandler().init();
                 if (ConfigurationHandler.getConfig().getBoolean("boss-bars.enabled"))
                     new BossBarHandler().init(plugin);
                 plugin.getSqlManager().init();

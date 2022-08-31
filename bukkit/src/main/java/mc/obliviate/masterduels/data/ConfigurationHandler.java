@@ -400,7 +400,7 @@ public class ConfigurationHandler {
         } else {
             BossBarHandler.setBossBarModule(BossBarHandler.BossBarModule.DISABLED);
         }
-        BossBarHandler.setDefaultBossBarConfig(new BossBarConfig(config.getString("boss-bars.in-battle"), config.getString("boss-bars.arena-closing")));
+        BossBarHandler.setDefaultConfig(new BossBarConfig(config.getString("boss-bars.in-battle"), config.getString("boss-bars.arena-closing")));
     }
 
     private void registerTimerFormats() {

@@ -66,7 +66,7 @@ public class KitEditGUI extends Gui {
 			}
 			return false;
 		}).onPickup(e -> {
-			if (e != null && e.getCurrentItem() == null) {
+			if (e != null && (e.getCurrentItem() == null || e.getCurrentItem().getType().equals(Material.AIR))) {
 				return;
 			}
 			this.armors[armorPieceIndex] = null;
