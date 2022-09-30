@@ -35,9 +35,15 @@ target-already-in-duel: '&c{target}&c is already in duel game.'
 you-are-a-spectator: '&eYou are a spectator.'
 game-timed-out: '&cDuel game you are in, has been timed out.'
 no-arena-found-with-this-name: '&cNo arenas with this name found.'
+error-message: '&cAn error occurred. Please report it to server admins.'
 player-dead:
   by-attacker: '&c{victim}&7 has killed by &c{attacker}&7.'
   without-attacker: '&c{victim}&7 has been died.'
+spectator:
+  settings:
+    flying-speed-change: '&eYour flying speed has changed to: &bSpeed {level}'
+    night-vision-on: '&eNight vision &aenabled&e.'
+    night-vision-off: '&eNight vision &cdisabled&e.'
 kit:
   usage: |-
     [DISABLE_PREFIX]&7 /dueladmin kit save <kit name> &8- &9saves your current inventory as new kit
@@ -180,6 +186,7 @@ invite:
     all-teams-are-full-target: '&cYour invite could not accept because this room is full.'
     all-teams-are-full-inviter: '&cInvite that is sent to {target}&c could not accept because the room is full.'
     player-already-in-creator: '&c{target}&c is already in the room.'
+    error-occurred: '&cAn error occurred while invite response.'
 time-format:
   second: 'second'
   seconds: 'seconds'
