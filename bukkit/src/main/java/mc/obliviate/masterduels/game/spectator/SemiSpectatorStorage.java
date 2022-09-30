@@ -1,5 +1,7 @@
 package mc.obliviate.masterduels.game.spectator;
 
+import mc.obliviate.masterduels.api.spectator.DuelMatchPreSpectatorJoinEvent;
+import mc.obliviate.masterduels.api.spectator.DuelMatchSpectatorSwitchEvent;
 import mc.obliviate.masterduels.game.Match;
 import mc.obliviate.masterduels.game.Team;
 import mc.obliviate.masterduels.user.Member;
@@ -8,6 +10,8 @@ import mc.obliviate.masterduels.user.UserHandler;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.Utils;
 import mc.obliviate.masterduels.utils.playerreset.PlayerReset;
+import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -67,11 +71,20 @@ public class SemiSpectatorStorage implements SpectatorStorage {
 
 	@Override
 	public void spectate(Player player) {
-		final Spectator spectator = findSpectator(player);
+		Spectator spectator = findSpectator(player);
 		if (spectator != null) return;
 
-		spectators.add(UserHandler.switchSpectator(UserHandler.getUser(player.getUniqueId()), match));
+		final DuelMatchPreSpectatorJoinEvent duelGamePreSpectatorJoinEvent = new DuelMatchPreSpectatorJoinEvent(player, match);
+		Bukkit.getPluginManager().callEvent(duelGamePreSpectatorJoinEvent);
+		if (duelGamePreSpectatorJoinEvent.isCancelled()) return;
 
+		spectator = UserHandler.switchSpectator(UserHandler.getUser(player.getUniqueId()), match);
+		spectators.add(spectator);
+
+		final DuelMatchSpectatorSwitchEvent duelMatchSpectatorSwitchEvent = new DuelMatchSpectatorSwitchEvent(spectator);
+		Bukkit.getPluginManager().callEvent(duelMatchSpectatorSwitchEvent);
+
+		//SpectatorInventoryHandler.giveSpectatorItems(player);
 		new PlayerReset().excludeGamemode().excludeInventory().excludeLevel().excludeExp().reset(player);
 
 		for (final Member member : match.getAllMembers()) {
@@ -86,8 +99,8 @@ public class SemiSpectatorStorage implements SpectatorStorage {
 		player.setAllowFlight(true);
 		player.setFlying(true);
 
+		//won't teleport
 		MessageUtils.sendMessage(player, "you-are-a-spectator");
-
 		//MessageAPI.getInstance(game.getPlugin()).sendTitle(player, TitleHandler.getTitle(TitleHandler.TitleType.SPECTATOR_JOIN));
 	}
 
