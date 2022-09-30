@@ -10,10 +10,10 @@ dependencies {
     compileOnly 'io.puharesource.mc:TitleManager:2.2.0'
     compileOnly 'me.neznamy:tab-api:3.0.1'
 
-    implementation files('D:/Users/User/Desktop/Libraries/inventoryapi/configurablegui-4.1.6.jar')
-    implementation files('D:/Users/User/Desktop/Libraries/inventoryapi/pagination-4.1.6.jar')
-    implementation files('D:/Users/User/Desktop/Libraries/inventoryapi/advancedslot-4.1.6.jar')
-    implementation files('D:/Users/User/Desktop/Libraries/inventoryapi/core-4.1.6.jar')
+    implementation 'com.github.hamza-cskn.obliviate-invs:core:4.1.8'
+    implementation 'com.github.hamza-cskn.obliviate-invs:advancedslot:4.1.8'
+    implementation 'com.github.hamza-cskn.obliviate-invs:configurablegui:4.1.8'
+    implementation 'com.github.hamza-cskn.obliviate-invs:pagination:4.1.8'
 }
 
 shadowJar {

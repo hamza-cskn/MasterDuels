@@ -15,34 +15,37 @@ import mc.obliviate.util.placeholder.PlaceholderUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryOpenEvent;
+
+import java.util.Arrays;
 
 public class DuelInvitesGUI extends ConfigurableGui {
 
-	private final MatchCreator matchCreator;
+    private final MatchCreator matchCreator;
 
-	public DuelInvitesGUI(Player player, MatchCreator matchCreator) {
-		super(player, "duel-invites-gui");
-		this.matchCreator = matchCreator;
-	}
+    public DuelInvitesGUI(Player player, MatchCreator matchCreator) {
+        super(player, "duel-invites-gui");
+        this.matchCreator = matchCreator;
+    }
 
-	@Override
-	public void onOpen(InventoryOpenEvent event) {
-		putDysfunctionalIcons();
+    @Override
+    public void onOpen(InventoryOpenEvent event) {
+        putDysfunctionalIcons(Arrays.asList("back", "invite"));
 
-		putIcon("back", e -> new DuelMatchCreatorGUI(player, matchCreator).open());
+        putIcon("back", e -> new DuelMatchCreatorGUI(player, matchCreator).open());
 
-		putIcon("invite", new PlaceholderUtil().add("{players-amount}", matchCreator.getBuilder().getPlayers().size() + "").add("{pending-invites-amount}", matchCreator.getInvites().size() + ""), e -> {
-			player.closeInventory();
-			new ChatEntry(player.getUniqueId(), getPlugin()).onResponse(chatEvent -> {
-				final Player receiver = Bukkit.getPlayer(chatEvent.getMessage());
-				matchCreator.trySendInvite(player, receiver, response -> {
-					matchCreator.addPlayer(receiver, null, -1);
-				});
-				open();
-			});
-			MessageUtils.sendMessage(player, "enter-player-name-to-invite");
-		});
+        putIcon("invite", new PlaceholderUtil().add("{players-amount}", matchCreator.getBuilder().getPlayers().size() + "").add("{pending-invites-amount}", matchCreator.getInvites().size() + ""), e -> {
+            player.closeInventory();
+            new ChatEntry(player.getUniqueId(), getPlugin()).onResponse(chatEvent -> {
+                final Player receiver = Bukkit.getPlayer(chatEvent.getMessage());
+                matchCreator.trySendInvite(player, receiver, response -> {
+                    matchCreator.addPlayer(receiver, null, -1);
+                });
+                open();
+            });
+            MessageUtils.sendMessage(player, "enter-player-name-to-invite");
+        });
 
         int i = 9;
         for (Player loopPlayer : Bukkit.getOnlinePlayers()) {
@@ -65,8 +68,8 @@ public class DuelInvitesGUI extends ConfigurableGui {
         }
     }
 
-	@Override
-	public String getSectionPath() {
-		return "duel-creator.invites-gui";
-	}
+    @Override
+    public String getSectionPath() {
+        return "duel-creator.invites-gui";
+    }
 }

@@ -56,12 +56,6 @@ public class MasterDuels extends JavaPlugin {
         }
         this.duelQueueHandler = new DuelQueueHandler(this);
         this.worldOptimizerHandler = new ArenaWorldOptimizerHandler();
-        Bukkit.getScheduler().runTaskLater(this, () -> {
-            if (ConfigurationHandler.getQueues().getBoolean("duel-queues-enabled", true))
-                this.duelQueueHandler.init();
-            if (ConfigurationHandler.getConfig().getBoolean("optimize-duel-worlds", false))
-                this.worldOptimizerHandler.init();
-        }, 40);
     }
 
     @Override
@@ -96,4 +90,11 @@ public class MasterDuels extends JavaPlugin {
         this.arenaClearHandler = arenaClearHandler;
     }
 
+    public ArenaWorldOptimizerHandler getWorldOptimizerHandler() {
+        return worldOptimizerHandler;
+    }
+
+    public DuelQueueHandler getDuelQueueHandler() {
+        return duelQueueHandler;
+    }
 }

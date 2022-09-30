@@ -84,7 +84,6 @@ public class Member extends User implements IUser {
             } else {
                 return defaultKit;
             }
-
         }
     }
 }

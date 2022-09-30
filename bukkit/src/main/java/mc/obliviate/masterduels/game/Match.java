@@ -30,11 +30,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static mc.obliviate.masterduels.utils.Utils.getPlaceholders;
@@ -55,6 +51,7 @@ public class Match {
 	private MatchState gameState = new IdleState(this);
 
 	public Match(Arena arena, MatchDataStorage matchDataStorage) {
+		Preconditions.checkNotNull(matchDataStorage);
 		this.arena = arena;
 		DataHandler.registerGame(arena, this);
 		this.matchDataStorage = matchDataStorage;
@@ -80,7 +77,6 @@ public class Match {
 
 	public void start() {
 		if (!(gameState instanceof IdleState)) throw new IllegalStateException("this match has already started.");
-
 		gameState.next();
 	}
 
@@ -101,8 +97,8 @@ public class Match {
 
 	/**
 	 * removes player from game
-	 * if game doesn't contains param player
-	 * the method would ignores it.
+	 * if game doesn't contain param player
+	 * the method would ignore it.
 	 **/
 	public void removeMember(Member member) {
 		matchDataStorage.getGameTeamManager().unregisterMember(member);
@@ -168,7 +164,7 @@ public class Match {
 			return;
 		}
 
-		setGameState(new MatchEndingState(this, false));
+		this.setGameState(new MatchEndingState(this, false));
 	}
 
 	/**

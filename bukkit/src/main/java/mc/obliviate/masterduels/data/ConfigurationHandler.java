@@ -18,6 +18,7 @@ import mc.obliviate.masterduels.gui.DuelArenaListGUI;
 import mc.obliviate.masterduels.gui.creator.DuelMatchCreatorNonOwnerGUI;
 import mc.obliviate.masterduels.gui.creator.DuelSettingsGUI;
 import mc.obliviate.masterduels.gui.creator.DuelTeamManagerGUI;
+import mc.obliviate.masterduels.gui.spectator.SpectatorTeleportationGUI;
 import mc.obliviate.masterduels.kit.Kit;
 import mc.obliviate.masterduels.kit.gui.KitSelectionGUI;
 import mc.obliviate.masterduels.playerdata.history.gui.DuelHistoryLogGui;
@@ -43,11 +44,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ConfigurationHandler {
 
@@ -130,6 +127,7 @@ public class ConfigurationHandler {
         registerTeamManagerConfig(menus.getConfigurationSection("duel-creator.manage-teams-gui"));
         registerDuelMatchCreatorNonOwnerGUIConfig(menus.getConfigurationSection("duel-creator.non-owner-gui"));
         registerGameRulesGui(menus.getConfigurationSection("duel-creator.game-rules-gui"));
+        registerSpectatorTeleportationGui(menus.getConfigurationSection("spectator-teleportation-gui"));
 
         RoundStartingState.setLockDuration(Duration.ofSeconds(config.getInt("duel-game-lock.lock-duration", 7)));
         RoundStartingState.setLockFrequency(config.getInt("duel-game-lock.teleport-frequency"));
@@ -138,6 +136,10 @@ public class ConfigurationHandler {
         Kit.USE_PLAYER_INVENTORIES = config.getBoolean("use-player-inventories", false);
         SmartArenaClear.REMOVE_ENTITIES = getConfig().getBoolean("arena-regeneration.remove-entities", true);
 
+        if (ConfigurationHandler.getQueues().getBoolean("duel-queues-enabled", true))
+            plugin.getDuelQueueHandler().init();
+        if (ConfigurationHandler.getConfig().getBoolean("optimize-duel-worlds", false))
+            plugin.getWorldOptimizerHandler().init();
     }
 
     private void registerNotifyActions(ConfigurationSection section) {
@@ -256,28 +258,23 @@ public class ConfigurationHandler {
             final ItemStack item = ItemStackSerializer.deserializeItemStack(iconsSection.getConfigurationSection(key), GuiConfigurationTable.getDefaultConfigurationTable());
 
 
-            if (item == null) {
-                iconItemStacks.put(key, defaultIcon);
-
-            } else {
-                if (item.getItemMeta() != null) {
-                    if (item.getItemMeta().getLore() == null) {
-                        final ItemMeta meta = item.getItemMeta();
-                        meta.setLore(defaultIcon.getItemMeta().getLore());
-                        item.setItemMeta(meta);
-                    }
-                    if (item.getItemMeta().getDisplayName() == null) {
-                        final ItemMeta meta = item.getItemMeta();
-                        meta.setDisplayName(defaultIcon.getItemMeta().getDisplayName());
-                        item.setItemMeta(meta);
-                    }
-                } else {
-                    Logger.error("Queue icon could not deserialized normally. (" + key + ")");
+            if (item.getItemMeta() != null) {
+                if (item.getItemMeta().getLore() == null) {
+                    final ItemMeta meta = item.getItemMeta();
+                    meta.setLore(defaultIcon.getItemMeta().getLore());
+                    item.setItemMeta(meta);
                 }
-
-                iconItemStacks.put(key, item);
-
+                if (item.getItemMeta().getDisplayName() == null) {
+                    final ItemMeta meta = item.getItemMeta();
+                    meta.setDisplayName(defaultIcon.getItemMeta().getDisplayName());
+                    item.setItemMeta(meta);
+                }
+            } else {
+                Logger.error("Queue icon could not deserialized normally. (" + key + ")");
             }
+
+            iconItemStacks.put(key, item);
+
         }
 
         final int zeroAmount = section.getBoolean("use-zero-amount", false) ? 0 : 1;
@@ -340,6 +337,10 @@ public class ConfigurationHandler {
 
     private void registerHistoryGui(final ConfigurationSection section) {
         new DuelHistoryLogGui.Config(parseStringAsIntegerList(section.getString("page-slots")));
+    }
+
+    private void registerSpectatorTeleportationGui(final ConfigurationSection section) {
+        new SpectatorTeleportationGUI.Config(parseStringAsIntegerList(section.getString("page-slots")));
     }
 
     private void registerGameRulesGui(final ConfigurationSection section) {
