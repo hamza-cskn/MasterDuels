@@ -6,6 +6,18 @@ import org.bukkit.inventory.PlayerInventory;
 
 public class PlayerInventoryFrame {
 
+	public static final PlayerInventoryFrame EMPTY_INVENTORY_FRAME;
+
+	static {
+		final ItemStack[] items = new ItemStack[]{
+				null, null, null, null, null, null, null, null, null,
+				null, null, null, null, null, null, null, null, null,
+				null, null, null, null, null, null, null, null, null,
+				null, null, null, null, null, null, null, null, null};
+		final ItemStack[] armors = new ItemStack[]{null, null, null, null};
+		EMPTY_INVENTORY_FRAME = new PlayerInventoryFrame(items, armors);
+	}
+
 	private final ItemStack[] contents;
 	private final ItemStack[] armorContents;
 
