@@ -2,9 +2,8 @@ package mc.obliviate.masterduels.scoreboard;
 
 import com.hakan.core.HCore;
 import com.hakan.core.utils.Validate;
-import mc.obliviate.util.string.StringUtil;
+import mc.obliviate.masterduels.utils.MessageUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
@@ -12,12 +11,7 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
 import java.time.Duration;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
@@ -169,14 +163,34 @@ public final class InternalScoreboard {
 
     public InternalScoreboard setLine(int line, String text) {
         Validate.notNull(text, "text cannot be null");
-        text = StringUtil.parseColor(text);
         String first = text.substring(0, Math.min(16, text.length()));
-        this.getTeam(line).setPrefix(first);
+        String second = null;
+        if (first.endsWith("&")) {
+            first = first.substring(0, first.length() - 1);
+            second = "&";
+        }
+        this.getTeam(line).setPrefix(MessageUtils.parseColor(first));
         if (text.length() > 16) {
-            this.getTeam(line).setSuffix(ChatColor.getLastColors(first) + text.substring(16, Math.min(30, text.length())));
+            String lineText = (second == null ? InternalScoreboard.getLastRawColors(first) : second) + text.substring(16, Math.min(30, text.length()));
+            this.getTeam(line).setSuffix(MessageUtils.parseColor(lineText));
         }
         return this;
     }
+
+    //Copied and modified by the ChatColor class.
+    public static String getLastRawColors(String input) {
+        String result = "";
+        int length = input.length();
+        for (int index = length - 1; index > -1; index--) {
+            char section = input.charAt(index);
+            if (section == '&' && index < length - 1) {
+                char colorChar = input.charAt(index + 1);
+                result = "&" + colorChar;
+            }
+        }
+        return result;
+    }
+
 
     /**
      * Sets lines of scoreboard to lines.
@@ -184,7 +198,6 @@ public final class InternalScoreboard {
      * @param lines List of lines.
      * @return Instance of this class.
      */
-
     public InternalScoreboard setLines(List<String> lines) {
         Validate.notNull(lines, "lines cannot be null");
         for (int i = 1; i <= 16; i++)
