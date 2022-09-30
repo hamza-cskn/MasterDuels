@@ -89,6 +89,10 @@ public class MessageUtils {
 		return list;
 	}
 
+	public static String parse(final String string, PlaceholderUtil placeholderUtil) {
+		return applyPlaceholders(parseColor(string), placeholderUtil);
+	}
+
 	public static String parseColor(final String string) {
 		if (string == null) return null;
 		return ChatColor.translateAlternateColorCodes('&', string);
