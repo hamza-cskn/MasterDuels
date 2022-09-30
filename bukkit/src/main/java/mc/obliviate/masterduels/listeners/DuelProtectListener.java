@@ -19,13 +19,8 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockMultiPlaceEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.player.PlayerBedEnterEvent;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerFishEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemDamageEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -36,11 +31,13 @@ import java.util.List;
 public class DuelProtectListener implements Listener {
 
     private final boolean teleportBackWhenLimitViolate;
+    private final boolean disableHunger;
     private final PickupAction pickupAction;
     private final double soupRegenAmount;
 
     public DuelProtectListener() {
         this.teleportBackWhenLimitViolate = ConfigurationHandler.getConfig().getBoolean("teleport-back-when-arena-cuboid-violated", false);
+        this.disableHunger = ConfigurationHandler.getConfig().getBoolean("disable-hunger", false);
         this.pickupAction = PickupAction.valueOf(ConfigurationHandler.getConfig().getString("action-limitations.item-pickup", "DISALLOW"));
         this.soupRegenAmount = ConfigurationHandler.getConfig().getDouble("soup-regeneration-amount", 3.5d);
     }
@@ -191,6 +188,17 @@ public class DuelProtectListener implements Listener {
         } else if (user instanceof Spectator) {
             e.setCancelled(true);
             MessageUtils.sendMessage(e.getPlayer(), "you-can-not-place");
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onStarve(final FoodLevelChangeEvent e) {
+        if (!(e.getEntity() instanceof Player)) return;
+        final IUser user = UserHandler.getUser(e.getEntity().getUniqueId());
+        if (this.disableHunger && user instanceof Member) {
+            e.setCancelled(true);
+        } else if (user instanceof Spectator) {
+            e.setCancelled(true);
         }
     }
 
