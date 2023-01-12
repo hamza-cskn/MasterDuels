@@ -24,28 +24,29 @@ public class InternalBossBarManager implements Listener {
 
     private final Map<Match, BossBar> bossBarMap = new HashMap<>();
 
-	public InternalBossBarManager(JavaPlugin plugin) {
-		Bukkit.getPluginManager().registerEvents(this, plugin);
-	}
+    public InternalBossBarManager(JavaPlugin plugin) {
+        Bukkit.getPluginManager().registerEvents(this, plugin);
+    }
 
-	@EventHandler
-	public void onDuelMatchStateChange(DuelMatchStateChangeEvent event) {
-		if (event.getNewState().getMatchStateType().equals(MatchStateType.MATCH_STARING)) {
+    @EventHandler
+    public void onDuelMatchStateChange(DuelMatchStateChangeEvent event) {
+        if (event.getNewState().getMatchStateType().equals(MatchStateType.MATCH_STARING)) {
             BossBar bossBar = HCore.createBossBar(BossBarHandler.getDefaultConfig().getPlayingTextFormat(), BarColor.WHITE, BarStyle.SEGMENTED_10);
-			bossBarMap.put(event.getMatch(), bossBar);
-			initializeBossBarTimer(event.getMatch(), bossBar);
-			for (Member member : event.getMatch().getGameDataStorage().getGameTeamManager().getAllMembers()) {
-				bossBar.addPlayer(member.getPlayer());
-			}
-		}
-	}
+            bossBarMap.put(event.getMatch(), bossBar);
+            initializeBossBarTimer(event.getMatch(), bossBar);
+            for (Member member : event.getMatch().getGameDataStorage().getGameTeamManager().getAllMembers()) {
+                if (member.showBossBar())
+                    bossBar.addPlayer(member.getPlayer());
+            }
+        }
+    }
 
-	@EventHandler
-	public void onDuelMatchLeave(DuelMatchMemberLeaveEvent event) {
+    @EventHandler
+    public void onDuelMatchLeave(DuelMatchMemberLeaveEvent event) {
         BossBar bar = bossBarMap.get(event.getMatch());
-		if (bar == null) return;
-		bar.removePlayer(event.getMember().getPlayer());
-	}
+        if (bar == null) return;
+        bar.removePlayer(event.getMember().getPlayer());
+    }
 
     private void initializeBossBarTimer(Match match, BossBar bar) {
         match.getGameTaskManager().repeatTask("BOSSBAR", () -> {

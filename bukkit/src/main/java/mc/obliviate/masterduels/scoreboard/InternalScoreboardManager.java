@@ -35,14 +35,14 @@ public final class InternalScoreboardManager implements Listener {
                 return;
         }
         for (Member member : event.getMatch().getGameDataStorage().getGameTeamManager().getAllMembers()) {
-            setupScoreboard(member, event.getNewState().getMatchStateType());
+            if (member.showScoreboard())
+                setupScoreboard(member, event.getNewState().getMatchStateType());
         }
     }
 
     @EventHandler
     public void onDuelMatchLeave(DuelMatchMemberLeaveEvent event) {
         uninstallScoreboard(event.getMember().getPlayer());
-
     }
 
     private void uninstallScoreboard(Player player) {

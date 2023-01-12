@@ -49,7 +49,6 @@ public class Kit {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     public ItemStack[] getArmorContents() {

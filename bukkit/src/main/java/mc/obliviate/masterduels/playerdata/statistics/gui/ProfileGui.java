@@ -62,19 +62,19 @@ public class ProfileGui extends ConfigurableGui {
 
         String node = user.inviteReceiving() ? "toggle-invites-icon-enabled" : "toggle-invites-icon-disabled";
         putIcon(node, e -> {
-            user.getPlayer().performCommand("duel toggle");
+            user.setInviteReceiving(!user.inviteReceiving());
             open();
         });
 
         node = user.showBossBar() ? "toggle-boss-bar-icon-enabled" : "toggle-boss-bar-icon-disabled";
         putIcon(node, e -> {
-            user.getPlayer().performCommand("duel toggle");
+            user.setShowBossBar(!user.showBossBar());
             open();
         });
 
         node = user.showScoreboard() ? "toggle-scoreboard-icon-enabled" : "toggle-scoreboard-icon-disabled";
         putIcon(node, e -> {
-            user.getPlayer().performCommand("duel toggle");
+            user.setShowScoreboard(!user.showScoreboard());
             open();
         });
     }
