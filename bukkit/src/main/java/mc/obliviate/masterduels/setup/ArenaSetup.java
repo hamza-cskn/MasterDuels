@@ -4,7 +4,6 @@ import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.arena.elements.ArenaCuboid;
 import mc.obliviate.masterduels.arena.elements.Positions;
-import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.setup.chatentry.ChatEntry;
 import mc.obliviate.masterduels.setup.gui.ArenaSetupGUI;
 import mc.obliviate.masterduels.utils.Logger;
@@ -51,7 +50,7 @@ public class ArenaSetup implements Listener {
 	}
 
 	public static boolean isNameUnique(String checkName) {
-		return DataHandler.getArenaFromName(checkName) == null;
+		return Arena.getArenaFromName(checkName) == null;
 	}
 
 	public Location getSpectatorLocation() {

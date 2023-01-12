@@ -33,25 +33,32 @@ public class SemiSpectatorStorage implements SpectatorStorage {
 		for (final Spectator spectator : spectators) {
 			if (spectator.getPlayer().equals(player)) {
 				return spectator;
-			}
-		}
-		return null;
-	}
+            }
+        }
+        return null;
+    }
 
-	@Override
-	public void unspectate(Spectator spectator) {
-		unspectate(spectator, true);
-	}
+    @Override
+    public void unspectate(Spectator spectator) {
+        unspectate(spectator, true);
+    }
 
-	public void unspectate(Spectator spectator, boolean toMember) {
-		if (!spectators.remove(spectator)) return;
+    @Override
+    public void unspectate(Player player) {
+        final Spectator spectator = findSpectator(player);
+        if (spectator == null) return;
+        unspectate(spectator);
+    }
 
-		if (toMember) {
-			Team team = match.getGameDataStorage().getGameTeamManager().getTeam(spectator.getPlayer());
-			UserHandler.switchMember(spectator, team, null);
-		} else {
-			UserHandler.switchUser(spectator);
-			match.removeMember(match.getMember(spectator.getPlayer().getUniqueId()));
+    public void unspectate(Spectator spectator, boolean toMember) {
+        if (!spectators.remove(spectator)) return;
+
+        if (toMember) {
+            Team team = match.getGameDataStorage().getGameTeamManager().getTeam(spectator.getPlayer());
+            UserHandler.switchMember(spectator, team, null);
+        } else {
+            UserHandler.switchUser(spectator);
+            match.removeMember(match.getMember(spectator.getPlayer().getUniqueId()));
 		}
 		playerReset.reset(spectator.getPlayer());
 		MessageUtils.sendMessage(spectator.getPlayer(), "you-left-from-duel");
@@ -60,13 +67,6 @@ public class SemiSpectatorStorage implements SpectatorStorage {
 		for (final Member member : match.getAllMembers()) {
 			member.getPlayer().showPlayer(spectator.getPlayer());
 		}
-	}
-
-	@Override
-	public void unspectate(Player player) {
-		final Spectator spectator = findSpectator(player);
-		if (spectator == null) return;
-		unspectate(spectator);
 	}
 
 	@Override

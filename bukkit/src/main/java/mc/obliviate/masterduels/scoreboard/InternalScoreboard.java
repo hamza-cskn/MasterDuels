@@ -72,7 +72,6 @@ public final class InternalScoreboard {
      *
      * @return UUID of player.
      */
-
     public UUID getUID() {
         return this.uid;
     }
@@ -82,7 +81,6 @@ public final class InternalScoreboard {
      *
      * @return Player.
      */
-
     public Optional<Player> getPlayerSafe() {
         Player player = Bukkit.getPlayer(this.uid);
         return Optional.ofNullable(player);
@@ -93,7 +91,6 @@ public final class InternalScoreboard {
      *
      * @return Player.
      */
-
     public Player getPlayer() {
         return this.getPlayerSafe().orElseThrow(() -> new NullPointerException("there is no player with this uid(" + this.uid + ")"));
     }
@@ -103,7 +100,6 @@ public final class InternalScoreboard {
      *
      * @return Title of scoreboard.
      */
-
     public String getTitle() {
         return this.title;
     }
@@ -114,7 +110,6 @@ public final class InternalScoreboard {
      * @param title Title.
      * @return Instance of this class.
      */
-
     public InternalScoreboard setTitle(String title) {
         this.title = Validate.notNull(title, "title cannot be null");
         this.objective.setDisplayName(this.title);
@@ -136,7 +131,6 @@ public final class InternalScoreboard {
      * @param updateInterval Update interval.
      * @return Instance of this class.
      */
-
     public InternalScoreboard setUpdateInterval(int updateInterval) {
         this.updateInterval = updateInterval;
         return this;
@@ -148,7 +142,6 @@ public final class InternalScoreboard {
      * @param line Line.
      * @return Text of line.
      */
-
     public String getLine(int line) {
         return this.getTeam(line).getPrefix();
     }
@@ -160,7 +153,6 @@ public final class InternalScoreboard {
      * @param text Text.
      * @return Instance of this class.
      */
-
     public InternalScoreboard setLine(int line, String text) {
         Validate.notNull(text, "text cannot be null");
         String first = text.substring(0, Math.min(16, text.length()));
@@ -212,7 +204,6 @@ public final class InternalScoreboard {
      * @param lines List of lines.
      * @return Instance of this class.
      */
-
     public InternalScoreboard setLines(String... lines) {
         return this.setLines(Arrays.asList(lines));
     }
@@ -223,7 +214,6 @@ public final class InternalScoreboard {
      * @param line Line number.
      * @return Instance of this class.
      */
-
     public InternalScoreboard removeLine(int line) {
         Team currentTeam = this.scoreboard.getTeam("line_" + line);
         if (currentTeam == null) {
@@ -243,7 +233,6 @@ public final class InternalScoreboard {
      * @param timeUnit Time unit (TimeUnit.SECONDS, TimeUnit.HOURS, etc.)
      * @return Instance of this class.
      */
-
     public InternalScoreboard expire(int time, TimeUnit timeUnit) {
         Validate.notNull(timeUnit, "time unit cannot be null");
         HCore.syncScheduler().after(time, timeUnit).run(this::delete);
@@ -257,7 +246,6 @@ public final class InternalScoreboard {
      * @param duration Duration.
      * @return Instance of this class.
      */
-
     public InternalScoreboard expire(Duration duration) {
         Validate.notNull(duration, "duration cannot be null!");
         HCore.syncScheduler().after(duration).run(this::delete);
@@ -271,7 +259,6 @@ public final class InternalScoreboard {
      * @param ticks Ticks.
      * @return Instance of this class.
      */
-
     public InternalScoreboard expire(int ticks) {
         HCore.syncScheduler().after(ticks)
                 .run(this::delete);
@@ -281,7 +268,6 @@ public final class InternalScoreboard {
     /**
      * Shows the scoreboard to player.
      */
-
     public InternalScoreboard show() {
         this.getPlayerSafe().ifPresent(player -> {
             if (player.getScoreboard().equals(this.scoreboard))

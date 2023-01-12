@@ -9,6 +9,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -57,16 +58,12 @@ public class KitSelectionGUI extends ConfigurableGui {
 
 	@Override
 	public void onOpen(InventoryOpenEvent event) {
-		putDysfunctionalIcons();
-		if (this.paginationManager.getCurrentPage() != this.paginationManager.getLastPage()) {
-			putIcon("previous", e -> {
-				this.paginationManager.goPreviousPage().update();
-			});
+		putDysfunctionalIcons(Arrays.asList("previous", "next"));
+		if (!this.paginationManager.isFirstPage()) {
+			putIcon("previous", e -> this.paginationManager.goPreviousPage().update());
 		}
-		if (this.paginationManager.getCurrentPage() != 0) {
-			putIcon("next", e -> {
-				this.paginationManager.goNextPage().update();
-			});
+		if (!this.paginationManager.isLastPage()) {
+			putIcon("next", e -> this.paginationManager.goNextPage().update());
 		}
 		this.paginationManager.update();
 	}

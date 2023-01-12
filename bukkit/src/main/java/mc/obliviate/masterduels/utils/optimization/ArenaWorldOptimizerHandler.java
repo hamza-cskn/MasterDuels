@@ -1,7 +1,6 @@
 package mc.obliviate.masterduels.utils.optimization;
 
 import mc.obliviate.masterduels.arena.Arena;
-import mc.obliviate.masterduels.data.DataHandler;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,7 +11,7 @@ public class ArenaWorldOptimizerHandler {
 	private final Map<UUID, WorldOptimizer> worlds = new HashMap<>();
 
 	public void init() {
-		for (final Arena arena : DataHandler.getArenas().keySet()) {
+		for (final Arena arena : Arena.getArenasMap().keySet()) {
 
 			final UUID worldUniqueId = arena.getArenaCuboid().getPoint1().getWorld().getUID();
 			if (worlds.containsKey(worldUniqueId)) continue;

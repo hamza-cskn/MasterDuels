@@ -2,7 +2,6 @@ package mc.obliviate.masterduels.commands;
 
 import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.arena.Arena;
-import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.game.Match;
 import mc.obliviate.masterduels.game.MatchBuilder;
 import mc.obliviate.masterduels.kit.Kit;
@@ -102,10 +101,10 @@ public class DuelAdminCMD implements CommandExecutor {
 		if (args.size() == 1) {
 			MessageUtils.sendMessage(player, "duel-command.admin.cancel.usage");
 		} else if (args.size() == 2) {
-			cancelGame(DataHandler.getArenaFromName(args.get(1)));
+			cancelGame(Arena.getArenaFromName(args.get(1)));
 			MessageUtils.sendMessage(player, "duel-command.admin.cancel.cancel", new PlaceholderUtil().add("{arena}", args.get(1)));
 		} else if (args.get(2).equalsIgnoreCase("-all")) {
-			for (final Arena arena : DataHandler.getArenas().keySet()) {
+			for (final Arena arena : Arena.getArenasMap().keySet()) {
 				cancelGame(arena);
 			}
 		}
@@ -114,12 +113,13 @@ public class DuelAdminCMD implements CommandExecutor {
 	private void reload(final Player player, final List<String> args) {
 		final long start = System.currentTimeMillis();
 		MessageUtils.sendMessage(player, "duel-command.admin.reload.process-start");
+		plugin.getConfigurationHandler().prepare();
 		plugin.getConfigurationHandler().init();
 		MessageUtils.sendMessage(player, "duel-command.admin.reload.process-finish", new PlaceholderUtil().add("{delay}", (System.currentTimeMillis() - start) + ""));
 	}
 
 	private void cancelGame(Arena arena) {
-		Match game = DataHandler.getArenas().get(arena);
+		Match game = Arena.getArenasMap().get(arena);
 		if (game == null) return;
 		game.uninstall();
 	}
@@ -156,7 +156,7 @@ public class DuelAdminCMD implements CommandExecutor {
 			return;
 		}
 
-		final Arena arena = DataHandler.getArenaFromName(args.get(2));
+		final Arena arena = Arena.getArenaFromName(args.get(2));
 		if (arena == null) {
 			MessageUtils.sendMessage(player, "duel-command.no-arena-found-with-this-name", new PlaceholderUtil().add("{arena}", args.get(2)));
 			return;
@@ -205,19 +205,19 @@ public class DuelAdminCMD implements CommandExecutor {
 		}
 
 		final String arenaName = args.get(0);
-		final Arena arena = DataHandler.getArenaFromName(arenaName);
+		final Arena arena = Arena.getArenaFromName(arenaName);
 		if (arena == null) {
 			MessageUtils.sendMessage(player, "no-arena-found-with-this-name");
 			return;
 		}
 
-		final Match match = DataHandler.getArenas().get(arena);
+		final Match match = Arena.getArenasMap().get(arena);
 		if (match == null) {
 			MessageUtils.sendMessage(player, "duel-command.admin.arena.delete.match-playing", new PlaceholderUtil().add("{arena}", arena.getName()));
 			return;
 		}
 
-		DataHandler.unregisterArena(arena);
+		Arena.unregisterArena(arena);
 		plugin.getConfigurationHandler().deleteArena(arena);
 		MessageUtils.sendMessage(player, "duel-command.admin.arena.delete.deleted", new PlaceholderUtil().add("{arena}", arena.getName()));
 	}

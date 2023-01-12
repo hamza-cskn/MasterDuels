@@ -1,8 +1,8 @@
 package mc.obliviate.masterduels;
 
+import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.arenaclear.IArenaClearHandler;
 import mc.obliviate.masterduels.data.ConfigurationHandler;
-import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.data.SQLManager;
 import mc.obliviate.masterduels.game.Match;
 import mc.obliviate.masterduels.queue.DuelQueueHandler;
@@ -61,7 +61,7 @@ public class MasterDuels extends JavaPlugin {
     @Override
     public void onDisable() {
         shutdownMode = true;
-        for (final Match match : DataHandler.getArenas().values()) {
+        for (final Match match : Arena.getArenasMap().values()) {
             if (match != null) {
                 match.uninstall();
             }

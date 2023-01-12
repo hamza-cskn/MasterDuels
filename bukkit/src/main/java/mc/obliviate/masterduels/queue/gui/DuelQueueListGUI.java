@@ -36,11 +36,11 @@ public class DuelQueueListGUI extends ConfigurableGui {
 
 		for (final DuelQueueTemplate template : DuelQueueTemplate.getQueueTemplates()) {
 			final int slot = ConfigurationHandler.getMenusSection("queues-gui.icons.queue-icons." + template.getName()).getInt("slot");
-			addItem(slot, new Icon(guiConfig.getIconOfTemplate(template.getName(), DuelQueue.getAvailableQueues().get(template).getBuilder()))
-					.onClick(e -> {
-						player.closeInventory();
-						player.performCommand("duel queue join " + template.getName());
-					}));
+			addItem(slot, new Icon(guiConfig.getIconOfTemplate(template, DuelQueue.getAvailableQueues().get(template).getBuilder()))
+                    .onClick(e -> {
+                        player.closeInventory();
+                        player.performCommand("duel queue join " + template.getName());
+                    }));
 		}
 	}
 
@@ -62,25 +62,27 @@ public class DuelQueueListGUI extends ConfigurableGui {
 		private final String title;
 		private final ConfigurationSection iconsSection;
 
-		public Config(int zeroAmount, int size, String title, Map<String, ItemStack> iconItemStacks, ConfigurationSection iconsSection) {
-			this.zeroAmount = zeroAmount;
-			this.size = size;
-			this.title = title;
-			this.iconItemStacks = iconItemStacks;
-			this.iconsSection = iconsSection;
-			DuelQueueListGUI.guiConfig = this;
-		}
+        public Config(int zeroAmount, int size, String title, Map<String, ItemStack> iconItemStacks, ConfigurationSection iconsSection) {
+            this.zeroAmount = zeroAmount;
+            this.size = size;
+            this.title = title;
+            this.iconItemStacks = iconItemStacks;
+            this.iconsSection = iconsSection;
+            DuelQueueListGUI.guiConfig = this;
+        }
 
-		protected ItemStack getIconOfTemplate(String templateName, MatchBuilder builder) {
-			ItemStack item = iconItemStacks.get(templateName).clone();
-			if (item == null) return XMaterial.BEDROCK.parseItem();
+        protected ItemStack getIconOfTemplate(DuelQueueTemplate template, MatchBuilder builder) {
+            String templateName = template.getName();
+            ItemStack item = iconItemStacks.get(templateName).clone();
+            if (item == null) return XMaterial.BEDROCK.parseItem();
 
-			final int players = builder.getPlayers().size();
+            final int players = builder.getPlayers().size();
 
-			ItemStackSerializer.applyPlaceholdersToItemStack(item, new PlaceholderUtil()
-					.add("{players}", players + "")
-					.add("{max-players}", (builder.getTeamSize() * builder.getTeamAmount()) + "")
-					.add("{queue-name}", templateName));
+            ItemStackSerializer.applyPlaceholdersToItemStack(item, new PlaceholderUtil()
+                    .add("{players}", players + "")
+                    .add("{total-players}", template.getQueues().stream().filter(queue -> queue.getMatch() != null).mapToInt(queue -> queue.getMatch().getPlayers().size()).sum() + "")
+                    .add("{max-players}", (builder.getTeamSize() * builder.getTeamAmount()) + "")
+                    .add("{queue-name}", templateName));
 
 			item.setAmount(Math.max(zeroAmount, players));
 

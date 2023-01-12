@@ -7,6 +7,7 @@ import mc.obliviate.masterduels.game.Match;
 import mc.obliviate.masterduels.game.MatchStateType;
 import mc.obliviate.masterduels.user.Member;
 import mc.obliviate.masterduels.user.UserHandler;
+import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.Utils;
 import mc.obliviate.masterduels.utils.timer.TimerUtils;
 import org.bukkit.Bukkit;
@@ -73,7 +74,7 @@ public final class InternalScoreboardManager implements Listener {
                             } else if (UserHandler.isSpectator(loopMember.getPlayer().getUniqueId())) {
                                 minorLine = formatConfig.getDeadOpponentFormat();
                             } else {
-                                minorLine = formatConfig.getLiveOpponentFormat().replace("{health}", loopMember.getPlayer().getHealth() + "");
+                                minorLine = formatConfig.getLiveOpponentFormat().replace("{health}", MessageUtils.getFirstDigits(loopMember.getPlayer().getHealth(), 2) + "");
                             }
 
                             minorLine = minorLine

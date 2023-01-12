@@ -1,18 +1,25 @@
 queues-enabled: true # if set false, queues module won't be registered
 queues:
   uhc:
-    kit: UltraHardCoreKit
-    maps:
-      - 'Map1'
+    kit: UHC
     team-amount: 2
     team-size: 1
     game-duration: 300 #seconds
     rounds: 1
-  archer:
-    kit: ArcherKit
+  nodebuff:
+    kit: NoDebuff
+    game-duration: 300 #seconds
+  bow:
+    kit: Bow
     maps:
       - '*'
     team-amount: 2
     team-size: 1
     game-duration: 500 #seconds
     rounds: 5
+  sumo:
+    kit: DISABLED # empty kit
+    game-duration: 300 #seconds
+  classic:
+    kit: Classic
+    game-duration: 300 #seconds

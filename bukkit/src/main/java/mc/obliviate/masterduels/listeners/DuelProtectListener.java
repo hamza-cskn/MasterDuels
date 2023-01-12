@@ -43,7 +43,7 @@ public class DuelProtectListener implements Listener {
     }
 
     private boolean isUser(final Player player) {
-        final IUser user = UserHandler.getUser(player.getUniqueId());
+        final IUser user = UserHandler.getMember(player.getUniqueId());
         return user != null;
     }
 
@@ -68,16 +68,9 @@ public class DuelProtectListener implements Listener {
         } else if (user instanceof Member) {
             if (e.getAction() == Action.PHYSICAL || (e.getClickedBlock() != null && (e.getClickedBlock().getState() instanceof InventoryHolder))) {
                 e.setCancelled(true);
-            }
-        }
-    }
-
-    @EventHandler
-    public void onSoupConsume(final PlayerInteractEvent e) {
-        if (!(e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK))) return;
-        final IUser user = UserHandler.getUser(e.getPlayer().getUniqueId());
-        if (user instanceof Member) {
-            if (e.getItem() != null && e.getItem().getType().equals(XMaterial.MUSHROOM_STEW.parseMaterial())) {
+            } else if ((e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) &&
+                    e.getItem() != null &&
+                    e.getItem().getType().equals(XMaterial.MUSHROOM_STEW.parseMaterial())) {
                 e.getPlayer().setHealth(Math.min(e.getPlayer().getMaxHealth(), e.getPlayer().getHealth() + soupRegenAmount));
                 e.getPlayer().setItemInHand(new ItemStack(XMaterial.BOWL.parseMaterial()));
             }
@@ -135,11 +128,11 @@ public class DuelProtectListener implements Listener {
         }
     }
 
-    @EventHandler
+   /* @EventHandler
     public void onFishing(final PlayerFishEvent e) {
         if (!isUser(e.getPlayer())) return;
         e.setCancelled(true);
-    }
+    }*/
 
     @EventHandler(ignoreCancelled = true)
     public void onBreak(final BlockBreakEvent e) {

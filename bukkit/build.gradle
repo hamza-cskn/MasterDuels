@@ -1,5 +1,5 @@
 dependencies {
-    implementation 'com.github.hakan-krgn.hCore:bukkit-primary:0.6.0'
+    implementation 'com.github.hakan-krgn.hCore:bukkit-primary:0.6.6'
     implementation 'com.github.Obliviated:BlokSQLiteAPI:1.0.7-b'
     //implementation project(':api')
 
@@ -10,10 +10,10 @@ dependencies {
     compileOnly 'io.puharesource.mc:TitleManager:2.2.0'
     compileOnly 'me.neznamy:tab-api:3.0.1'
 
-    implementation 'com.github.hamza-cskn.obliviate-invs:core:4.1.8'
-    implementation 'com.github.hamza-cskn.obliviate-invs:advancedslot:4.1.8'
-    implementation 'com.github.hamza-cskn.obliviate-invs:configurablegui:4.1.8'
-    implementation 'com.github.hamza-cskn.obliviate-invs:pagination:4.1.8'
+    implementation 'com.github.hamza-cskn.obliviate-invs:core:4.1.9-fix'
+    implementation 'com.github.hamza-cskn.obliviate-invs:advancedslot:4.1.9-fix'
+    implementation 'com.github.hamza-cskn.obliviate-invs:configurablegui:4.1.9-fix'
+    implementation 'com.github.hamza-cskn.obliviate-invs:pagination:4.1.9-fix'
 }
 
 shadowJar {
@@ -30,6 +30,7 @@ shadowJar {
     exclude 'com/hakan/core/utils/hooks/**'
     exclude 'com/hakan/core/utils/query/**'
     exclude 'com/hakan/core/utils/yaml/**'
+    exclude 'org/**'
 
     relocate 'com.hakan.core', 'mc.obliviate.masterduels.lib.hcore'
     relocate 'mc.obliviate.util', 'mc.obliviate.masterduels.lib.util'
@@ -37,4 +38,4 @@ shadowJar {
     relocate 'mc.obliviate.bloksqlite', 'mc.obliviate.masterduels.lib.sqlite'
 }
 
-project.setLibsDirName('D:/Users/User/Desktop/Local Servers & Setups/LOCAL 1.8/plugins')
+project.setLibsDirName('D:/Users/User/Desktop/Local Servers & Setups/LOCAL 1.19/plugins')

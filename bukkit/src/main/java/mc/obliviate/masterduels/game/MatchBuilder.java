@@ -42,10 +42,10 @@ public class MatchBuilder {
     }
 
     public Match build(List<String> allowedMaps) {
-        final Arena arena = Arena.findArena(matchDataStorage.getGameTeamManager().getTeamSize(), matchDataStorage.getGameTeamManager().getTeamAmount(), allowedMaps);
+        final Arena arena = Arena.findAppropriateArena(matchDataStorage.getGameTeamManager().getTeamSize(), matchDataStorage.getGameTeamManager().getTeamAmount(), allowedMaps);
 
         if (arena == null) {
-            //arena could not found
+            //arena could not find
             return null;
         }
 

@@ -1,6 +1,7 @@
 package mc.obliviate.masterduels.data;
 
 import com.google.common.base.Preconditions;
+import mc.obliviate.inventory.configurable.ConfigurableGuiCache;
 import mc.obliviate.inventory.configurable.GuiConfigurationTable;
 import mc.obliviate.inventory.configurable.util.ItemStackSerializer;
 import mc.obliviate.masterduels.MasterDuels;
@@ -21,6 +22,7 @@ import mc.obliviate.masterduels.gui.creator.DuelTeamManagerGUI;
 import mc.obliviate.masterduels.gui.spectator.SpectatorTeleportationGUI;
 import mc.obliviate.masterduels.kit.Kit;
 import mc.obliviate.masterduels.kit.gui.KitSelectionGUI;
+import mc.obliviate.masterduels.kit.serializer.KitSerializer;
 import mc.obliviate.masterduels.playerdata.history.gui.DuelHistoryLogGui;
 import mc.obliviate.masterduels.queue.DuelQueueHandler;
 import mc.obliviate.masterduels.queue.DuelQueueTemplate;
@@ -50,13 +52,15 @@ public class ConfigurationHandler {
 
     private static ConfigurationHandler instance = null;
 
-    private static final String DATA_FILE_NAME = "arenas.yml";
-    private static final String CONFIG_FILE_NAME = "config.yml";
-    private static final String MESSAGES_FILE_NAME = "messages.yml";
-    private static final String QUEUES_FILE_NAME = "queues.yml";
-    private static final String MENUS_FILE_NAME = "menus.yml";
+    public static final String DATA_FILE_NAME = "arenas.yml";
+    public static final String CONFIG_FILE_NAME = "config.yml";
+    public static final String MESSAGES_FILE_NAME = "messages.yml";
+    public static final String QUEUES_FILE_NAME = "queues.yml";
+    public static final String MENUS_FILE_NAME = "menus.yml";
+    public static final String KITS_FILE_NAME = "kits.yml";
     private static File dataFile;
     private final MasterDuels plugin;
+    private static YamlConfiguration kits;
     private static YamlConfiguration data;
     private static YamlConfiguration config;
     //messages file instance in MessageUtils.class
@@ -96,22 +100,28 @@ public class ConfigurationHandler {
         return config;
     }
 
+    public static YamlConfiguration getKits() {
+        return kits;
+    }
+
     public static YamlConfiguration getMenus() {
         return menus;
     }
 
     public void prepare() {
-        loadDataFile(new File(this.plugin.getDataFolder() + File.separator + DATA_FILE_NAME));
-        loadMessagesFile(new File(this.plugin.getDataFolder() + File.separator + MESSAGES_FILE_NAME));
-        loadConfigFile(new File(this.plugin.getDataFolder() + File.separator + CONFIG_FILE_NAME));
-        loadMenusFile(new File(this.plugin.getDataFolder() + File.separator + MENUS_FILE_NAME));
-        loadQueuesFile(new File(this.plugin.getDataFolder() + File.separator + QUEUES_FILE_NAME));
+        loadDataFile(new File(plugin.getDataFolder().getPath() + File.separator + DATA_FILE_NAME));
+        MessageUtils.setMessageConfig(loadResource(MESSAGES_FILE_NAME));
+        config = loadResource(CONFIG_FILE_NAME);
+        queues = loadResource(QUEUES_FILE_NAME);
+        menus = loadResource(MENUS_FILE_NAME);
+        kits = loadResource(KITS_FILE_NAME);
         this.prepared = true;
     }
 
     public void init() {
         Preconditions.checkState(prepared, "Configuration is not able to load without prepare.");
 
+        ConfigurableGuiCache.resetCaches();
         GuiConfigurationTable.setDefaultConfigurationTable(new GuiConfigurationTable(menus));
         registerArenas();
         registerLobbyLocation();
@@ -119,6 +129,7 @@ public class ConfigurationHandler {
         registerScoreboards();
         registerBossBars();
         registerTimerFormats();
+        registerKits();
         registerGameCreatorLimits(config.getConfigurationSection("duel-creator.data-limits"));
         registerHistoryGui(menus.getConfigurationSection("game-history-gui"));
         registerKitSelectionGUIConfig(menus.getConfigurationSection("kit-selection-gui"));
@@ -128,7 +139,6 @@ public class ConfigurationHandler {
         registerDuelMatchCreatorNonOwnerGUIConfig(menus.getConfigurationSection("duel-creator.non-owner-gui"));
         registerGameRulesGui(menus.getConfigurationSection("duel-creator.game-rules-gui"));
         registerSpectatorTeleportationGui(menus.getConfigurationSection("spectator-teleportation-gui"));
-
         RoundStartingState.setLockDuration(Duration.ofSeconds(config.getInt("duel-game-lock.lock-duration", 7)));
         RoundStartingState.setLockFrequency(config.getInt("duel-game-lock.teleport-frequency"));
         TimerUtils.DATE_FORMAT = new SimpleDateFormat(MessageUtils.getMessageConfig().getString("time-format.date-format"));
@@ -140,6 +150,13 @@ public class ConfigurationHandler {
             plugin.getDuelQueueHandler().init();
         if (ConfigurationHandler.getConfig().getBoolean("optimize-duel-worlds", false))
             plugin.getWorldOptimizerHandler().init();
+
+    }
+
+    private void registerKits() {
+        for (final String key : kits.getKeys(false)) {
+            KitSerializer.deserialize(kits.getConfigurationSection(key));
+        }
     }
 
     private void registerNotifyActions(ConfigurationSection section) {
@@ -154,45 +171,28 @@ public class ConfigurationHandler {
         registerDuelQueueGUIConfig(menus.getConfigurationSection("queues-gui"));
     }
 
-    private void loadMenusFile(File menusFile) {
-        menus = YamlConfiguration.loadConfiguration(menusFile);
-        if (menus.getKeys(false).isEmpty()) {
-            plugin.saveResource(MENUS_FILE_NAME, true);
-            menus = YamlConfiguration.loadConfiguration(menusFile);
+    private YamlConfiguration loadResource(String fileName) {
+        return loadResourceFile(new File(this.plugin.getDataFolder() + File.separator + fileName));
+    }
+
+    public YamlConfiguration loadResourceFile(File file) {
+        YamlConfiguration section = YamlConfiguration.loadConfiguration(file);
+        if (section.getKeys(false).isEmpty()) {
+            this.plugin.saveResource(file.getName(), true);
+            section = YamlConfiguration.loadConfiguration(file);
         }
+        return section;
+    }
+
+    private void loadKitsFile(File kitsFile) {
+        final File file = new File(plugin.getDataFolder().getPath() + File.separator + "kits.yml");
+        final YamlConfiguration data = YamlConfiguration.loadConfiguration(file);
+
     }
 
     private void loadDataFile(File dataFile) {
         ConfigurationHandler.dataFile = dataFile;
         data = YamlConfiguration.loadConfiguration(dataFile);
-    }
-
-    private void loadMessagesFile(File messagesFile) {
-        YamlConfiguration messages = YamlConfiguration.loadConfiguration(messagesFile);
-
-        if (messages.getKeys(false).isEmpty()) {
-            plugin.saveResource(MESSAGES_FILE_NAME, true);
-            messages = YamlConfiguration.loadConfiguration(messagesFile);
-        }
-
-        MessageUtils.setMessageConfig(messages);
-    }
-
-
-    private void loadConfigFile(File configFile) {
-        config = YamlConfiguration.loadConfiguration(configFile);
-        if (config.getKeys(false).isEmpty()) {
-            plugin.saveResource(CONFIG_FILE_NAME, true);
-            config = YamlConfiguration.loadConfiguration(configFile);
-        }
-    }
-
-    private void loadQueuesFile(File queueFile) {
-        queues = YamlConfiguration.loadConfiguration(queueFile);
-        if (queues.getKeys(false).isEmpty()) {
-            plugin.saveResource(QUEUES_FILE_NAME, true);
-            queues = YamlConfiguration.loadConfiguration(queueFile);
-        }
     }
 
     private void registerGameCreatorLimits(ConfigurationSection section) {
@@ -348,6 +348,7 @@ public class ConfigurationHandler {
     }
 
     private void registerArenas() {
+        Arena.unregisterAllArenas();
         for (final String arenaName : data.getKeys(false)) {
             Arena.deserialize(data.getConfigurationSection(arenaName));
         }
@@ -358,7 +359,6 @@ public class ConfigurationHandler {
             DataHandler.setLobbyLocation(SerializerUtils.deserializeLocationYAML(data.getConfigurationSection("lobby-location")));
         }
     }
-
 
     private void registerDelayEndDuelAfterPlayerKill() {
         MatchDataStorage.setEndDelay(Duration.ofSeconds(config.getInt("delay-end-duel-after-player-kill", 20)));

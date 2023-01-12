@@ -74,6 +74,7 @@ public class KitEditGUI extends Gui {
 
 		if (armors[armorPieceIndex] == null) return;
 		this.advancedSlotManager.putIconToAdvancedSlot(advancedSlot, armors[armorPieceIndex], null);
+		advancedSlot.setRefundOnClose(false);
 	}
 
 	@Override

@@ -26,10 +26,8 @@ public class ChatEntry {
 		final ChatEntry chatEntry = entryMap.get(sender.getUniqueId());
 		if (chatEntry == null || chatEntry.getAction() == null) return;
 		e.setCancelled(true);
-		Bukkit.getScheduler().runTask(chatEntry.plugin, () -> {
-			chatEntry.getAction().accept(e);
-		});
-		unregisterEntryTask(sender.getUniqueId());
+        Bukkit.getScheduler().runTask(chatEntry.plugin, () -> chatEntry.getAction().accept(e));
+        unregisterEntryTask(sender.getUniqueId());
 	}
 
 	public static void unregisterEntryTask(UUID senderUniqueId) {

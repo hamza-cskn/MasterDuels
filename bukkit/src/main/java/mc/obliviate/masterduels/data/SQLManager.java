@@ -128,9 +128,7 @@ public class SQLManager extends SQLHandler {
     }
 
     public void saveAllUsers() {
-        for (IUser user : UserHandler.getUserMap().values()) {
-            saveUser(user);
-        }
+        UserHandler.getUserMap().values().forEach(this::saveUser);
     }
 
     public void saveUser(IUser user) {

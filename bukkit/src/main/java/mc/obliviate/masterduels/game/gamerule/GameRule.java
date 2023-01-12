@@ -1,12 +1,7 @@
 package mc.obliviate.masterduels.game.gamerule;
 
 import mc.obliviate.masterduels.MasterDuels;
-import mc.obliviate.masterduels.game.gamerule.listeners.BowRuleListener;
-import mc.obliviate.masterduels.game.gamerule.listeners.BurnListener;
-import mc.obliviate.masterduels.game.gamerule.listeners.EnderPearlRuleListener;
-import mc.obliviate.masterduels.game.gamerule.listeners.GoldenAppleRuleListener;
-import mc.obliviate.masterduels.game.gamerule.listeners.PotionRuleListener;
-import mc.obliviate.masterduels.game.gamerule.listeners.ShieldRuleListener;
+import mc.obliviate.masterduels.game.gamerule.listeners.*;
 import mc.obliviate.util.versiondetection.ServerVersionController;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
@@ -43,13 +38,13 @@ public enum GameRule implements Serializable {
 		this.listener = listener;
 	}
 
-	public void loadListener() {
+	public void init() {
 		if (!doesSupport()) return;
 		try {
 			Listener theListener = listener.getConstructor().newInstance();
 			Bukkit.getPluginManager().registerEvents(theListener, MasterDuels.getInstance());
 		} catch (InstantiationException | IllegalAccessException | InvocationTargetException |
-		         NoSuchMethodException e) {
+				 NoSuchMethodException e) {
 			e.printStackTrace();
 		}
 	}

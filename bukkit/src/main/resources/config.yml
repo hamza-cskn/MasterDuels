@@ -52,7 +52,7 @@ disable-hunger: false
 
 action-limitations:
   # DISALLOW -> disallows item dropping (pressing Q)
-  # FRIENDLY -> players cannot pickup items which is dropped (pressing Q) by their opponents
+  # FRIENDLY -> players cannot pick up items which is dropped (pressing Q) by their opponents
   # ALLOW -> players can drop and pickup all items
   item-pickup: DISALLOW
   executable-commands-during-match:

@@ -15,21 +15,14 @@ import org.bukkit.entity.Player;
 public class Spectator extends User {
 
     private final Match match;
-    private final Player player;
 
     Spectator(Player player, Match match, boolean inviteReceiving, boolean showScoreboard, boolean showBossBar, DuelStatistic statistic) {
         super(player, inviteReceiving, showScoreboard, showBossBar, statistic);
         this.match = match;
-        this.player = player;
     }
 
     public Match getMatch() {
         return match;
-    }
-
-    @Override
-    public Player getPlayer() {
-        return player;
     }
 
     @Override
