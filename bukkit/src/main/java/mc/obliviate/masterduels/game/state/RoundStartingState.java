@@ -49,7 +49,7 @@ public class RoundStartingState implements MatchState {
             lockTeam(team);
         }
 
-        match.getGameTaskManager().delayedTask("game-start", this::next, LOCK_DURATION.toMinutes() * 60 * 20L);
+        match.getGameTaskManager().delayedTask("game-start", this::next, LOCK_DURATION.getSeconds() * 20);
     }
 
     @Override

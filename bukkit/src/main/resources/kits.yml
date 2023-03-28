@@ -1,0 +1,369 @@
+Bow:
+  items:
+    '0':
+      material: BOW
+      enchantments:
+        - ARROW_INFINITE:1
+    '8':
+      material: ARROW
+  armors:
+    '0':
+      bukkit-serializing: true
+      item:
+        ==: org.bukkit.inventory.ItemStack
+        type: LEATHER_BOOTS
+        meta:
+          ==: ItemMeta
+          meta-type: LEATHER_ARMOR
+          color:
+            ==: Color
+            RED: 102
+            BLUE: 51
+            GREEN: 127
+    '1':
+      bukkit-serializing: true
+      item:
+        ==: org.bukkit.inventory.ItemStack
+        type: LEATHER_LEGGINGS
+        meta:
+          ==: ItemMeta
+          meta-type: LEATHER_ARMOR
+          color:
+            ==: Color
+            RED: 102
+            BLUE: 51
+            GREEN: 127
+    '2':
+      bukkit-serializing: true
+      item:
+        ==: org.bukkit.inventory.ItemStack
+        type: LEATHER_CHESTPLATE
+        meta:
+          ==: ItemMeta
+          meta-type: LEATHER_ARMOR
+          color:
+            ==: Color
+            RED: 102
+            BLUE: 51
+            GREEN: 127
+    '3':
+      bukkit-serializing: true
+      item:
+        ==: org.bukkit.inventory.ItemStack
+        type: LEATHER_HELMET
+        meta:
+          ==: ItemMeta
+          meta-type: LEATHER_ARMOR
+          color:
+            ==: Color
+            RED: 102
+            BLUE: 51
+            GREEN: 127
+  icon:
+    material: BOW
+UHC:
+  items:
+    '0':
+      material: DIAMOND_SWORD
+      enchantments:
+        - DAMAGE_ALL:5
+        - DURABILITY:3
+    '1':
+      material: BOW
+      enchantments:
+        - ARROW_DAMAGE:4
+    '2':
+      material: COBBLESTONE
+      amount: 64
+    '3':
+      material: OAK_LOG
+      amount: 64
+    '4':
+      material: GOLDEN_APPLE
+      amount: 16
+    '5':
+      material: WATER_BUCKET
+    '6':
+      material: LAVA_BUCKET
+    '7':
+      material: DIAMOND_AXE
+      enchantments:
+        - DIG_SPEED:3
+    '32':
+      material: WATER_BUCKET
+    '33':
+      material: LAVA_BUCKET
+  armors:
+    '0':
+      material: DIAMOND_BOOTS
+      enchantments:
+        - PROTECTION_ENVIRONMENTAL:2
+    '1':
+      material: DIAMOND_LEGGINGS
+      enchantments:
+        - PROTECTION_ENVIRONMENTAL:2
+    '2':
+      material: DIAMOND_CHESTPLATE
+      enchantments:
+        - PROTECTION_ENVIRONMENTAL:2
+    '3':
+      material: DIAMOND_HELMET
+      enchantments:
+        - PROTECTION_ENVIRONMENTAL:2
+  icon:
+    material: DIAMOND_PICKAXE
+    enchantments:
+      - DIG_SPEED:3
+Classic:
+  items:
+    '0':
+      material: IRON_SWORD
+    '1':
+      material: FISHING_ROD
+  armors:
+    '0':
+      material: IRON_BOOTS
+    '1':
+      material: IRON_LEGGINGS
+    '2':
+      material: IRON_CHESTPLATE
+    '3':
+      material: IRON_HELMET
+  icon:
+    material: FISHING_ROD
+NoDebuff:
+  items:
+    '0':
+      material: DIAMOND_SWORD
+      enchantments:
+        - DAMAGE_ALL:3
+        - FIRE_ASPECT:1
+    '1':
+      bukkit-serializing: true
+      item:
+        ==: org.bukkit.inventory.ItemStack
+        type: POTION
+        damage: 8259
+    '2':
+      bukkit-serializing: true
+      item:
+        ==: org.bukkit.inventory.ItemStack
+        type: POTION
+        damage: 8226
+    '3':
+      bukkit-serializing: true
+      item:
+        ==: org.bukkit.inventory.ItemStack
+        type: POTION
+        damage: 16421
+    '4':
+      bukkit-serializing: true
+      item:
+        ==: org.bukkit.inventory.ItemStack
+        type: POTION
+        damage: 16421
+    '5':
+      bukkit-serializing: true
+      item:
+        ==: org.bukkit.inventory.ItemStack
+        type: POTION
+        damage: 16421
+    '6':
+      bukkit-serializing: true
+      item:
+        ==: org.bukkit.inventory.ItemStack
+        type: POTION
+        damage: 16421
+    '7':
+      bukkit-serializing: true
+      item:
+        ==: org.bukkit.inventory.ItemStack
+        type: POTION
+        damage: 16421
+    '8':
+      bukkit-serializing: true
+      item:
+        ==: org.bukkit.inventory.ItemStack
+        type: POTION
+        damage: 16421
+    '9':
+      bukkit-serializing: true
+      item:
+        ==: org.bukkit.inventory.ItemStack
+        type: POTION
+        damage: 16421
+    '10':
+      bukkit-serializing: true
+      item:
+        ==: org.bukkit.inventory.ItemStack
+        type: POTION
+        damage: 16421
+    '11':
+      bukkit-serializing: true
+      item:
+        ==: org.bukkit.inventory.ItemStack
+        type: POTION
+        damage: 16421
+    '12':
+      bukkit-serializing: true
+      item:
+        ==: org.bukkit.inventory.ItemStack
+        type: POTION
+        damage: 16421
+    '13':
+      bukkit-serializing: true
+      item:
+        ==: org.bukkit.inventory.ItemStack
+        type: POTION
+        damage: 16421
+    '14':
+      bukkit-serializing: true
+      item:
+        ==: org.bukkit.inventory.ItemStack
+        type: POTION
+        damage: 16421
+    '15':
+      bukkit-serializing: true
+      item:
+        ==: org.bukkit.inventory.ItemStack
+        type: POTION
+        damage: 16421
+    '16':
+      bukkit-serializing: true
+      item:
+        ==: org.bukkit.inventory.ItemStack
+        type: POTION
+        damage: 16421
+    '17':
+      bukkit-serializing: true
+      item:
+        ==: org.bukkit.inventory.ItemStack
+        type: POTION
+        damage: 16421
+    '18':
+      bukkit-serializing: true
+      item:
+        ==: org.bukkit.inventory.ItemStack
+        type: POTION
+        damage: 16421
+    '19':
+      bukkit-serializing: true
+      item:
+        ==: org.bukkit.inventory.ItemStack
+        type: POTION
+        damage: 16421
+    '20':
+      bukkit-serializing: true
+      item:
+        ==: org.bukkit.inventory.ItemStack
+        type: POTION
+        damage: 16421
+    '21':
+      bukkit-serializing: true
+      item:
+        ==: org.bukkit.inventory.ItemStack
+        type: POTION
+        damage: 16421
+    '22':
+      bukkit-serializing: true
+      item:
+        ==: org.bukkit.inventory.ItemStack
+        type: POTION
+        damage: 16421
+    '23':
+      bukkit-serializing: true
+      item:
+        ==: org.bukkit.inventory.ItemStack
+        type: POTION
+        damage: 16421
+    '24':
+      bukkit-serializing: true
+      item:
+        ==: org.bukkit.inventory.ItemStack
+        type: POTION
+        damage: 16421
+    '25':
+      bukkit-serializing: true
+      item:
+        ==: org.bukkit.inventory.ItemStack
+        type: POTION
+        damage: 16421
+    '26':
+      bukkit-serializing: true
+      item:
+        ==: org.bukkit.inventory.ItemStack
+        type: POTION
+        damage: 16421
+    '27':
+      bukkit-serializing: true
+      item:
+        ==: org.bukkit.inventory.ItemStack
+        type: POTION
+        damage: 16421
+    '28':
+      bukkit-serializing: true
+      item:
+        ==: org.bukkit.inventory.ItemStack
+        type: POTION
+        damage: 16421
+    '29':
+      bukkit-serializing: true
+      item:
+        ==: org.bukkit.inventory.ItemStack
+        type: POTION
+        damage: 16421
+    '30':
+      bukkit-serializing: true
+      item:
+        ==: org.bukkit.inventory.ItemStack
+        type: POTION
+        damage: 16421
+    '31':
+      bukkit-serializing: true
+      item:
+        ==: org.bukkit.inventory.ItemStack
+        type: POTION
+        damage: 16421
+    '32':
+      bukkit-serializing: true
+      item:
+        ==: org.bukkit.inventory.ItemStack
+        type: POTION
+        damage: 16421
+    '33':
+      bukkit-serializing: true
+      item:
+        ==: org.bukkit.inventory.ItemStack
+        type: POTION
+        damage: 16421
+    '34':
+      bukkit-serializing: true
+      item:
+        ==: org.bukkit.inventory.ItemStack
+        type: POTION
+        damage: 16421
+    '35':
+      bukkit-serializing: true
+      item:
+        ==: org.bukkit.inventory.ItemStack
+        type: POTION
+        damage: 16421
+  armors:
+    '0':
+      material: DIAMOND_BOOTS
+      enchantments:
+        - PROTECTION_ENVIRONMENTAL:3
+    '1':
+      material: DIAMOND_LEGGINGS
+      enchantments:
+        - PROTECTION_ENVIRONMENTAL:3
+    '2':
+      material: DIAMOND_CHESTPLATE
+      enchantments:
+        - PROTECTION_ENVIRONMENTAL:3
+    '3':
+      material: DIAMOND_HELMET
+      enchantments:
+        - PROTECTION_ENVIRONMENTAL:3
+  icon:
+    material: DIAMOND_CHESTPLATE

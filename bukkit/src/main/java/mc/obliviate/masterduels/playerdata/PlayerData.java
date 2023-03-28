@@ -1,10 +1,6 @@
 package mc.obliviate.masterduels.playerdata;
 
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.Egg;
-import org.bukkit.entity.FishHook;
-import org.bukkit.entity.Projectile;
-import org.bukkit.entity.Snowball;
+import org.bukkit.entity.*;
 
 import java.io.Serializable;
 
@@ -35,7 +31,6 @@ public class PlayerData implements Serializable {
         this.snowball = new ProjectileLogEntry<>();
         this.fishHook = new ProjectileLogEntry<>();
         this.egg = new ProjectileLogEntry<>();
-
     }
 
     public int getPlacedBlocks() {

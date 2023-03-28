@@ -1,5 +1,6 @@
 package mc.obliviate.masterduels.playerdata.history.gui;
 
+import com.google.common.base.Preconditions;
 import mc.obliviate.inventory.Icon;
 import mc.obliviate.inventory.configurable.ConfigurableGui;
 import mc.obliviate.inventory.pagination.PaginationManager;
@@ -15,10 +16,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import static mc.obliviate.masterduels.utils.Utils.getPlaceholders;
 
@@ -61,9 +59,9 @@ public class DuelHistoryLogGui extends ConfigurableGui {
         Icon icon = new Icon(getConfigItem("non-solo-games-icon", placeholderUtil)).setAmount(amount);
         List<String> loreCopy = new ArrayList<>();
         for (String loreLine : icon.getItem().getItemMeta().getLore()) {
-            if (loreLine.equalsIgnoreCase("{+players}")) {
-
-                for (Map.Entry<UUID, PlayerHistoryLog> entry : log.getPlayerHistoryLogMap().entrySet()) {
+            if (loreLine.equalsIgnoreCase("{+winners}")) {
+                loreCopy.add(formatPersons(log.getWinners(), "winner"));
+                /*for (Map.Entry<UUID, PlayerHistoryLog> entry : log.getPlayerHistoryLogMap().entrySet()) {
                     PlayerHistoryLog playerHistoryLog = entry.getValue();
                     OfflinePlayer p = Bukkit.getOfflinePlayer(entry.getKey());
 
@@ -78,14 +76,14 @@ public class DuelHistoryLogGui extends ConfigurableGui {
                         loreCopy.addAll(MessageUtils.parseColor(MessageUtils.applyPlaceholders(getIconsSection("non-solo-games-icon").getStringList("loser-info-format"), placeholders)));
                     }
                 }
-
+*/
+            } else if (loreLine.equalsIgnoreCase("{+losers}")) {
+                loreCopy.add(formatPersons(log.getLosers(), "loser"));
             } else {
                 loreCopy.add(loreLine);
             }
         }
-
         return icon.setLore(loreCopy);
-
     }
 
     private Icon getSoloGamesIcon(MatchHistoryLog log, PlaceholderUtil placeholderUtil, int amount) {
@@ -142,16 +140,12 @@ public class DuelHistoryLogGui extends ConfigurableGui {
 
     @Override
     public void onOpen(InventoryOpenEvent event) {
-        putDysfunctionalIcons();
-        if (this.paginationManager.getCurrentPage() != this.paginationManager.getLastPage()) {
-            putIcon("previous", e -> {
-                this.paginationManager.goPreviousPage().update();
-            });
+        putDysfunctionalIcons(Arrays.asList("previous", "next"));
+        if (!this.paginationManager.isFirstPage()) {
+            putIcon("previous", e -> this.paginationManager.goPreviousPage().update());
         }
-        if (this.paginationManager.getCurrentPage() != 0) {
-            putIcon("next", e -> {
-                this.paginationManager.goNextPage().update();
-            });
+        if (!this.paginationManager.isLastPage()) {
+            putIcon("next", e -> this.paginationManager.goNextPage().update());
         }
         this.paginationManager.update();
     }
@@ -170,5 +164,20 @@ public class DuelHistoryLogGui extends ConfigurableGui {
             this.pageSlots = pageSlots;
             DuelHistoryLogGui.guiConfig = this;
         }
+    }
+
+    public String formatPersons(List<UUID> list, String formatType) {
+        String format = getIconsSection("non-solo-games-icon").getString(list.size() + "-person-format");
+        if (format == null) getIconsSection("non-solo-games-icon").getString("more-person-format");
+        Preconditions.checkNotNull(format, "no person format found");
+        int left = list.size();
+        for (int i = 0; i < list.size(); i++) {
+            if (format.contains("{" + i + "}")) {
+                left -= 1;
+                String playerFormat = getIconsSection("non-solo-games-icon").getString(formatType + "-info-format");
+                format = format.replace("{" + i + "}", playerFormat.replace("{player}", Bukkit.getOfflinePlayer(list.get(i)).getName()));
+            }
+        }
+        return format.replace("{left}", String.valueOf(left));
     }
 }

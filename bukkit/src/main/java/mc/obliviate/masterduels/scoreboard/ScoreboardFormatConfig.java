@@ -1,15 +1,10 @@
 package mc.obliviate.masterduels.scoreboard;
 
-import mc.obliviate.masterduels.game.MatchStateType;
 import mc.obliviate.masterduels.utils.MessageUtils;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class ScoreboardFormatConfig {
-
-	private static final Map<MatchStateType, ScoreboardFormatConfig> SCOREBOARD_FORMAT_CONFIG_MAP = new HashMap<>();
 
 	private final String liveOpponentFormat;
 	private final String deadOpponentFormat;
@@ -17,14 +12,12 @@ public class ScoreboardFormatConfig {
 	private final String title;
 	private final List<String> lines;
 
-	public ScoreboardFormatConfig(MatchStateType matchStateType, String liveOpponentFormat, String deadOpponentFormat, String quitOpponentFormat, String title, List<String> lines) {
+	ScoreboardFormatConfig(String liveOpponentFormat, String deadOpponentFormat, String quitOpponentFormat, String title, List<String> lines) {
 		this.liveOpponentFormat = liveOpponentFormat;
 		this.deadOpponentFormat = deadOpponentFormat;
 		this.quitOpponentFormat = quitOpponentFormat;
 		this.title = MessageUtils.parseColor(title);
 		this.lines = lines;
-
-		SCOREBOARD_FORMAT_CONFIG_MAP.put(matchStateType, this);
 	}
 
 	public String getQuitOpponentFormat() {
@@ -47,7 +40,5 @@ public class ScoreboardFormatConfig {
 		return title;
 	}
 
-	public static ScoreboardFormatConfig getFormatConfig(MatchStateType matchStateType) {
-		return SCOREBOARD_FORMAT_CONFIG_MAP.get(matchStateType);
-	}
+
 }

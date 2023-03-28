@@ -16,8 +16,7 @@ public class ArenaCuboid {
 	 * Purpose of class,
 	 * storing blocks as a cuboid
 	 * <p>
-	 * Thanks to Tristiisch74 for the code.
-	 * https://www.spigotmc.org/threads/region-cuboid.329859/
+	 * Thanks to Tristiisch74 for the <a href="https://www.spigotmc.org/threads/region-cuboid.329859/">code</a>.
 	 */
 
 	private final int xMin;

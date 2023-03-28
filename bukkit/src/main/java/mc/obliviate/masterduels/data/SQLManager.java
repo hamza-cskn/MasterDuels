@@ -12,7 +12,6 @@ import mc.obliviate.masterduels.playerdata.statistics.DuelStatistic;
 import mc.obliviate.masterduels.user.IUser;
 import mc.obliviate.masterduels.user.UserHandler;
 import mc.obliviate.masterduels.utils.Logger;
-import mc.obliviate.masterduels.utils.Utils;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -26,7 +25,6 @@ public class SQLManager extends SQLHandler {
     private static SQLTable playerDataTable;
     private static SQLTable historyTable;
     private static SQLTable statisticsTable;
-    private static final Object[] objects = Utils.loadClass("mc.obliviate.masterduels.utils.initializer.MasterDuelsInitializer").getEnumConstants();
 
     public SQLManager(MasterDuels plugin) {
         super(plugin.getDataFolder().getPath());
@@ -130,9 +128,7 @@ public class SQLManager extends SQLHandler {
     }
 
     public void saveAllUsers() {
-        for (IUser user : UserHandler.getUserMap().values()) {
-            saveUser(user);
-        }
+        UserHandler.getUserMap().values().forEach(this::saveUser);
     }
 
     public void saveUser(IUser user) {

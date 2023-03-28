@@ -19,12 +19,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Consumer;
 
 /**
@@ -127,6 +122,7 @@ public class MatchCreator {
 							MessageUtils.sendMessage(sender, "invite.game-creator-invite.target-accepted-the-invite", new PlaceholderUtil().add("{target}", Utils.getDisplayName(target)));
 							break;
 						case REJECTED:
+						case CANCELLED:
 							MessageUtils.sendMessage(target, "invite.game-creator-invite.successfully-declined", new PlaceholderUtil().add("{inviter}", Utils.getDisplayName(sender)));
 							MessageUtils.sendMessage(sender, "invite.game-creator-invite.target-declined-the-invite", new PlaceholderUtil().add("{target}", Utils.getDisplayName(target)));
 							return;
@@ -134,6 +130,10 @@ public class MatchCreator {
 							MessageUtils.sendMessage(target, "invite.game-creator-invite.invite-expired-target", new PlaceholderUtil().add("{inviter}", Utils.getDisplayName(sender)));
 							MessageUtils.sendMessage(sender, "invite.game-creator-invite.invite-expired-inviter", new PlaceholderUtil().add("{target}", Utils.getDisplayName(target)));
 							return;
+						default:
+							MessageUtils.sendMessage(target, "invite.game-creator-invite.error-occurred");
+							MessageUtils.sendMessage(sender, "invite.game-creator-invite.error-occurred");
+
 					}
 
 					final MatchCreator creator = getCreator(target.getUniqueId());

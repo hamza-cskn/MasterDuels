@@ -1,14 +1,15 @@
 package mc.obliviate.masterduels.bossbar;
 
+import com.google.common.base.Preconditions;
 import mc.obliviate.masterduels.MasterDuels;
 
 public final class BossBarHandler {
 
-	public static String NORMAL_TEXT_FORMAT = "{time}";
-	public static String CLOSING_TEXT_FORMAT = "{time}";
+	private static BossBarConfig defaultBossBarConfig;
 	private static BossBarModule bossBarModule;
 
 	public void init(MasterDuels plugin) {
+		Preconditions.checkNotNull(bossBarModule);
 		switch (bossBarModule) {
 			case TAB:
 				new TABBossBarManager(plugin);
@@ -21,11 +22,18 @@ public final class BossBarHandler {
 		TAB,
 		INTERNAL,
 		DISABLED
+	}
 
+	public static void setDefaultConfig(BossBarConfig bossBarConfig) {
+		BossBarHandler.defaultBossBarConfig = bossBarConfig;
 	}
 
 	public static void setBossBarModule(BossBarModule bossBarModule) {
 		BossBarHandler.bossBarModule = bossBarModule;
+	}
+
+	public static BossBarConfig getDefaultConfig() {
+		return defaultBossBarConfig;
 	}
 
 	public static BossBarModule getBossBarModule() {

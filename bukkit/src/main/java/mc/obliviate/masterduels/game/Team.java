@@ -2,7 +2,11 @@ package mc.obliviate.masterduels.game;
 
 import com.google.common.base.Preconditions;
 import mc.obliviate.masterduels.kit.Kit;
-import mc.obliviate.masterduels.user.*;
+import mc.obliviate.masterduels.user.IUser;
+import mc.obliviate.masterduels.user.Member;
+import mc.obliviate.masterduels.user.Spectator;
+import mc.obliviate.masterduels.user.User;
+import mc.obliviate.masterduels.user.UserHandler;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -79,7 +83,7 @@ public class Team {
 			if (user instanceof Member)
 				throw new IllegalStateException("the player " + player.getName() + " is already a member at " + ((Member) user).getMatch().getArena().getName());
 			if (user instanceof Spectator)
-				throw new IllegalStateException("the player " + player.getName() + "is spectating.");
+				throw new IllegalStateException("the player " + player.getName() + " is spectating.");
 
 			memberBuilders.add(new Member.Builder((User) user, kit));
 		}

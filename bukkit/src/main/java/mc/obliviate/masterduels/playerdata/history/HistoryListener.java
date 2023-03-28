@@ -71,7 +71,6 @@ public class HistoryListener implements Listener {
             }
         }
         duelStatistic.setLosses(duelStatistic.getLosses() + 1);
-
     }
 
     @EventHandler
@@ -85,7 +84,7 @@ public class HistoryListener implements Listener {
     public void onDamage(EntityDamageByEntityEvent event) {
         if (event.getEntity() instanceof Player) {
 
-            if (event.getDamager() instanceof Projectile) {
+            if (event.getDamager() instanceof Projectile && ((Projectile) event.getDamager()).getShooter() instanceof Player) {
                 final Player attacker = (Player) ((Projectile) event.getDamager()).getShooter();
                 final PlayerHistoryLog playerLog = MatchHistoryLog.getPlayerHistory(attacker);
                 if (playerLog == null) return;

@@ -2,13 +2,13 @@ package mc.obliviate.masterduels.arena;
 
 import mc.obliviate.masterduels.arena.elements.ArenaCuboid;
 import mc.obliviate.masterduels.arena.elements.Positions;
-import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.game.Match;
 import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.serializer.SerializerUtils;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,52 +17,83 @@ import static mc.obliviate.masterduels.arena.BasicArenaState.*;
 
 public class Arena {
 
-	private final String name;
-	private final String mapName;
-	private final ArenaCuboid arenaCuboid;
-	private final Map<String, Positions> positions;
-	private final int teamSize;
-	private final int teamAmount;
-	private final Location spectatorLocation;
-	private boolean enabled;
+    private static final Map<Arena, Match> ARENAS_MAP = new HashMap<>();
 
-	public Arena(String name, String mapName, ArenaCuboid arenaCuboid, Map<String, Positions> positions, int teamSize, int teamAmount, Location spectatorLocation) {
-		this(name, mapName, arenaCuboid, positions, teamSize, teamAmount, spectatorLocation, true);
-	}
+    private final String name;
+    private final String mapName;
+    private final ArenaCuboid arenaCuboid;
+    private final Map<String, Positions> positions;
+    private final int maxTeamSize;
+    private final int maxTeamAmount;
+    private final Location spectatorLocation;
+    private boolean enabled;
 
-	public Arena(String name, String mapName, ArenaCuboid arenaCuboid, Map<String, Positions> positions, int teamSize, int teamAmount, Location spectatorLocation, boolean enabled) {
-		this.name = name;
-		this.mapName = mapName;
-		this.arenaCuboid = arenaCuboid;
-		this.positions = positions;
-		this.teamSize = teamSize;
-		this.teamAmount = teamAmount;
-		this.spectatorLocation = spectatorLocation;
-		this.enabled = enabled;
-		DataHandler.registerArena(this);
-	}
+    public Arena(String name, String mapName, ArenaCuboid arenaCuboid, Map<String, Positions> positions, int maxTeamSize, int maxTeamAmount, Location spectatorLocation) {
+        this(name, mapName, arenaCuboid, positions, maxTeamSize, maxTeamAmount, spectatorLocation, true);
+    }
 
-	public static Arena getArenaAt(Location loc) {
-		for (final Arena arena : DataHandler.getArenas().keySet()) {
-			if (arena.arenaCuboid.isIn(loc)) return arena;
-		}
-		return null;
-	}
+    public Arena(String name, String mapName, ArenaCuboid arenaCuboid, Map<String, Positions> positions, int maxTeamSize, int maxTeamAmount, Location spectatorLocation, boolean enabled) {
+        this.name = name;
+        this.mapName = mapName;
+        this.arenaCuboid = arenaCuboid;
+        this.positions = positions;
+        this.maxTeamSize = maxTeamSize;
+        this.maxTeamAmount = maxTeamAmount;
+        this.spectatorLocation = spectatorLocation;
+        this.enabled = enabled;
+        ARENAS_MAP.put(this, null);
+    }
 
-	public static Arena findArena(int teamSize, int teamAmount, List<String> allowedMaps) {
-		for (final Map.Entry<Arena, Match> entry : DataHandler.getArenas().entrySet()) {
-			if (entry.getKey().getTeamAmount() >= teamAmount && entry.getKey().getTeamSize() >= teamSize) {
-				if (!entry.getKey().isEnabled()) continue;
-				if (!allowedMaps.isEmpty() && !allowedMaps.contains(entry.getKey().getMapName())) continue;
-				if (entry.getValue() == null) return entry.getKey();
-			}
-		}
-		return null;
-	}
+    public static Map<Arena, Match> getArenasMap() {
+        return Collections.unmodifiableMap(ARENAS_MAP);
+    }
 
-	public static BasicArenaState getBasicArenaState(Arena arena) {
-		if (arena == null) return UNKNOWN;
-		final Match match = DataHandler.getArenas().get(arena);
+    public static void unregisterAllArenas() {
+        ARENAS_MAP.clear();
+    }
+
+    public static void unregisterArena(final Arena arena) {
+        ARENAS_MAP.remove(arena);
+    }
+
+    public static boolean registerGame(final Arena arena, final Match game) {
+        return ARENAS_MAP.putIfAbsent(arena, game) != game;
+    }
+
+    public static void unregisterGame(final Arena arena) {
+        ARENAS_MAP.put(arena, null);
+    }
+
+    public static Arena getArenaFromName(String arenaName) {
+        for (final Arena arena : ARENAS_MAP.keySet()) {
+            if (arena != null && arena.getName() != null && arena.getName().equalsIgnoreCase(arenaName)) {
+                return arena;
+            }
+        }
+        return null;
+    }
+
+    public static Arena getArenaAt(Location loc) {
+        for (final Arena arena : Arena.getArenasMap().keySet()) {
+            if (arena.arenaCuboid.isIn(loc)) return arena;
+        }
+        return null;
+    }
+
+    public static Arena findAppropriateArena(int teamSize, int teamAmount, List<String> allowedMaps) {
+        for (final Map.Entry<Arena, Match> entry : Arena.getArenasMap().entrySet()) {
+            if (entry.getKey().getMaxTeamAmount() >= teamAmount && entry.getKey().getMaxTeamSize() >= teamSize) {
+                if (!entry.getKey().isEnabled()) continue;
+                if (!allowedMaps.isEmpty() && !allowedMaps.contains(entry.getKey().getMapName())) continue;
+                if (entry.getValue() == null) return entry.getKey();
+            }
+        }
+        return null;
+    }
+
+    public static BasicArenaState getBasicArenaState(Arena arena) {
+        if (arena == null) return UNKNOWN;
+        final Match match = Arena.getArenasMap().get(arena);
 
 
 		if (match == null) {
@@ -136,61 +167,60 @@ public class Arena {
 		return new Arena(name, mapName, arenaCuboid, positions, teamSize, teamAmount, spectatorLocation);
 	}
 
-	public boolean isEnabled() {
-		return enabled;
-	}
-
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
-	}
-
 	public ConfigurationSection serialize(ConfigurationSection section) {
 
 		section.set("name", name);
 		section.set("map-name", mapName);
 		SerializerUtils.serializeLocationYAML(section.createSection("arena-cuboid.position-1"), arenaCuboid.getPoint1());
 		SerializerUtils.serializeLocationYAML(section.createSection("arena-cuboid.position-2"), arenaCuboid.getPoint2());
-		SerializerUtils.serializeLocationYAML(section.createSection("spectator-position"), spectatorLocation);
-		for (final String key : positions.keySet()) {
-			final Positions poses = positions.get(key);
-			for (final int id : poses.getLocations().keySet()) {
-				final ConfigurationSection locSection = section.createSection("positions." + key + "." + id);
-				final Location loc = poses.getLocation(id);
-				SerializerUtils.serializeLocationYAML(locSection, loc);
-			}
-		}
+        SerializerUtils.serializeLocationYAML(section.createSection("spectator-position"), spectatorLocation);
+        for (final String key : positions.keySet()) {
+            final Positions poses = positions.get(key);
+            for (final int id : poses.getLocations().keySet()) {
+                final ConfigurationSection locSection = section.createSection("positions." + key + "." + id);
+                final Location loc = poses.getLocation(id);
+                SerializerUtils.serializeLocationYAML(locSection, loc);
+            }
+        }
 
-		section.set("team-size", teamSize);
-		section.set("team-amount", teamAmount);
+        section.set("team-size", maxTeamSize);
+        section.set("team-amount", maxTeamAmount);
 
-		return section;
+        return section;
 
-	}
+    }
 
+    public boolean isEnabled() {
+        return enabled;
+    }
 
-	public ArenaCuboid getArenaCuboid() {
-		return arenaCuboid;
-	}
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
 
-	public Map<String, Positions> getPositions() {
-		return positions;
-	}
+    public ArenaCuboid getArenaCuboid() {
+        return arenaCuboid;
+    }
 
-	public int getTeamAmount() {
-		return teamAmount;
-	}
+    public Map<String, Positions> getPositions() {
+        return positions;
+    }
 
-	public int getTeamSize() {
-		return teamSize;
-	}
+    public int getMaxTeamAmount() {
+        return maxTeamAmount;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public int getMaxTeamSize() {
+        return maxTeamSize;
+    }
 
-	public String getMapName() {
-		return mapName;
-	}
+    public String getName() {
+        return name;
+    }
+
+    public String getMapName() {
+        return mapName;
+    }
 
 	public Location getSpectatorLocation() {
 		return spectatorLocation;

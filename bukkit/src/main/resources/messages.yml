@@ -34,10 +34,17 @@ you-are-not-in-duel: '&cYou are not in a duel game.'
 target-already-in-duel: '&c{target}&c is already in duel game.'
 you-are-a-spectator: '&eYou are a spectator.'
 game-timed-out: '&cDuel game you are in, has been timed out.'
+arena-is-busy: '&cYour duel game could not started due to the found arena is busy.'
 no-arena-found-with-this-name: '&cNo arenas with this name found.'
+error-message: '&cAn error occurred. Please report it to server admins.'
 player-dead:
   by-attacker: '&c{victim}&7 has killed by &c{attacker}&7.'
   without-attacker: '&c{victim}&7 has been died.'
+spectator:
+  settings:
+    flying-speed-change: '&eYour flying speed has changed to: &bSpeed {level}'
+    night-vision-on: '&eNight vision &aenabled&e.'
+    night-vision-off: '&eNight vision &cdisabled&e.'
 kit:
   usage: |-
     [DISABLE_PREFIX]&7 /dueladmin kit save <kit name> &8- &9saves your current inventory as new kit
@@ -48,7 +55,7 @@ kit:
 game-end-broadcast:
   # broadcast receivers are changeable from the config.
   solo: '&a{winner}&7 has won duel with &c{winner-health} health&7! (&a{winner}&7 vs &c{loser}&7)'
-  non-solo: '&a{winner}&7 and her team has won duel!' # i do not know how i can show loser and winner teams in chat. it'll be changed future.
+  non-solo: '&a{winner}&7 and her team has won duel!' # I do not know how I can show loser and winner teams in chat. It'll be changed future.
 arrow-hit-notify:
   action-bar: '&c{victim}&c''s health is {health}'
   message: '&cYou hit {victim}&c from {distance} blocks far!'
@@ -88,7 +95,7 @@ duel-command:
       &7 /dueladmin setlobby &8- &9sets lobby location to teleport players after duel games 
       &7 /dueladmin nick [nickname] &8- &9changes your display name for MasterDuels 
       &7 /dueladmin teststart <player 1> <player 2> [arena] &8- &9instantly starts a duel game between two players without invite.
-      &7 /dueladmin cancel <arena name> &8- &9forces an game to finish
+      &7 /dueladmin cancel <arena name> &8- &9forces a game to finish
     arena:
       delete:
         match-playing: '&cYou cannot delete {arena} until the match finished. If you want to force it, use /dueladmin cancel {arena} command to cancel the match.'
@@ -180,6 +187,7 @@ invite:
     all-teams-are-full-target: '&cYour invite could not accept because this room is full.'
     all-teams-are-full-inviter: '&cInvite that is sent to {target}&c could not accept because the room is full.'
     player-already-in-creator: '&c{target}&c is already in the room.'
+    error-occurred: '&cAn error occurred while invite response.'
 time-format:
   second: 'second'
   seconds: 'seconds'

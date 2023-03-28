@@ -47,9 +47,12 @@ execute-console-commands:
 
 soup-regeneration-amount: 3.5
 
+# if set true, dueling players never gets hunger.
+disable-hunger: false
+
 action-limitations:
   # DISALLOW -> disallows item dropping (pressing Q)
-  # FRIENDLY -> players cannot pickup items which is dropped (pressing Q) by their opponents
+  # FRIENDLY -> players cannot pick up items which is dropped (pressing Q) by their opponents
   # ALLOW -> players can drop and pickup all items
   item-pickup: DISALLOW
   executable-commands-during-match:
@@ -66,6 +69,36 @@ action-limitations:
       - chest
       - duel #to leave duel game
 
+spectator:
+  spectate-actions:
+    title:
+      subtitle: '&eYou are spectator'
+      fadein: 5
+      fadeout: 0
+  unspectate-actions:
+    title:
+      subtitle: '&cYou are not spectator'
+      fadein: 5
+      fadeout: 0
+  spectator-items:
+    settings-tool:
+      slot: 4
+      material: REDSTONE_COMPARATOR
+      display-name: '&eSettings'
+      lore:
+        - '&7Click to open settings menu'
+    teleportation-tool:
+      slot: 0
+      material: COMPASS
+      display-name: '&eTeleport a player'
+      lore:
+        - '&7Click to open teleportation menu'
+    leave-tool:
+      slot: 8
+      material: DARK_OAK_DOOR_ITEM
+      display-name: '&cLeave'
+      lore:
+        - '&7Click to leave match'
 duel-game-lock:
   lock-duration: 7 #in seconds
   teleport-frequency: 5 # teleport amount per second
@@ -120,6 +153,7 @@ duel-game-lock:
 #You can translate time format from message.yml time-format
 scoreboards:
   enabled: true
+  update-interval: 20 # in ticks
   PLAYING:
     title: '&e&lDUELS'
     live-opponent-format: '&a{name} &c{health}❤'

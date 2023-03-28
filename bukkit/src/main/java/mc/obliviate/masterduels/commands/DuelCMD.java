@@ -37,11 +37,7 @@ import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class DuelCMD implements CommandExecutor {
 
@@ -97,8 +93,10 @@ public class DuelCMD implements CommandExecutor {
             return true;
         } else if (args[0].equalsIgnoreCase("toggle")) {
             if (user.inviteReceiving()) {
+                user.setInviteReceiving(false);
                 MessageUtils.sendMessage(player, "invite.toggle.turned-on");
             } else {
+                user.setInviteReceiving(true);
                 MessageUtils.sendMessage(player, "invite.toggle.turned-off");
             }
             return true;

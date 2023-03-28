@@ -1,10 +1,10 @@
 package mc.obliviate.masterduels.utils.initializer;
 
 import com.hakan.core.HCore;
-import com.hakan.core.message.HMessageHandler;
-import com.hakan.core.packet.HPacketHandler;
-import com.hakan.core.scoreboard.HScoreboardHandler;
-import com.hakan.core.utils.ProtocolVersion;
+import com.hakan.core.message.MessageHandler;
+import com.hakan.core.packet.PacketHandler;
+import com.hakan.core.scoreboard.ScoreboardHandler;
+import mc.obliviate.inventory.InventoryAPI;
 import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.arenaclear.ArenaClearListener;
 import mc.obliviate.masterduels.arenaclear.modes.smart.SmartArenaClearHandler;
@@ -14,12 +14,7 @@ import mc.obliviate.masterduels.commands.DuelAdminCMD;
 import mc.obliviate.masterduels.commands.DuelCMD;
 import mc.obliviate.masterduels.data.ConfigurationHandler;
 import mc.obliviate.masterduels.game.gamerule.GameRule;
-import mc.obliviate.masterduels.kit.serializer.KitSerializer;
-import mc.obliviate.masterduels.listeners.CMDExecutorListener;
-import mc.obliviate.masterduels.listeners.ChatListener;
-import mc.obliviate.masterduels.listeners.DamageListener;
-import mc.obliviate.masterduels.listeners.DuelProtectListener;
-import mc.obliviate.masterduels.listeners.PlayerConnectionListener;
+import mc.obliviate.masterduels.listeners.*;
 import mc.obliviate.masterduels.playerdata.history.HistoryListener;
 import mc.obliviate.masterduels.scoreboard.InternalScoreboardManager;
 import mc.obliviate.masterduels.utils.Logger;
@@ -27,20 +22,20 @@ import mc.obliviate.masterduels.utils.VaultUtil;
 import mc.obliviate.masterduels.utils.advancedreplay.AdvancedReplayManager;
 import mc.obliviate.masterduels.utils.metrics.Metrics;
 import mc.obliviate.masterduels.utils.tab.TABManager;
-import mc.obliviate.masterduels.utils.versioncontroller.ServerVersionController;
+import mc.obliviate.util.versiondetection.ServerVersionController;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabCompleter;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.File;
-import java.lang.reflect.Field;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Scanner;
 
 public class MasterDuelsInitializer {
 
@@ -54,7 +49,7 @@ public class MasterDuelsInitializer {
         }).start();
     }
 
-    private void tryInit(int tryCount) throws InterruptedException {
+    public void tryInit(int tryCount) throws InterruptedException {
         if (tryCount == 0) {
             Thread.currentThread().interrupt();
             return;
@@ -69,19 +64,22 @@ public class MasterDuelsInitializer {
     }
 
     public void init() {
-        Bukkit.getLogger().info("[MasterDuels] initialization process started. MasterDuels waking up.");
         MasterDuels plugin = JavaPlugin.getPlugin(MasterDuels.class);
-        /*final long now;
-        try {
+        Bukkit.getScheduler().runTask(plugin, () -> Bukkit.getLogger().info("[MasterDuels] initialization process started. MasterDuels waking up."));
+        final long now = 0;
+        /* try {
             final String out = new Scanner(new URL("http://worldtimeapi.org/api/ip").openStream(), String.valueOf(StandardCharsets.UTF_8)).useDelimiter("\\A").next();
             now = Long.parseLong(out.split(",")[11].split(":")[1]);
         } catch (Exception e) {
-            plugin.getLogger().severe("MasterDuels could not initialized. Exit code: 1");
+            Bukkit.getScheduler().runTask(plugin, () -> {
+                Bukkit.getLogger().info("MasterDuels could not initialized. Exit code: 1");
+                Bukkit.getLogger().info("Checkout the internet connection and firewall rules.");
+            });
             Bukkit.getPluginManager().disablePlugin(plugin);
             return;
-        }*/
+        } */
 
-        if (true) {
+        if (now < Long.parseLong("167035836405")) {
             Bukkit.getScheduler().runTask(plugin, () -> {
                 if (plugin.getDescription().getDescription().equalsIgnoreCase("-developerMode")) {
                     Logger.setDebugModeEnabled(true);
@@ -96,14 +94,7 @@ public class MasterDuelsInitializer {
                 new TABManager().init(plugin);
                 new AdvancedReplayManager().init(plugin);
                 plugin.getConfigurationHandler().init();
-                plugin.getInventoryAPI().init();
-                // LOAD KITS START
-                final File file = new File(plugin.getDataFolder().getPath() + File.separator + "kits.yml");
-                final YamlConfiguration data = YamlConfiguration.loadConfiguration(file);
-                for (final String key : data.getKeys(false)) {
-                    KitSerializer.deserialize(data.getConfigurationSection(key));
-                }
-                // LOAD KITS END
+                new InventoryAPI(plugin).init();
                 // SETUP ARENA CLEAR HANDLER START
                 final String mode = ConfigurationHandler.getConfig().getString("arena-regeneration.mode", "SMART");
                 if (!("ROLLBACKCORE".equals(mode) || "SLIMEWORLD".equals(mode) || "DISABLED".equals(mode))) {
@@ -112,30 +103,18 @@ public class MasterDuelsInitializer {
                     plugin.getArenaClearHandler().init();
                 }
                 // SETUP ARENA CLEAR HANDLER END
-                try {
-                    HCore.setInstance(plugin);
-                    Field field = HCore.class.getDeclaredField("VERSION");
-                    field.setAccessible(true);
-                    field.set(null, ProtocolVersion.getCurrentVersion());
-                    field.setAccessible(false);
-                    HPacketHandler.initialize();
-                    HMessageHandler.initialize();
-                    HScoreboardHandler.initialize();
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
+                HCore.setInstance(plugin);
+                PacketHandler.initialize();
+                MessageHandler.initialize();
+                ScoreboardHandler.initialize();
 
                 if (ConfigurationHandler.getConfig().getBoolean("scoreboards.enabled", true))
                     new InternalScoreboardManager().init(plugin);
-                if (ConfigurationHandler.getQueues().getBoolean("duel-queues-enabled", true))
-                    plugin.getDuelQueueHandler().init();
-                if (ConfigurationHandler.getConfig().getBoolean("optimize-duel-worlds", false))
-                    plugin.getWorldOptimizerHandler().init();
                 if (ConfigurationHandler.getConfig().getBoolean("boss-bars.enabled"))
                     new BossBarHandler().init(plugin);
                 plugin.getSqlManager().init();
                 setupVaultUtils();
-                Arrays.stream(GameRule.values()).forEach(GameRule::loadListener);
+                Arrays.stream(GameRule.values()).forEach(GameRule::init);
                 Logger.setDebugModeEnabled(ConfigurationHandler.getConfig().getBoolean("debug", false));
                 // SETUP HANDLERS END
 
@@ -146,6 +125,7 @@ public class MasterDuelsInitializer {
                 Bukkit.getPluginManager().registerEvents(new DuelProtectListener(), plugin);
                 Bukkit.getPluginManager().registerEvents(new DamageListener(plugin), plugin);
                 Bukkit.getPluginManager().registerEvents(new PlayerConnectionListener(plugin), plugin);
+                Bukkit.getPluginManager().registerEvents(new SpectatorListener(), plugin);
                 Bukkit.getPluginManager().registerEvents(new DeveloperCMD(plugin), plugin);
                 Bukkit.getPluginManager().registerEvents(new CMDExecutorListener(), plugin);
                 Bukkit.getPluginManager().registerEvents(new HistoryListener(plugin), plugin);
@@ -172,7 +152,7 @@ public class MasterDuelsInitializer {
 
     }
 
-    private static boolean checkObfuscated() {
+    public static boolean checkObfuscated() {
         try {
             String pack = "mc";
             pack = pack + ".obliviate";
@@ -185,7 +165,7 @@ public class MasterDuelsInitializer {
         }
     }
 
-    private static void setupVaultUtils() {
+    public static void setupVaultUtils() {
         if (Bukkit.getServer().getPluginManager().getPlugin("Vault") == null) return;
         VaultUtil.vaultEnabled = true;
 
@@ -196,7 +176,7 @@ public class MasterDuelsInitializer {
 
     }
 
-    private static void safeRegisterCommand(MasterDuels plugin, String commandName, CommandExecutor executor) {
+    public static void safeRegisterCommand(MasterDuels plugin, String commandName, CommandExecutor executor) {
         final PluginCommand command = plugin.getCommand(commandName);
         if (command == null) {
             Logger.error("Command could not registered: " + commandName);
@@ -208,11 +188,11 @@ public class MasterDuelsInitializer {
         command.setExecutor(executor);
     }
 
-    private static void startMetrics(MasterDuels plugin) {
+    public static void startMetrics(MasterDuels plugin) {
         new Metrics(plugin, 14587);
     }
 
-    private static boolean setupEconomy() {
+    public static boolean setupEconomy() {
         final RegisteredServiceProvider<Economy> rsp = Bukkit.getServer().getServicesManager().getRegistration(Economy.class);
         if (rsp == null) {
             return false;
@@ -221,7 +201,7 @@ public class MasterDuelsInitializer {
         return MasterDuels.economy != null;
     }
 
-    private static boolean setupPermissions() {
+    public static boolean setupPermissions() {
         final RegisteredServiceProvider<Permission> rsp = Bukkit.getServer().getServicesManager().getRegistration(Permission.class);
         MasterDuels.permissions = rsp.getProvider();
         return MasterDuels.permissions != null;

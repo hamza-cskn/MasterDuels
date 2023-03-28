@@ -3,12 +3,11 @@ package mc.obliviate.masterduels.game.state;
 import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.api.DuelMatchMemberLeaveEvent;
 import mc.obliviate.masterduels.api.arena.DuelMatchUninstallEvent;
-import mc.obliviate.masterduels.data.DataHandler;
+import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.game.Match;
 import mc.obliviate.masterduels.game.MatchStateType;
 import mc.obliviate.masterduels.kit.InventoryStorer;
 import mc.obliviate.masterduels.user.Member;
-import mc.obliviate.masterduels.user.Spectator;
 import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.Utils;
@@ -36,16 +35,13 @@ public class MatchUninstallingState implements MatchState {
 	private void init() {
 		Bukkit.getPluginManager().callEvent(new DuelMatchUninstallEvent(match, this, naturalUninstall));
 		match.broadcastInGame("game-finished");
-		for (final Member member : new ArrayList<>(match.getAllMembers())) {
-			leave(member);
-		}
-		for (final Spectator spectator : new ArrayList<>(match.getGameSpectatorManager().getPureSpectatorStorage().getSpectatorList())) {
-			leave(spectator);
-		}
 
-		MasterDuels.getInstance().getArenaClearHandler().getArenaClear(match.getArena().getName()).clear();
+		new ArrayList<>(match.getAllMembers()).forEach(this::leave);
+		new ArrayList<>(match.getGameSpectatorManager().getPureSpectatorStorage().getSpectatorList()).forEach(this::leave);
+
 		match.getGameTaskManager().cancelTasks();
-		DataHandler.registerArena(match.getArena());
+		Arena.unregisterGame(match.getArena());
+		MasterDuels.getInstance().getArenaClearHandler().getArenaClear(match.getArena().getName()).clear();
 	}
 
 	@Override

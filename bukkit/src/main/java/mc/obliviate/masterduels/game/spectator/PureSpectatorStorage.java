@@ -8,9 +8,12 @@ import mc.obliviate.masterduels.kit.InventoryStorer;
 import mc.obliviate.masterduels.user.Member;
 import mc.obliviate.masterduels.user.Spectator;
 import mc.obliviate.masterduels.user.UserHandler;
+import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import mc.obliviate.masterduels.utils.playerreset.PlayerReset;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -59,7 +62,6 @@ public class PureSpectatorStorage implements SpectatorStorage {
 		}
 		InventoryStorer.restore(spectator.getPlayer());
 		//MessageAPI.getInstance(game.getPlugin()).sendTitle(player, TitleHandler.getTitle(TitleHandler.TitleType.SPECTATOR_LEAVE));
-
 	}
 
 	@Override
@@ -71,21 +73,17 @@ public class PureSpectatorStorage implements SpectatorStorage {
 
 	@Override
 	public void spectate(Player player) {
-		Spectator spectator = findSpectator(player);
+		final Spectator spectator = findSpectator(player);
 		if (spectator != null) return;
 
 		final DuelMatchPreSpectatorJoinEvent duelGamePreSpectatorJoinEvent = new DuelMatchPreSpectatorJoinEvent(player, match);
 		Bukkit.getPluginManager().callEvent(duelGamePreSpectatorJoinEvent);
 		if (duelGamePreSpectatorJoinEvent.isCancelled()) return;
 
-		spectator = UserHandler.switchSpectator(UserHandler.getUser(player.getUniqueId()), match);
-
-		//fixme external registering
-		SpectatorHandler.giveSpectatorItems(player);
-
-		spectators.add(spectator);
-
+		spectators.add(UserHandler.switchSpectator(UserHandler.getUser(player.getUniqueId()), match));
+		SpectatorInventoryHandler.giveSpectatorItems(player);
 		new PlayerReset().excludeGamemode().excludeInventory().excludeLevel().excludeExp().reset(player);
+		player.setGameMode(GameMode.ADVENTURE);
 
 		for (final Spectator spec : gsm.getAllSpectators()) {
 			spec.getPlayer().showPlayer(player);
@@ -99,12 +97,18 @@ public class PureSpectatorStorage implements SpectatorStorage {
 		player.setAllowFlight(true);
 		player.setFlying(true);
 
+		Location toLocation = match.getArena().getSpectatorLocation() == null ? match.getArena().getPositions().get("spawn-team-1").getLocation(1) : match.getArena().getSpectatorLocation();
+		if (toLocation == null) {
+			player.setAllowFlight(false);
+			player.setFlying(false);
+
+			MessageUtils.sendMessage(player, "error-message");
+			Logger.error(player.getName() + " could not teleported to spectator location. No spectator location or spawn location found.");
+			return;
+		}
+		player.teleport(toLocation);
 		MessageUtils.sendMessage(player, "you-are-a-spectator");
-
-		player.teleport(match.getArena().getSpectatorLocation());
 		//MessageAPI.getInstance(game.getPlugin()).sendTitle(player, TitleHandler.getTitle(TitleHandler.TitleType.SPECTATOR_JOIN));
-
-
 	}
 
 	@Override

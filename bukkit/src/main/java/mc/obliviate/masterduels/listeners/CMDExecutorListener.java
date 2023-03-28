@@ -46,7 +46,6 @@ public class CMDExecutorListener implements Listener {
 	public void onDuelGameEnd(DuelMatchEndEvent event) {
 		for (String cmd : ConfigurationHandler.getConfig().getStringList("execute-console-commands.when-duel-ended")) {
 			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
-
 		}
 	}
 

@@ -60,13 +60,13 @@ public class KitEditGUI extends Gui {
 	}
 
 	private void putArmorIcon(Icon icon, int armorPieceIndex, int slot) {
-		final AdvancedSlot advancedSlot = this.advancedSlotManager.addAdvancedIcon(slot, icon).onPreClick((e, item) -> {
+		final AdvancedSlot advancedSlot = this.advancedSlotManager.addAdvancedIcon(slot, icon).onPrePutClick((e, item) -> {
 			if (e != null) {
 				this.armors[armorPieceIndex] = item;
 			}
 			return false;
-		}).onPickup(e -> {
-			if (e != null && e.getCurrentItem() == null) {
+		}).onPickup((e, item) -> {
+			if (e != null && (e.getCurrentItem() == null || e.getCurrentItem().getType().equals(Material.AIR))) {
 				return;
 			}
 			this.armors[armorPieceIndex] = null;
@@ -74,6 +74,7 @@ public class KitEditGUI extends Gui {
 
 		if (armors[armorPieceIndex] == null) return;
 		this.advancedSlotManager.putIconToAdvancedSlot(advancedSlot, armors[armorPieceIndex], null);
+		advancedSlot.setRefundOnClose(false);
 	}
 
 	@Override
@@ -100,7 +101,7 @@ public class KitEditGUI extends Gui {
 	public void putKitIcon(int slot) {
 		final Icon icon = getScaledItemLoreAndName(kit.getIcon(), "&cDisplay icon of kit", "&7Put item to change icon of kit");
 
-		AdvancedSlot advancedSlot = this.advancedSlotManager.addAdvancedIcon(slot, icon).onPut(e -> {
+		AdvancedSlot advancedSlot = this.advancedSlotManager.addAdvancedIcon(slot, icon).onPut((e, item) -> {
 			if (e != null)
 				displayIcon = e.getCurrentItem();
 		});

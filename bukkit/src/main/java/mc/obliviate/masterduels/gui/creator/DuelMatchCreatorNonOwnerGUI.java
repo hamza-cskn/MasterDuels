@@ -46,8 +46,8 @@ public class DuelMatchCreatorNonOwnerGUI extends ConfigurableGui {
                         .add("{invited-players}", this.matchCreator.getInvites().size() + "")
                         .add("{total-players}", this.matchCreator.getBuilder().getPlayers().size() + "")
                         .add("{round-amount}", this.matchCreator.getBuilder().getTotalRounds() + "")
-                        .add("{game-timer}", TimerUtils.formatTimeAsTimer(this.matchCreator.getBuilder().getDuration().toMinutes() * 60))
-                        .add("{game-time}", TimerUtils.formatTimeAsTime(this.matchCreator.getBuilder().getDuration().toMinutes() * 60))
+                        .add("{game-timer}", TimerUtils.formatTimeAsTimer(this.matchCreator.getBuilder().getDuration().getSeconds()))
+                        .add("{game-time}", TimerUtils.formatTimeAsTime(this.matchCreator.getBuilder().getDuration().getSeconds()))
                         .add("{team-amount}", this.matchCreator.getBuilder().getTeamAmount() + "")
                         .add("{team-size}", this.matchCreator.getBuilder().getTeamSize() + "")
                 , Collections.singletonList("kit-icon"));

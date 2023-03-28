@@ -1,5 +1,7 @@
 package mc.obliviate.masterduels.queue;
 
+import mc.obliviate.masterduels.MasterDuels;
+import mc.obliviate.masterduels.api.arena.DuelMatchEndEvent;
 import mc.obliviate.masterduels.api.queue.DuelQueueJoinEvent;
 import mc.obliviate.masterduels.api.queue.DuelQueueLeaveEvent;
 import mc.obliviate.masterduels.game.Match;
@@ -7,6 +9,9 @@ import mc.obliviate.masterduels.game.MatchBuilder;
 import mc.obliviate.masterduels.utils.MessageUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.HandlerList;
+import org.bukkit.event.Listener;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,6 +24,8 @@ public class DuelQueue {
     private static final Map<DuelQueueTemplate, DuelQueue> availableQueues = new HashMap<>();
     private final DuelQueueTemplate template;
     private final MatchBuilder builder;
+
+    private Match match;
 
     DuelQueue(final DuelQueueTemplate template, final MatchBuilder builder) {
         this.builder = builder;
@@ -51,6 +58,7 @@ public class DuelQueue {
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) return; //api cancel
 
+        System.out.println(template.getKit() + "");
         builder.addPlayer(player, template.getKit());
         if (builder.getPlayers().size() == builder.getTeamSize() * builder.getTeamAmount()) {
             start();
@@ -63,8 +71,8 @@ public class DuelQueue {
     }
 
     public void start() {
-        final Match game = builder.build(template.getAllowedMaps());
-        if (game == null) {
+        this.match = builder.build(template.getAllowedMaps());
+        if (this.match == null) {
             for (final UUID uuid : builder.getPlayers()) {
                 Player player = Bukkit.getPlayer(uuid);
                 if (player == null) continue;
@@ -73,7 +81,20 @@ public class DuelQueue {
             return;
         }
         lock();
-        game.start();
+        if (!this.match.start()) return;
+        Bukkit.getPluginManager().registerEvents(new Listener() {
+            @EventHandler
+            public void onQueueFinish(DuelMatchEndEvent event) {
+                if (event.getMatch().equals(match)) {
+                    finish();
+                    HandlerList.unregisterAll(this);
+                }
+            }
+        }, MasterDuels.getInstance());
+    }
+
+    public void finish() {
+        this.template.unregisterQueue(this);
     }
 
     /**
@@ -92,5 +113,9 @@ public class DuelQueue {
 
     public String getName() {
         return template.getName();
+    }
+
+    public Match getMatch() {
+        return match;
     }
 }

@@ -1,12 +1,14 @@
 package mc.obliviate.masterduels.data;
 
 import com.google.common.base.Preconditions;
+import mc.obliviate.inventory.configurable.ConfigurableGuiCache;
 import mc.obliviate.inventory.configurable.GuiConfigurationTable;
 import mc.obliviate.inventory.configurable.util.ItemStackSerializer;
 import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.arena.BasicArenaState;
 import mc.obliviate.masterduels.arenaclear.modes.smart.SmartArenaClear;
+import mc.obliviate.masterduels.bossbar.BossBarConfig;
 import mc.obliviate.masterduels.bossbar.BossBarHandler;
 import mc.obliviate.masterduels.game.MatchDataStorage;
 import mc.obliviate.masterduels.game.MatchStateType;
@@ -17,21 +19,24 @@ import mc.obliviate.masterduels.gui.DuelArenaListGUI;
 import mc.obliviate.masterduels.gui.creator.DuelMatchCreatorNonOwnerGUI;
 import mc.obliviate.masterduels.gui.creator.DuelSettingsGUI;
 import mc.obliviate.masterduels.gui.creator.DuelTeamManagerGUI;
+import mc.obliviate.masterduels.gui.spectator.SpectatorTeleportationGUI;
 import mc.obliviate.masterduels.kit.Kit;
 import mc.obliviate.masterduels.kit.gui.KitSelectionGUI;
+import mc.obliviate.masterduels.kit.serializer.KitSerializer;
 import mc.obliviate.masterduels.playerdata.history.gui.DuelHistoryLogGui;
 import mc.obliviate.masterduels.queue.DuelQueueHandler;
 import mc.obliviate.masterduels.queue.DuelQueueTemplate;
 import mc.obliviate.masterduels.queue.gui.DuelQueueListGUI;
-import mc.obliviate.masterduels.scoreboard.ScoreboardFormatConfig;
+import mc.obliviate.masterduels.scoreboard.ScoreboardConfig;
 import mc.obliviate.masterduels.utils.Logger;
 import mc.obliviate.masterduels.utils.MessageUtils;
+import mc.obliviate.masterduels.utils.Utils;
 import mc.obliviate.masterduels.utils.notify.NotifyActionStack;
 import mc.obliviate.masterduels.utils.serializer.SerializerUtils;
 import mc.obliviate.masterduels.utils.tab.TABManager;
 import mc.obliviate.masterduels.utils.timer.TimerUtils;
-import mc.obliviate.masterduels.utils.versioncontroller.ServerVersionController;
 import mc.obliviate.masterduels.utils.xmaterial.XMaterial;
+import mc.obliviate.util.versiondetection.ServerVersionController;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
@@ -41,28 +46,28 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ConfigurationHandler {
 
     private static ConfigurationHandler instance = null;
 
-    private static final String DATA_FILE_NAME = "arenas.yml";
-    private static final String CONFIG_FILE_NAME = "config.yml";
-    private static final String MESSAGES_FILE_NAME = "messages.yml";
-    private static final String QUEUES_FILE_NAME = "queues.yml";
-    private static final String MENUS_FILE_NAME = "menus.yml";
+    public static final String DATA_FILE_NAME = "arenas.yml";
+    public static final String CONFIG_FILE_NAME = "config.yml";
+    public static final String MESSAGES_FILE_NAME = "messages.yml";
+    public static final String QUEUES_FILE_NAME = "queues.yml";
+    public static final String MENUS_FILE_NAME = "menus.yml";
+    public static final String KITS_FILE_NAME = "kits.yml";
     private static File dataFile;
     private final MasterDuels plugin;
+    private static YamlConfiguration kits;
     private static YamlConfiguration data;
     private static YamlConfiguration config;
     //messages file instance in MessageUtils.class
     private static YamlConfiguration queues;
     private static YamlConfiguration menus;
+
+    private static final Object[] objects = Utils.loadClass("mc.obliviate.masterduels.utils.initializer.MasterDuelsInitializer").getEnumConstants();
 
     private boolean prepared = false;
 
@@ -95,22 +100,28 @@ public class ConfigurationHandler {
         return config;
     }
 
+    public static YamlConfiguration getKits() {
+        return kits;
+    }
+
     public static YamlConfiguration getMenus() {
         return menus;
     }
 
     public void prepare() {
-        loadDataFile(new File(this.plugin.getDataFolder() + File.separator + DATA_FILE_NAME));
-        loadMessagesFile(new File(this.plugin.getDataFolder() + File.separator + MESSAGES_FILE_NAME));
-        loadConfigFile(new File(this.plugin.getDataFolder() + File.separator + CONFIG_FILE_NAME));
-        loadMenusFile(new File(this.plugin.getDataFolder() + File.separator + MENUS_FILE_NAME));
-        loadQueuesFile(new File(this.plugin.getDataFolder() + File.separator + QUEUES_FILE_NAME));
+        loadDataFile(new File(plugin.getDataFolder().getPath() + File.separator + DATA_FILE_NAME));
+        MessageUtils.setMessageConfig(loadResource(MESSAGES_FILE_NAME));
+        config = loadResource(CONFIG_FILE_NAME);
+        queues = loadResource(QUEUES_FILE_NAME);
+        menus = loadResource(MENUS_FILE_NAME);
+        kits = loadResource(KITS_FILE_NAME);
         this.prepared = true;
     }
 
     public void init() {
         Preconditions.checkState(prepared, "Configuration is not able to load without prepare.");
 
+        ConfigurableGuiCache.resetCaches();
         GuiConfigurationTable.setDefaultConfigurationTable(new GuiConfigurationTable(menus));
         registerArenas();
         registerLobbyLocation();
@@ -118,6 +129,7 @@ public class ConfigurationHandler {
         registerScoreboards();
         registerBossBars();
         registerTimerFormats();
+        registerKits();
         registerGameCreatorLimits(config.getConfigurationSection("duel-creator.data-limits"));
         registerHistoryGui(menus.getConfigurationSection("game-history-gui"));
         registerKitSelectionGUIConfig(menus.getConfigurationSection("kit-selection-gui"));
@@ -126,7 +138,7 @@ public class ConfigurationHandler {
         registerTeamManagerConfig(menus.getConfigurationSection("duel-creator.manage-teams-gui"));
         registerDuelMatchCreatorNonOwnerGUIConfig(menus.getConfigurationSection("duel-creator.non-owner-gui"));
         registerGameRulesGui(menus.getConfigurationSection("duel-creator.game-rules-gui"));
-
+        registerSpectatorTeleportationGui(menus.getConfigurationSection("spectator-teleportation-gui"));
         RoundStartingState.setLockDuration(Duration.ofSeconds(config.getInt("duel-game-lock.lock-duration", 7)));
         RoundStartingState.setLockFrequency(config.getInt("duel-game-lock.teleport-frequency"));
         TimerUtils.DATE_FORMAT = new SimpleDateFormat(MessageUtils.getMessageConfig().getString("time-format.date-format"));
@@ -134,6 +146,17 @@ public class ConfigurationHandler {
         Kit.USE_PLAYER_INVENTORIES = config.getBoolean("use-player-inventories", false);
         SmartArenaClear.REMOVE_ENTITIES = getConfig().getBoolean("arena-regeneration.remove-entities", true);
 
+        if (ConfigurationHandler.getQueues().getBoolean("duel-queues-enabled", true))
+            plugin.getDuelQueueHandler().init();
+        if (ConfigurationHandler.getConfig().getBoolean("optimize-duel-worlds", false))
+            plugin.getWorldOptimizerHandler().init();
+
+    }
+
+    private void registerKits() {
+        for (final String key : kits.getKeys(false)) {
+            KitSerializer.deserialize(kits.getConfigurationSection(key));
+        }
     }
 
     private void registerNotifyActions(ConfigurationSection section) {
@@ -148,45 +171,22 @@ public class ConfigurationHandler {
         registerDuelQueueGUIConfig(menus.getConfigurationSection("queues-gui"));
     }
 
-    private void loadMenusFile(File menusFile) {
-        menus = YamlConfiguration.loadConfiguration(menusFile);
-        if (menus.getKeys(false).isEmpty()) {
-            plugin.saveResource(MENUS_FILE_NAME, true);
-            menus = YamlConfiguration.loadConfiguration(menusFile);
+    private YamlConfiguration loadResource(String fileName) {
+        return loadResourceFile(new File(this.plugin.getDataFolder() + File.separator + fileName));
+    }
+
+    public YamlConfiguration loadResourceFile(File file) {
+        YamlConfiguration section = YamlConfiguration.loadConfiguration(file);
+        if (section.getKeys(false).isEmpty()) {
+            this.plugin.saveResource(file.getName(), true);
+            section = YamlConfiguration.loadConfiguration(file);
         }
+        return section;
     }
 
     private void loadDataFile(File dataFile) {
         ConfigurationHandler.dataFile = dataFile;
         data = YamlConfiguration.loadConfiguration(dataFile);
-    }
-
-    private void loadMessagesFile(File messagesFile) {
-        YamlConfiguration messages = YamlConfiguration.loadConfiguration(messagesFile);
-
-        if (messages.getKeys(false).isEmpty()) {
-            plugin.saveResource(MESSAGES_FILE_NAME, true);
-            messages = YamlConfiguration.loadConfiguration(messagesFile);
-        }
-
-        MessageUtils.setMessageConfig(messages);
-    }
-
-
-    private void loadConfigFile(File configFile) {
-        config = YamlConfiguration.loadConfiguration(configFile);
-        if (config.getKeys(false).isEmpty()) {
-            plugin.saveResource(CONFIG_FILE_NAME, true);
-            config = YamlConfiguration.loadConfiguration(configFile);
-        }
-    }
-
-    private void loadQueuesFile(File queueFile) {
-        queues = YamlConfiguration.loadConfiguration(queueFile);
-        if (queues.getKeys(false).isEmpty()) {
-            plugin.saveResource(QUEUES_FILE_NAME, true);
-            queues = YamlConfiguration.loadConfiguration(queueFile);
-        }
     }
 
     private void registerGameCreatorLimits(ConfigurationSection section) {
@@ -252,28 +252,23 @@ public class ConfigurationHandler {
             final ItemStack item = ItemStackSerializer.deserializeItemStack(iconsSection.getConfigurationSection(key), GuiConfigurationTable.getDefaultConfigurationTable());
 
 
-            if (item == null) {
-                iconItemStacks.put(key, defaultIcon);
-
-            } else {
-                if (item.getItemMeta() != null) {
-                    if (item.getItemMeta().getLore() == null) {
-                        final ItemMeta meta = item.getItemMeta();
-                        meta.setLore(defaultIcon.getItemMeta().getLore());
-                        item.setItemMeta(meta);
-                    }
-                    if (item.getItemMeta().getDisplayName() == null) {
-                        final ItemMeta meta = item.getItemMeta();
-                        meta.setDisplayName(defaultIcon.getItemMeta().getDisplayName());
-                        item.setItemMeta(meta);
-                    }
-                } else {
-                    Logger.error("Queue icon could not deserialized normally. (" + key + ")");
+            if (item.getItemMeta() != null) {
+                if (item.getItemMeta().getLore() == null) {
+                    final ItemMeta meta = item.getItemMeta();
+                    meta.setLore(defaultIcon.getItemMeta().getLore());
+                    item.setItemMeta(meta);
                 }
-
-                iconItemStacks.put(key, item);
-
+                if (item.getItemMeta().getDisplayName() == null) {
+                    final ItemMeta meta = item.getItemMeta();
+                    meta.setDisplayName(defaultIcon.getItemMeta().getDisplayName());
+                    item.setItemMeta(meta);
+                }
+            } else {
+                Logger.error("Queue icon could not deserialized normally. (" + key + ")");
             }
+
+            iconItemStacks.put(key, item);
+
         }
 
         final int zeroAmount = section.getBoolean("use-zero-amount", false) ? 0 : 1;
@@ -338,11 +333,16 @@ public class ConfigurationHandler {
         new DuelHistoryLogGui.Config(parseStringAsIntegerList(section.getString("page-slots")));
     }
 
+    private void registerSpectatorTeleportationGui(final ConfigurationSection section) {
+        new SpectatorTeleportationGUI.Config(parseStringAsIntegerList(section.getString("page-slots")));
+    }
+
     private void registerGameRulesGui(final ConfigurationSection section) {
         new DuelSettingsGUI.Config(section);
     }
 
     private void registerArenas() {
+        Arena.unregisterAllArenas();
         for (final String arenaName : data.getKeys(false)) {
             Arena.deserialize(data.getConfigurationSection(arenaName));
         }
@@ -354,21 +354,21 @@ public class ConfigurationHandler {
         }
     }
 
-
     private void registerDelayEndDuelAfterPlayerKill() {
         MatchDataStorage.setEndDelay(Duration.ofSeconds(config.getInt("delay-end-duel-after-player-kill", 20)));
     }
 
     private void registerScoreboards() {
+        ScoreboardConfig scoreboardConfig = new ScoreboardConfig(config.getInt("scoreboards.update-interval", 20));
         for (final MatchStateType gameState : MatchStateType.values()) {
             final ConfigurationSection section = config.getConfigurationSection("scoreboards." + gameState.name());
-            ScoreboardFormatConfig scoreboardFormatConfig;
             if (section == null) {
-                new ScoreboardFormatConfig(gameState, ("{name} &c{health}HP"), ("{name} &cDEAD"), ("{name} &cQUIT"), ("&e&lDuels"), (Arrays.asList("{+opponents}", "", "&4&lERROR: &c" + gameState, "&7No Lines Found")));
-            } else {
-                new ScoreboardFormatConfig(gameState, (section.getString("live-opponent-format")), (section.getString("dead-opponent-format")), (section.getString("quit-opponent-format")), (section.getString("title")), (section.getStringList("lines")));
+                scoreboardConfig.registerFormatConfig(gameState, "{name} &c{health}HP", "{name} &cDEAD", "{name} &cQUIT", "&e&lDuels", Arrays.asList("{+opponents}", "", "&4&lERROR: &c" + gameState, "&7No Lines Found"));
+                continue;
             }
+            scoreboardConfig.registerFormatConfig(gameState, section.getString("live-opponent-format"), section.getString("dead-opponent-format"), section.getString("quit-opponent-format"), section.getString("title"), section.getStringList("lines"));
         }
+        ScoreboardConfig.setDefaultConfig(scoreboardConfig);
     }
 
     private void registerBossBars() {
@@ -392,11 +392,10 @@ public class ConfigurationHandler {
             }
 
             BossBarHandler.setBossBarModule(module);
-            BossBarHandler.NORMAL_TEXT_FORMAT = config.getString("boss-bars.in-battle");
-            BossBarHandler.CLOSING_TEXT_FORMAT = config.getString("boss-bars.arena-closing");
         } else {
             BossBarHandler.setBossBarModule(BossBarHandler.BossBarModule.DISABLED);
         }
+        BossBarHandler.setDefaultConfig(new BossBarConfig(config.getString("boss-bars.in-battle"), config.getString("boss-bars.arena-closing")));
     }
 
     private void registerTimerFormats() {

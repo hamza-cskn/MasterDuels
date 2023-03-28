@@ -1,9 +1,9 @@
 package mc.obliviate.masterduels.bossbar;
 
 import com.hakan.core.HCore;
-import com.hakan.core.message.bossbar.HBarColor;
-import com.hakan.core.message.bossbar.HBarStyle;
-import com.hakan.core.message.bossbar.HBossBar;
+import com.hakan.core.message.bossbar.BossBar;
+import com.hakan.core.message.bossbar.meta.BarColor;
+import com.hakan.core.message.bossbar.meta.BarStyle;
 import mc.obliviate.masterduels.api.DuelMatchMemberLeaveEvent;
 import mc.obliviate.masterduels.api.arena.DuelMatchStateChangeEvent;
 import mc.obliviate.masterduels.game.Match;
@@ -20,46 +20,44 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.HashMap;
 import java.util.Map;
 
-import static mc.obliviate.masterduels.bossbar.BossBarHandler.CLOSING_TEXT_FORMAT;
-import static mc.obliviate.masterduels.bossbar.BossBarHandler.NORMAL_TEXT_FORMAT;
-
 public class InternalBossBarManager implements Listener {
 
-	private final Map<Match, HBossBar> bossBarMap = new HashMap<>();
+    private final Map<Match, BossBar> bossBarMap = new HashMap<>();
 
-	public InternalBossBarManager(JavaPlugin plugin) {
-		Bukkit.getPluginManager().registerEvents(this, plugin);
-	}
+    public InternalBossBarManager(JavaPlugin plugin) {
+        Bukkit.getPluginManager().registerEvents(this, plugin);
+    }
 
-	@EventHandler
-	public void onDuelMatchStateChange(DuelMatchStateChangeEvent event) {
-		if (event.getNewState().getMatchStateType().equals(MatchStateType.MATCH_STARING)) {
-			HBossBar bossBar = HCore.createBossBar(NORMAL_TEXT_FORMAT, HBarColor.WHITE, HBarStyle.SEGMENTED_10);
-			bossBarMap.put(event.getMatch(), bossBar);
-			initializeBossBarTimer(event.getMatch(), bossBar);
-			for (Member member : event.getMatch().getGameDataStorage().getGameTeamManager().getAllMembers()) {
-				bossBar.addPlayer(member.getPlayer());
-			}
-		}
-	}
+    @EventHandler
+    public void onDuelMatchStateChange(DuelMatchStateChangeEvent event) {
+        if (event.getNewState().getMatchStateType().equals(MatchStateType.MATCH_STARING)) {
+            BossBar bossBar = HCore.createBossBar(BossBarHandler.getDefaultConfig().getPlayingTextFormat(), BarColor.WHITE, BarStyle.SEGMENTED_10);
+            bossBarMap.put(event.getMatch(), bossBar);
+            initializeBossBarTimer(event.getMatch(), bossBar);
+            for (Member member : event.getMatch().getGameDataStorage().getGameTeamManager().getAllMembers()) {
+                if (member.showBossBar())
+                    bossBar.addPlayer(member.getPlayer());
+            }
+        }
+    }
 
-	@EventHandler
-	public void onDuelMatchLeave(DuelMatchMemberLeaveEvent event) {
-		HBossBar bar = bossBarMap.get(event.getMatch());
-		if (bar == null) return;
-		bar.removePlayer(event.getMember().getPlayer());
-	}
+    @EventHandler
+    public void onDuelMatchLeave(DuelMatchMemberLeaveEvent event) {
+        BossBar bar = bossBarMap.get(event.getMatch());
+        if (bar == null) return;
+        bar.removePlayer(event.getMember().getPlayer());
+    }
 
-	private void initializeBossBarTimer(Match match, HBossBar bar) {
-		match.getGameTaskManager().repeatTask("BOSSBAR", () -> {
-			if (match.getMatchState().getMatchStateType().equals(MatchStateType.MATCH_ENDING)) {
-				bar.setProgress((Utils.getPercentage(MatchDataStorage.getEndDelay().toMillis(), (match.getGameDataStorage().getFinishTime() - System.currentTimeMillis())) / 100d));
-                bar.setTitle(CLOSING_TEXT_FORMAT.replace("{time}", TimerUtils.formatTimeUntilThenAsTimer(match.getGameDataStorage().getFinishTime())).replace("{timer}", TimerUtils.formatTimeUntilThenAsTimer(match.getGameDataStorage().getFinishTime())));
-			} else {
+    private void initializeBossBarTimer(Match match, BossBar bar) {
+        match.getGameTaskManager().repeatTask("BOSSBAR", () -> {
+            if (match.getMatchState().getMatchStateType().equals(MatchStateType.MATCH_ENDING)) {
+                bar.setProgress((Utils.getPercentage(MatchDataStorage.getEndDelay().toMillis(), (match.getGameDataStorage().getFinishTime() - System.currentTimeMillis())) / 100d));
+                bar.setTitle(BossBarHandler.getDefaultConfig().getEndingTextFormat().replace("{time}", TimerUtils.formatTimeUntilThenAsTimer(match.getGameDataStorage().getFinishTime())).replace("{timer}", TimerUtils.formatTimeUntilThenAsTimer(match.getGameDataStorage().getFinishTime())));
+            } else {
                 bar.setProgress((Utils.getPercentage(match.getGameDataStorage().getMatchDuration().toMillis(), (match.getGameDataStorage().getFinishTime() - System.currentTimeMillis())) / 100d));
-                bar.setTitle(NORMAL_TEXT_FORMAT.replace("{time}", TimerUtils.formatTimeUntilThenAsTimer(match.getGameDataStorage().getFinishTime())).replace("{timer}", TimerUtils.formatTimeUntilThenAsTimer(match.getGameDataStorage().getFinishTime())));
-			}
-		}, null, 0, 20);
-	}
+                bar.setTitle(BossBarHandler.getDefaultConfig().getPlayingTextFormat().replace("{time}", TimerUtils.formatTimeUntilThenAsTimer(match.getGameDataStorage().getFinishTime())).replace("{timer}", TimerUtils.formatTimeUntilThenAsTimer(match.getGameDataStorage().getFinishTime())));
+            }
+        }, null, 0, 20);
+    }
 
 }

@@ -7,7 +7,6 @@ import mc.obliviate.masterduels.user.IUser;
 import mc.obliviate.masterduels.user.Member;
 import mc.obliviate.masterduels.user.Spectator;
 import mc.obliviate.masterduels.user.UserHandler;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -142,7 +141,6 @@ public class MatchTeamManager {
                 }
             }
         }
-        Bukkit.broadcastMessage("teams are ready: " + this);
     }
 
     public Team getTeam(Player player) {
