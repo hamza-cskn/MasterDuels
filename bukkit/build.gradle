@@ -4,8 +4,8 @@ dependencies {
     //implementation project(':api')
 
     //implementation files('D:/Users/User/Desktop/Libraries/hcore.jar')
-    compileOnly files('/Users/hamza/Desktop/Libraries/Replay.jar')
-    compileOnly files('/Users/hamza/Desktop/Libraries/Vault.jar')
+    //compileOnly files('/Users/hamza/Desktop/Libraries/Replay.jar')
+    compileOnly 'com.github.MilkBowl:VaultAPI:1.7.1'
     compileOnly 'org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT'
     compileOnly 'me.neznamy:tab-api:3.0.1'
 
