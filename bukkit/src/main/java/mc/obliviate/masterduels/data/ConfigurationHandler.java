@@ -184,12 +184,6 @@ public class ConfigurationHandler {
         return section;
     }
 
-    private void loadKitsFile(File kitsFile) {
-        final File file = new File(plugin.getDataFolder().getPath() + File.separator + "kits.yml");
-        final YamlConfiguration data = YamlConfiguration.loadConfiguration(file);
-
-    }
-
     private void loadDataFile(File dataFile) {
         ConfigurationHandler.dataFile = dataFile;
         data = YamlConfiguration.loadConfiguration(dataFile);

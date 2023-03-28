@@ -15,24 +15,24 @@ commands:
       - masterduels
   dueladmin:
 permissions:
-  masterduels.creator.set.teamsize:
+  masterduels.duelcreator.set.teamsize:
     default: true
     description: allows changing the team size
-  masterduels.creator.set.teamamount:
+  masterduels.duelcreator.set.teamamount:
     default: true
     description: allows changing the team amount
-  masterduels.creator.set.rules:
+  masterduels.duelcreator.set.rules:
     default: true
     description: allows ruling creator
-  masterduels.creator.set.roundamount:
+  masterduels.duelcreator.set.roundamount:
     default: true
     description: allows changing the round amount
-  masterduels.creator.set.teammanager:
+  masterduels.duelcreator.set.teammanager:
     default: true
     description: allows managing teams
-  masterduels.creator.set.kit:
+  masterduels.duelcreator.set.kit:
     default: true
     description: allows setting kits
-  masterduels.creator.set.finishtime:
+  masterduels.duelcreator.set.finishtime:
     default: true
     description: allows changing the duration of match

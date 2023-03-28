@@ -12,7 +12,6 @@ public class ArenaWorldOptimizerHandler {
 
 	public void init() {
 		for (final Arena arena : Arena.getArenasMap().keySet()) {
-
 			final UUID worldUniqueId = arena.getArenaCuboid().getPoint1().getWorld().getUID();
 			if (worlds.containsKey(worldUniqueId)) continue;
 

@@ -20,7 +20,7 @@ import java.util.function.Consumer;
  * scoreboard object for player
  */
 @SuppressWarnings({"unused", "UnusedReturnValue"})
-public final class InternalScoreboard {
+public final class InternalScoreboard implements BaseScoreboard {
 
     private static final Map<UUID, InternalScoreboard> SCOREBOARD_MAP = new HashMap<>();
     private final UUID uid;
@@ -63,6 +63,7 @@ public final class InternalScoreboard {
      *
      * @return if scoreboard still exist for player, return true
      */
+    @Override
     public boolean isExist() {
         return this.equals(SCOREBOARD_MAP.get(uid));
     }
@@ -81,6 +82,7 @@ public final class InternalScoreboard {
      *
      * @return Player.
      */
+    @Override
     public Optional<Player> getPlayerSafe() {
         Player player = Bukkit.getPlayer(this.uid);
         return Optional.ofNullable(player);
@@ -91,6 +93,7 @@ public final class InternalScoreboard {
      *
      * @return Player.
      */
+    @Override
     public Player getPlayer() {
         return this.getPlayerSafe().orElseThrow(() -> new NullPointerException("there is no player with this uid(" + this.uid + ")"));
     }
@@ -100,6 +103,7 @@ public final class InternalScoreboard {
      *
      * @return Title of scoreboard.
      */
+    @Override
     public String getTitle() {
         return this.title;
     }
@@ -110,6 +114,7 @@ public final class InternalScoreboard {
      * @param title Title.
      * @return Instance of this class.
      */
+    @Override
     public InternalScoreboard setTitle(String title) {
         this.title = Validate.notNull(title, "title cannot be null");
         this.objective.setDisplayName(this.title);
@@ -121,6 +126,7 @@ public final class InternalScoreboard {
      *
      * @return Update interval of scoreboard.
      */
+    @Override
     public int getUpdateInterval() {
         return this.updateInterval;
     }
@@ -131,6 +137,7 @@ public final class InternalScoreboard {
      * @param updateInterval Update interval.
      * @return Instance of this class.
      */
+    @Override
     public InternalScoreboard setUpdateInterval(int updateInterval) {
         this.updateInterval = updateInterval;
         return this;
@@ -142,6 +149,7 @@ public final class InternalScoreboard {
      * @param line Line.
      * @return Text of line.
      */
+    @Override
     public String getLine(int line) {
         return this.getTeam(line).getPrefix();
     }
@@ -153,6 +161,7 @@ public final class InternalScoreboard {
      * @param text Text.
      * @return Instance of this class.
      */
+    @Override
     public InternalScoreboard setLine(int line, String text) {
         Validate.notNull(text, "text cannot be null");
         String first = text.substring(0, Math.min(16, text.length()));
@@ -190,6 +199,7 @@ public final class InternalScoreboard {
      * @param lines List of lines.
      * @return Instance of this class.
      */
+    @Override
     public InternalScoreboard setLines(List<String> lines) {
         Validate.notNull(lines, "lines cannot be null");
         for (int i = 1; i <= 16; i++)
@@ -204,6 +214,7 @@ public final class InternalScoreboard {
      * @param lines List of lines.
      * @return Instance of this class.
      */
+    @Override
     public InternalScoreboard setLines(String... lines) {
         return this.setLines(Arrays.asList(lines));
     }
@@ -214,6 +225,7 @@ public final class InternalScoreboard {
      * @param line Line number.
      * @return Instance of this class.
      */
+    @Override
     public InternalScoreboard removeLine(int line) {
         Team currentTeam = this.scoreboard.getTeam("line_" + line);
         if (currentTeam == null) {
@@ -233,6 +245,7 @@ public final class InternalScoreboard {
      * @param timeUnit Time unit (TimeUnit.SECONDS, TimeUnit.HOURS, etc.)
      * @return Instance of this class.
      */
+    @Override
     public InternalScoreboard expire(int time, TimeUnit timeUnit) {
         Validate.notNull(timeUnit, "time unit cannot be null");
         HCore.syncScheduler().after(time, timeUnit).run(this::delete);
@@ -246,6 +259,7 @@ public final class InternalScoreboard {
      * @param duration Duration.
      * @return Instance of this class.
      */
+    @Override
     public InternalScoreboard expire(Duration duration) {
         Validate.notNull(duration, "duration cannot be null!");
         HCore.syncScheduler().after(duration).run(this::delete);
@@ -259,6 +273,7 @@ public final class InternalScoreboard {
      * @param ticks Ticks.
      * @return Instance of this class.
      */
+    @Override
     public InternalScoreboard expire(int ticks) {
         HCore.syncScheduler().after(ticks)
                 .run(this::delete);
@@ -268,11 +283,12 @@ public final class InternalScoreboard {
     /**
      * Shows the scoreboard to player.
      */
+    @Override
     public InternalScoreboard show() {
         this.getPlayerSafe().ifPresent(player -> {
             if (player.getScoreboard().equals(this.scoreboard))
                 return;
-
+            System.out.println("scoreboard");
             player.setScoreboard(this.scoreboard);
         });
         return this;
@@ -285,6 +301,7 @@ public final class InternalScoreboard {
      * @param consumer Callback.
      * @return Instance of this class.
      */
+    @Override
     public InternalScoreboard update(Consumer<InternalScoreboard> consumer) {
         Validate.notNull(consumer, "consumer cannot be null");
 
@@ -300,6 +317,7 @@ public final class InternalScoreboard {
      *
      * @return Instance of this class.
      */
+    @Override
     public InternalScoreboard delete() {
         this.getPlayerSafe().ifPresent(player -> {
             player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());

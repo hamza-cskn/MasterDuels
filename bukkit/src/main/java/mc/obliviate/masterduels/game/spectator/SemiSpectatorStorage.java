@@ -19,20 +19,20 @@ import java.util.List;
 
 public class SemiSpectatorStorage implements SpectatorStorage {
 
-	protected static final PlayerReset playerReset = new PlayerReset().excludeExp().excludeLevel().excludeInventory().excludeTitle();
-	private final MatchSpectatorManager gsm;
-	private final List<Spectator> spectators = new ArrayList<>();
-	private final Match match;
+    protected static final PlayerReset playerReset = new PlayerReset().excludeExp().excludeLevel().excludeInventory().excludeTitle();
+    private final MatchSpectatorManager gsm;
+    private final List<Spectator> spectators = new ArrayList<>();
+    private final Match match;
 
-	public SemiSpectatorStorage(MatchSpectatorManager gsm) {
-		this.gsm = gsm;
-		this.match = gsm.getMatch();
-	}
+    public SemiSpectatorStorage(MatchSpectatorManager gsm) {
+        this.gsm = gsm;
+        this.match = gsm.getMatch();
+    }
 
-	private Spectator findSpectator(Player player) {
-		for (final Spectator spectator : spectators) {
-			if (spectator.getPlayer().equals(player)) {
-				return spectator;
+    private Spectator findSpectator(Player player) {
+        for (final Spectator spectator : spectators) {
+            if (spectator.getPlayer().equals(player)) {
+                return spectator;
             }
         }
         return null;
@@ -59,62 +59,62 @@ public class SemiSpectatorStorage implements SpectatorStorage {
         } else {
             UserHandler.switchUser(spectator);
             match.removeMember(match.getMember(spectator.getPlayer().getUniqueId()));
-		}
-		playerReset.reset(spectator.getPlayer());
-		MessageUtils.sendMessage(spectator.getPlayer(), "you-left-from-duel");
-		Utils.teleportToLobby(spectator.getPlayer());
+        }
+        playerReset.reset(spectator.getPlayer());
+        MessageUtils.sendMessage(spectator.getPlayer(), "you-left-from-duel");
+        Utils.teleportToLobby(spectator.getPlayer());
 
-		for (final Member member : match.getAllMembers()) {
-			member.getPlayer().showPlayer(spectator.getPlayer());
-		}
-	}
+        for (final Member member : match.getAllMembers()) {
+            member.getPlayer().showPlayer(spectator.getPlayer());
+        }
+    }
 
-	@Override
-	public void spectate(Player player) {
-		Spectator spectator = findSpectator(player);
-		if (spectator != null) return;
+    @Override
+    public void spectate(Player player) {
+        Spectator spectator = findSpectator(player);
+        if (spectator != null) return;
 
-		final DuelMatchPreSpectatorJoinEvent duelGamePreSpectatorJoinEvent = new DuelMatchPreSpectatorJoinEvent(player, match);
-		Bukkit.getPluginManager().callEvent(duelGamePreSpectatorJoinEvent);
-		if (duelGamePreSpectatorJoinEvent.isCancelled()) return;
+        final DuelMatchPreSpectatorJoinEvent duelGamePreSpectatorJoinEvent = new DuelMatchPreSpectatorJoinEvent(player, match);
+        Bukkit.getPluginManager().callEvent(duelGamePreSpectatorJoinEvent);
+        if (duelGamePreSpectatorJoinEvent.isCancelled()) return;
 
-		spectator = UserHandler.switchSpectator(UserHandler.getUser(player.getUniqueId()), match);
-		spectators.add(spectator);
+        spectator = UserHandler.switchSpectator(UserHandler.getUser(player.getUniqueId()), match);
+        spectators.add(spectator);
 
-		final DuelMatchSpectatorSwitchEvent duelMatchSpectatorSwitchEvent = new DuelMatchSpectatorSwitchEvent(spectator);
-		Bukkit.getPluginManager().callEvent(duelMatchSpectatorSwitchEvent);
+        final DuelMatchSpectatorSwitchEvent duelMatchSpectatorSwitchEvent = new DuelMatchSpectatorSwitchEvent(spectator);
+        Bukkit.getPluginManager().callEvent(duelMatchSpectatorSwitchEvent);
 
-		//SpectatorInventoryHandler.giveSpectatorItems(player);
+        //SpectatorInventoryHandler.giveSpectatorItems(player);
 		new PlayerReset().excludeGamemode().excludeInventory().excludeLevel().excludeExp().reset(player);
 		player.setGameMode(GameMode.ADVENTURE);
 
-		for (final Spectator spec : gsm.getAllSpectators()) {
-			spec.getPlayer().showPlayer(player);
-			player.showPlayer(spec.getPlayer());
-		}
+        for (final Spectator spec : gsm.getAllSpectators()) {
+            spec.getPlayer().showPlayer(player);
+            player.showPlayer(spec.getPlayer());
+        }
 
-		for (final Member member : match.getAllMembers()) {
-			member.getPlayer().hidePlayer(player);
-		}
+        for (final Member member : match.getAllMembers()) {
+            member.getPlayer().hidePlayer(player);
+        }
 
-		player.setAllowFlight(true);
-		player.setFlying(true);
+        player.setAllowFlight(true);
+        player.setFlying(true);
 
-		//won't teleport
-		MessageUtils.sendMessage(player, "you-are-a-spectator");
-		//MessageAPI.getInstance(game.getPlugin()).sendTitle(player, TitleHandler.getTitle(TitleHandler.TitleType.SPECTATOR_JOIN));
-	}
+        //won't teleport
+        MessageUtils.sendMessage(player, "you-are-a-spectator");
+        //MessageAPI.getInstance(game.getPlugin()).sendTitle(player, TitleHandler.getTitle(TitleHandler.TitleType.SPECTATOR_JOIN));
+    }
 
-	@Override
-	public boolean isSpectator(Player player) {
-		for (Spectator spectator : spectators) {
-			if (spectator.getPlayer().equals(player)) return true;
-		}
-		return false;
-	}
+    @Override
+    public boolean isSpectator(Player player) {
+        for (Spectator spectator : spectators) {
+            if (spectator.getPlayer().equals(player)) return true;
+        }
+        return false;
+    }
 
-	@Override
-	public List<Spectator> getSpectatorList() {
-		return spectators;
-	}
+    @Override
+    public List<Spectator> getSpectatorList() {
+        return spectators;
+    }
 }

@@ -47,7 +47,7 @@ public class DamageListener implements Listener {
         final Player victim = (Player) e.getEntity();
 
         final IUser victimUser = UserHandler.getUser(victim.getUniqueId());
-        if (victimUser == null) return;
+        Preconditions.checkNotNull(victimUser, "victim user is not loaded!");
 
         if (victimUser instanceof Member) {
             final Member victimMember = (Member) victimUser;

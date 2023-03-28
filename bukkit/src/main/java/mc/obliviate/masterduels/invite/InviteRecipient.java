@@ -4,7 +4,7 @@ import java.util.*;
 
 /**
  * Purpose of this class is,
- * storing all invites thats is sent to
+ * storing all invites that is sent to
  * a player.
  */
 public class InviteRecipient {

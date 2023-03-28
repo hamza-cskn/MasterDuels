@@ -2,6 +2,7 @@ package mc.obliviate.masterduels.commands;
 
 import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.arena.Arena;
+import mc.obliviate.masterduels.data.DataHandler;
 import mc.obliviate.masterduels.game.Match;
 import mc.obliviate.masterduels.game.MatchBuilder;
 import mc.obliviate.masterduels.kit.Kit;
@@ -48,6 +49,7 @@ public class DuelAdminCMD implements CommandExecutor {
 		if (args[0].equalsIgnoreCase("create")) {
 			create(player);
 		} else if (args[0].equalsIgnoreCase("setlobby")) {
+			DataHandler.setLobbyLocation(player.getLocation());
 			SerializerUtils.serializeLocationYAML(plugin.getConfigurationHandler().getData().createSection("lobby-location"), player.getLocation());
 			plugin.getConfigurationHandler().saveDataFile();
 			MessageUtils.sendMessage(player, "duel-command.admin.lobby-set");

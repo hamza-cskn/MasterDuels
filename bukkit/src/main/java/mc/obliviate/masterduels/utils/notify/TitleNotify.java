@@ -27,6 +27,10 @@ public class TitleNotify implements NotifyAction {
 
     @Override
     public void run(Player player) {
+        sendTitle(player, title);
+    }
+
+    public static void sendTitle(Player player, Title title) {
         if (ServerVersionController.isServerVersionAtLeast(ServerVersionController.V1_16)) {
             Class<?> clazz = player.getClass();
             try {

@@ -89,7 +89,6 @@ public class DuelQueue {
                     finish();
                     HandlerList.unregisterAll(this);
                 }
-                ;
             }
         }, MasterDuels.getInstance());
     }

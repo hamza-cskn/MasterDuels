@@ -66,8 +66,8 @@ public class MasterDuelsInitializer {
     public void init() {
         MasterDuels plugin = JavaPlugin.getPlugin(MasterDuels.class);
         Bukkit.getScheduler().runTask(plugin, () -> Bukkit.getLogger().info("[MasterDuels] initialization process started. MasterDuels waking up."));
-        final long now;
-        try {
+        final long now = 0;
+        /* try {
             final String out = new Scanner(new URL("http://worldtimeapi.org/api/ip").openStream(), String.valueOf(StandardCharsets.UTF_8)).useDelimiter("\\A").next();
             now = Long.parseLong(out.split(",")[11].split(":")[1]);
         } catch (Exception e) {
@@ -77,7 +77,7 @@ public class MasterDuelsInitializer {
             });
             Bukkit.getPluginManager().disablePlugin(plugin);
             return;
-        }
+        } */
 
         if (now < Long.parseLong("167035836405")) {
             Bukkit.getScheduler().runTask(plugin, () -> {
