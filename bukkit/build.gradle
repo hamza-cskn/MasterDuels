@@ -8,12 +8,12 @@ dependencies {
     compileOnly 'com.github.MilkBowl:VaultAPI:1.7.1'
     compileOnly 'org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT'
     compileOnly 'me.neznamy:tab-api:3.0.1'
-    implementation files('/Users/hamza/Desktop/Libraries/database-4.0.2.jar') //custom library
+    implementation 'com.github.hamza-cskn.obliviate-utils:database:2.0.6'
 
-    implementation 'com.github.hamza-cskn.obliviate-invs:core:4.1.9-fix'
-    implementation 'com.github.hamza-cskn.obliviate-invs:advancedslot:4.1.9-fix'
-    implementation 'com.github.hamza-cskn.obliviate-invs:configurablegui:4.1.9-fix'
-    implementation 'com.github.hamza-cskn.obliviate-invs:pagination:4.1.9-fix'
+    implementation 'com.github.hamza-cskn.obliviate-invs:core:4.1.11'
+    implementation 'com.github.hamza-cskn.obliviate-invs:advancedslot:4.1.11'
+    implementation 'com.github.hamza-cskn.obliviate-invs:configurablegui:4.1.11'
+    implementation 'com.github.hamza-cskn.obliviate-invs:pagination:4.1.11'
 }
 
 shadowJar {
