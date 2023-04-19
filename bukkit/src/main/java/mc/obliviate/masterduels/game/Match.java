@@ -340,7 +340,7 @@ public class Match {
         return players;
     }
 
-    public UUID getId() {
+    public UUID getUniqueId() {
         return uuid;
     }
 }

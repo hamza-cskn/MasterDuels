@@ -58,7 +58,7 @@ public class HistoryListener implements Listener {
             DuelStatistic duelStatistic = UserHandler.getUser(player.getUniqueId()).getStatistic();
             duelStatistic.migrate(playerHistoryLog.getPlayerData());
             addWinOrLose(event.getMatch().getGameDataStorage().getRoundData(), duelStatistic);
-            plugin.getSqlManager().saveStatistic(duelStatistic);
+            plugin.getDatabaseManager().saveStatistics(duelStatistic);
         }
     }
 

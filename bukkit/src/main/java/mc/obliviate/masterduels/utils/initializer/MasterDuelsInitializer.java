@@ -112,7 +112,7 @@ public class MasterDuelsInitializer {
                     new InternalScoreboardManager().init(plugin);
                 if (ConfigurationHandler.getConfig().getBoolean("boss-bars.enabled"))
                     new BossBarHandler().init(plugin);
-                plugin.getSqlManager().init();
+                plugin.getDatabaseManager().connect();
                 setupVaultUtils();
                 Arrays.stream(GameRule.values()).forEach(GameRule::init);
                 Logger.setDebugModeEnabled(ConfigurationHandler.getConfig().getBoolean("debug", false));

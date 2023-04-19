@@ -24,7 +24,7 @@ public class PlayerConnectionListener implements Listener {
         if (user == null) return;
 
         if (!MasterDuels.isInShutdownMode()) {
-            plugin.getSqlManager().saveUser(user);
+            MasterDuels.getInstance().getDatabaseManager().saveUser(user);
         }
 
         if (user instanceof Member) {
@@ -39,7 +39,7 @@ public class PlayerConnectionListener implements Listener {
 
     @EventHandler
     public void onConnect(PlayerJoinEvent event) {
-        UserHandler.loadDuelUser(plugin.getSqlManager(), event.getPlayer());
+        UserHandler.loadDuelUser(event.getPlayer());
     }
 
 }

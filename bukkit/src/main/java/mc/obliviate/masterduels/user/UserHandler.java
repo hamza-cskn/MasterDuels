@@ -1,5 +1,6 @@
 package mc.obliviate.masterduels.user;
 
+import mc.obliviate.masterduels.MasterDuels;
 import mc.obliviate.masterduels.data.SQLManager;
 import mc.obliviate.masterduels.game.Match;
 import mc.obliviate.masterduels.game.Team;
@@ -16,8 +17,9 @@ public class UserHandler {
 
     private static final Map<UUID, IUser> USER_MAP = new HashMap<>();
 
-    public static void loadDuelUser(SQLManager sqlManager, Player player) {
-        registerUser(player.getUniqueId(), User.loadDuelUser(sqlManager, player));
+    public static void loadDuelUser(Player player) {
+        MasterDuels.getInstance().getDatabaseManager().loadUser(player.getUniqueId())
+                .thenAccept(user -> registerUser(player.getUniqueId(), user));
     }
 
     private static void registerUser(UUID uuid, IUser user) {
