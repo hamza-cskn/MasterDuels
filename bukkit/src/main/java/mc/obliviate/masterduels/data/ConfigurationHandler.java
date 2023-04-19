@@ -84,14 +84,6 @@ public class ConfigurationHandler {
         return menus.getConfigurationSection(sectionName);
     }
 
-    /**
-     * @param sectionName section name
-     * @return section from config.yml
-     */
-    public static ConfigurationSection getSection(String sectionName) {
-        return config.getConfigurationSection(sectionName);
-    }
-
     public static YamlConfiguration getQueues() {
         return queues;
     }

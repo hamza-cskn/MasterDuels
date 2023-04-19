@@ -15,11 +15,9 @@ import mc.obliviate.masterduels.utils.Logger;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
+@Deprecated //use database manager.
 public class SQLManager extends SQLHandler {
 
     private static SQLTable playerDataTable;
@@ -58,6 +56,8 @@ public class SQLManager extends SQLHandler {
     }
 
     public static List<MatchHistoryLog> loadDuelHistories() {
+        return Collections.emptyList();
+        /*
         final List<MatchHistoryLog> list = new ArrayList<>();
         try {
             ResultSet rs = historyTable.selectAll();
@@ -73,12 +73,17 @@ public class SQLManager extends SQLHandler {
             e.printStackTrace();
         }
         return list;
+
+         */
     }
 
     public static void saveDuelHistory(MatchHistoryLog log) {
-        UUID uuid = log.getMatch() != null ? log.getMatch().getId() : UUID.randomUUID();
+        /*
+        UUID uuid = log.getMatch() != null ? log.getMatch().getUniqueId() : UUID.randomUUID();
         SQLUpdateColumn update = historyTable.createUpdate(uuid).putData("uuid", uuid).putData("log", HCore.serialize(log));
         historyTable.insert(update);
+
+         */
     }
 
     public static DuelStatistic deserializeStatistic(ResultSet rs, boolean emptyResultSet) {

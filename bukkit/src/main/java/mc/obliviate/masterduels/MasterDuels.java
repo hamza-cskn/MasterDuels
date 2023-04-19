@@ -4,8 +4,10 @@ import mc.obliviate.masterduels.arena.Arena;
 import mc.obliviate.masterduels.arenaclear.IArenaClearHandler;
 import mc.obliviate.masterduels.data.ConfigurationHandler;
 import mc.obliviate.masterduels.data.SQLManager;
+import mc.obliviate.masterduels.data.database.DatabaseManager;
 import mc.obliviate.masterduels.game.Match;
 import mc.obliviate.masterduels.queue.DuelQueueHandler;
+import mc.obliviate.masterduels.user.UserHandler;
 import mc.obliviate.masterduels.utils.optimization.ArenaWorldOptimizerHandler;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
@@ -20,7 +22,9 @@ public class MasterDuels extends JavaPlugin {
     public static Economy economy;
     public static Permission permissions;
     private ArenaWorldOptimizerHandler worldOptimizerHandler;
+    @Deprecated
     private final SQLManager sqlManager = new SQLManager(this);
+    private final DatabaseManager databaseManager = DatabaseManager.createDefaultInstance();
     private final ConfigurationHandler configurationHandler = ConfigurationHandler.createInstance(this);
     private DuelQueueHandler duelQueueHandler;
     private IArenaClearHandler arenaClearHandler;
@@ -66,16 +70,24 @@ public class MasterDuels extends JavaPlugin {
                 match.uninstall();
             }
         }
-        getSqlManager().saveAllUsers();
-        getSqlManager().disconnect();
+
+        UserHandler.getUserMap().values().forEach(user -> {
+            this.getDatabaseManager().saveUser(user).join(); //sync
+        });
+        getDatabaseManager().disconnect();
     }
 
     public ConfigurationHandler getConfigurationHandler() {
         return configurationHandler;
     }
 
+    @Deprecated
     public SQLManager getSqlManager() {
         return sqlManager;
+    }
+
+    public DatabaseManager getDatabaseManager() {
+        return databaseManager;
     }
 
     public IArenaClearHandler getArenaClearHandler() {

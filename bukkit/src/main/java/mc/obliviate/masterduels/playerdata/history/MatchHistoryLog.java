@@ -143,4 +143,8 @@ public class MatchHistoryLog implements Serializable {
     public Match getMatch() {
         return match;
     }
+
+    public UUID getUniqueId() {
+        return this.match.getUniqueId();
+    }
 }

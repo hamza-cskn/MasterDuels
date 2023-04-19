@@ -198,6 +198,7 @@ public class DuelCMD implements CommandExecutor {
         MessageUtils.sendMessage(player, "queue.left", new PlaceholderUtil().add("{queue-name}", queue.getName()));
     }
 
+    @Deprecated
     private void top(final Player player, List<String> args) {
         final LinkedList<DuelStatistic> statistics;
 
@@ -234,7 +235,8 @@ public class DuelCMD implements CommandExecutor {
 
     private void stats(final Player player, final String[] args) {
         final UUID targetUniqueId = args.length == 1 ? player.getUniqueId() : Bukkit.getOfflinePlayer(args[1]).getUniqueId();
-        new ProfileGui(player, plugin.getSqlManager().getStatistic(targetUniqueId)).open();
+        MasterDuels.getInstance().getDatabaseManager().loadStatistics(targetUniqueId)
+                .thenAccept(stat -> new ProfileGui(player, stat).open());
     }
 
     private void responseInvite(Player player, String[] args) {
